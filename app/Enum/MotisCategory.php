@@ -10,12 +10,12 @@ use OpenApi\Attributes as OA;
     title: 'mode',
     description: 'Mode of transport',
     type: 'string',
+    example: 'suburban',
     enum: [
         'WALK', 'BIKE', 'RENTAL', 'CAR', 'CAR_PARKING', 'CAR_DROPOFF', 'ODM', 'RIDE_SHARING', 'FLEX', 'TRANSIT',
         'TRAM', 'SUBWAY', 'FERRY', 'AIRPLANE', 'SUBURBAN', 'BUS', 'COACH', 'RAIL', 'HIGHSPEED_RAIL', 'LONG_DISTANCE', 'NIGHT_RAIL',
         'REGIONAL_FAST_RAIL', 'REGIONAL_RAIL', 'CABLE_CAR', 'FUNICULAR', 'AERIAL_LIFT', 'OTHER', 'AREAL_LIFT', 'METRO',
     ],
-    example: 'suburban',
 )]
 enum MotisCategory: string
 {

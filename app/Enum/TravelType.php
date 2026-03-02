@@ -14,8 +14,8 @@ use OpenApi\Attributes as OA;
 #[OA\Schema(
     title: 'travelType',
     type: 'string',
-    enum: ['express', 'regional', 'suburban', 'bus', 'ferry', 'subway', 'tram', 'taxi', 'plane'],
     example: 'suburban',
+    enum: ['express', 'regional', 'suburban', 'bus', 'ferry', 'subway', 'tram', 'taxi', 'plane'],
 )]
 enum TravelType: string
 {

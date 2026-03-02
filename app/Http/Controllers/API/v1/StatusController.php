@@ -32,21 +32,59 @@ use Illuminate\Validation\ValidationException;
 use InvalidArgumentException;
 use OpenApi\Attributes as OA;
 
+#[OA\Schema(
+    schema: 'StatusUpdateBody',
+    title: 'StatusUpdateBody',
+    description: 'Status Update Body',
+    properties: [
+        new OA\Property(property: 'body', description: 'Status-Text to be displayed alongside the checkin', type: 'string', example: 'Wow. This train is extremely crowded!', nullable: true, maxLength: 280),
+        new OA\Property(property: 'business', ref: '#/components/schemas/Business'),
+        new OA\Property(property: 'visibility', ref: '#/components/schemas/StatusVisibility'),
+        new OA\Property(property: 'eventId', description: 'The ID of the event this status is related to - or null', type: 'string', example: '1', nullable: true),
+        new OA\Property(property: 'manualDeparture', description: 'Manual departure time set by the user', type: 'string', format: 'date', example: '2020-01-01 12:00:00', nullable: true),
+        new OA\Property(property: 'manualArrival', description: 'Manual arrival time set by the user', type: 'string', format: 'date', example: '2020-01-01 13:00:00', nullable: true),
+        new OA\Property(property: 'destinationId', description: 'Destination station id', type: 'string', example: '1', nullable: true),
+        new OA\Property(property: 'destinationArrivalPlanned', description: 'Destination arrival time', type: 'string', format: 'date', example: '2020-01-01 13:00:00', nullable: true),
+    ],
+)]
+#[OA\Schema(
+    schema: 'Polyline',
+    title: 'Polyline',
+    description: 'Polyline of a single status as GeoJSON Feature',
+    properties: [
+        new OA\Property(property: 'type', type: 'string', example: 'Feature'),
+        new OA\Property(
+            property: 'geometry',
+            properties: [
+                new OA\Property(property: 'type', type: 'string', example: 'LineString'),
+                new OA\Property(property: 'coordinates', type: 'array', items: new OA\Items(example: '[[8.39767,49.01625],[8.45947,49.06576]]')),
+            ],
+            type: 'object',
+        ),
+        new OA\Property(
+            property: 'properties',
+            properties: [
+                new OA\Property(property: 'statusId', type: 'integer', example: 1337),
+            ],
+            type: 'object',
+        ),
+    ],
+)]
 class StatusController extends Controller
 {
     #[OA\Get(
         path: '/dashboard',
         operationId: 'getDashboard',
-        tags: ['Dashboard'],
-        summary: 'Get paginated statuses of personal dashboard',
         description: 'Returns paginated statuses of personal dashboard',
+        summary: 'Get paginated statuses of personal dashboard',
         security: [['passport' => ['read-statuses']], ['token' => []]],
+        tags: ['Dashboard'],
         parameters: [
             new OA\Parameter(
                 name: 'page',
                 description: 'Page of pagination',
-                required: false,
                 in: 'query',
+                required: false,
                 schema: new OA\Schema(type: 'integer'),
             ),
         ],
@@ -81,16 +119,16 @@ class StatusController extends Controller
     #[OA\Get(
         path: '/dashboard/future',
         operationId: 'getFutureDashboard',
-        tags: ['Dashboard'],
-        summary: 'Get paginated future statuses of current user',
         description: 'Returns paginated statuses of the authenticated user, that are more than 20 minutes in the future',
+        summary: 'Get paginated future statuses of current user',
         security: [['passport' => ['read-statuses']], ['token' => []]],
+        tags: ['Dashboard'],
         parameters: [
             new OA\Parameter(
                 name: 'page',
                 description: 'Page of pagination',
-                required: false,
                 in: 'query',
+                required: false,
                 schema: new OA\Schema(type: 'integer'),
             ),
         ],
@@ -125,10 +163,10 @@ class StatusController extends Controller
     #[OA\Get(
         path: '/statuses',
         operationId: 'getActiveStatuses',
-        tags: ['Status'],
-        summary: '[Auth optional] Get active statuses',
         description: 'Returns all currently active statuses that are visible to the (un)authenticated user',
+        summary: '[Auth optional] Get active statuses',
         security: [['passport' => ['read-statuses']], ['token' => []]],
+        tags: ['Status'],
         responses: [
             new OA\Response(
                 response: 200,
@@ -154,10 +192,10 @@ class StatusController extends Controller
     #[OA\Get(
         path: '/positions',
         operationId: 'getLivePositionsForActiveStatuses',
-        tags: ['Status'],
-        summary: '[Auth optional] get live positions for active statuses',
         description: 'Returns an array of live position objects for active statuses',
+        summary: '[Auth optional] get live positions for active statuses',
         security: [['passport' => ['read-statuses']], ['token' => []]],
+        tags: ['Status'],
         responses: [
             new OA\Response(
                 response: '200',
@@ -183,17 +221,17 @@ class StatusController extends Controller
     #[OA\Get(
         path: '/positions/{ids}',
         operationId: 'getLivePositionsForStatuses',
-        tags: ['Status'],
-        summary: '[Auth optional] get live positions for given statuses',
         description: 'Returns an array of live position objects for given status IDs',
+        summary: '[Auth optional] get live positions for given statuses',
         security: [['passport' => ['read-statuses']], ['token' => []]],
+        tags: ['Status'],
         parameters: [
             new OA\Parameter(
                 name: 'ids',
-                in: 'path',
                 description: 'Status-IDs separated by comma',
-                example: '1337,1338',
+                in: 'path',
                 schema: new OA\Schema(type: 'string'),
+                example: '1337,1338',
             ),
         ],
         responses: [
@@ -221,51 +259,51 @@ class StatusController extends Controller
     #[OA\Get(
         path: '/status',
         operationId: 'listStatuses',
-        tags: ['Status'],
-        summary: '[Auth optional] List and filter statuses',
         description: 'Returns paginated list of statuses, filtered by given parameters',
+        summary: '[Auth optional] List and filter statuses',
+        tags: ['Status'],
         parameters: [
             new OA\Parameter(
                 name: 'body',
-                in: 'query',
                 description: 'Filter by text in status body',
-                example: 'Having a great trip!',
+                in: 'query',
                 schema: new OA\Schema(type: 'string'),
+                example: 'Having a great trip!',
             ),
             new OA\Parameter(
                 name: 'user_id',
-                in: 'query',
                 description: 'Filter by user ID',
-                example: 42,
+                in: 'query',
                 schema: new OA\Schema(type: 'integer'),
+                example: 42,
             ),
             new OA\Parameter(
                 name: 'origin_text',
-                in: 'query',
                 description: 'Filter by origin station name',
-                example: 'Central Station',
+                in: 'query',
                 schema: new OA\Schema(type: 'string'),
+                example: 'Central Station',
             ),
             new OA\Parameter(
                 name: 'origin_id',
-                in: 'query',
                 description: 'Filter by origin station ID',
-                example: 5,
+                in: 'query',
                 schema: new OA\Schema(type: 'integer'),
+                example: 5,
             ),
             new OA\Parameter(
                 name: 'destination_text',
-                in: 'query',
                 description: 'Filter by destination station name',
-                example: 'Main Square',
+                in: 'query',
                 schema: new OA\Schema(type: 'string'),
+                example: 'Main Square',
             ),
             new OA\Parameter(
                 name: 'destination_id',
-                in: 'query',
                 description: 'Filter by destination station ID',
-                example: 10,
+                in: 'query',
                 schema: new OA\Schema(type: 'integer'),
+                example: 10,
             ),
         ],
         responses: [
@@ -339,17 +377,17 @@ class StatusController extends Controller
     #[OA\Get(
         path: '/status/{id}',
         operationId: 'getSingleStatus',
-        tags: ['Status'],
-        summary: '[Auth optional] Get single statuses',
         description: 'Returns a single status Object, if user is authorized to see it',
+        summary: '[Auth optional] Get single statuses',
         security: [['passport' => ['read-statuses']], ['token' => []]],
+        tags: ['Status'],
         parameters: [
             new OA\Parameter(
                 name: 'id',
-                in: 'path',
                 description: 'Status-ID',
-                example: 1337,
+                in: 'path',
                 schema: new OA\Schema(type: 'integer'),
+                example: 1337,
             ),
         ],
         responses: [
@@ -380,17 +418,17 @@ class StatusController extends Controller
     #[OA\Delete(
         path: '/status/{id}',
         operationId: 'destroySingleStatus',
-        tags: ['Status'],
-        summary: 'Destroy a status',
         description: 'Deletes a single status Object, if user is authorized to',
+        summary: 'Destroy a status',
         security: [['passport' => ['write-statuses']], ['token' => []]],
+        tags: ['Status'],
         parameters: [
             new OA\Parameter(
                 name: 'id',
-                in: 'path',
                 description: 'Status-ID',
-                example: 1337,
+                in: 'path',
                 schema: new OA\Schema(type: 'integer'),
+                example: 1337,
             ),
         ],
         responses: [
@@ -422,21 +460,21 @@ class StatusController extends Controller
     #[OA\Put(
         path: '/status/{id}',
         operationId: 'updateSingleStatus',
-        tags: ['Status'],
-        summary: 'Update a status',
         description: 'Updates a single status Object, if user is authorized to',
+        summary: 'Update a status',
+        security: [['passport' => ['write-statuses']], ['token' => []]],
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(ref: '#/components/schemas/StatusUpdateBody'),
         ),
-        security: [['passport' => ['write-statuses']], ['token' => []]],
+        tags: ['Status'],
         parameters: [
             new OA\Parameter(
                 name: 'id',
-                in: 'path',
                 description: 'Status-ID',
-                example: 1337,
+                in: 'path',
                 schema: new OA\Schema(type: 'integer'),
+                example: 1337,
             ),
         ],
         responses: [
@@ -585,17 +623,17 @@ class StatusController extends Controller
     #[OA\Get(
         path: '/polyline/{ids}',
         operationId: 'getPolylines',
-        tags: ['Status'],
-        summary: '[Auth optional] Get GeoJSON for statuses',
         description: 'Returns GeoJSON for all requested status IDs',
+        summary: '[Auth optional] Get GeoJSON for statuses',
         security: [['passport' => ['read-statuses']], ['token' => []]],
+        tags: ['Status'],
         parameters: [
             new OA\Parameter(
                 name: 'ids',
-                in: 'path',
                 description: 'comma seperated status IDs',
-                example: '1337,1338',
+                in: 'path',
                 schema: new OA\Schema(type: 'string'),
+                example: '1337,1338',
             ),
         ],
         responses: [
@@ -606,7 +644,6 @@ class StatusController extends Controller
                     properties: [
                         new OA\Property(
                             property: 'data',
-                            type: 'object',
                             properties: [
                                 new OA\Property(property: 'type', example: 'FeatureCollection'),
                                 new OA\Property(
@@ -615,6 +652,7 @@ class StatusController extends Controller
                                     items: new OA\Items(ref: '#/components/schemas/Polyline'),
                                 ),
                             ],
+                            type: 'object',
                         ),
                     ],
                 ),
@@ -654,17 +692,17 @@ class StatusController extends Controller
     #[OA\Get(
         path: '/stopovers/{ids}',
         operationId: 'getStopOvers',
-        tags: ['Status'],
-        summary: '[Auth optional] Get stopovers for statuses',
         description: 'Returns all underway-stops for stations',
+        summary: '[Auth optional] Get stopovers for statuses',
         security: [['passport' => ['read-statuses']], ['token' => []]],
+        tags: ['Status'],
         parameters: [
             new OA\Parameter(
                 name: 'ids',
-                in: 'path',
                 description: 'comma seperated trip IDs',
-                example: '1,2',
+                in: 'path',
                 schema: new OA\Schema(type: 'string'),
+                example: '1,2',
             ),
         ],
         responses: [
@@ -675,15 +713,15 @@ class StatusController extends Controller
                     properties: [
                         new OA\Property(
                             property: 'data',
-                            type: 'object',
                             properties: [
                                 new OA\Property(
                                     property: '1',
-                                    type: 'array',
                                     description: 'Array of stopovers. Key describes trip id',
+                                    type: 'array',
                                     items: new OA\Items(ref: '#/components/schemas/StopoverResource'),
                                 ),
                             ],
+                            type: 'object',
                         ),
                     ],
                 ),
@@ -706,10 +744,10 @@ class StatusController extends Controller
     #[OA\Get(
         path: '/user/statuses/active',
         operationId: 'userState',
-        tags: ['Auth'],
-        summary: 'User state',
         description: 'This request returns whether the currently logged-in user has an active check-in or not.',
+        summary: 'User state',
         security: [['passport' => ['read-statuses']], ['token' => []]],
+        tags: ['Auth'],
         responses: [
             new OA\Response(
                 response: 200,
@@ -718,8 +756,8 @@ class StatusController extends Controller
                     properties: [
                         new OA\Property(
                             property: 'data',
-                            type: 'object',
                             ref: '#/components/schemas/StatusResource',
+                            type: 'object',
                         ),
                     ],
                 ),

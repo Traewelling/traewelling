@@ -27,17 +27,17 @@ class StatusTagController extends Controller
     #[OA\Get(
         path: '/status/{statusId}/tags',
         operationId: 'getTagsForStatus',
-        tags: ['Status'],
-        summary: 'Show all tags for a status which are visible for the current user',
         description: 'Returns a collection of all visible tags for the given status, if user is authorized',
+        summary: 'Show all tags for a status which are visible for the current user',
         security: [['passport' => []], ['token' => []]],
+        tags: ['Status'],
         parameters: [
             new OA\Parameter(
                 name: 'statusId',
-                in: 'path',
                 description: 'Status-ID',
-                example: 1337,
+                in: 'path',
                 schema: new OA\Schema(type: 'integer'),
+                example: 1337,
             ),
         ],
         responses: [
@@ -49,7 +49,7 @@ class StatusTagController extends Controller
                         new OA\Property(
                             property: 'data',
                             type: 'array',
-                            items: new OA\Items(ref: '#/components/schemas/StatusTag'),
+                            items: new OA\Items(ref: '#/components/schemas/StatusTagResource'),
                         ),
                     ],
                 ),
@@ -78,17 +78,17 @@ class StatusTagController extends Controller
     #[OA\Get(
         path: '/statuses/{statusIds}/tags',
         operationId: 'getTagsForMultipleStatuses',
-        tags: ['Status'],
-        summary: 'Show all tags for multiple statuses which are visible for the current user',
         description: 'Returns a collection of all visible tags for the given statuses, if user is authorized',
+        summary: 'Show all tags for multiple statuses which are visible for the current user',
         security: [['passport' => []], ['token' => []]],
+        tags: ['Status'],
         parameters: [
             new OA\Parameter(
                 name: 'statusIds',
-                in: 'path',
                 description: 'Status-ID',
-                example: '1337,4711',
+                in: 'path',
                 schema: new OA\Schema(type: 'string'),
+                example: '1337,4711',
             ),
         ],
         responses: [
@@ -99,19 +99,19 @@ class StatusTagController extends Controller
                     properties: [
                         new OA\Property(
                             property: 'data',
-                            type: 'object',
                             properties: [
                                 new OA\Property(
                                     property: '1337',
                                     type: 'array',
-                                    items: new OA\Items(ref: '#/components/schemas/StatusTag'),
+                                    items: new OA\Items(ref: '#/components/schemas/StatusTagResource'),
                                 ),
                                 new OA\Property(
                                     property: '4711',
                                     type: 'array',
-                                    items: new OA\Items(ref: '#/components/schemas/StatusTag'),
+                                    items: new OA\Items(ref: '#/components/schemas/StatusTagResource'),
                                 ),
                             ],
+                            type: 'object',
                         ),
                     ],
                 ),
@@ -152,30 +152,30 @@ class StatusTagController extends Controller
     #[OA\Put(
         path: '/status/{statusId}/tags/{tagKey}',
         operationId: 'updateSingleStatusTag',
-        tags: ['Status'],
-        summary: 'Update a StatusTag',
         description: 'Updates a single StatusTag Object, if user is authorized to',
+        summary: 'Update a StatusTag',
+        security: [['passport' => ['write-statuses']], ['token' => []]],
         requestBody: new OA\RequestBody(
             content: new OA\MediaType(
                 mediaType: 'application/json',
-                schema: new OA\Schema(ref: '#/components/schemas/StatusTag'),
+                schema: new OA\Schema(ref: '#/components/schemas/StatusTagResource'),
             ),
         ),
-        security: [['passport' => ['write-statuses']], ['token' => []]],
+        tags: ['Status'],
         parameters: [
             new OA\Parameter(
                 name: 'statusId',
-                in: 'path',
                 description: 'Status-ID',
-                example: 1337,
+                in: 'path',
                 schema: new OA\Schema(type: 'integer'),
+                example: 1337,
             ),
             new OA\Parameter(
                 name: 'tagKey',
-                in: 'path',
                 description: 'Key of StatusTag',
-                example: 'seat',
+                in: 'path',
                 schema: new OA\Schema(type: 'string'),
+                example: 'seat',
             ),
         ],
         responses: [
@@ -186,8 +186,8 @@ class StatusTagController extends Controller
                     properties: [
                         new OA\Property(
                             property: 'data',
+                            ref: '#/components/schemas/StatusTagResource',
                             type: 'object',
-                            ref: '#/components/schemas/StatusTag',
                         ),
                     ],
                 ),
@@ -250,23 +250,23 @@ class StatusTagController extends Controller
     #[OA\Post(
         path: '/status/{statusId}/tags',
         operationId: 'createSingleStatusTag',
-        tags: ['Status'],
-        summary: 'Create a StatusTag',
         description: 'Creates a single StatusTag Object, if user is authorized to. <br><br>The key of a tag is free text. You can choose it as you need it. However, <b>please use a namespace for tags</b> (<i>namespace:xxx</i>) that only affect your own application.<br><br>For tags related to standard actions we recommend the following tags in the trwl namespace:<br> <ul> <li>trwl:seat (i.e. 61)</li> <li>trwl:wagon (i.e. 25)</li> <li>trwl:ticket (i.e. BahnCard 100 first))</li> <li>trwl:price (420,69 €)</li> <li>trwl:travel_class (i.e. 1, 2, business, economy, ...)</li> <li>trwl:locomotive_class (BR424, BR450)</li> <li>trwl:journey_number (i.e. 1234. Used as a work-around for missing journey numbers)</li> <li>trwl:wagon_class (i.e. Bpmz)</li> <li>trwl:role (i.e. Tf, Zf, Gf, Lokführer, conducteur de train, ...)</li> <li>trwl:vehicle_number (i.e. 425 001, Tz9001, 123, ...)</li> <li>trwl:passenger_rights (i.e. yes / no / ID of claim)</li> <li>trwl:social_status – social availability indicator. Allowed values: <code>open</code> (open to chatting), <code>open_find_me</code> (open, but staying at seat), <code>open_lets_hang</code> (open and willing to move around), <code>do_not_disturb</code> (prefer not to be disturbed).</li> </ul>',
+        summary: 'Create a StatusTag',
+        security: [['passport' => ['write-statuses']], ['token' => []]],
         requestBody: new OA\RequestBody(
             content: new OA\MediaType(
                 mediaType: 'application/json',
-                schema: new OA\Schema(ref: '#/components/schemas/StatusTag'),
+                schema: new OA\Schema(ref: '#/components/schemas/StatusTagResource'),
             ),
         ),
-        security: [['passport' => ['write-statuses']], ['token' => []]],
+        tags: ['Status'],
         parameters: [
             new OA\Parameter(
                 name: 'statusId',
-                in: 'path',
                 description: 'Status-ID',
-                example: 1337,
+                in: 'path',
                 schema: new OA\Schema(type: 'integer'),
+                example: 1337,
             ),
         ],
         responses: [
@@ -277,8 +277,8 @@ class StatusTagController extends Controller
                     properties: [
                         new OA\Property(
                             property: 'data',
+                            ref: '#/components/schemas/StatusTagResource',
                             type: 'object',
-                            ref: '#/components/schemas/StatusTag',
                         ),
                     ],
                 ),
@@ -343,31 +343,33 @@ class StatusTagController extends Controller
     #[OA\Delete(
         path: '/status/{statusId}/tags/{tagKey}',
         operationId: 'destroySingleStatusTag',
-        tags: ['Status'],
-        summary: 'Destroy a StatusTag',
         description: 'Deletes a single StatusTag Object, if user is authorized to',
+        summary: 'Destroy a StatusTag',
         security: [['passport' => ['write-statuses']], ['token' => []]],
+        tags: ['Status'],
         parameters: [
             new OA\Parameter(
                 name: 'statusId',
-                in: 'path',
                 description: 'Status-ID',
-                example: 1337,
+                in: 'path',
                 schema: new OA\Schema(type: 'integer'),
+                example: 1337,
             ),
             new OA\Parameter(
                 name: 'tagKey',
-                in: 'path',
                 description: 'Key of StatusTag',
-                example: 'trwl:seat',
+                in: 'path',
                 schema: new OA\Schema(type: 'string'),
+                example: 'trwl:seat',
             ),
         ],
         responses: [
             new OA\Response(
                 response: 200,
                 description: 'successful operation',
-                content: new OA\JsonContent(ref: '#/components/schemas/SuccessResponse'),
+                content: new OA\JsonContent(
+                    properties: [new OA\Property(property: 'status', type: 'string', example: 'success')],
+                ),
             ),
             new OA\Response(response: 400, description: 'Bad request'),
             new OA\Response(response: 401, description: 'Unauthorized'),

@@ -11,8 +11,8 @@ use OpenApi\Attributes as OA;
     title: 'category',
     description: 'Category of transport.',
     type: 'string',
-    enum: ['nationalExpress', 'national', 'regionalExp', 'regional', 'suburban', 'bus', 'ferry', 'subway', 'tram', 'taxi', 'plane'],
     example: 'suburban',
+    enum: ['nationalExpress', 'national', 'regionalExp', 'regional', 'suburban', 'bus', 'ferry', 'subway', 'tram', 'taxi', 'plane'],
 )]
 enum HafasTravelType: string
 {

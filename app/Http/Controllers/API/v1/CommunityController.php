@@ -18,10 +18,10 @@ class CommunityController extends Controller
     #[OA\Get(
         path: '/community/profile',
         operationId: 'getCommunityProfile',
-        tags: ['Community'],
-        summary: 'Get your contribution profile',
         description: 'Returns contribution XP, level, and progress information for the authenticated user',
+        summary: 'Get your contribution profile',
         security: [['passport' => []]],
+        tags: ['Community'],
         responses: [
             new OA\Response(
                 response: 200,
@@ -48,24 +48,24 @@ class CommunityController extends Controller
     #[OA\Get(
         path: '/community/history',
         operationId: 'getCommunityHistory',
-        tags: ['Community'],
-        summary: 'Get your contribution history',
         description: 'Returns a cursor-paginated list of contribution history entries for the authenticated user',
+        summary: 'Get your contribution history',
         security: [['passport' => []]],
+        tags: ['Community'],
         parameters: [
             new OA\Parameter(
                 name: 'cursor',
-                in: 'query',
                 description: 'Cursor for pagination',
+                in: 'query',
                 required: false,
                 schema: new OA\Schema(type: 'string'),
             ),
             new OA\Parameter(
                 name: 'limit',
-                in: 'query',
                 description: 'Number of entries per page (min 5, max 50, default 15)',
+                in: 'query',
                 required: false,
-                schema: new OA\Schema(type: 'integer', minimum: 5, maximum: 50, default: 15),
+                schema: new OA\Schema(type: 'integer', default: 15, maximum: 50, minimum: 5),
             ),
         ],
         responses: [

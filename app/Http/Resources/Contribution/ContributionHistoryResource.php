@@ -38,8 +38,8 @@ use OpenApi\Attributes as OA;
         new OA\Property(
             property: 'note',
             type: 'string',
-            nullable: true,
             example: 'Event approved: GPN 22',
+            nullable: true,
         ),
         new OA\Property(
             property: 'createdAt',

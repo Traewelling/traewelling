@@ -36,9 +36,9 @@ class StatisticsController extends Controller
     #[OA\Get(
         path: '/leaderboard',
         operationId: 'getLeaderboard',
-        tags: ['Leaderboard'],
         summary: '[Auth optional] Get array of 20 best users',
         security: [['passport' => ['read-statistics']], ['token' => []]],
+        tags: ['Leaderboard'],
         responses: [
             new OA\Response(
                 response: 200,
@@ -65,9 +65,9 @@ class StatisticsController extends Controller
     #[OA\Get(
         path: '/leaderboard/distance',
         operationId: 'getLeaderboardByDistance',
-        tags: ['Leaderboard'],
         summary: '[Auth optional] Get leaderboard array sorted by distance',
         security: [['passport' => ['read-statistics']], ['token' => []]],
+        tags: ['Leaderboard'],
         responses: [
             new OA\Response(
                 response: 200,
@@ -94,9 +94,9 @@ class StatisticsController extends Controller
     #[OA\Get(
         path: '/leaderboard/friends',
         operationId: 'getLeaderboardByFriends',
-        tags: ['Leaderboard'],
         summary: 'Get friends-leaderboard array sorted',
         security: [['passport' => ['read-statistics']], ['token' => []]],
+        tags: ['Leaderboard'],
         responses: [
             new OA\Response(
                 response: 200,
@@ -123,16 +123,16 @@ class StatisticsController extends Controller
     #[OA\Get(
         path: '/leaderboard/{month}',
         operationId: 'getMonthlyLeaderboard',
-        tags: ['Leaderboard'],
         summary: '[Auth optional] Get leaderboard array for a specific month',
         security: [['passport' => ['read-statistics']], ['token' => []]],
+        tags: ['Leaderboard'],
         parameters: [
             new OA\Parameter(
                 name: 'month',
-                in: 'path',
                 description: 'Month for the complete leaderboard in Format `YYYY-MM`',
-                example: '2022-04',
+                in: 'path',
                 schema: new OA\Schema(type: 'string'),
+                example: '2022-04',
             ),
         ],
         responses: [
@@ -163,20 +163,20 @@ class StatisticsController extends Controller
     #[OA\Get(
         path: '/statistics',
         operationId: 'getStatistics',
-        tags: ['Statistics'],
         summary: 'Get personal statistics',
         security: [['passport' => ['read-statistics']], ['token' => []]],
+        tags: ['Statistics'],
         parameters: [
             new OA\Parameter(
                 name: 'from',
-                in: 'query',
                 description: 'Start date for the statistics',
+                in: 'query',
                 example: '2021-01-01T00:00:00.000Z',
             ),
             new OA\Parameter(
                 name: 'until',
-                in: 'query',
                 description: 'End date for the statistics',
+                in: 'query',
                 example: '2021-02-01T00:00:00.000Z',
             ),
         ],
@@ -188,7 +188,6 @@ class StatisticsController extends Controller
                     properties: [
                         new OA\Property(
                             property: 'data',
-                            type: 'object',
                             properties: [
                                 new OA\Property(
                                     property: 'purpose',
@@ -207,9 +206,9 @@ class StatisticsController extends Controller
                                             ),
                                             new OA\Property(
                                                 property: 'duration',
+                                                description: 'Duration in minutes',
                                                 type: 'integer',
                                                 example: 425,
-                                                description: 'Duration in minutes',
                                             ),
                                         ],
                                     ),
@@ -231,9 +230,9 @@ class StatisticsController extends Controller
                                             ),
                                             new OA\Property(
                                                 property: 'duration',
+                                                description: 'Duration in minutes',
                                                 type: 'integer',
                                                 example: 425,
-                                                description: 'Duration in minutes',
                                             ),
                                         ],
                                     ),
@@ -255,9 +254,9 @@ class StatisticsController extends Controller
                                             ),
                                             new OA\Property(
                                                 property: 'duration',
+                                                description: 'Duration in minutes',
                                                 type: 'integer',
                                                 example: 424,
-                                                description: 'Duration in minutes',
                                             ),
                                         ],
                                     ),
@@ -280,14 +279,15 @@ class StatisticsController extends Controller
                                             ),
                                             new OA\Property(
                                                 property: 'duration',
+                                                description: 'Duration in minutes',
                                                 type: 'integer',
                                                 example: 424,
-                                                description: 'Duration in minutes',
                                             ),
                                         ],
                                     ),
                                 ),
                             ],
+                            type: 'object',
                         ),
                     ],
                 ),
@@ -339,30 +339,30 @@ class StatisticsController extends Controller
     #[OA\Get(
         path: '/statistics/daily/{date}',
         operationId: 'getDailyStatistics',
-        tags: ['Statistics'],
-        summary: 'Get statistics and statuses of one day',
         description: 'Returns all statuses and statistics for the requested day',
+        summary: 'Get statistics and statuses of one day',
         security: [['passport' => ['read-statistics']], ['token' => []]],
+        tags: ['Statistics'],
         parameters: [
             new OA\Parameter(
                 name: 'date',
-                in: 'path',
                 description: 'Date for the statistics in Format `YYYY-MM-DD`',
-                example: '2024-04-09',
+                in: 'path',
                 required: true,
                 schema: new OA\Schema(type: 'string'),
+                example: '2024-04-09',
             ),
             new OA\Parameter(
                 name: 'timezone',
-                in: 'query',
                 description: 'Timezone for the date. If not set, the user\'s timezone will be used.',
-                example: 'Europe/Berlin',
+                in: 'query',
                 schema: new OA\Schema(type: 'string'),
+                example: 'Europe/Berlin',
             ),
             new OA\Parameter(
                 name: 'withPolylines',
-                in: 'query',
                 description: 'If this parameter is set, the polylines will be returned as well. Otherwise attribute is null.',
+                in: 'query',
                 schema: new OA\Schema(type: 'boolean'),
             ),
         ],
@@ -374,7 +374,6 @@ class StatisticsController extends Controller
                     properties: [
                         new OA\Property(
                             property: 'data',
-                            type: 'object',
                             properties: [
                                 new OA\Property(
                                     property: 'statuses',
@@ -388,34 +387,35 @@ class StatisticsController extends Controller
                                 ),
                                 new OA\Property(
                                     property: 'totalDistance',
-                                    example: '74026',
                                     type: 'integer',
+                                    example: '74026',
                                 ),
                                 new OA\Property(
                                     property: 'totalDuration',
-                                    example: '4711',
                                     type: 'integer',
+                                    example: '4711',
                                 ),
                                 new OA\Property(
                                     property: 'totalPoints',
-                                    example: '42',
                                     type: 'integer',
+                                    example: '42',
                                 ),
                                 new OA\Property(
                                     property: 'prevDate',
-                                    example: '2024-04-07',
-                                    type: 'string',
-                                    nullable: true,
                                     description: 'Nearest earlier date with check-ins (YYYY-MM-DD), or null.',
+                                    type: 'string',
+                                    example: '2024-04-07',
+                                    nullable: true,
                                 ),
                                 new OA\Property(
                                     property: 'nextDate',
-                                    example: '2024-04-11',
-                                    type: 'string',
-                                    nullable: true,
                                     description: 'Nearest later date with check-ins (YYYY-MM-DD), or null.',
+                                    type: 'string',
+                                    example: '2024-04-11',
+                                    nullable: true,
                                 ),
                             ],
+                            type: 'object',
                         ),
                     ],
                 ),
@@ -464,9 +464,9 @@ class StatisticsController extends Controller
     #[OA\Get(
         path: '/statistics/global',
         operationId: 'getGlobalStatistics',
-        tags: ['Statistics'],
         summary: 'Get global statistics of the last 4 weeks',
         security: [['passport' => ['read-statistics']], ['token' => []]],
+        tags: ['Statistics'],
         responses: [
             new OA\Response(
                 response: 200,
@@ -475,12 +475,11 @@ class StatisticsController extends Controller
                     properties: [
                         new OA\Property(
                             property: 'data',
-                            type: 'object',
                             ref: '#/components/schemas/StatisticsGlobalData',
+                            type: 'object',
                         ),
                         new OA\Property(
                             property: 'meta',
-                            type: 'object',
                             properties: [
                                 new OA\Property(
                                     property: 'from',
@@ -491,6 +490,7 @@ class StatisticsController extends Controller
                                     example: '2021-02-01T00:00:00.000000Z',
                                 ),
                             ],
+                            type: 'object',
                         ),
                     ],
                 ),

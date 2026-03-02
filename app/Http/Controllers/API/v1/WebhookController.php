@@ -15,10 +15,10 @@ class WebhookController extends Controller
     #[OA\Get(
         path: '/webhooks',
         operationId: 'getWebhooks',
-        tags: ['Webhooks'],
-        summary: 'Get webhooks for current user and current application.',
         description: 'Returns all webhooks which are created for the current user and which the current authorized applicaton has access to.',
+        summary: 'Get webhooks for current user and current application.',
         security: [['passport' => []], ['token' => []]],
+        tags: ['Webhooks'],
         responses: [
             new OA\Response(
                 response: 200,
@@ -51,17 +51,17 @@ class WebhookController extends Controller
     #[OA\Get(
         path: '/webhooks/{id}',
         operationId: 'getSingleWebhook',
-        tags: ['Webhooks'],
-        summary: 'Get single webhook',
         description: 'Returns a single webhook Object, if user and application is authorized to see it',
+        summary: 'Get single webhook',
         security: [['passport' => []], ['token' => []]],
+        tags: ['Webhooks'],
         parameters: [
             new OA\Parameter(
                 name: 'id',
-                in: 'path',
                 description: 'Webhook-ID',
-                example: 1337,
+                in: 'path',
                 schema: new OA\Schema(type: 'integer'),
+                example: 1337,
             ),
         ],
         responses: [
@@ -92,17 +92,17 @@ class WebhookController extends Controller
     #[OA\Delete(
         path: '/webhooks/{id}',
         operationId: 'deleteWebhook',
-        tags: ['Webhooks'],
-        summary: 'Delete a webhook if the user and application is authorized to do',
         description: '',
+        summary: 'Delete a webhook if the user and application is authorized to do',
         security: [['passport' => []], ['token' => []]],
+        tags: ['Webhooks'],
         parameters: [
             new OA\Parameter(
                 name: 'id',
-                in: 'path',
                 description: 'Status-ID',
-                example: 1337,
+                in: 'path',
                 schema: new OA\Schema(type: 'integer'),
+                example: 1337,
             ),
         ],
         responses: [

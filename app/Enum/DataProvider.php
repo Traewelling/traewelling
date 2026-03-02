@@ -10,8 +10,8 @@ use OpenApi\Attributes as OA;
     title: 'DataProvider',
     description: 'What type of data provider did the user specify? (users need to be in closed-beta for this to take effect)',
     type: 'string',
-    enum: ['default', 'transitous'],
     example: 'cargo',
+    enum: ['default', 'transitous'],
 )]
 enum DataProvider: string
 {

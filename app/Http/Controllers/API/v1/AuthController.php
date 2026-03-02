@@ -8,6 +8,14 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
 
+#[OA\Schema(
+    schema: 'BearerTokenResponse',
+    title: 'BearerTokenResponse',
+    properties: [
+        new OA\Property(property: 'token', description: "Bearer Token. Use in Authentication-Header with prefix 'Bearer '. (space is needed)", type: 'string', example: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9...'),
+        new OA\Property(property: 'expires_at', description: 'End of life for this token.', type: 'string', example: '2023-10-19T15:15:06+02:00'),
+    ],
+)]
 class AuthController extends Controller
 {
     /**
@@ -16,9 +24,9 @@ class AuthController extends Controller
     #[OA\Post(
         path: '/auth/logout',
         operationId: 'logoutUser',
-        tags: ['Auth'],
         summary: 'Logout & invalidate current bearer token',
         security: [['passport' => []], ['token' => []]],
+        tags: ['Auth'],
         responses: [
             new OA\Response(
                 response: 200,
@@ -48,10 +56,10 @@ class AuthController extends Controller
     #[OA\Get(
         path: '/auth/user',
         operationId: 'getAuthenticatedUser',
-        tags: ['Auth', 'User'],
-        summary: 'Get authenticated user information',
         description: 'Get all profile information about the authenticated user',
+        summary: 'Get authenticated user information',
         security: [['passport' => []], ['token' => []]],
+        tags: ['Auth', 'User'],
         responses: [
             new OA\Response(
                 response: 200,
@@ -60,8 +68,8 @@ class AuthController extends Controller
                     properties: [
                         new OA\Property(
                             property: 'data',
-                            type: 'object',
                             ref: '#/components/schemas/UserAuthResource',
+                            type: 'object',
                         ),
                     ],
                 ),
@@ -80,10 +88,10 @@ class AuthController extends Controller
     #[OA\Post(
         path: '/auth/refresh',
         operationId: 'refreshToken',
-        tags: ['Auth'],
-        summary: 'Refresh Bearer Token',
         description: 'This request issues a new Bearer-Token with a new expiration date while also revoking the old token.',
+        summary: 'Refresh Bearer Token',
         security: [['passport' => []], ['token' => []]],
+        tags: ['Auth'],
         responses: [
             new OA\Response(
                 response: 200,
@@ -92,8 +100,8 @@ class AuthController extends Controller
                     properties: [
                         new OA\Property(
                             property: 'data',
-                            type: 'object',
                             ref: '#/components/schemas/BearerTokenResponse',
+                            type: 'object',
                         ),
                     ],
                 ),

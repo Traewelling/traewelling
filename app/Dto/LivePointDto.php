@@ -17,17 +17,17 @@ use stdClass;
 readonly class LivePointDto implements JsonSerializable
 {
     #[OA\Property(
+        ref: '#/components/schemas/Coordinate',
         title: 'point',
         description: 'current point, if stopping at a station',
         nullable: true,
-        ref: '#/components/schemas/Coordinate',
     )]
     public ?Coordinate $point;
 
     #[OA\Property(
+        ref: '#/components/schemas/FeatureCollection',
         title: 'polyline',
         description: 'geojson point collection of the next line segment',
-        ref: '#/components/schemas/FeatureCollection',
     )]
     public ?stdClass $polyline;
 

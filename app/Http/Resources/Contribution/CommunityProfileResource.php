@@ -17,28 +17,28 @@ use OpenApi\Attributes as OA;
     properties: [
         new OA\Property(
             property: 'xp',
+            description: 'Total contribution XP earned',
             type: 'integer',
             example: 75,
-            description: 'Total contribution XP earned',
         ),
         new OA\Property(
             property: 'level',
+            description: 'Current contribution level',
             type: 'integer',
             example: 1,
-            description: 'Current contribution level',
         ),
         new OA\Property(
             property: 'nextLevelXP',
+            description: 'XP required for next level',
             type: 'integer',
             example: 150,
-            description: 'XP required for next level',
         ),
         new OA\Property(
             property: 'progressPercent',
+            description: 'Progress percentage to next level',
             type: 'number',
             format: 'float',
             example: 25.0,
-            description: 'Progress percentage to next level',
         ),
     ],
 )]

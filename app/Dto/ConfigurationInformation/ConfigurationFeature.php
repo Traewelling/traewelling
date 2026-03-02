@@ -8,22 +8,22 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(
     schema: 'Feature',
+    description: 'Represents a configuration feature and its status.',
+    required: ['name', 'enabled'],
     properties: [
         new OA\Property(
             property: 'name',
-            type: 'string',
-            example: ConfigurationFeatureEnum::USER_REGISTRATION,
             schema: '#/components/schemas/ConfigurationFeatureEnum',
             description: 'The name of the feature.',
+            type: 'string',
+            example: ConfigurationFeatureEnum::USER_REGISTRATION,
         ),
         new OA\Property(
             property: 'enabled',
-            type: 'boolean',
             description: 'Indicates whether the feature is enabled.',
+            type: 'boolean',
         ),
-    ],
-    required: ['name', 'enabled'],
-    description: 'Represents a configuration feature and its status.'
+    ]
 )]
 readonly class ConfigurationFeature implements \JsonSerializable
 {

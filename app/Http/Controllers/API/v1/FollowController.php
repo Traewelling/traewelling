@@ -24,16 +24,16 @@ class FollowController extends Controller
     #[OA\Post(
         path: '/user/{id}/follow',
         operationId: 'createFollow',
-        tags: ['User/Follow'],
         summary: 'Follow a user',
         security: [['passport' => ['write-follows']], ['token' => []]],
+        tags: ['User/Follow'],
         parameters: [
             new OA\Parameter(
                 name: 'id',
-                in: 'path',
                 description: 'User-ID',
-                example: 1337,
+                in: 'path',
                 schema: new OA\Schema(type: 'integer'),
+                example: 1337,
             ),
         ],
         responses: [
@@ -44,8 +44,8 @@ class FollowController extends Controller
                     properties: [
                         new OA\Property(
                             property: 'data',
-                            type: 'object',
                             ref: '#/components/schemas/UserResource',
+                            type: 'object',
                         ),
                     ],
                 ),
@@ -77,16 +77,16 @@ class FollowController extends Controller
     #[OA\Delete(
         path: '/user/{id}/follow',
         operationId: 'destroyFollow',
-        tags: ['User/Follow'],
         summary: 'Unfollow a user',
         security: [['passport' => ['write-follows']], ['token' => []]],
+        tags: ['User/Follow'],
         parameters: [
             new OA\Parameter(
                 name: 'id',
-                in: 'path',
                 description: 'User-ID',
-                example: 1337,
+                in: 'path',
                 schema: new OA\Schema(type: 'integer'),
+                example: 1337,
             ),
         ],
         responses: [
@@ -97,8 +97,8 @@ class FollowController extends Controller
                     properties: [
                         new OA\Property(
                             property: 'data',
-                            type: 'object',
                             ref: '#/components/schemas/UserResource',
+                            type: 'object',
                         ),
                     ],
                 ),
@@ -129,9 +129,9 @@ class FollowController extends Controller
     #[OA\Get(
         path: '/user/self/followers',
         operationId: 'getFollowers',
-        tags: ['User/Follow', 'Settings'],
         summary: 'List all followers',
         security: [['passport' => ['read-settings-followers']], ['token' => []]],
+        tags: ['User/Follow', 'Settings'],
         responses: [
             new OA\Response(
                 response: 200,
@@ -163,9 +163,9 @@ class FollowController extends Controller
     #[OA\Get(
         path: '/user/self/follow-requests',
         operationId: 'getFollowRequests',
-        tags: ['User/Follow', 'Settings'],
         summary: 'List all followers',
         security: [['passport' => ['read-settings-followers']], ['token' => []]],
+        tags: ['User/Follow', 'Settings'],
         responses: [
             new OA\Response(
                 response: 200,
@@ -195,9 +195,9 @@ class FollowController extends Controller
     #[OA\Get(
         path: '/user/self/followings',
         operationId: 'getFollowings',
-        tags: ['User/Follow', 'Settings'],
         summary: 'List all users the current user is following',
         security: [['passport' => ['read-settings-followers']], ['token' => []]],
+        tags: ['User/Follow', 'Settings'],
         responses: [
             new OA\Response(
                 response: 200,
@@ -233,16 +233,16 @@ class FollowController extends Controller
     #[OA\Delete(
         path: '/user/self/followers/{userId}',
         operationId: 'removeFollower',
-        tags: ['User/Follow'],
         summary: 'Remove a follower',
         security: [['passport' => ['write-followers']], ['token' => []]],
+        tags: ['User/Follow'],
         parameters: [
             new OA\Parameter(
                 name: 'userId',
-                in: 'path',
                 description: 'User-ID',
-                example: 1337,
+                in: 'path',
                 schema: new OA\Schema(type: 'integer'),
+                example: 1337,
             ),
         ],
         responses: [
@@ -280,16 +280,16 @@ class FollowController extends Controller
     #[OA\Put(
         path: '/user/self/follow-requests/{userId}',
         operationId: 'acceptFollowRequest',
-        tags: ['User/Follow'],
         summary: 'Accept a follow request',
         security: [['passport' => ['write-followers']], ['token' => []]],
+        tags: ['User/Follow'],
         parameters: [
             new OA\Parameter(
                 name: 'userId',
-                in: 'path',
                 description: 'User-ID',
-                example: 1337,
+                in: 'path',
                 schema: new OA\Schema(type: 'integer'),
+                example: 1337,
             ),
         ],
         responses: [
@@ -323,16 +323,16 @@ class FollowController extends Controller
     #[OA\Delete(
         path: '/user/self/follow-requests/{userId}',
         operationId: 'rejectFollowRequest',
-        tags: ['User/Follow'],
         summary: 'Reject a follow request',
         security: [['passport' => ['write-followers']], ['token' => []]],
+        tags: ['User/Follow'],
         parameters: [
             new OA\Parameter(
                 name: 'userId',
-                in: 'path',
                 description: 'User-ID',
-                example: 1337,
+                in: 'path',
                 schema: new OA\Schema(type: 'integer'),
+                example: 1337,
             ),
         ],
         responses: [

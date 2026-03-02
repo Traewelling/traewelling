@@ -15,22 +15,37 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use OpenApi\Attributes as OA;
 
+#[OA\Schema(
+    schema: 'EventSuggestion',
+    title: 'EventSuggestion',
+    description: 'Fields for suggesting an event',
+    properties: [
+        new OA\Property(property: 'name', description: 'name of the event', type: 'string', example: 'Eröffnung der Nebenbahn in Knuffingen', maxLength: 255),
+        new OA\Property(property: 'host', description: 'host of the event', type: 'string', example: 'MiWuLa', nullable: true),
+        new OA\Property(property: 'begin', description: 'Timestamp for the start of the event', type: 'string', format: 'date-time', example: '2022-06-01T00:00:00+02:00'),
+        new OA\Property(property: 'end', description: 'Timestamp for the end of the event', type: 'string', format: 'date-time', example: '2022-08-31T23:59:00+02:00'),
+        new OA\Property(property: 'url', description: 'external URL for this event', type: 'string', example: 'https://www.example.com/event', nullable: true, maxLength: 255),
+        new OA\Property(property: 'hashtag', description: 'hashtag for this event', type: 'string', example: 'gpn21', nullable: true, maxLength: 40),
+        new OA\Property(property: 'nearestStation', description: 'Query string for the nearest station. Deprecated: use nearestStationId instead.', type: 'string', example: 'Berlin Hbf', nullable: true, deprecated: true, maxLength: 255),
+        new OA\Property(property: 'nearestStationId', description: 'ID of the nearest station to this event', type: 'integer', example: 1, nullable: true),
+    ],
+)]
 class EventController extends Controller
 {
     #[OA\Get(
         path: '/event/{slug}',
         operationId: 'getEvent',
-        tags: ['Events'],
-        summary: '[Auth optional] Get basic information for event',
         description: 'Returns slug, name and duration for an event',
+        summary: '[Auth optional] Get basic information for event',
         security: [['passport' => ['read-statuses']], ['token' => []]],
+        tags: ['Events'],
         parameters: [
             new OA\Parameter(
                 name: 'slug',
-                in: 'path',
                 description: 'slug for event',
-                example: 'weihnachten_2022',
+                in: 'path',
                 schema: new OA\Schema(type: 'string'),
+                example: 'weihnachten_2022',
             ),
         ],
         responses: [
@@ -41,8 +56,8 @@ class EventController extends Controller
                     properties: [
                         new OA\Property(
                             property: 'data',
-                            type: 'object',
                             ref: '#/components/schemas/EventResource',
+                            type: 'object',
                         ),
                     ],
                 ),
@@ -59,17 +74,17 @@ class EventController extends Controller
     #[OA\Get(
         path: '/event/{slug}/details',
         operationId: 'getEventDetails',
-        tags: ['Events'],
-        summary: '[Auth optional] Get additional information for event',
         description: 'Returns overall travelled distance and duration for an event',
+        summary: '[Auth optional] Get additional information for event',
         security: [['passport' => ['read-statuses']], ['token' => []]],
+        tags: ['Events'],
         parameters: [
             new OA\Parameter(
                 name: 'slug',
-                in: 'path',
                 description: 'slug for event',
-                example: 'weihnachten_2022',
+                in: 'path',
                 schema: new OA\Schema(type: 'string'),
+                example: 'weihnachten_2022',
             ),
         ],
         responses: [
@@ -80,8 +95,8 @@ class EventController extends Controller
                     properties: [
                         new OA\Property(
                             property: 'data',
-                            type: 'object',
                             ref: '#/components/schemas/EventDetailsResource',
+                            type: 'object',
                         ),
                     ],
                 ),
@@ -98,23 +113,23 @@ class EventController extends Controller
     #[OA\Get(
         path: '/event/{slug}/statuses',
         operationId: 'getEventStatuses',
-        tags: ['Events'],
-        summary: '[Auth optional] Get paginated statuses for event',
         description: 'Returns all for user visible statuses for an event',
+        summary: '[Auth optional] Get paginated statuses for event',
         security: [['passport' => ['read-statuses']], ['token' => []]],
+        tags: ['Events'],
         parameters: [
             new OA\Parameter(
                 name: 'slug',
-                in: 'path',
                 description: 'slug for event',
-                example: 'weihnachten_2022',
+                in: 'path',
                 schema: new OA\Schema(type: 'string'),
+                example: 'weihnachten_2022',
             ),
             new OA\Parameter(
                 name: 'page',
                 description: 'Page of pagination',
-                required: false,
                 in: 'query',
+                required: false,
                 schema: new OA\Schema(type: 'integer'),
             ),
         ],
@@ -152,23 +167,23 @@ class EventController extends Controller
     #[OA\Get(
         path: '/events',
         operationId: 'getEvents',
-        tags: ['Events'],
-        summary: '[Auth optional] Show active or upcoming events for the given timestamp',
         description: 'Returns all active or upcoming events for the given timestamp. Default timestamp is now. If upcoming is set to true, all events ending after the timestamp are returned.',
+        summary: '[Auth optional] Show active or upcoming events for the given timestamp',
         security: [['passport' => ['read-statuses']], ['token' => []]],
+        tags: ['Events'],
         parameters: [
             new OA\Parameter(
                 name: 'timestamp',
-                in: 'query',
                 description: 'The timestamp of view. Default is now.',
-                example: '2022-08-01T12:00:00+02:00',
-                schema: new OA\Schema(type: 'string'),
+                in: 'query',
                 required: false,
+                schema: new OA\Schema(type: 'string'),
+                example: '2022-08-01T12:00:00+02:00',
             ),
             new OA\Parameter(
                 name: 'upcoming',
-                in: 'query',
                 description: 'Show only upcoming events',
+                in: 'query',
                 required: false,
                 schema: new OA\Schema(type: 'boolean'),
             ),
@@ -208,14 +223,14 @@ class EventController extends Controller
     #[OA\Post(
         path: '/event',
         operationId: 'suggestEvent',
-        tags: ['Events'],
-        summary: 'Suggest a event',
         description: 'Submit a possible event for our administrators to publish',
+        summary: 'Suggest a event',
+        security: [['passport' => []], ['token' => []]],
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(ref: '#/components/schemas/EventSuggestion'),
         ),
-        security: [['passport' => []], ['token' => []]],
+        tags: ['Events'],
         responses: [
             new OA\Response(response: 201, description: 'successful operation'),
             new OA\Response(response: 400, description: 'Bad request'),

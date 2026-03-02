@@ -25,9 +25,9 @@ class UserController extends Controller
     #[OA\Delete(
         path: '/settings/account',
         operationId: 'deleteUserAccount',
-        tags: ['Settings'],
-        summary: 'Delete User Account',
         description: 'Deletes the Account for the user and all posts created by it',
+        summary: 'Delete User Account',
+        security: [['passport' => ['extra-delete']], ['token' => []]],
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
@@ -41,7 +41,7 @@ class UserController extends Controller
                 ],
             ),
         ),
-        security: [['passport' => ['extra-delete']], ['token' => []]],
+        tags: ['Settings'],
         responses: [
             new OA\Response(response: 200, description: 'successful operation'),
             new OA\Response(
@@ -67,22 +67,22 @@ class UserController extends Controller
     #[OA\Get(
         path: '/user/{username}/statuses',
         operationId: 'getStatusesForUser',
-        tags: ['User', 'Status'],
-        summary: '[Auth optional] Get paginated statuses for single user',
         description: 'Returns paginated statuses of a single user specified by the username',
+        summary: '[Auth optional] Get paginated statuses for single user',
         security: [['passport' => []], ['token' => []], ['passport' => ['read-statuses']], ['token' => []]],
+        tags: ['User', 'Status'],
         parameters: [
             new OA\Parameter(
                 name: 'username',
-                in: 'path',
                 description: 'username',
+                in: 'path',
                 example: 'Gertrud123',
             ),
             new OA\Parameter(
                 name: 'page',
                 description: 'Page of pagination',
-                required: false,
                 in: 'query',
+                required: false,
                 schema: new OA\Schema(type: 'integer'),
             ),
         ],
@@ -133,22 +133,22 @@ class UserController extends Controller
     #[OA\Get(
         path: '/user/{username}',
         operationId: 'showUser',
-        tags: ['User'],
-        summary: '[Auth optional] Get information for single user',
         description: 'Returns general information, metadata and statistics for a user',
+        summary: '[Auth optional] Get information for single user',
         security: [['passport' => ['read-statuses']], ['token' => []]],
+        tags: ['User'],
         parameters: [
             new OA\Parameter(
                 name: 'username',
-                in: 'path',
                 description: 'username',
+                in: 'path',
                 example: 'Gertrud123',
             ),
             new OA\Parameter(
                 name: 'page',
                 description: 'Page of pagination',
-                required: false,
                 in: 'query',
+                required: false,
                 schema: new OA\Schema(type: 'integer'),
             ),
         ],
@@ -207,17 +207,17 @@ class UserController extends Controller
     #[OA\Post(
         path: '/user/{id}/block',
         operationId: 'createBlock',
-        tags: ['User/Hide and Block'],
-        summary: 'Block a user',
         description: 'Block a specific user. That user will not be able to see your statuses or profile information, and cannot send you follow requests. Public statuses are still visible through the incognito mode.',
+        summary: 'Block a user',
         security: [['passport' => ['write-block']], ['token' => []]],
+        tags: ['User/Hide and Block'],
         parameters: [
             new OA\Parameter(
                 name: 'id',
-                in: 'path',
                 description: 'User-ID',
-                example: 1337,
+                in: 'path',
                 schema: new OA\Schema(type: 'integer'),
+                example: 1337,
             ),
         ],
         responses: [
@@ -261,17 +261,17 @@ class UserController extends Controller
     #[OA\Delete(
         path: '/user/{id}/block',
         operationId: 'destroyBlock',
-        tags: ['User/Hide and Block'],
-        summary: 'Unmute a user',
         description: 'Unblock a specific user. They are now able to see your statuses and profile information again, and send you follow requests.',
+        summary: 'Unmute a user',
         security: [['passport' => ['write-block']], ['token' => []]],
+        tags: ['User/Hide and Block'],
         parameters: [
             new OA\Parameter(
                 name: 'id',
-                in: 'path',
                 description: 'User-ID',
-                example: 1337,
+                in: 'path',
                 schema: new OA\Schema(type: 'integer'),
+                example: 1337,
             ),
         ],
         responses: [
@@ -315,17 +315,17 @@ class UserController extends Controller
     #[OA\Post(
         path: '/user/{id}/mute',
         operationId: 'createMute',
-        tags: ['User/Hide and Block'],
-        summary: 'Mute a user',
         description: 'Mute a specific user. That way they will not be shown on your dashboard and in the active journeys tab',
+        summary: 'Mute a user',
         security: [['passport' => ['write-block']], ['token' => []]],
+        tags: ['User/Hide and Block'],
         parameters: [
             new OA\Parameter(
                 name: 'id',
-                in: 'path',
                 description: 'User-ID',
-                example: 1337,
+                in: 'path',
                 schema: new OA\Schema(type: 'integer'),
+                example: 1337,
             ),
         ],
         responses: [
@@ -368,17 +368,17 @@ class UserController extends Controller
     #[OA\Delete(
         path: '/user/{id}/mute',
         operationId: 'destroyMute',
-        tags: ['User/Hide and Block'],
-        summary: 'Unmute a user',
         description: 'Unmute a specific user. That way they will be shown on your dashboard and in the active journeys tab again',
+        summary: 'Unmute a user',
         security: [['passport' => ['write-block']], ['token' => []]],
+        tags: ['User/Hide and Block'],
         parameters: [
             new OA\Parameter(
                 name: 'id',
-                in: 'path',
                 description: 'User-ID',
-                example: 1337,
+                in: 'path',
                 schema: new OA\Schema(type: 'integer'),
+                example: 1337,
             ),
         ],
         responses: [
@@ -421,22 +421,22 @@ class UserController extends Controller
     #[OA\Get(
         path: '/user/search/{query}',
         operationId: 'searchUsers',
-        tags: ['User'],
-        summary: 'Get paginated search results for combined search on username and (display)name',
         description: 'Returns paginated search results for a user based on the given query.',
+        summary: 'Get paginated search results for combined search on username and (display)name',
         security: [['passport' => ['read-search']], ['token' => []]],
+        tags: ['User'],
         parameters: [
             new OA\Parameter(
                 name: 'query',
-                in: 'path',
                 description: 'If this is given, the search will be performed on the username and (display)name (or-search)',
+                in: 'path',
                 example: 'Gertrud123',
             ),
             new OA\Parameter(
                 name: 'page',
                 description: 'Page of pagination',
-                required: false,
                 in: 'query',
+                required: false,
                 schema: new OA\Schema(type: 'integer'),
             ),
         ],
@@ -474,29 +474,29 @@ class UserController extends Controller
     #[OA\Get(
         path: '/user/search',
         operationId: 'searchUsersByParameters',
-        tags: ['User'],
-        summary: 'Get paginated search results for users by either username or (display)name',
         description: 'Returns paginated search results for users based on the given parameters.',
+        summary: 'Get paginated search results for users by either username or (display)name',
         security: [['passport' => ['read-search']], ['token' => []]],
+        tags: ['User'],
         parameters: [
             new OA\Parameter(
                 name: 'page',
                 description: 'Page of pagination',
-                required: false,
                 in: 'query',
+                required: false,
                 schema: new OA\Schema(type: 'integer'),
             ),
             new OA\Parameter(
                 name: 'username',
+                description: 'Search for parts username',
                 in: 'query',
                 required: false,
-                description: 'Search for parts username',
             ),
             new OA\Parameter(
                 name: 'name',
+                description: 'Search for parts of users (display)name',
                 in: 'query',
                 required: false,
-                description: 'Search for parts of users (display)name',
             ),
         ],
         responses: [

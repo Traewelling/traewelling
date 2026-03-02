@@ -15,8 +15,8 @@ use Throwable;
 
 #[OA\Info(
     version: '1.0.0 - alpha',
-    title: 'Träwelling API',
     description: 'Träwelling user API description. This is an incomplete documentation with still many errors. The API is currently not yet stable. Endpoints are still being restructured. Both the URL and the request or body can be changed. Breaking changes will be announced on GitHub: https://github.com/Traewelling/traewelling/blob/develop/API_CHANGELOG.md',
+    title: 'Träwelling API',
     contact: new OA\Contact(email: 'support@traewelling.de'),
     license: new OA\License(name: 'Apache 2.0', url: 'https://www.apache.org/licenses/LICENSE-2.0.html'),
 )]

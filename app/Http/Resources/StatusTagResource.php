@@ -7,7 +7,6 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(
     schema: 'StatusTagResource',
-    type: 'object',
     title: 'StatusTagResource',
     required: ['key', 'value', 'visibility'],
     properties: [
@@ -15,6 +14,7 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'value', type: 'string', example: '94 80 0450 921 D-AVG'),
         new OA\Property(property: 'visibility', type: 'integer', example: '1'),
     ],
+    type: 'object',
 )]
 class StatusTagResource extends JsonResource
 {

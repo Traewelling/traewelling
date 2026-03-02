@@ -13,10 +13,10 @@ class YearInReviewController extends Controller
     #[OA\Get(
         path: '/year-in-review',
         operationId: 'getYearInReview',
-        tags: ['Statistics'],
-        summary: 'Returns the year in review for the given year and authenticated user',
         description: 'Please note: This endpoint is only available when the year in review feature is enabled in the backend configuration. There is no full documentation - this endpoint may change every year.',
+        summary: 'Returns the year in review for the given year and authenticated user',
         security: [['passport' => ['create-statuses']], ['token' => []]],
+        tags: ['Statistics'],
         responses: [
             new OA\Response(
                 response: 200,

@@ -9,8 +9,8 @@ use OpenApi\Attributes as OA;
 #[OA\Schema(
     title: 'ViewUserForbiddenReason',
     type: 'string',
-    enum: ['PRIVATE_PROFILE', 'USER_MUTED', 'YOU_ARE_BLOCKED', 'USER_BLOCKED'],
     example: 'PRIVATE_PROFILE',
+    enum: ['PRIVATE_PROFILE', 'USER_MUTED', 'YOU_ARE_BLOCKED', 'USER_BLOCKED'],
 )]
 enum ViewUserForbiddenReason: string
 {

@@ -25,8 +25,8 @@ class Station
     #[OA\Property(
         title: 'rilIdentifier',
         description: 'Identifier specified in \'Richtline 100\' of the Deutsche Bahn',
-        nullable: true,
         example: 'RK',
+        nullable: true,
     )]
     public readonly ?string $rilIdentifier;
 

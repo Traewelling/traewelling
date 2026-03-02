@@ -18,10 +18,10 @@ class SettingsController extends Controller
     #[OA\Get(
         path: '/settings/profile',
         operationId: 'getProfileSettings',
-        tags: ['Settings'],
-        summary: 'Get the current user\'s profile settings',
         description: 'Get the current user\'s profile settings',
+        summary: 'Get the current user\'s profile settings',
         security: [['passport' => ['read-settings']], ['token' => []]],
+        tags: ['Settings'],
         responses: [
             new OA\Response(
                 response: 200,
@@ -30,8 +30,8 @@ class SettingsController extends Controller
                     properties: [
                         new OA\Property(
                             property: 'data',
-                            type: 'object',
                             ref: '#/components/schemas/UserProfileSettingsResource',
+                            type: 'object',
                         ),
                     ],
                 ),
@@ -121,14 +121,14 @@ class SettingsController extends Controller
     #[OA\Put(
         path: '/settings/profile',
         operationId: 'updateProfileSettings',
-        tags: ['Settings'],
-        summary: 'Update the current user\'s profile settings',
         description: 'Update the current user\'s profile settings',
+        summary: 'Update the current user\'s profile settings',
+        security: [['passport' => ['write-settings']], ['token' => []]],
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(ref: '#/components/schemas/UpdateProfileInformationRequest'),
         ),
-        security: [['passport' => ['write-settings']], ['token' => []]],
+        tags: ['Settings'],
         responses: [
             new OA\Response(
                 response: 200,
@@ -137,8 +137,8 @@ class SettingsController extends Controller
                     properties: [
                         new OA\Property(
                             property: 'data',
-                            type: 'object',
                             ref: '#/components/schemas/UserProfileSettingsResource',
+                            type: 'object',
                         ),
                     ],
                 ),

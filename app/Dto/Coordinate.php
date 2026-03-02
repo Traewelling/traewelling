@@ -16,7 +16,6 @@ readonly class Coordinate implements JsonSerializable
     #[OA\Property(property: 'properties', type: 'object', example: '{}')]
     #[OA\Property(
         property: 'geometry',
-        type: 'object',
         properties: [
             new OA\Property(property: 'type', type: 'string', example: 'Point'),
             new OA\Property(
@@ -25,6 +24,7 @@ readonly class Coordinate implements JsonSerializable
                 items: new OA\Items(example: '[8.39767,49.01625]'),
             ),
         ],
+        type: 'object',
     )]
     public float $latitude;
 

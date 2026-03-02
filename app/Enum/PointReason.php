@@ -10,8 +10,8 @@ use OpenApi\Attributes as OA;
     title: 'PointsReason',
     description: 'What is the reason for the points calculation factor? (0=in time => 100%, 1=good enough => 25%, 2=not sufficient (1 point), 3=forced => no points, 4=manual trip => no points, 5=points disabled)',
     type: 'integer',
-    enum: [0, 1, 2, 3, 4, 5],
     example: 1,
+    enum: [0, 1, 2, 3, 4, 5],
 )]
 enum PointReason: int
 {

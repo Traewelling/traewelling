@@ -1350,7 +1350,13 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/SuccessResponse"
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -3230,7 +3236,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/StatusTag"
+                                                "$ref": "#/components/schemas/StatusTagResource"
                                             }
                                         }
                                     },
@@ -3283,7 +3289,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/StatusTag"
+                                "$ref": "#/components/schemas/StatusTagResource"
                             }
                         }
                     }
@@ -3296,7 +3302,7 @@
                                 "schema": {
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/StatusTag"
+                                            "$ref": "#/components/schemas/StatusTagResource"
                                         }
                                     },
                                     "type": "object"
@@ -3360,13 +3366,13 @@
                                                 "1337": {
                                                     "type": "array",
                                                     "items": {
-                                                        "$ref": "#/components/schemas/StatusTag"
+                                                        "$ref": "#/components/schemas/StatusTagResource"
                                                     }
                                                 },
                                                 "4711": {
                                                     "type": "array",
                                                     "items": {
-                                                        "$ref": "#/components/schemas/StatusTag"
+                                                        "$ref": "#/components/schemas/StatusTagResource"
                                                     }
                                                 }
                                             },
@@ -3430,7 +3436,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/StatusTag"
+                                "$ref": "#/components/schemas/StatusTagResource"
                             }
                         }
                     }
@@ -3443,7 +3449,7 @@
                                 "schema": {
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/StatusTag"
+                                            "$ref": "#/components/schemas/StatusTagResource"
                                         }
                                     },
                                     "type": "object"
@@ -3508,7 +3514,13 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/SuccessResponse"
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -3927,11 +3939,29 @@
                         "description": "Unauthorized"
                     },
                     "403": {
-                        "description": "Forbidden",
+                        "description": "Forbidden — one or more users in `with` cannot be checked in",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/CheckinForbiddenWithUsersResponse"
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "You are not allowed to check in the following users: 1"
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "invalidUsers": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -5561,6 +5591,273 @@
                     "USER_BLOCKED"
                 ]
             },
+            "BearerTokenResponse": {
+                "title": "BearerTokenResponse",
+                "properties": {
+                    "token": {
+                        "description": "Bearer Token. Use in Authentication-Header with prefix 'Bearer '. (space is needed)",
+                        "type": "string",
+                        "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9..."
+                    },
+                    "expires_at": {
+                        "description": "End of life for this token.",
+                        "type": "string",
+                        "example": "2023-10-19T15:15:06+02:00"
+                    }
+                },
+                "type": "object"
+            },
+            "EventSuggestion": {
+                "title": "EventSuggestion",
+                "description": "Fields for suggesting an event",
+                "properties": {
+                    "name": {
+                        "description": "name of the event",
+                        "type": "string",
+                        "example": "Eröffnung der Nebenbahn in Knuffingen",
+                        "maxLength": 255
+                    },
+                    "host": {
+                        "description": "host of the event",
+                        "type": "string",
+                        "example": "MiWuLa",
+                        "nullable": true
+                    },
+                    "begin": {
+                        "description": "Timestamp for the start of the event",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2022-06-01T00:00:00+02:00"
+                    },
+                    "end": {
+                        "description": "Timestamp for the end of the event",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2022-08-31T23:59:00+02:00"
+                    },
+                    "url": {
+                        "description": "external URL for this event",
+                        "type": "string",
+                        "example": "https://www.example.com/event",
+                        "nullable": true,
+                        "maxLength": 255
+                    },
+                    "hashtag": {
+                        "description": "hashtag for this event",
+                        "type": "string",
+                        "example": "gpn21",
+                        "nullable": true,
+                        "maxLength": 40
+                    },
+                    "nearestStation": {
+                        "description": "Query string for the nearest station. Deprecated: use nearestStationId instead.",
+                        "type": "string",
+                        "example": "Berlin Hbf",
+                        "nullable": true,
+                        "deprecated": true,
+                        "maxLength": 255
+                    },
+                    "nearestStationId": {
+                        "description": "ID of the nearest station to this event",
+                        "type": "integer",
+                        "example": 1,
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "LikeResponse": {
+                "title": "LikeResponse",
+                "properties": {
+                    "count": {
+                        "description": "Amount of likes",
+                        "type": "integer",
+                        "format": "int32",
+                        "example": 12
+                    }
+                },
+                "type": "object"
+            },
+            "StatusUpdateBody": {
+                "title": "StatusUpdateBody",
+                "description": "Status Update Body",
+                "properties": {
+                    "body": {
+                        "description": "Status-Text to be displayed alongside the checkin",
+                        "type": "string",
+                        "example": "Wow. This train is extremely crowded!",
+                        "nullable": true,
+                        "maxLength": 280
+                    },
+                    "business": {
+                        "$ref": "#/components/schemas/Business"
+                    },
+                    "visibility": {
+                        "$ref": "#/components/schemas/StatusVisibility"
+                    },
+                    "eventId": {
+                        "description": "The ID of the event this status is related to - or null",
+                        "type": "string",
+                        "example": "1",
+                        "nullable": true
+                    },
+                    "manualDeparture": {
+                        "description": "Manual departure time set by the user",
+                        "type": "string",
+                        "format": "date",
+                        "example": "2020-01-01 12:00:00",
+                        "nullable": true
+                    },
+                    "manualArrival": {
+                        "description": "Manual arrival time set by the user",
+                        "type": "string",
+                        "format": "date",
+                        "example": "2020-01-01 13:00:00",
+                        "nullable": true
+                    },
+                    "destinationId": {
+                        "description": "Destination station id",
+                        "type": "string",
+                        "example": "1",
+                        "nullable": true
+                    },
+                    "destinationArrivalPlanned": {
+                        "description": "Destination arrival time",
+                        "type": "string",
+                        "format": "date",
+                        "example": "2020-01-01 13:00:00",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "Polyline": {
+                "title": "Polyline",
+                "description": "Polyline of a single status as GeoJSON Feature",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "example": "Feature"
+                    },
+                    "geometry": {
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "example": "LineString"
+                            },
+                            "coordinates": {
+                                "type": "array",
+                                "items": {
+                                    "example": "[[8.39767,49.01625],[8.45947,49.06576]]"
+                                }
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "properties": {
+                        "properties": {
+                            "statusId": {
+                                "type": "integer",
+                                "example": 1337
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "CheckinRequestBody": {
+                "title": "CheckinRequestBody",
+                "description": "Fields for creating a transit checkin",
+                "properties": {
+                    "body": {
+                        "type": "string",
+                        "example": "Meine erste Fahrt nach Knuffingen!",
+                        "nullable": true,
+                        "maxLength": 280
+                    },
+                    "business": {
+                        "$ref": "#/components/schemas/Business"
+                    },
+                    "visibility": {
+                        "$ref": "#/components/schemas/StatusVisibility"
+                    },
+                    "eventId": {
+                        "description": "Id of an event the status should be connected to",
+                        "type": "integer",
+                        "example": 1,
+                        "nullable": true
+                    },
+                    "toot": {
+                        "description": "Should this status be posted to mastodon?",
+                        "type": "boolean",
+                        "example": false,
+                        "nullable": true
+                    },
+                    "chainPost": {
+                        "description": "Should this status be posted to mastodon as a chained post?",
+                        "type": "boolean",
+                        "example": false,
+                        "nullable": true
+                    },
+                    "ibnr": {
+                        "description": "If true, `start` and `destination` can be supplied as IBNR. Otherwise Träwelling-ID. Default: false.",
+                        "type": "boolean",
+                        "example": true,
+                        "nullable": true
+                    },
+                    "tripId": {
+                        "description": "The tripId for the trip to check into",
+                        "type": "string",
+                        "example": "b37ff515-22e1-463c-94de-3ad7964b5cb8",
+                        "nullable": true
+                    },
+                    "lineName": {
+                        "description": "The line name for the trip to check into",
+                        "type": "string",
+                        "example": "S 4",
+                        "nullable": true
+                    },
+                    "start": {
+                        "description": "Station-ID of the starting point (see `ibnr`)",
+                        "type": "integer",
+                        "example": 8000191
+                    },
+                    "destination": {
+                        "description": "Station-ID of the destination (see `ibnr`)",
+                        "type": "integer",
+                        "example": 8000192
+                    },
+                    "departure": {
+                        "description": "Timestamp of the departure",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2022-12-19T20:41:00+01:00"
+                    },
+                    "arrival": {
+                        "description": "Timestamp of the arrival",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2022-12-19T20:42:00+01:00"
+                    },
+                    "force": {
+                        "description": "If true, the checkin is created even on collision. No points awarded.",
+                        "type": "boolean",
+                        "example": false,
+                        "nullable": true
+                    },
+                    "with": {
+                        "description": "Also check in these user IDs (max. 10). Requires mutual follow.",
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "example": 1
+                        },
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
             "UpdateProfileInformationRequest": {
                 "title": "UpdateProfileInformationRequest",
                 "description": "UpdateProfileInformationRequest",
@@ -5752,6 +6049,53 @@
                     "adminLevel": {
                         "type": "integer",
                         "example": "1"
+                    }
+                },
+                "type": "object"
+            },
+            "PointsCalculation": {
+                "title": "PointsCalculation",
+                "properties": {
+                    "base": {
+                        "description": "Basepoints for this type of vehicle",
+                        "type": "number",
+                        "format": "float",
+                        "example": 0.5
+                    },
+                    "distance": {
+                        "description": "Points for the travelled distance",
+                        "type": "number",
+                        "format": "float",
+                        "example": 0.25
+                    },
+                    "factor": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 0.25
+                    },
+                    "reason": {
+                        "$ref": "#/components/schemas/PointReason"
+                    }
+                },
+                "type": "object"
+            },
+            "Points": {
+                "title": "Points",
+                "description": "Points model",
+                "properties": {
+                    "points": {
+                        "description": "points",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "calculation": {
+                        "$ref": "#/components/schemas/PointsCalculation"
+                    },
+                    "additional": {
+                        "description": "extra points that can be given",
+                        "type": "array",
+                        "items": {},
+                        "nullable": true
                     }
                 },
                 "type": "object"
@@ -6056,6 +6400,38 @@
                 },
                 "type": "object"
             },
+            "Links": {
+                "title": "Links",
+                "description": "Pagination links",
+                "properties": {
+                    "first": {
+                        "description": "Shared OA schema for Laravel pagination links. Not a real resource.",
+                        "type": "string",
+                        "format": "uri",
+                        "example": "https://traewelling.de/api/v1/ENDPOINT?page=1",
+                        "nullable": true
+                    },
+                    "last": {
+                        "type": "string",
+                        "format": "uri",
+                        "example": null,
+                        "nullable": true
+                    },
+                    "prev": {
+                        "type": "string",
+                        "format": "uri",
+                        "example": null,
+                        "nullable": true
+                    },
+                    "next": {
+                        "type": "string",
+                        "format": "uri",
+                        "example": "https://traewelling.de/api/v1/ENDPOINT?page=2",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
             "OperatorResource": {
                 "required": [
                     "id",
@@ -6075,6 +6451,35 @@
                     "name": {
                         "type": "string",
                         "example": "DB Regio AG Nord"
+                    }
+                },
+                "type": "object"
+            },
+            "PaginationMeta": {
+                "title": "Meta",
+                "description": "Pagination meta data",
+                "properties": {
+                    "current_page": {
+                        "description": "Shared OA schema for Laravel pagination meta data. Not a real resource.",
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "from": {
+                        "type": "integer",
+                        "example": 16
+                    },
+                    "path": {
+                        "type": "string",
+                        "format": "url",
+                        "example": "https://traewelling.de/api/v1/ENDPOINT"
+                    },
+                    "per_page": {
+                        "type": "integer",
+                        "example": 15
+                    },
+                    "to": {
+                        "type": "integer",
+                        "example": 30
                     }
                 },
                 "type": "object"
@@ -6738,6 +7143,58 @@
                 },
                 "type": "object"
             },
+            "Notification": {
+                "title": "Notification",
+                "description": "Notification model",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "bb1ba9a5-9c2b-43c3-b8c9-2f70651fc51c"
+                    },
+                    "type": {
+                        "type": "string",
+                        "example": "UserJoinedConnection"
+                    },
+                    "leadFormatted": {
+                        "type": "string",
+                        "example": "<b>@bob</b> is in your connection!"
+                    },
+                    "lead": {
+                        "type": "string",
+                        "example": "@bob is in your connection!"
+                    },
+                    "noticeFormatted": {
+                        "type": "string",
+                        "example": "@bob is on <b>S 81</b> from <b>Karlsruhe Hbf</b> to <b>Freudenstadt Hbf</b>."
+                    },
+                    "notice": {
+                        "type": "string",
+                        "example": "@bob is on S 81 from Karlsruhe Hbf to Freudenstadt Hbf."
+                    },
+                    "link": {
+                        "type": "string",
+                        "example": "https://traewelling.de/status/123456"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {}
+                    },
+                    "readAt": {
+                        "type": "string",
+                        "example": "2023-01-01T00:00:00+00:00",
+                        "nullable": true
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "example": "2023-01-01T00:00:00+00:00"
+                    },
+                    "createdAtForHumans": {
+                        "type": "string",
+                        "example": "2 days ago"
+                    }
+                },
+                "type": "object"
+            },
             "UserProfileSettingsResource": {
                 "title": "UserProfileSettings",
                 "required": [
@@ -6984,666 +7441,49 @@
                 },
                 "type": "object"
             },
-            "BearerTokenResponse": {
-                "title": "BearerTokenResponse",
-                "properties": {
-                    "token": {
-                        "title": "token",
-                        "description": "Bearer Token. Use in Authentication-Header with prefix 'Bearer '. (space is needed)",
-                        "type": "string",
-                        "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZWU2ZWZiOWUxYTIwN2FmMjZjNjk4NjVkOTA5ODNmNzFjYzYyMzE5ODA3NGU1NjlhNjU1MGRiMTdhMWY5YmNhMmY4ZjNjNTQ4ZGZkZTY5ZmUiLCJpYXQiOjE2NjYxODUzMDYuOTczODU3LCJuYmYiOjE2NjYxODUzMDYuOTczODYsImV4cCI6MTY5NzcyMTMwNi45NDYyNDgsInN1YiI6IjEiLCJzY29wZXMiOltdfQ.tiv8VeL8qw6BRwo5QZZ71Zn3WnFJjtvVciahiUJjzVNfqgofdRF6EoWrTFc_WmrgbVCdfXBjBI02fjbSrsD4....."
-                    },
-                    "expires_at": {
-                        "title": "slug",
-                        "description": "end of life for this token. Lifespan is usually one year.",
-                        "type": "string",
-                        "example": "2023-10-19T15:15:06+02:00"
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "BearerTokenResponse"
-                }
-            },
-            "CheckinRequestBody": {
-                "title": "CheckinRequestBody",
-                "description": "Fields for creating a train checkin",
-                "properties": {
-                    "body": {
-                        "type": "string",
-                        "example": "Meine erste Fahrt nach Knuffingen!",
-                        "nullable": true,
-                        "maxLength": 280
-                    },
-                    "business": {
-                        "$ref": "#/components/schemas/Business"
-                    },
-                    "visibility": {
-                        "$ref": "#/components/schemas/StatusVisibility"
-                    },
-                    "eventId": {
-                        "description": "Id of an event the status should be connected to",
-                        "type": "integer",
-                        "example": "1",
-                        "nullable": true
-                    },
-                    "toot": {
-                        "description": "Should this status be posted to mastodon?",
-                        "type": "boolean",
-                        "example": "false",
-                        "nullable": true
-                    },
-                    "chainPost": {
-                        "description": "Should this status be posted to mastodon as a chained post?",
-                        "type": "boolean",
-                        "example": "false",
-                        "nullable": true
-                    },
-                    "ibnr": {
-                        "description": "If true, the `start` and `destination` properties can be supplied as an ibnr. Otherwise they should be given as the Träwelling-ID. Default behavior is `false`.",
-                        "type": "boolean",
-                        "example": "true",
-                        "nullable": true
-                    },
-                    "tripId": {
-                        "description": "The tripId for the to be checked in train",
-                        "type": "string",
-                        "example": "b37ff515-22e1-463c-94de-3ad7964b5cb8",
-                        "nullable": true
-                    },
-                    "lineName": {
-                        "description": "The line name for the to be checked in train",
-                        "type": "string",
-                        "example": "S 4",
-                        "nullable": true
-                    },
-                    "start": {
-                        "description": "The Station-ID of the starting point (see `ibnr`)",
-                        "type": "integer",
-                        "example": "8000191"
-                    },
-                    "destination": {
-                        "description": "The Station-ID of the destination point (see `ibnr`)",
-                        "type": "integer",
-                        "example": "8000192"
-                    },
-                    "departure": {
-                        "description": "Timestamp of the departure",
-                        "type": "string",
-                        "format": "date-time",
-                        "example": "2022-12-19T20:41:00+01:00"
-                    },
-                    "arrival": {
-                        "description": "Timestamp of the arrival",
-                        "type": "string",
-                        "format": "date-time",
-                        "example": "2022-12-19T20:42:00+01:00"
-                    },
-                    "force": {
-                        "description": "If true, the checkin will be created, even if a colliding checkin exists. No points will be awarded.",
-                        "type": "boolean",
-                        "example": "false",
-                        "nullable": true
-                    },
-                    "with": {
-                        "description": "If set, the checkin will be created for all given users as well. The user creating the checkin must be allowed to checkin for the other users. Max. 10 users.",
-                        "type": "array",
-                        "items": {
-                            "type": "integer",
-                            "example": "1"
-                        },
-                        "example": "[1, 2]",
-                        "nullable": true
-                    }
-                },
-                "type": "object"
-            },
-            "EventSuggestion": {
-                "title": "EventSuggestion",
-                "description": "Fields for suggesting an event",
-                "properties": {
-                    "name": {
-                        "title": "name",
-                        "description": "name of the event",
-                        "type": "string",
-                        "example": "Eröffnung der Nebenbahn in Knuffingen",
-                        "maxLength": 255
-                    },
-                    "host": {
-                        "title": "host",
-                        "description": "host of the event",
-                        "type": "string",
-                        "example": "MiWuLa",
-                        "nullable": true
-                    },
-                    "begin": {
-                        "title": "begin",
-                        "description": "Timestamp for the start of the event",
-                        "type": "string",
-                        "example": "2022-06-01T00:00:00+02:00"
-                    },
-                    "end": {
-                        "title": "end",
-                        "description": "Timestamp for the end of the event",
-                        "type": "string",
-                        "example": "2022-08-31T23:59:00+02:00"
-                    },
-                    "url": {
-                        "title": "url",
-                        "description": "external URL for this event",
-                        "type": "string",
-                        "example": "https://www.bundesregierung.de/breg-de/aktuelles/faq-9-euro-ticket-2028756",
-                        "nullable": true,
-                        "maxLength": 255
-                    },
-                    "hashtag": {
-                        "title": "hashtag",
-                        "description": "hashtag for this event",
-                        "type": "string",
-                        "example": "gpn21",
-                        "nullable": true,
-                        "maxLength": 40
-                    },
-                    "nearestStation": {
-                        "title": "nearestStation",
-                        "description": "Query string for the nearest station to this event. Deprecated: use nearestStationId instead.",
-                        "type": "string",
-                        "example": "Berlin Hbf",
-                        "nullable": true,
-                        "deprecated": true,
-                        "maxLength": 255
-                    },
-                    "nearestStationId": {
-                        "title": "nearestStationId",
-                        "description": "ID of the nearest station to this event",
-                        "type": "integer",
-                        "example": 1,
-                        "nullable": true
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "EventSuggestion"
-                }
-            },
-            "Links": {
-                "title": "Links",
-                "description": "pagination links",
-                "properties": {
-                    "first": {
-                        "title": "first",
-                        "description": "URL to first page of this pagination",
-                        "type": "string",
-                        "format": "uri",
-                        "example": "https://traewelling.de/api/v1/ENDPOINT?page=1",
-                        "nullable": true
-                    },
-                    "last": {
-                        "title": "last",
-                        "description": "URL to last page of this pagination (mostly null)",
-                        "type": "string",
-                        "format": "uri",
-                        "example": null,
-                        "nullable": true
-                    },
-                    "prev": {
-                        "title": "prev",
-                        "description": "URL to previous page of this pagination (mostly null)",
-                        "type": "string",
-                        "format": "uri",
-                        "example": "https://traewelling.de/api/v1/ENDPOINT?page=1",
-                        "nullable": true
-                    },
-                    "next": {
-                        "title": "next",
-                        "description": "URL to next page of this pagination (mostly null)",
-                        "type": "string",
-                        "format": "uri",
-                        "example": "https://traewelling.de/api/v1/ENDPOINT?page=2",
-                        "nullable": true
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "Links"
-                }
-            },
-            "PaginationMeta": {
-                "title": "Meta",
-                "description": "Pagination meta data",
-                "properties": {
-                    "current_page": {
-                        "title": "current_page",
-                        "description": "currently displayed page in this pagination",
-                        "type": "integer",
-                        "example": 2
-                    },
-                    "from": {
-                        "title": "from",
-                        "description": "The first element on this page is the nth element of the query",
-                        "type": "integer",
-                        "example": 16
-                    },
-                    "path": {
-                        "title": "path",
-                        "description": "The path of this pagination",
-                        "type": "string",
-                        "format": "url",
-                        "example": "https://traewelling.de/api/v1/ENDPOINT"
-                    },
-                    "per_page": {
-                        "title": "per_page",
-                        "description": "the amount of items per page in this pagination",
-                        "type": "integer",
-                        "example": 15
-                    },
-                    "to": {
-                        "title": "to",
-                        "description": "The last element on this page is the nth element of the query",
-                        "type": "integer",
-                        "example": 30
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "PaginationMeta"
-                }
-            },
-            "LikeResponse": {
-                "title": "LikeResponse",
-                "properties": {
-                    "count": {
-                        "title": "count",
-                        "description": "Amount of likes",
-                        "type": "integer",
-                        "format": "int32",
-                        "example": 12
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "LikeResponse"
-                }
-            },
-            "Notification": {
-                "title": "Notification",
-                "description": "Notification model",
-                "properties": {
-                    "id": {
-                        "title": "ID",
-                        "description": "ID",
-                        "type": "string",
-                        "format": "string",
-                        "example": "bb1ba9a5-9c2b-43c3-b8c9-2f70651fc51c"
-                    },
-                    "type": {
-                        "title": "type",
-                        "description": "type of notification",
-                        "type": "string",
-                        "example": "UserJoinedConnection"
-                    },
-                    "leadFormatted": {
-                        "title": "leadFormatted",
-                        "description": "the title of notification in html formatted form",
-                        "type": "string",
-                        "format": "string",
-                        "example": "<b>@bob</b> is in your connection!"
-                    },
-                    "lead": {
-                        "title": "lead",
-                        "description": "the title of notification in plain text form",
-                        "type": "string",
-                        "format": "string",
-                        "example": "@bob is in your connection!"
-                    },
-                    "noticeFormatted": {
-                        "title": "noticeFormatted",
-                        "description": "the body of notification in html formatted form",
-                        "type": "string",
-                        "format": "string",
-                        "example": "@bob is on <b>S 81</b> from <b>Karlsruhe Hbf</b> to <b>Freudenstadt Hbf</b>."
-                    },
-                    "notice": {
-                        "title": "notice",
-                        "description": "the body of notification in plain text form",
-                        "type": "string",
-                        "format": "string",
-                        "example": "@bob is on S 81 from Karlsruhe Hbf to Freudenstadt Hbf."
-                    },
-                    "link": {
-                        "title": "link",
-                        "description": "the link to the notification",
-                        "type": "string",
-                        "format": "string",
-                        "example": "https://traewelling.de/status/123456"
-                    },
-                    "data": {
-                        "title": "data",
-                        "description": "the data of the notification",
-                        "type": "array",
-                        "items": {
-                            "example": {
-                                "notice": "every notification type has different data attributes, just try it out"
-                            }
-                        }
-                    },
-                    "readAt": {
-                        "title": "readAt",
-                        "description": "the date when the notification was read, null if not read yet",
-                        "type": "string",
-                        "format": "string",
-                        "example": "2023-01-01T00:00:00+00:00",
-                        "nullable": true
-                    },
-                    "createdAt": {
-                        "title": "createdAt",
-                        "description": "the date when the notification was created",
-                        "type": "string",
-                        "format": "string",
-                        "example": "2023-01-01T00:00:00+00:00"
-                    },
-                    "createdAtForHumans": {
-                        "title": "createdAtForHumans",
-                        "description": "DON'T USE THIS ATTRIBUTE! This Attribute will be removed in the future. The date when the notification was created, but in human readable form",
-                        "type": "string",
-                        "format": "string",
-                        "example": "2 days ago"
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "Notification"
-                }
-            },
-            "PaginationPage": {
-                "title": "PaginationPage",
-                "description": "pagination links",
-                "xml": {
-                    "name": "PaginationPage"
-                }
-            },
-            "Points": {
-                "title": "Points",
-                "description": "Points model",
-                "properties": {
-                    "points": {
-                        "title": "points",
-                        "description": "points",
-                        "type": "integer",
-                        "format": "int",
-                        "example": 1
-                    },
-                    "calculation": {
-                        "$ref": "#/components/schemas/PointsCalculation"
-                    },
-                    "additional": {
-                        "title": "additional",
-                        "description": "extra points that can be given",
-                        "type": "array",
-                        "items": {
-                            "example": {
-                                "identifier": "extrapoints",
-                                "points": 4,
-                                "divisibile": false
-                            }
-                        }
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "Points"
-                }
-            },
-            "PointsCalculation": {
-                "title": "PointsCalculation",
-                "properties": {
-                    "base": {
-                        "title": "base",
-                        "description": "Basepoints for this type of vehicle",
-                        "type": "number",
-                        "format": "float",
-                        "example": 0.5
-                    },
-                    "distance": {
-                        "title": "distance",
-                        "description": "Points for the travelled distance",
-                        "type": "number",
-                        "format": "float",
-                        "example": 0.25
-                    },
-                    "factor": {
-                        "title": "factor",
-                        "type": "number",
-                        "format": "float",
-                        "example": 0.25
-                    },
-                    "reason": {
-                        "$ref": "#/components/schemas/PointReason"
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "PointsCalculation"
-                }
-            },
-            "Polyline": {
-                "title": "Polyline",
-                "description": "Polyline of a single status as GeoJSON Feature",
-                "properties": {
-                    "type": {
-                        "title": "type",
-                        "type": "string",
-                        "example": "Feature"
-                    },
-                    "geometry": {
-                        "properties": {
-                            "type": {
-                                "type": "string",
-                                "example": "LineString"
-                            },
-                            "coordinates": {
-                                "type": "array",
-                                "items": {
-                                    "example": "[[8.39767,49.01625],[8.45947,49.06576],[8.52401,49.01625],[8.39218,48.88729],[8.25759,49.00544],[8.30703,49.07476],[8.39080,49.01535]]"
-                                }
-                            }
-                        },
-                        "type": "object"
-                    },
-                    "properties": {
-                        "properties": {
-                            "statusId": {
-                                "type": "integer",
-                                "example": 1337
-                            }
-                        },
-                        "type": "object"
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "Polyline"
-                }
-            },
-            "CheckinForbiddenWithUsersResponse": {
-                "title": "CheckinForbiddenWithUsersResponse",
-                "properties": {
-                    "message": {
-                        "type": "string",
-                        "example": "You are not allowed to check in the following users: 1"
-                    },
-                    "meta": {
-                        "properties": {
-                            "invalidUsers": {
-                                "type": "array",
-                                "items": {
-                                    "type": "integer",
-                                    "example": "1"
-                                }
-                            }
-                        },
-                        "type": "object"
-                    }
-                },
-                "type": "object"
-            },
-            "StatusTag": {
-                "title": "StatusTag",
-                "description": "StatusTag model",
-                "properties": {
-                    "key": {
-                        "title": "key",
-                        "description": "Key of tag",
-                        "type": "string",
-                        "example": "trwl:ticket"
-                    },
-                    "value": {
-                        "title": "value",
-                        "description": "Value of tag",
-                        "type": "string",
-                        "example": "BahnCard 100"
-                    },
-                    "visibility": {
-                        "$ref": "#/components/schemas/StatusVisibility"
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "StatusTag"
-                }
-            },
-            "SuccessResponse": {
-                "title": "SuccessResponse",
-                "description": "Success Response",
-                "properties": {
-                    "status": {
-                        "title": "status",
-                        "description": "status",
-                        "type": "string",
-                        "example": "success"
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "SuccessResponse"
-                }
-            },
             "Webhook": {
                 "title": "Webhook",
                 "description": "Webhook model",
                 "properties": {
                     "id": {
-                        "title": "ID",
-                        "description": "ID",
                         "type": "integer",
-                        "format": "int",
                         "example": 12345
                     },
                     "clientId": {
-                        "title": "ClientID",
-                        "description": "ID of the client which created this webhook",
                         "type": "integer",
-                        "format": "int",
                         "example": 12345
                     },
+                    "client": {
+                        "$ref": "#/components/schemas/ClientResource"
+                    },
                     "userId": {
-                        "title": "UserID",
-                        "description": "ID of the user which created this webhook",
                         "type": "integer",
-                        "format": "int",
                         "example": 12345
                     },
                     "url": {
-                        "title": "url",
-                        "description": "URL where the webhook gets sent to",
                         "type": "string",
                         "example": "https://example.com/webhook"
                     },
                     "createdAt": {
-                        "title": "createdAt",
-                        "description": "creation date of this webhook",
                         "type": "string",
                         "format": "datetime",
                         "example": "2022-07-17T13:37:00+02:00"
                     },
                     "events": {
-                        "title": "events",
                         "description": "array of events this webhook receives",
                         "type": "array",
-                        "items": {}
+                        "items": {
+                            "properties": {
+                                "type": {
+                                    "type": "string",
+                                    "example": "checkin"
+                                }
+                            },
+                            "type": "object"
+                        }
                     }
                 },
-                "type": "object",
-                "xml": {
-                    "name": "Webhook"
-                }
-            },
-            "StatusUpdateBody": {
-                "title": "StatusUpdateBody",
-                "description": "Status Update Body",
-                "properties": {
-                    "body": {
-                        "description": "Status-Text to be displayed alongside the checkin",
-                        "type": "string",
-                        "example": "Wow. This train is extremely crowded!",
-                        "nullable": true,
-                        "maxLength": 280
-                    },
-                    "business": {
-                        "$ref": "#/components/schemas/Business"
-                    },
-                    "visibility": {
-                        "$ref": "#/components/schemas/StatusVisibility"
-                    },
-                    "eventId": {
-                        "description": "The ID of the event this status is related to - or null",
-                        "type": "string",
-                        "example": "1",
-                        "nullable": true
-                    },
-                    "manualDeparture": {
-                        "description": "Manual departure time set by the user",
-                        "type": "string",
-                        "format": "date",
-                        "example": "2020-01-01 12:00:00",
-                        "nullable": true
-                    },
-                    "manualArrival": {
-                        "description": "Manual arrival time set by the user",
-                        "type": "string",
-                        "format": "date",
-                        "example": "2020-01-01 13:00:00",
-                        "nullable": true
-                    },
-                    "destinationId": {
-                        "description": "Destination station id",
-                        "type": "string",
-                        "example": "1",
-                        "nullable": true
-                    },
-                    "destinationArrivalPlanned": {
-                        "description": "Destination arrival time",
-                        "type": "string",
-                        "format": "date",
-                        "example": "2020-01-01 13:00:00",
-                        "nullable": true
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "StatusUpdateBody"
-                }
-            }
-        },
-        "parameters": {
-            "page": {
-                "name": "page",
-                "in": "query",
-                "description": "Page of pagination",
-                "required": false,
-                "schema": {
-                    "type": "integer"
-                }
+                "type": "object"
             }
         },
         "securitySchemes": {
