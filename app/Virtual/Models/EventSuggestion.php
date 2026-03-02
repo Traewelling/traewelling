@@ -1,123 +1,90 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Virtual\Models;
 
-use Carbon\Carbon;
+use OpenApi\Attributes as OA;
 
-/**
- * @OA\Schema(
- *     title="EventSuggestion",
- *     description="Fields for suggesting an event",
- *
- *     @OA\Xml(
- *         name="EventSuggestion"
- *     )
- * )
- */
+#[OA\Schema(
+    title: 'EventSuggestion',
+    description: 'Fields for suggesting an event',
+    xml: new OA\Xml(name: 'EventSuggestion'),
+)]
 class EventSuggestion
 {
-    /**
-     * @OA\Property(
-     *     title="name",
-     *     description="name of the event",
-     *     type="string",
-     *     maxLength=255,
-     *     example="Eröffnung der Nebenbahn in Knuffingen"
-     * )
-     *
-     * @var string
-     */
-    private $name;
+    #[OA\Property(
+        title: 'name',
+        description: 'name of the event',
+        type: 'string',
+        maxLength: 255,
+        example: 'Eröffnung der Nebenbahn in Knuffingen',
+    )]
+    private string $name;
 
-    /**
-     * @OA\Property (
-     *     title="host",
-     *     description="host of the event",
-     *     nullable=true,
-     *     example="MiWuLa"
-     * )
-     *
-     * @var string
-     */
-    private $host;
+    #[OA\Property(
+        title: 'host',
+        description: 'host of the event',
+        type: 'string',
+        nullable: true,
+        example: 'MiWuLa',
+    )]
+    private string $host;
 
-    /**
-     * @OA\Property (
-     *     title="begin",
-     *     description="Timestamp for the start of the event",
-     *     example="2022-06-01T00:00:00+02:00"
-     * )
-     *
-     * @var Carbon
-     */
-    private $begin;
+    #[OA\Property(
+        title: 'begin',
+        description: 'Timestamp for the start of the event',
+        type: 'string',
+        example: '2022-06-01T00:00:00+02:00',
+    )]
+    private string $begin;
 
-    /**
-     * @OA\Property (
-     *     title="end",
-     *     description="Timestamp for the end of the event",
-     *     example="2022-08-31T23:59:00+02:00"
-     * )
-     *
-     * @var Carbon
-     */
-    private $end;
+    #[OA\Property(
+        title: 'end',
+        description: 'Timestamp for the end of the event',
+        type: 'string',
+        example: '2022-08-31T23:59:00+02:00',
+    )]
+    private string $end;
 
-    /**
-     * @OA\Property (
-     *     title="url",
-     *     nullable=true,
-     *     description="external URL for this event",
-     *     type="string",
-     *     maxLength=255,
-     *     example="https://www.bundesregierung.de/breg-de/aktuelles/faq-9-euro-ticket-2028756"
-     * )
-     *
-     * @var string
-     */
-    private $url;
+    #[OA\Property(
+        title: 'url',
+        description: 'external URL for this event',
+        type: 'string',
+        maxLength: 255,
+        nullable: true,
+        example: 'https://www.bundesregierung.de/breg-de/aktuelles/faq-9-euro-ticket-2028756',
+    )]
+    private string $url;
 
-    /**
-     * @OA\Property (
-     *     title="hashtag",
-     *     nullable=true,
-     *     description="hashtag for this event",
-     *     type="string",
-     *     maxLength=40,
-     *     example="gpn21"
-     * )
-     *
-     * @var string
-     */
-    private $hashtag;
+    #[OA\Property(
+        title: 'hashtag',
+        description: 'hashtag for this event',
+        type: 'string',
+        maxLength: 40,
+        nullable: true,
+        example: 'gpn21',
+    )]
+    private string $hashtag;
 
-    /**
-     * @OA\Property (
-     *     title="nearestStation",
-     *     nullable=true,
-     *     description="Query string for the nearest station to this event. Deprecated: use nearestStationId instead.",
-     *     type="string",
-     *     maxLength=255,
-     *     example="Berlin Hbf",
-     *     deprecated=true
-     * )
-     *
-     * @var string
-     *
-     * @deprecated Use nearestStationId instead
-     */
-    private $nearestStation;
+    /** @deprecated Use nearestStationId instead */
+    #[OA\Property(
+        title: 'nearestStation',
+        description: 'Query string for the nearest station to this event. Deprecated: use nearestStationId instead.',
+        type: 'string',
+        maxLength: 255,
+        nullable: true,
+        deprecated: true,
+        example: 'Berlin Hbf',
+    )]
+    private string $nearestStation;
 
-    /**
-     * @OA\Property (
-     *     title="nearestStationId",
-     *     nullable=true,
-     *     description="ID of the nearest station to this event",
-     *     type="integer",
-     *     example=1
-     * )
-     *
-     * @var int
-     */
-    private $nearestStationId;
+    #[OA\Property(
+        title: 'nearestStationId',
+        description: 'ID of the nearest station to this event',
+        type: 'integer',
+        nullable: true,
+        example: 1,
+    )]
+    private int $nearestStationId;
 }

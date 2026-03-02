@@ -1,54 +1,39 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Virtual\Models;
 
-/**
- * @OA\Schema(
- *     title="Points",
- *     description="Points model",
- *
- *     @OA\Xml(
- *         name="Points"
- *     )
- * )
- */
+use OpenApi\Attributes as OA;
+
+#[OA\Schema(
+    title: 'Points',
+    description: 'Points model',
+    xml: new OA\Xml(name: 'Points'),
+)]
 class Points
 {
-    /**
-     * @OA\Property(
-     *     title="points",
-     *     description="points",
-     *     format="int",
-     *     example=1
-     * )
-     *
-     * @var int
-     **/
-    private $points;
+    #[OA\Property(
+        title: 'points',
+        description: 'points',
+        type: 'integer',
+        format: 'int',
+        example: 1,
+    )]
+    private int $points;
 
-    /**
-     * @OA\Property(
-     *     title="calculation",
-     *     description="",
-     *     ref="#/components/schemas/PointsCalculation"
-     * )
-     *
-     * @var string;
-     */
-    public $calculation;
+    #[OA\Property(
+        title: 'calculation',
+        description: '',
+        ref: '#/components/schemas/PointsCalculation',
+    )]
+    public mixed $calculation;
 
-    /**
-     * @OA\Property(
-     *     title="additional",
-     *     description="extra points that can be given",
-     *     type="array",
-     *
-     *     @OA\Items(
-     *          example={"identifier": "extrapoints", "points": 4, "divisibile": false}
-     *     )
-     * )
-     *
-     * @var array
-     **/
-    private $additional;
+    #[OA\Property(
+        title: 'additional',
+        description: 'extra points that can be given',
+        type: 'array',
+        items: new OA\Items(example: ['identifier' => 'extrapoints', 'points' => 4, 'divisibile' => false]),
+    )]
+    private array $additional;
 }

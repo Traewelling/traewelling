@@ -5,17 +5,15 @@ declare(strict_types=1);
 namespace App\Enum;
 
 use App\Interfaces\IconEnumInterface;
+use OpenApi\Attributes as OA;
 
-/**
- * @OA\Schema(
- *      title="visibility",
- *      description="What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the
- *      user specify?",
- *      type="integer",
- *      enum={0,1,2,3,4,5},
- *      example=0
- *  )
- */
+#[OA\Schema(
+    title: 'visibility',
+    description: 'What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the user specify?',
+    type: 'integer',
+    enum: [0, 1, 2, 3, 4, 5],
+    example: 0,
+)]
 enum StatusVisibility: int implements IconEnumInterface
 {
     case PUBLIC = 0;

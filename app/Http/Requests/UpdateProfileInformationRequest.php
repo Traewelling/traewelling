@@ -12,30 +12,29 @@ use DateTimeZone;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA;
 
-/**
- * @OA\Schema(
- *    title="UpdateProfileInformationRequest",
- *    description="UpdateProfileInformationRequest",
- *
- *    @OA\Property(property="username",                   type="string",  example="gertrud123", maxLength=25),
- *    @OA\Property(property="displayName",                type="string",  example="Gertrud", maxLength=50),
- *    @OA\Property(property="privateProfile",             type="boolean", example=false, nullable=true),
- *    @OA\Property(property="preventIndex",               type="boolean", example=false, nullable=true),
- *    @OA\Property(property="privacyHideDays",            type="integer", example=1, nullable=true),
- *    @OA\Property(property="defaultStatusVisibility",    ref="#/components/schemas/StatusVisibility",    nullable=true),
- *    @OA\Property(property="mastodonVisibility",         ref="#/components/schemas/MastodonVisibility",  nullable=true),
- *    @OA\Property(property="mapProvider",                ref="#/components/schemas/MapProvider",         nullable=true),
- *    @OA\Property(property="friendCheckin",              ref="#/components/schemas/FriendCheckinSetting",nullable=true),
- *    @OA\Property(property="likesEnabled",               type="boolean", example=true,nullable=true),
- *    @OA\Property(property="pointsEnabled",              type="boolean", example=true,nullable=true),
- *    @OA\Property(property="bio",                  type="string",  example="Hi there! I am Gertrud!", maxLength=500, nullable=true),
- *    @OA\Property(property="experimental",               type="boolean", example=false, description="Experimental features enabled"),
- *    @OA\Property(property="profileLinks",               type="array",  @OA\Items(ref="#/components/schemas/ProfileLinkResource"), nullable=true),
- *    @OA\Property(property="timezone",                   type="string",  example="Europe/Berlin"),
- * )
- */
+#[OA\Schema(
+    title: 'UpdateProfileInformationRequest',
+    description: 'UpdateProfileInformationRequest',
+    properties: [
+        new OA\Property(property: 'username', type: 'string', maxLength: 25, example: 'gertrud123'),
+        new OA\Property(property: 'displayName', type: 'string', maxLength: 50, example: 'Gertrud'),
+        new OA\Property(property: 'privateProfile', type: 'boolean', nullable: true, example: false),
+        new OA\Property(property: 'preventIndex', type: 'boolean', nullable: true, example: false),
+        new OA\Property(property: 'privacyHideDays', type: 'integer', nullable: true, example: 1),
+        new OA\Property(property: 'defaultStatusVisibility', ref: '#/components/schemas/StatusVisibility', nullable: true),
+        new OA\Property(property: 'mastodonVisibility', ref: '#/components/schemas/MastodonVisibility', nullable: true),
+        new OA\Property(property: 'mapProvider', ref: '#/components/schemas/MapProvider', nullable: true),
+        new OA\Property(property: 'friendCheckin', ref: '#/components/schemas/FriendCheckinSetting', nullable: true),
+        new OA\Property(property: 'likesEnabled', type: 'boolean', nullable: true, example: true),
+        new OA\Property(property: 'pointsEnabled', type: 'boolean', nullable: true, example: true),
+        new OA\Property(property: 'bio', type: 'string', maxLength: 500, nullable: true, example: 'Hi there! I am Gertrud!'),
+        new OA\Property(property: 'experimental', type: 'boolean', example: false, description: 'Experimental features enabled'),
+        new OA\Property(property: 'profileLinks', type: 'array', nullable: true, items: new OA\Items(ref: '#/components/schemas/ProfileLinkResource')),
+        new OA\Property(property: 'timezone', type: 'string', example: 'Europe/Berlin'),
+    ],
+)]
 class UpdateProfileInformationRequest extends FormRequest
 {
     public function rules(): array

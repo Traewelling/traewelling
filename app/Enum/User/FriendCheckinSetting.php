@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Enum\User;
 
-/**
- * @OA\Schema(
- *     title="FriendCheckinSetting",
- *     type="string",
- *     enum={"forbidden", "friends", "list"},
- *     example="forbidden",
- * )
- */
+use OpenApi\Attributes as OA;
+
+#[OA\Schema(
+    title: 'FriendCheckinSetting',
+    type: 'string',
+    enum: ['forbidden', 'friends', 'list'],
+    example: 'forbidden',
+)]
 enum FriendCheckinSetting: string
 {
     case FORBIDDEN = 'forbidden'; // default
