@@ -78,7 +78,7 @@ class FetchManualTransitousLicenses implements ShouldQueue
                         continue;
                     }
 
-                    $active = MotisSourceLicense::SPDX[$source['spdx']] ?? false;
+                    $active = array_key_exists($source['spdx'], MotisSourceLicense::SPDX);
 
                     $motisSource->update(['spdx' => $source['spdx'], 'active' => $active]);
                     Log::debug('Updated source with SPDX license: ' . $source['file'] . ' -> ' . $source['spdx']);
