@@ -9,6 +9,9 @@ body:
         **Worum geht's? | What's this about?**  
         Dieses Formular ist nur für **Lizenzen von Datenquellen** gedacht - z. B. wenn eine Lizenz **fehlt**, **unklar ist** oder **in der Software Träwelling** fälschlicherweise **noch nicht aktiviert** wurde.  
         This form is only for **data source licenses** — e.g., if a license is **missing**, **unclear**, or **not yet activated** in the **Traewelling software**.
+        
+        Du kannst auch direkt einen Pull Request in unserem Lizenz-Mapping-Repo erstellen: https://github.com/Traewelling/transitous-licenses/
+        You can also directly create a pull request in our license mapping repo: https://github.com/Traewelling/transitous-licenses/
 
         **Nicht das Richtige? | Not the right place?**  
         - 🧭 **Falscher Betreiber / Wrong operator:** https://github.com/Traewelling/transitous-wikidata-operator-matching/issues  
