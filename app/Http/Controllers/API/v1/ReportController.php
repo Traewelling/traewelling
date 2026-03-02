@@ -20,7 +20,6 @@ class ReportController extends Controller
         path: '/report',
         operationId: 'report',
         summary: 'Report a Status, Event or User to the admins.',
-        tags: ['Report'],
         security: [['passport' => []], ['token' => []]],
         requestBody: new OA\RequestBody(
             required: true,
@@ -30,15 +29,15 @@ class ReportController extends Controller
                     new OA\Property(
                         property: 'subjectType',
                         type: 'string',
-                        enum: ['Event', 'Status', 'User'],
                         example: 'Status',
+                        enum: ['Event', 'Status', 'User'],
                     ),
                     new OA\Property(property: 'subjectId', type: 'integer', example: 1),
                     new OA\Property(
                         property: 'reason',
                         type: 'string',
-                        enum: ['inappropriate', 'implausible', 'spam', 'illegal', 'other'],
                         example: 'inappropriate',
+                        enum: ['inappropriate', 'implausible', 'spam', 'illegal', 'other'],
                     ),
                     new OA\Property(
                         property: 'description',
@@ -49,6 +48,7 @@ class ReportController extends Controller
                 ],
             ),
         ),
+        tags: ['Report'],
         responses: [
             new OA\Response(response: 201, description: 'The report was successfully created.'),
             new OA\Response(response: 401, description: 'The user is not authenticated.'),

@@ -21,8 +21,8 @@ class ConfigurationInfoController
     #[OA\Get(
         path: '/app/configuration',
         operationId: 'getConfigurationInfo',
-        summary: 'Get Application Configuration Information',
         description: 'Retrieves configuration information about the application, including features and supported languages.',
+        summary: 'Get Application Configuration Information',
         tags: ['Configuration Information'],
         responses: [
             new OA\Response(

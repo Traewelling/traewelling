@@ -10,13 +10,13 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(
     title: 'Mention',
-    required: ['user', 'position', 'length'],
     description: 'Mentioned user and position in status body',
+    required: ['user', 'position', 'length'],
     xml: new OA\Xml(name: 'Mention'),
 )]
 readonly class MentionDto implements \JsonSerializable
 {
-    #[OA\Property(title: 'user', nullable: true, ref: '#/components/schemas/UserResource')]
+    #[OA\Property(ref: '#/components/schemas/UserResource', title: 'user', nullable: true)]
     public User $user;
 
     #[OA\Property(title: 'position', format: 'int', example: 0)]

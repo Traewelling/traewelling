@@ -19,8 +19,8 @@ use OpenApi\Attributes as OA;
         new OA\Property(
             property: 'type',
             type: 'enum',
-            enum: ['info', 'warning', 'danger', 'success'],
             example: 'info',
+            enum: ['info', 'warning', 'danger', 'success'],
         ),
         new OA\Property(
             property: 'active_from',
@@ -43,8 +43,8 @@ use OpenApi\Attributes as OA;
         ),
         new OA\Property(
             property: 'translations',
-            items: new OA\Items(ref: '#/components/schemas/AlertTranslationResource'),
             type: 'array',
+            items: new OA\Items(ref: '#/components/schemas/AlertTranslationResource'),
         ),
     ],
 )]

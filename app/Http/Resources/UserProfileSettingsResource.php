@@ -43,9 +43,9 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'privateProfile', type: 'boolean', example: false),
         new OA\Property(
             property: 'preventIndex',
+            description: 'Did the user choose to prevent search engines from indexing their profile?',
             type: 'boolean',
             example: false,
-            description: 'Did the user choose to prevent search engines from indexing their profile?',
         ),
         new OA\Property(
             property: 'defaultStatusVisibility',
@@ -53,9 +53,9 @@ use OpenApi\Attributes as OA;
         ),
         new OA\Property(
             property: 'privacyHideDays',
+            description: 'Number of days to hide the user\'s location history',
             type: 'integer',
             example: 1,
-            description: 'Number of days to hide the user\'s location history',
         ),
         new OA\Property(property: 'password', type: 'boolean', example: true),
         new OA\Property(property: 'email', type: 'string', example: 'gertrud@traewelling.de'),
@@ -83,9 +83,9 @@ use OpenApi\Attributes as OA;
         ),
         new OA\Property(
             property: 'experimental',
+            description: 'Experimental features enabled',
             type: 'boolean',
             example: false,
-            description: 'Experimental features enabled',
         ),
     ],
 )]

@@ -17,7 +17,7 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'url', type: 'string', example: 'https://9-euro-ticket.de'),
         new OA\Property(property: 'begin', type: 'string', format: 'date', example: '2022-01-01'),
         new OA\Property(property: 'end', type: 'string', format: 'date', example: '2022-01-02'),
-        new OA\Property(property: 'station', type: 'string', ref: '#/components/schemas/Station'),
+        new OA\Property(property: 'station', ref: '#/components/schemas/Station', type: 'string'),
         new OA\Property(property: 'isPride', ref: '#/components/schemas/StationResource'),
     ],
 )]

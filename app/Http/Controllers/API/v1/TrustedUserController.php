@@ -23,15 +23,15 @@ class TrustedUserController extends Controller
     #[OA\Get(
         path: '/user/{user}/trusted',
         operationId: 'trustedUserIndex',
-        summary: 'Get all trusted users for a user',
         description: 'Get all trusted users for the current user or a specific user (admin only).',
+        summary: 'Get all trusted users for a user',
         tags: ['User'],
         parameters: [
             new OA\Parameter(
                 name: 'user',
+                description: 'ID of the user (or string \'self\' for current user)',
                 in: 'path',
                 required: true,
-                description: 'ID of the user (or string \'self\' for current user)',
                 schema: new OA\Schema(type: 'string'),
             ),
         ],
@@ -119,9 +119,8 @@ class TrustedUserController extends Controller
     #[OA\Post(
         path: '/user/{user}/trusted',
         operationId: 'trustedUserStore',
-        summary: 'Add a user to the trusted users for a user',
         description: 'Add a user to the trusted users for the current user or a specific user (admin only).',
-        tags: ['User'],
+        summary: 'Add a user to the trusted users for a user',
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
@@ -138,12 +137,13 @@ class TrustedUserController extends Controller
                 ],
             ),
         ),
+        tags: ['User'],
         parameters: [
             new OA\Parameter(
                 name: 'user',
+                description: 'ID of the user (or string \'self\' for current user) who want\'s to trust.',
                 in: 'path',
                 required: true,
-                description: 'ID of the user (or string \'self\' for current user) who want\'s to trust.',
                 schema: new OA\Schema(type: 'string'),
             ),
         ],
@@ -184,22 +184,22 @@ class TrustedUserController extends Controller
     #[OA\Delete(
         path: '/user/{user}/trusted/{trusted}',
         operationId: 'trustedUserDestroy',
-        summary: 'Remove a user from the trusted users for a user',
         description: 'Remove a user from the trusted users for the current user or a specific user (admin only).',
+        summary: 'Remove a user from the trusted users for a user',
         tags: ['User'],
         parameters: [
             new OA\Parameter(
                 name: 'user',
+                description: 'ID of the user (or string \'self\' for current user)',
                 in: 'path',
                 required: true,
-                description: 'ID of the user (or string \'self\' for current user)',
                 schema: new OA\Schema(type: 'string'),
             ),
             new OA\Parameter(
                 name: 'trusted',
+                description: 'ID of the trusted user',
                 in: 'path',
                 required: true,
-                description: 'ID of the trusted user',
                 schema: new OA\Schema(type: 'integer'),
             ),
         ],

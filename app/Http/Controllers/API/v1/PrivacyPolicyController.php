@@ -12,9 +12,9 @@ class PrivacyPolicyController extends Controller
 {
     #[OA\Get(
         path: '/static/privacy',
-        tags: ['Settings'],
-        summary: 'Get the current privacy policy',
         description: 'Get the current privacy policy',
+        summary: 'Get the current privacy policy',
+        tags: ['Settings'],
         responses: [
             new OA\Response(
                 response: 200,
@@ -23,7 +23,6 @@ class PrivacyPolicyController extends Controller
                     properties: [
                         new OA\Property(
                             property: 'data',
-                            type: 'object',
                             properties: [
                                 new OA\Property(
                                     property: 'validFrom',
@@ -38,6 +37,7 @@ class PrivacyPolicyController extends Controller
                                     example: 'Dies ist die deutsche Datenschutzerklärung',
                                 ),
                             ],
+                            type: 'object',
                         ),
                     ],
                 ),
@@ -52,10 +52,10 @@ class PrivacyPolicyController extends Controller
     #[OA\Post(
         path: '/settings/acceptPrivacy',
         operationId: 'acceptPrivacyPolicy',
-        tags: ['Settings'],
-        summary: 'Accept the current privacy policy',
         description: 'Accept the current privacy policy',
+        summary: 'Accept the current privacy policy',
         security: [['passport' => []], ['token' => []]],
+        tags: ['Settings'],
         responses: [
             new OA\Response(response: 204, description: 'Success'),
             new OA\Response(response: 400, description: 'Already accepted'),

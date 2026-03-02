@@ -21,7 +21,7 @@ use OpenApi\Attributes as OA;
     schema: 'LikeResponse',
     title: 'LikeResponse',
     properties: [
-        new OA\Property(property: 'count', type: 'integer', format: 'int32', description: 'Amount of likes', example: 12),
+        new OA\Property(property: 'count', description: 'Amount of likes', type: 'integer', format: 'int32', example: 12),
     ],
 )]
 class LikesController extends Controller
@@ -32,17 +32,17 @@ class LikesController extends Controller
     #[OA\Get(
         path: '/status/{id}/likes',
         operationId: 'getLikesForStatus',
-        tags: ['Likes'],
-        summary: '[Auth optional] Get likes for status',
         description: 'Returns array of users that liked the status. Can return an empty dataset when the status author or the requesting user has deactivated likes',
+        summary: '[Auth optional] Get likes for status',
         security: [['passport' => ['read-statuses']], ['token' => []]],
+        tags: ['Likes'],
         parameters: [
             new OA\Parameter(
                 name: 'id',
-                in: 'path',
                 description: 'Status-ID',
-                example: 1337,
+                in: 'path',
                 schema: new OA\Schema(type: 'integer'),
+                example: 1337,
             ),
         ],
         responses: [
@@ -79,17 +79,17 @@ class LikesController extends Controller
     #[OA\Post(
         path: '/status/{id}/like',
         operationId: 'addLikeToStatus',
-        tags: ['Likes'],
-        summary: 'Add like to status',
         description: 'Add like to status',
+        summary: 'Add like to status',
         security: [['passport' => ['write-likes']], ['token' => []]],
+        tags: ['Likes'],
         parameters: [
             new OA\Parameter(
                 name: 'id',
-                in: 'path',
                 description: 'Status-ID',
-                example: 1337,
+                in: 'path',
                 schema: new OA\Schema(type: 'integer'),
+                example: 1337,
             ),
         ],
         responses: [
@@ -100,8 +100,8 @@ class LikesController extends Controller
                     properties: [
                         new OA\Property(
                             property: 'data',
-                            type: 'object',
                             ref: '#/components/schemas/LikeResponse',
+                            type: 'object',
                         ),
                     ],
                 ),
@@ -145,17 +145,17 @@ class LikesController extends Controller
     #[OA\Delete(
         path: '/status/{id}/like',
         operationId: 'removeLikeFromStatus',
-        tags: ['Likes'],
-        summary: 'Remove like from status',
         description: 'Removes like from status',
+        summary: 'Remove like from status',
         security: [['passport' => ['write-likes']], ['token' => []]],
+        tags: ['Likes'],
         parameters: [
             new OA\Parameter(
                 name: 'id',
-                in: 'path',
                 description: 'Status-ID',
-                example: 1337,
+                in: 'path',
                 schema: new OA\Schema(type: 'integer'),
+                example: 1337,
             ),
         ],
         responses: [
@@ -166,8 +166,8 @@ class LikesController extends Controller
                     properties: [
                         new OA\Property(
                             property: 'data',
-                            type: 'object',
                             ref: '#/components/schemas/LikeResponse',
+                            type: 'object',
                         ),
                     ],
                 ),

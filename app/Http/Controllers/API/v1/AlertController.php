@@ -15,8 +15,8 @@ class AlertController extends Controller
 {
     #[OA\Get(
         path: '/alerts',
-        summary: 'Get all active alerts',
         operationId: 'getActiveAlerts',
+        summary: 'Get all active alerts',
         tags: ['Notifications'],
         responses: [
             new OA\Response(

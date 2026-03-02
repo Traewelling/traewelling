@@ -13,15 +13,15 @@ class NotificationsController extends Controller
     #[OA\Get(
         path: '/notifications/unread/count',
         operationId: 'getUnreadCount',
-        tags: ['Notifications'],
-        summary: 'Get count of unread notifications for authenticated user',
         description: 'Returns count of unread notifications of a authenticated user',
+        summary: 'Get count of unread notifications for authenticated user',
         security: [
             ['passport' => []],
             ['token' => []],
             ['passport' => ['read-notifications']],
             ['token' => []],
         ],
+        tags: ['Notifications'],
         responses: [
             new OA\Response(
                 response: 200,
@@ -41,15 +41,15 @@ class NotificationsController extends Controller
     #[OA\Get(
         path: '/notifications',
         operationId: 'listNotifications',
-        tags: ['Notifications'],
-        summary: 'Get paginated notifications for authenticated user',
         description: 'Returns paginated notifications of a authenticated',
+        summary: 'Get paginated notifications for authenticated user',
         security: [
             ['passport' => []],
             ['token' => []],
             ['passport' => ['read-notifications']],
             ['token' => []],
         ],
+        tags: ['Notifications'],
         responses: [
             new OA\Response(
                 response: 200,
@@ -80,16 +80,16 @@ class NotificationsController extends Controller
     #[OA\Put(
         path: '/notifications/read/{id}',
         operationId: 'markAsRead',
-        tags: ['Notifications'],
         summary: 'Mark notification as read',
         security: [['passport' => ['write-notifications']], ['token' => []]],
+        tags: ['Notifications'],
         parameters: [
             new OA\Parameter(
                 name: 'id',
-                in: 'path',
                 description: 'ID of notification',
-                example: 'cbf6054e-9c00-4b1f-ab37-7eb18ac8419f',
+                in: 'path',
                 schema: new OA\Schema(type: 'string'),
+                example: 'cbf6054e-9c00-4b1f-ab37-7eb18ac8419f',
             ),
         ],
         responses: [
@@ -100,8 +100,8 @@ class NotificationsController extends Controller
                     properties: [
                         new OA\Property(
                             property: 'data',
-                            type: 'object',
                             ref: '#/components/schemas/Notification',
+                            type: 'object',
                         ),
                     ],
                 ),
@@ -126,16 +126,16 @@ class NotificationsController extends Controller
     #[OA\Put(
         path: '/notifications/unread/{id}',
         operationId: 'markAsUnread',
-        tags: ['Notifications'],
         summary: 'Mark notification as unread',
         security: [['passport' => ['write-notifications']], ['token' => []]],
+        tags: ['Notifications'],
         parameters: [
             new OA\Parameter(
                 name: 'id',
-                in: 'path',
                 description: 'ID of notification',
-                example: 'cbf6054e-9c00-4b1f-ab37-7eb18ac8419f',
+                in: 'path',
                 schema: new OA\Schema(type: 'string'),
+                example: 'cbf6054e-9c00-4b1f-ab37-7eb18ac8419f',
             ),
         ],
         responses: [
@@ -146,8 +146,8 @@ class NotificationsController extends Controller
                     properties: [
                         new OA\Property(
                             property: 'data',
-                            type: 'object',
                             ref: '#/components/schemas/Notification',
+                            type: 'object',
                         ),
                     ],
                 ),
@@ -172,9 +172,9 @@ class NotificationsController extends Controller
     #[OA\Put(
         path: '/notifications/read/all',
         operationId: 'markAllAsRead',
-        tags: ['Notifications'],
         summary: 'Mark all notification as read',
         security: [['passport' => ['write-notifications']], ['token' => []]],
+        tags: ['Notifications'],
         responses: [
             new OA\Response(
                 response: 200,

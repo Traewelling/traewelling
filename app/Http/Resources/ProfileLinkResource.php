@@ -15,8 +15,8 @@ use OpenApi\Attributes as OA;
         new OA\Property(
             property: 'name',
             type: 'enum',
-            enum: ['website', 'instagram', 'bluesky', 'facebook', 'mastodon', 'tiktok', 'github'],
             example: 'website',
+            enum: ['website', 'instagram', 'bluesky', 'facebook', 'mastodon', 'tiktok', 'github'],
         ),
         new OA\Property(property: 'url', type: 'string', example: 'https://traewelling.de'),
     ],

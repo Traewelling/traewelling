@@ -19,11 +19,11 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'createdAt', type: 'string', format: 'datetime', example: '2022-07-17T13:37:00+02:00'),
         new OA\Property(
             property: 'events',
-            type: 'array',
             description: 'array of events this webhook receives',
-            items: new OA\Items(type: 'object', properties: [
+            type: 'array',
+            items: new OA\Items(properties: [
                 new OA\Property(property: 'type', type: 'string', example: 'checkin'),
-            ]),
+            ], type: 'object'),
         ),
     ],
 )]

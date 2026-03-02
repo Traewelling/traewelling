@@ -12,10 +12,10 @@ use OpenApi\Attributes as OA;
     title: 'Links',
     description: 'Pagination links',
     properties: [
-        new OA\Property(property: 'first', type: 'string', format: 'uri', nullable: true, example: 'https://traewelling.de/api/v1/ENDPOINT?page=1'),
-        new OA\Property(property: 'last', type: 'string', format: 'uri', nullable: true, example: null),
-        new OA\Property(property: 'prev', type: 'string', format: 'uri', nullable: true, example: null),
-        new OA\Property(property: 'next', type: 'string', format: 'uri', nullable: true, example: 'https://traewelling.de/api/v1/ENDPOINT?page=2'),
+        new OA\Property(property: 'first', type: 'string', format: 'uri', example: 'https://traewelling.de/api/v1/ENDPOINT?page=1', nullable: true),
+        new OA\Property(property: 'last', type: 'string', format: 'uri', example: null, nullable: true),
+        new OA\Property(property: 'prev', type: 'string', format: 'uri', example: null, nullable: true),
+        new OA\Property(property: 'next', type: 'string', format: 'uri', example: 'https://traewelling.de/api/v1/ENDPOINT?page=2', nullable: true),
     ],
 )]
 class LinksResource {}

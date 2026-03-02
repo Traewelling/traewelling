@@ -77,8 +77,8 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'user', ref: '#/components/schemas/LightUserResource'),
         new OA\Property(
             property: 'createdBy',
-            description: 'User who created this check-in on behalf of the status owner (null if self-checkin)',
             ref: '#/components/schemas/LightUserResource',
+            description: 'User who created this check-in on behalf of the status owner (null if self-checkin)',
             nullable: true,
         ),
         new OA\Property(

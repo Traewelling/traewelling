@@ -9,8 +9,8 @@ use OpenApi\Attributes as OA;
 #[OA\Schema(
     title: 'FriendCheckinSetting',
     type: 'string',
-    enum: ['forbidden', 'friends', 'list'],
     example: 'forbidden',
+    enum: ['forbidden', 'friends', 'list'],
 )]
 enum FriendCheckinSetting: string
 {

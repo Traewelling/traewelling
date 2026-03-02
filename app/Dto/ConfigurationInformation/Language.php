@@ -6,23 +6,23 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(
     schema: 'Language',
-    type: 'object',
+    description: 'Represents a language with its code and name.',
+    required: ['code', 'name'],
     properties: [
         new OA\Property(
             property: 'code',
+            description: 'The language code (e.g., "en", "fr").',
             type: 'string',
-            example: 'en',
-            description: 'The language code (e.g., "en", "fr").'
+            example: 'en'
         ),
         new OA\Property(
             property: 'name',
+            description: 'The name of the language (e.g., "English", "French").',
             type: 'string',
-            example: 'English',
-            description: 'The name of the language (e.g., "English", "French").'
+            example: 'English'
         ),
     ],
-    required: ['code', 'name'],
-    description: 'Represents a language with its code and name.'
+    type: 'object'
 )]
 readonly class Language
 {
