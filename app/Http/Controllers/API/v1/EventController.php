@@ -13,155 +13,134 @@ use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use OpenApi\Attributes as OA;
 
 class EventController extends Controller
 {
-    /**
-     * @OA\Get(
-     *      path="/event/{slug}",
-     *      operationId="getEvent",
-     *      tags={"Events"},
-     *      summary="[Auth optional] Get basic information for event",
-     *      description="Returns slug, name and duration for an event",
-     *
-     *      @OA\Parameter (
-     *          name="slug",
-     *          in="path",
-     *          description="slug for event",
-     *          example="weihnachten_2022",
-     *
-     *          @OA\Schema(type="string")
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property (
-     *                  property="data",
-     *                  type="object",
-     *                      ref="#/components/schemas/EventResource"
-     *              )
-     *          )
-     *       ),
-     *
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=404, description="No Event found for this id"),
-     *       security={
-     *           {"passport": {"read-statuses"}}, {"token": {}}
-     *       }
-     *     )
-     *
-     *
-     *
-     * Returns model of Event
-     */
+    #[OA\Get(
+        path: '/event/{slug}',
+        operationId: 'getEvent',
+        tags: ['Events'],
+        summary: '[Auth optional] Get basic information for event',
+        description: 'Returns slug, name and duration for an event',
+        security: [['passport' => ['read-statuses']], ['token' => []]],
+        parameters: [
+            new OA\Parameter(
+                name: 'slug',
+                in: 'path',
+                description: 'slug for event',
+                example: 'weihnachten_2022',
+                schema: new OA\Schema(type: 'string'),
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'object',
+                            ref: '#/components/schemas/EventResource',
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 404, description: 'No Event found for this id'),
+        ],
+    )]
     public function show(string $slug): EventResource
     {
         return new EventResource(Event::getBySlug($slug));
     }
 
-    /**
-     * @OA\Get(
-     *      path="/event/{slug}/details",
-     *      operationId="getEventDetails",
-     *      tags={"Events"},
-     *      summary="[Auth optional] Get additional information for event",
-     *      description="Returns overall travelled distance and duration for an event",
-     *
-     *      @OA\Parameter (
-     *          name="slug",
-     *          in="path",
-     *          description="slug for event",
-     *          example="weihnachten_2022",
-     *
-     *          @OA\Schema(type="string")
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property (
-     *                  property="data",
-     *                  type="object",
-     *                      ref="#/components/schemas/EventDetailsResource"
-     *              )
-     *          )
-     *       ),
-     *
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=404, description="No Event found for this id"),
-     *       security={
-     *           {"passport": {"read-statuses"}}, {"token": {}}
-     *       }
-     *     )
-     *
-     *
-     * Returns stats for event
-     */
+    #[OA\Get(
+        path: '/event/{slug}/details',
+        operationId: 'getEventDetails',
+        tags: ['Events'],
+        summary: '[Auth optional] Get additional information for event',
+        description: 'Returns overall travelled distance and duration for an event',
+        security: [['passport' => ['read-statuses']], ['token' => []]],
+        parameters: [
+            new OA\Parameter(
+                name: 'slug',
+                in: 'path',
+                description: 'slug for event',
+                example: 'weihnachten_2022',
+                schema: new OA\Schema(type: 'string'),
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'object',
+                            ref: '#/components/schemas/EventDetailsResource',
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 404, description: 'No Event found for this id'),
+        ],
+    )]
     public function showDetails(string $slug): EventDetailsResource
     {
         return new EventDetailsResource(Event::getBySlug($slug));
     }
 
-    /**
-     * @OA\Get(
-     *      path="/event/{slug}/statuses",
-     *      operationId="getEventStatuses",
-     *      tags={"Events"},
-     *      summary="[Auth optional] Get paginated statuses for event",
-     *      description="Returns all for user visible statuses for an event",
-     *
-     *      @OA\Parameter (
-     *          name="slug",
-     *          in="path",
-     *          description="slug for event",
-     *          example="weihnachten_2022",
-     *
-     *          @OA\Schema(type="string")
-     *      ),
-     *
-     *     @OA\Parameter (
-     *          name="page",
-     *          description="Page of pagination",
-     *          required=false,
-     *          in="query",
-     *
-     *          @OA\Schema(type="integer")
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data", type="array",
-     *
-     *                  @OA\Items(
-     *                      ref="#/components/schemas/StatusResource"
-     *                  )
-     *              ),
-     *
-     *              @OA\Property(property="links", ref="#/components/schemas/Links"),
-     *              @OA\Property(property="meta", ref="#/components/schemas/PaginationMeta"),
-     *          )
-     *       ),
-     *
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=404, description="No Event found for this id"),
-     *       security={
-     *           {"passport": {"read-statuses"}}, {"token": {}}
-     *       }
-     *     )
-     *
-     * Returns paginated statuses for user
-     */
+    #[OA\Get(
+        path: '/event/{slug}/statuses',
+        operationId: 'getEventStatuses',
+        tags: ['Events'],
+        summary: '[Auth optional] Get paginated statuses for event',
+        description: 'Returns all for user visible statuses for an event',
+        security: [['passport' => ['read-statuses']], ['token' => []]],
+        parameters: [
+            new OA\Parameter(
+                name: 'slug',
+                in: 'path',
+                description: 'slug for event',
+                example: 'weihnachten_2022',
+                schema: new OA\Schema(type: 'string'),
+            ),
+            new OA\Parameter(
+                name: 'page',
+                description: 'Page of pagination',
+                required: false,
+                in: 'query',
+                schema: new OA\Schema(type: 'integer'),
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/StatusResource'),
+                        ),
+                        new OA\Property(property: 'links', ref: '#/components/schemas/Links'),
+                        new OA\Property(
+                            property: 'meta',
+                            ref: '#/components/schemas/PaginationMeta',
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 404, description: 'No Event found for this id'),
+        ],
+    )]
     public static function statuses(string $slug): AnonymousResourceCollection
     {
         $event = Event::where('slug', $slug)->firstOrFail();
@@ -170,56 +149,47 @@ class EventController extends Controller
         return StatusResource::collection($statuses['statuses']->paginate());
     }
 
-    /**
-     * @OA\Get(
-     *      path="/events",
-     *      operationId="getEvents",
-     *      tags={"Events"},
-     *      summary="[Auth optional] Show active or upcoming events for the given timestamp",
-     *      description="Returns all active or upcoming events for the given timestamp. Default timestamp is now. If upcoming is set to true, all events ending after the timestamp are returned.",
-     *
-     *      @OA\Parameter (
-     *          name="timestamp",
-     *          in="query",
-     *          description="The timestamp of view. Default is now.",
-     *          example="2022-08-01T12:00:00+02:00",
-     *
-     *          @OA\Schema(type="string"),
-     *          required=false
-     *      ),
-     *
-     *      @OA\Parameter (
-     *          name="upcoming",
-     *          in="query",
-     *          description="Show only upcoming events",
-     *          required=false,
-     *
-     *          @OA\Schema(type="boolean")
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property (
-     *                  property="data",
-     *                  type="array",
-     *
-     *                  @OA\Items(
-     *                      ref="#/components/schemas/EventResource"
-     *                  )
-     *              )
-     *          )
-     *       ),
-     *
-     *       @OA\Response(response=400, description="Bad request"),
-     *       security={
-     *           {"passport": {"read-statuses"}}, {"token": {}}
-     *       }
-     *     )
-     */
+    #[OA\Get(
+        path: '/events',
+        operationId: 'getEvents',
+        tags: ['Events'],
+        summary: '[Auth optional] Show active or upcoming events for the given timestamp',
+        description: 'Returns all active or upcoming events for the given timestamp. Default timestamp is now. If upcoming is set to true, all events ending after the timestamp are returned.',
+        security: [['passport' => ['read-statuses']], ['token' => []]],
+        parameters: [
+            new OA\Parameter(
+                name: 'timestamp',
+                in: 'query',
+                description: 'The timestamp of view. Default is now.',
+                example: '2022-08-01T12:00:00+02:00',
+                schema: new OA\Schema(type: 'string'),
+                required: false,
+            ),
+            new OA\Parameter(
+                name: 'upcoming',
+                in: 'query',
+                description: 'Show only upcoming events',
+                required: false,
+                schema: new OA\Schema(type: 'boolean'),
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/EventResource'),
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+        ],
+    )]
     public function index(Request $request): AnonymousResourceCollection
     {
         $validated = $request->validate([
@@ -235,32 +205,23 @@ class EventController extends Controller
         return EventResource::collection($events->simplePaginate());
     }
 
-    /**
-     * @OA\Post(
-     *      path="/event",
-     *      operationId="suggestEvent",
-     *      tags={"Events"},
-     *      summary="Suggest a event",
-     *      description="Submit a possible event for our administrators to publish",
-     *
-     *      @OA\RequestBody(
-     *          required=true,
-     *
-     *          @OA\JsonContent(ref="#/components/schemas/EventSuggestion")
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=201,
-     *          description="successful operation",
-     *       ),
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=403, description="User not authorized"),
-     *       security={
-     *           {"passport": {}}, {"token": {}}
-     *
-     *       }
-     *     )
-     */
+    #[OA\Post(
+        path: '/event',
+        operationId: 'suggestEvent',
+        tags: ['Events'],
+        summary: 'Suggest a event',
+        description: 'Submit a possible event for our administrators to publish',
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(ref: '#/components/schemas/EventSuggestion'),
+        ),
+        security: [['passport' => []], ['token' => []]],
+        responses: [
+            new OA\Response(response: 201, description: 'successful operation'),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 403, description: 'User not authorized'),
+        ],
+    )]
     public function suggest(Request $request): JsonResponse
     {
         $validated = $request->validate([

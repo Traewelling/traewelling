@@ -12,35 +12,49 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rules\Enum;
+use OpenApi\Attributes as OA;
 
 class ReportController extends Controller
 {
-    /**
-     * @OA\Post(
-     *      path="/report",
-     *      operationId="report",
-     *      summary="Report a Status, Event or User to the admins.",
-     *      tags={"Report"},
-     *      security={{"passport": {}}, {"token": {}}},
-     *
-     *      @OA\RequestBody(
-     *          required=true,
-     *
-     *          @OA\JsonContent(
-     *              required={"subjectType", "subjectId", "reason"},
-     *
-     *              @OA\Property(property="subjectType", type="string", enum={"Event", "Status", "User"}, example="Status"),
-     *              @OA\Property(property="subjectId", type="integer", example=1),
-     *              @OA\Property(property="reason", type="string", enum={"inappropriate", "implausible", "spam", "illegal", "other"}, example="inappropriate"),
-     *              @OA\Property(property="description", type="string", example="The status is inappropriate because...", nullable=true),
-     *          ),
-     *      ),
-     *
-     *      @OA\Response(response=201, description="The report was successfully created."),
-     *      @OA\Response(response=401, description="The user is not authenticated."),
-     *      @OA\Response(response=422, description="The given data was invalid."),
-     * )
-     */
+    #[OA\Post(
+        path: '/report',
+        operationId: 'report',
+        summary: 'Report a Status, Event or User to the admins.',
+        tags: ['Report'],
+        security: [['passport' => []], ['token' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['subjectType', 'subjectId', 'reason'],
+                properties: [
+                    new OA\Property(
+                        property: 'subjectType',
+                        type: 'string',
+                        enum: ['Event', 'Status', 'User'],
+                        example: 'Status',
+                    ),
+                    new OA\Property(property: 'subjectId', type: 'integer', example: 1),
+                    new OA\Property(
+                        property: 'reason',
+                        type: 'string',
+                        enum: ['inappropriate', 'implausible', 'spam', 'illegal', 'other'],
+                        example: 'inappropriate',
+                    ),
+                    new OA\Property(
+                        property: 'description',
+                        type: 'string',
+                        example: 'The status is inappropriate because...',
+                        nullable: true,
+                    ),
+                ],
+            ),
+        ),
+        responses: [
+            new OA\Response(response: 201, description: 'The report was successfully created.'),
+            new OA\Response(response: 401, description: 'The user is not authenticated.'),
+            new OA\Response(response: 422, description: 'The given data was invalid.'),
+        ],
+    )]
     public function store(Request $request): Response
     {
         $validated = $request->validate([

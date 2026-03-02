@@ -300,8 +300,11 @@ export interface LicenseDto {
  * All necessary information to calculate live position
  */
 export interface LivePointDto {
-  /** GeoJson Coordinates */
-  point?: Coordinate;
+  /**
+   * point
+   * current point, if stopping at a station
+   */
+  point?: Coordinate | null;
   /** featurecollection of multiple GeoJson points */
   polyline?: FeatureCollection;
   /**
@@ -340,8 +343,8 @@ export interface LivePointDto {
  * Mentioned user and position in status body
  */
 export interface MentionDto {
-  /** User model */
-  user: UserResource;
+  /** user */
+  user: UserResource | null;
   /**
    * position
    * @format int
@@ -480,7 +483,7 @@ export interface AlertTranslationResource {
 export interface AreaResource {
   /** @example "Karlsruhe" */
   name: string;
-  /** @example "true" */
+  /** @example true */
   default: boolean;
   /** @example "1" */
   adminLevel: number;
@@ -982,13 +985,13 @@ export interface UserAuthResource {
   points: number;
   /** @example "https://mastodon.social/@Gertrud123" */
   mastodonUrl: string | null;
-  /** @example "false" */
+  /** @example false */
   privateProfile: boolean;
-  /** @example "false" */
+  /** @example false */
   preventIndex: boolean;
-  /** @example "true" */
+  /** @example true */
   likes_enabled: boolean;
-  /** @example "true" */
+  /** @example true */
   pointsEnabled?: boolean;
   /** @example "default" */
   mapProvider: string;
@@ -2040,7 +2043,7 @@ export class Api<
       }),
 
     /**
-     * @description This request issues a new Bearer-Token with a new expiration date while also revoking the old *      token.
+     * @description This request issues a new Bearer-Token with a new expiration date while also revoking the old token.
      *
      * @tags Auth
      * @name RefreshToken
@@ -2646,7 +2649,7 @@ export class Api<
       }),
 
     /**
-     * @description Block a specific user. That user will not be able to see your statuses or profile information, *      and cannot send you follow requests. Public statuses are still visible through the incognito mode.
+     * @description Block a specific user. That user will not be able to see your statuses or profile information, and cannot send you follow requests. Public statuses are still visible through the incognito mode.
      *
      * @tags User/Hide and Block
      * @name CreateBlock
@@ -2670,7 +2673,7 @@ export class Api<
       }),
 
     /**
-     * @description Unblock a specific user. They are now able to see your statuses and profile information again, *      and send you follow requests.
+     * @description Unblock a specific user. They are now able to see your statuses and profile information again, and send you follow requests.
      *
      * @tags User/Hide and Block
      * @name DestroyBlock
@@ -2694,7 +2697,7 @@ export class Api<
       }),
 
     /**
-     * @description Mute a specific user. That way they will not be shown on your dashboard and in the active *      journeys tab
+     * @description Mute a specific user. That way they will not be shown on your dashboard and in the active journeys tab
      *
      * @tags User/Hide and Block
      * @name CreateMute
@@ -2718,7 +2721,7 @@ export class Api<
       }),
 
     /**
-     * @description Unmute a specific user. That way they will be shown on your dashboard and in the active *      journeys tab again
+     * @description Unmute a specific user. That way they will be shown on your dashboard and in the active journeys tab again
      *
      * @tags User/Hide and Block
      * @name DestroyMute
@@ -2816,7 +2819,7 @@ export class Api<
   };
   status = {
     /**
-     * @description Returns array of users that liked the status. Can return an empty dataset when the status *      author or the requesting user has deactivated likes
+     * @description Returns array of users that liked the status. Can return an empty dataset when the status author or the requesting user has deactivated likes
      *
      * @tags Likes
      * @name GetLikesForStatus
@@ -3033,7 +3036,7 @@ export class Api<
       }),
 
     /**
-     * @description Creates a single StatusTag Object, if user is authorized to. <br><br>The key of a tag is free *      text. You can choose it as you need it. However, <b>please use a namespace for tags</b> *      (<i>namespace:xxx</i>) that only affect your own application.<br><br>For tags related to standard actions *      we recommend the following tags in the trwl namespace:<br> *      <ul> *          <li>trwl:seat (i.e. 61)</li> *          <li>trwl:wagon (i.e. 25)</li> *          <li>trwl:ticket (i.e. BahnCard 100 first))</li> *          <li>trwl:price (420,69 €)</li> *          <li>trwl:travel_class (i.e. 1, 2, business, economy, ...)</li> *          <li>trwl:locomotive_class (BR424, BR450)</li> *          <li>trwl:journey_number (i.e. 1234. Used as a work-around for missing journey numbers)</li> *          <li>trwl:wagon_class (i.e. Bpmz)</li> *          <li>trwl:role (i.e. Tf, Zf, Gf, Lokführer, conducteur de train, ...)</li> *          <li>trwl:vehicle_number (i.e. 425 001, Tz9001, 123, ...)</li> *          <li>trwl:passenger_rights (i.e. yes / no / ID of claim)</li> *          <li>trwl:social_status – social availability indicator. Allowed values: *          <code>open</code> (open to chatting), *          <code>open_find_me</code> (open, but staying at seat), *          <code>open_lets_hang</code> (open and willing to move around), *          <code>do_not_disturb</code> (prefer not to be disturbed).</li> *      </ul>
+     * @description Creates a single StatusTag Object, if user is authorized to. <br><br>The key of a tag is free text. You can choose it as you need it. However, <b>please use a namespace for tags</b> (<i>namespace:xxx</i>) that only affect your own application.<br><br>For tags related to standard actions we recommend the following tags in the trwl namespace:<br> <ul> <li>trwl:seat (i.e. 61)</li> <li>trwl:wagon (i.e. 25)</li> <li>trwl:ticket (i.e. BahnCard 100 first))</li> <li>trwl:price (420,69 €)</li> <li>trwl:travel_class (i.e. 1, 2, business, economy, ...)</li> <li>trwl:locomotive_class (BR424, BR450)</li> <li>trwl:journey_number (i.e. 1234. Used as a work-around for missing journey numbers)</li> <li>trwl:wagon_class (i.e. Bpmz)</li> <li>trwl:role (i.e. Tf, Zf, Gf, Lokführer, conducteur de train, ...)</li> <li>trwl:vehicle_number (i.e. 425 001, Tz9001, 123, ...)</li> <li>trwl:passenger_rights (i.e. yes / no / ID of claim)</li> <li>trwl:social_status – social availability indicator. Allowed values: <code>open</code> (open to chatting), <code>open_find_me</code> (open, but staying at seat), <code>open_lets_hang</code> (open and willing to move around), <code>do_not_disturb</code> (prefer not to be disturbed).</li> </ul>
      *
      * @tags Status
      * @name CreateSingleStatusTag
@@ -3482,7 +3485,7 @@ export class Api<
         /**
          * confirmation
          * Username of the to be deleted account (needs to match the currently logged in
-         *      *                  user)
+         * user)
          * @example "Gertrud123"
          */
         confirmation?: any;
@@ -3759,7 +3762,7 @@ export class Api<
               count?: number;
               /**
                * Duration in
-               *      *                                                            minutes
+               * minutes
                * @example 425
                */
               duration?: number;
@@ -3831,7 +3834,7 @@ export class Api<
         timezone?: string;
         /**
          * If this parameter is set, the polylines will be returned as well. Otherwise attribute is
-         *      *          null.
+         * null.
          */
         withPolylines?: boolean;
       },
@@ -3935,7 +3938,7 @@ export class Api<
       }),
 
     /**
-     * @description Returns paginated statuses of the authenticated user, that are more than 20 minutes in the *      future
+     * @description Returns paginated statuses of the authenticated user, that are more than 20 minutes in the future
      *
      * @tags Dashboard
      * @name GetFutureDashboard
@@ -4314,7 +4317,7 @@ export class Api<
       }),
 
     /**
-     * @description This request returns an array of max. 10 station objects matching the query. **CAUTION:** All *      slashes (as well as encoded to %2F) in {query} need to be replaced, preferrably by a space (%20)
+     * @description This request returns an array of max. 10 station objects matching the query. **CAUTION:** All slashes (as well as encoded to %2F) in {query} need to be replaced, preferrably by a space (%20)
      *
      * @tags Checkin
      * @name TrainStationAutocomplete
@@ -4337,7 +4340,7 @@ export class Api<
       }),
 
     /**
-     * @description This request returns an array of max. 10 most recent station objects that the user has arrived *      at.
+     * @description This request returns an array of max. 10 most recent station objects that the user has arrived at.
      *
      * @tags Checkin
      * @name TrainStationHistory

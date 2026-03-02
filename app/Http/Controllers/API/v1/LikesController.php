@@ -15,53 +15,49 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use InvalidArgumentException;
+use OpenApi\Attributes as OA;
 
 class LikesController extends Controller
 {
     /**
-     * @OA\Get(
-     *      path="/status/{id}/likes",
-     *      operationId="getLikesForStatus",
-     *      tags={"Likes"},
-     *      summary="[Auth optional] Get likes for status",
-     *      description="Returns array of users that liked the status. Can return an empty dataset when the status
-     *      author or the requesting user has deactivated likes",
-     *
-     *      @OA\Parameter (
-     *          name="id",
-     *          in="path",
-     *          description="Status-ID",
-     *          example=1337,
-     *
-     *          @OA\Schema(type="integer")
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data", type="array",
-     *
-     *                  @OA\Items(
-     *                      ref="#/components/schemas/UserResource"
-     *                  )
-     *              ),
-     *          )
-     *       ),
-     *
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=404, description="No status found for this id"),
-     *       @OA\Response(response=403, description="User not authorized to access this status"),
-     *       security={
-     *           {"passport": {"read-statuses"}}, {"token": {}}
-     *
-     *       }
-     *     )
-     *
      * @todo maybe put this in separate controller?
      */
+    #[OA\Get(
+        path: '/status/{id}/likes',
+        operationId: 'getLikesForStatus',
+        tags: ['Likes'],
+        summary: '[Auth optional] Get likes for status',
+        description: 'Returns array of users that liked the status. Can return an empty dataset when the status
+author or the requesting user has deactivated likes',
+        security: [['passport' => ['read-statuses']], ['token' => []]],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                in: 'path',
+                description: 'Status-ID',
+                example: 1337,
+                schema: new OA\Schema(type: 'integer'),
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/UserResource'),
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 404, description: 'No status found for this id'),
+            new OA\Response(response: 403, description: 'User not authorized to access this status'),
+        ],
+    )]
     public function show(int $statusId): AnonymousResourceCollection
     {
         $status = Status::with('likes.user')->findOrFail($statusId);
@@ -74,45 +70,43 @@ class LikesController extends Controller
         return UserResource::collection($status->likes->pluck('user'));
     }
 
-    /**
-     * @OA\Post(
-     *      path="/status/{id}/like",
-     *      operationId="addLikeToStatus",
-     *      tags={"Likes"},
-     *      summary="Add like to status",
-     *      description="Add like to status",
-     *
-     *      @OA\Parameter (
-     *          name="id",
-     *          in="path",
-     *          description="Status-ID",
-     *          example=1337,
-     *
-     *          @OA\Schema(type="integer")
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=201,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data", type="object",
-     *                      ref="#/components/schemas/LikeResponse"
-     *              )
-     *          )
-     *       ),
-     *
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=403, description="User not authorized to access this status"),
-     *       @OA\Response(response=404, description="No status found for this id"),
-     *       @OA\Response(response=409, description="Status already liked by user"),
-     *       @OA\Response(response=429, description="Rate limit exceeded"),
-     *       security={
-     *           {"passport": {"write-likes"}}, {"token": {}}
-     *       }
-     *     )
-     */
+    #[OA\Post(
+        path: '/status/{id}/like',
+        operationId: 'addLikeToStatus',
+        tags: ['Likes'],
+        summary: 'Add like to status',
+        description: 'Add like to status',
+        security: [['passport' => ['write-likes']], ['token' => []]],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                in: 'path',
+                description: 'Status-ID',
+                example: 1337,
+                schema: new OA\Schema(type: 'integer'),
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'object',
+                            ref: '#/components/schemas/LikeResponse',
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 403, description: 'User not authorized to access this status'),
+            new OA\Response(response: 404, description: 'No status found for this id'),
+            new OA\Response(response: 409, description: 'Status already liked by user'),
+            new OA\Response(response: 429, description: 'Rate limit exceeded'),
+        ],
+    )]
     public function create(int $statusId): JsonResponse
     {
         try {
@@ -142,43 +136,40 @@ class LikesController extends Controller
         }
     }
 
-    /**
-     * @OA\Delete(
-     *      path="/status/{id}/like",
-     *      operationId="removeLikeFromStatus",
-     *      tags={"Likes"},
-     *      summary="Remove like from status",
-     *      description="Removes like from status",
-     *
-     *      @OA\Parameter (
-     *          name="id",
-     *          in="path",
-     *          description="Status-ID",
-     *          example=1337,
-     *
-     *          @OA\Schema(type="integer")
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data", type="object",
-     *                      ref="#/components/schemas/LikeResponse"
-     *              )
-     *          )
-     *       ),
-     *
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=404, description="No status found for this id"),
-     *       security={
-     *           {"passport": {"write-likes"}}, {"token": {}}
-     *
-     *       }
-     *     )
-     */
+    #[OA\Delete(
+        path: '/status/{id}/like',
+        operationId: 'removeLikeFromStatus',
+        tags: ['Likes'],
+        summary: 'Remove like from status',
+        description: 'Removes like from status',
+        security: [['passport' => ['write-likes']], ['token' => []]],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                in: 'path',
+                description: 'Status-ID',
+                example: 1337,
+                schema: new OA\Schema(type: 'integer'),
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'object',
+                            ref: '#/components/schemas/LikeResponse',
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 404, description: 'No status found for this id'),
+        ],
+    )]
     public function destroy(int $statusId): JsonResponse
     {
         try {
