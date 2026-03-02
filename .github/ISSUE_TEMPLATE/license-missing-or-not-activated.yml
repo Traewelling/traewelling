@@ -38,6 +38,15 @@ body:
       required: true
 
   - type: input
+    id: dataset_name
+    attributes:
+      label: Datensatzname - Dataset name
+      description: Name der GTFS-Datei, wie in Träwelling angezeigt - Name of the GTFS dataset as shown in Traewelling.
+      placeholder: "z. B.  fr_horaires-sncf.gtfs.zip"
+    validations:
+      required: true
+
+  - type: input
     id: country
     attributes:
       label: Land - Country
