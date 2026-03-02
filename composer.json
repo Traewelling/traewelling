@@ -41,7 +41,7 @@
     "spatie/laravel-permission": "^7.0",
     "spatie/laravel-personal-data-export": "^4.3",
     "spatie/laravel-prometheus": "^1.0",
-    "spatie/laravel-sitemap": "^7.2.1",
+    "spatie/laravel-sitemap": "^8.0.0",
     "spatie/laravel-validation-rules": "^3.2",
     "spatie/laravel-webhook-server": "^3.4",
     "traewelling/google-polyline": "^0.3.0",

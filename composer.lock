@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "56d6f37ad9396150d83d050886eac5fa",
+    "content-hash": "e78f65215ee326cb70c3acc15c29accd",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -6499,16 +6499,16 @@
         },
         {
             "name": "spatie/laravel-sitemap",
-            "version": "7.4.0",
+            "version": "8.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-sitemap.git",
-                "reference": "52397c6f4219a8a0a163ddb8a8d5bc5f9bba0df4"
+                "reference": "8c79e1420a6f41405707ea7d00bb6cc10160c0ac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-sitemap/zipball/52397c6f4219a8a0a163ddb8a8d5bc5f9bba0df4",
-                "reference": "52397c6f4219a8a0a163ddb8a8d5bc5f9bba0df4",
+                "url": "https://api.github.com/repos/spatie/laravel-sitemap/zipball/8c79e1420a6f41405707ea7d00bb6cc10160c0ac",
+                "reference": "8c79e1420a6f41405707ea7d00bb6cc10160c0ac",
                 "shasum": ""
             },
             "require": {
@@ -6560,7 +6560,7 @@
                 "spatie"
             ],
             "support": {
-                "source": "https://github.com/spatie/laravel-sitemap/tree/7.4.0"
+                "source": "https://github.com/spatie/laravel-sitemap/tree/8.0.0"
             },
             "funding": [
                 {
@@ -6568,7 +6568,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2026-02-21T23:00:46+00:00"
+            "time": "2026-02-21T23:01:14+00:00"
         },
         {
             "name": "spatie/laravel-validation-rules",
