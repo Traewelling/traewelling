@@ -1,35 +1,24 @@
 <template>
-    <div class="min-h-screen flex flex-col bg-base-300">
+    <div class="min-h-screen flex flex-col bg-base-300 drawer drawer-end">
+        <input id="my-drawer-contribute" type="checkbox" class="drawer-toggle" />
         <!-- Navigation -->
-        <div class="navbar bg-primary shadow-lg">
+        <div class="navbar bg-info shadow-lg drawer-content">
             <div class="navbar-start">
                 <a href="/" class="btn btn-sm hidden lg:flex">
                     <ArrowLeft class="inline-block w-4 h-4 mr-2" />
                     {{ trans('contribute.nav.back_to_traewelling') }}
                 </a>
-                <router-link to="/contribute/" class="btn btn-ghost text-xl text-white flex lg:hidden">
+                <router-link to="/contribute/" class="btn btn-ghost text-xl text-info-content flex lg:hidden">
                     <PencilRuler class="inline-block w-6 h-6 mr-2" />{{ trans('contribute') }}
                 </router-link>
             </div>
 
-            <div class="navbar-center hidden text-white lg:flex">
+            <div class="navbar-center hidden text-info-content lg:flex">
                 <ul class="menu menu-horizontal px-1">
-                    <li>
-                        <router-link to="/contribute/">
-                            <House class="inline-block w-6 h-6 mr-2" />
-                            {{ trans('contribute.nav.overview') }}
-                        </router-link>
-                    </li>
-                    <li>
-                        <router-link to="/contribute/profile">
-                            <User class="inline-block w-6 h-6 mr-2" />
-                            {{ trans('contribute.nav.profile') }}
-                        </router-link>
-                    </li>
-                    <li>
-                        <router-link to="/contribute/event-proposal">
-                            <CalendarPlus class="inline-block w-6 h-6 mr-2" />
-                            {{ trans('contribute.nav.suggest_event') }}
+                    <li v-for="link in links" :key="link.route">
+                        <router-link :to="link.route">
+                            <component :is="link.icon" class="w-6 h-6 mr-2" />
+                            {{ trans(link.name) }}
                         </router-link>
                     </li>
                 </ul>
@@ -39,39 +28,10 @@
                 <router-link to="/contribute/" class="btn btn-ghost text-xl text-white hidden lg:flex">
                     <PencilRuler class="inline-block w-6 h-6 mr-2" />{{ trans('contribute') }}
                 </router-link>
-                <div class="dropdown dropdown-end">
-                    <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+                <div class="lg:hidden">
+                    <label for="my-drawer-contribute" class="drawer-button btn btn-ghost">
                         <Menu class="inline-block w-6 h-6 text-white" />
-                    </div>
-                    <ul
-                        tabindex="-1"
-                        class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
-                    >
-                        <li class="mb-2">
-                            <a href="/" class="btn btn-outline btn-xs">
-                                <ArrowLeft class="inline-block w-4 h-4 mr-2" />
-                                {{ trans('contribute.nav.back_to_traewelling') }}
-                            </a>
-                        </li>
-                        <li>
-                            <router-link to="/contribute/">
-                                <House class="inline-block w-6 h-6 mr-2" />
-                                {{ trans('contribute.nav.overview') }}
-                            </router-link>
-                        </li>
-                        <li>
-                            <router-link to="/contribute/profile">
-                                <User class="inline-block w-6 h-6 mr-2" />
-                                {{ trans('contribute.nav.profile') }}
-                            </router-link>
-                        </li>
-                        <li>
-                            <router-link to="/contribute/event-proposal">
-                                <CalendarPlus class="inline-block w-6 h-6 mr-2" />
-                                {{ trans('contribute.nav.suggest_event') }}
-                            </router-link>
-                        </li>
-                    </ul>
+                    </label>
                 </div>
             </div>
         </div>
@@ -82,7 +42,7 @@
         </main>
 
         <!-- Footer -->
-        <footer class="footer footer-horizontal footer-center bg-primary text-white rounded p-10">
+        <footer class="footer footer-horizontal footer-center bg-info text-info-content rounded p-10">
             <nav class="grid grid-flow-col gap-4">
                 <a href="https://help.traewelling.de/faq/" target="_blank" class="link link-hover">
                     {{ trans('menu.about') }}
@@ -95,11 +55,42 @@
                 </a>
             </nav>
         </footer>
+        <div class="drawer-side">
+            <label for="my-drawer-contribute" aria-label="close sidebar" class="drawer-overlay"></label>
+            <ul class="menu bg-base-200 min-h-full w-80 p-4">
+                <li class="mb-2">
+                    <a href="/" class="btn btn-outline btn-xs">
+                        <ArrowLeft class="inline-block w-4 h-4 mr-2" />
+                        {{ trans('contribute.nav.back_to_traewelling') }}
+                    </a>
+                </li>
+                <li v-for="link in links" :key="link.route">
+                    <a :href="link.route">
+                        <component :is="link.icon" class="inline-block w-6 h-6 mr-2" />
+                        {{ trans(link.name) }}
+                    </a>
+                </li>
+                <li class="p-0 mt-auto">
+                    <DarkModeSelector />
+                </li>
+                <li class="p-0 bottom-0">
+                    <LanguageSelector />
+                </li>
+            </ul>
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
 import { ArrowLeft, CalendarPlus, House, Menu, PencilRuler, User } from 'lucide-vue-next';
-import '../../css/contribute-theme.css';
+import { FunctionalComponent } from 'vue';
+import DarkModeSelector from './Footer/DarkModeSelector.vue';
+import LanguageSelector from './Footer/LanguageSelector.vue';
+
+const links: { name: string; icon: FunctionalComponent; route: string }[] = [
+    { name: 'contribute.nav.overview', icon: House, route: '/contribute' },
+    { name: 'contribute.nav.profile', icon: User, route: '/contribute/profile' },
+    { name: 'contribute.nav.suggest_event', icon: CalendarPlus, route: '/contribute/event-proposal' },
+];
 </script>

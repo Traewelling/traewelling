@@ -46,8 +46,8 @@ function closeModal() {
                 </h3>
                 <input
                     v-if="!profile.mastodon"
-                    type="url"
                     v-model="input"
+                    type="url"
                     class="input input-bordered w-full mt-4"
                     :placeholder="trans('user.mastodon-instance-url')"
                     required

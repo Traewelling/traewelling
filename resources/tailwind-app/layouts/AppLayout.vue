@@ -135,7 +135,6 @@ import {
     User,
 } from 'lucide-vue-next';
 import { FunctionalComponent } from 'vue';
-import '../../css/trwl-theme.css';
 import { useConfigurationStore } from '../../vue/stores/configuration';
 import { useUserStore } from '../../vue/stores/user';
 import DarkModeSelector from './Footer/DarkModeSelector.vue';
