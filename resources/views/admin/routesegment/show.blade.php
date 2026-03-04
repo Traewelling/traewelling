@@ -15,12 +15,16 @@
 @section('content')
     <div class="row">
         <!-- links to all trips in use -->
-        <div class="card w-100">
-            <div class="card-body">
-                <h5 class="card-title">Trips using this Segment</h5>
-                <div class="flex flex-wrap">
+        <div class="w-100 accordion mb-2" id="tripsAccordion">
+            <div class="accordion-item">
+                <h5 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    Trips using this Segment: {{ $segment->trips->count()  }}
+                    </button>
+                </h5>
+                <div class="flex flex-wrap accordion-collapse collapse p-2" id="collapseOne" aria-labelledby="headingOne" data-bs-parent="#tripsAccordion">
                     @foreach($segment->trips as $trip)
-                        <a class="btn btn-primary btn-sm" href="{{ route('admin.trips.show', $trip) }}">Trip #{{ $trip->id }}</a>
+                        <a class="btn btn-primary btn-sm mt-1" href="{{ route('admin.trips.show', $trip) }}">Trip #{{ $trip->id }}</a>
                     @endforeach
                 </div>
             </div>
