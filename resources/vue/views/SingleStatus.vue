@@ -15,7 +15,7 @@ import { useUserStore } from '../stores/user';
 const loading = ref(true);
 const status = ref<StatusResource | null>(null);
 const likedBy = ref<UserResource[]>([]);
-const statusId = parseInt(window.location.pathname.split('/').pop() || 0);
+const statusId = Number.parseInt(window.location.pathname.split('/').pop() || '0');
 const user = useUserStore();
 const pageError = ref<'403' | '404' | null>(null);
 const stopovers = ref<StopoverResource[]>([]);
@@ -156,7 +156,7 @@ fetchLikes();
                             </span>
                         </div>
                     </div>
-                    <span class="text-muted text-xs mt-3 d-block" v-if="status.checkin.dataSource?.attribution">
+                    <span v-if="status.checkin.dataSource?.attribution" class="text-muted text-xs mt-3 d-block">
                         {{ status.checkin.dataSource?.attribution }}
                     </span>
                 </template>

@@ -32,7 +32,7 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <router-link
-                            to="/events/suggest"
+                            to="/contribute/event-proposal"
                             class="card bg-base-200 shadow-sm hover:shadow-md transition-shadow"
                         >
                             <div class="card-body">
