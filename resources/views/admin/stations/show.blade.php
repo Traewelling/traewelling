@@ -51,68 +51,6 @@
                             </th>
                             <td>
                                 <table class="table table-bordered">
-                                    @if($station->wikidata_id)
-                                        <tr>
-                                            <td>wikidata</td>
-                                            <td>
-                                                <a href="https://www.wikidata.org/wiki/{{ $station->wikidata_id }}"
-                                                   target="{{ $station->wikidata_id }}">
-                                                    {{ $station->wikidata_id }}
-                                                </a>
-                                            </td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>
-                                    @endif
-
-                                    @if($station->ibnr)
-                                        <tr>
-                                            <td>legacy-hafas (ibnr)</td>
-                                            <td>
-                                                <a href="https://reiseauskunft.bahn.de/bin/bhftafel.exe/en?input={{ $station->ibnr ?? '' }}&boardType=dep&time=actual&productsDefault=1111101&start=yes"
-                                                   target="{{ $station->ibnr ?? '' }}"
-                                                >
-                                                    {{ $station->ibnr }}
-                                                </a>
-                                            </td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>
-                                    @endif
-
-                                    @if($station->ifopt)
-                                        <tr>
-                                            <td>ifopt</td>
-                                            <td>
-                                                <a href="https://transmodel-ids.toolforge.org/ifopt/{{ urlencode($station->ifopt) }}"
-                                                   target="{{ $station->ifopt }}">
-                                                    {{ $station->ifopt }}
-                                                </a>
-                                            </td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>
-                                    @endif
-
-                                    @if($station->rilIdentifier)
-                                        <tr>
-                                            <td>ril</td>
-                                            <td>
-                                                <a href="https://iris.noncd.db.de/wbt/js/index.html?bhf={{ $station->rilIdentifier ?? '' }}&zeilen=50&seclang=en"
-                                                   target="{{ $station->rilIdentifier ?? '' }}"
-                                                >
-                                                    {{ $station->rilIdentifier }}
-                                                </a>
-                                            </td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>
-                                    @endif
-
                                     @foreach($station->stationIdentifiers->sortByDesc('relevance') as $identifier)
                                         <tr>
                                             <td>{{ $identifier->type }}</td>
@@ -166,32 +104,6 @@
                 </script>
             </div>
 
-
-            @isset($station->ifopt_a)
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h2 class="fs-4">Stations with same Ifopt</h2>
-
-                        <table class="table table-striped table-hover">
-                            @foreach($stationsWithSameIfopt as $stationWithSameIfopt)
-                                <tr>
-                                    <td>
-                                        {{ $stationWithSameIfopt->id }}
-                                    </td>
-                                    <td>
-                                        <a href="{{ route('admin.station', ['id' => $stationWithSameIfopt->id]) }}">
-                                            {{ $stationWithSameIfopt->name }}
-                                        </a>
-                                    </td>
-                                    <td>
-                                        {{ $stationWithSameIfopt->distanceToSimilarStation }}m
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </table>
-                    </div>
-                </div>
-            @endisset
 
             <div class="card mb-3">
                 <div class="card-body">

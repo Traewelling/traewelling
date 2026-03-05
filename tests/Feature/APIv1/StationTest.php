@@ -51,8 +51,6 @@ class StationTest extends ApiTestCase
         $user = User::factory()->create();
         Passport::actingAs($user, ['*']);
         $response = $this->post('/api/v1/station', [
-            'ibnr' => 123456,
-            'rilIdentifier' => 'test',
             'name' => 'Test Station',
             'latitude' => 12.345678,
             'longitude' => 12.345678,
@@ -66,16 +64,12 @@ class StationTest extends ApiTestCase
         $user->assignRole('admin');
         Passport::actingAs($user, ['*']);
         $response = $this->post('/api/v1/station', [
-            'ibnr' => 123456,
-            'rilIdentifier' => 'test',
             'name' => 'Test Station',
             'latitude' => 12.345678,
             'longitude' => 12.345678,
         ]);
         $response->assertCreated();
         $this->assertDatabaseHas('train_stations', [
-            'ibnr' => 123456,
-            'rilIdentifier' => 'test',
             'name' => 'Test Station',
             'latitude' => 12.345678,
             'longitude' => 12.345678,
