@@ -11,6 +11,7 @@ return new class() extends Migration
     public function up(): void
     {
         Schema::table('train_stations', function (Blueprint $table): void {
+            $table->dropIndex('train_stations_identifiers_migrated_index');
             $table->dropColumn('identifiers_migrated');
         });
     }
