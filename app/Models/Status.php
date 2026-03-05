@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
+use App\StationIdentifierType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -161,14 +162,15 @@ class Status extends Model
             return $this->body ?? '';
         }
 
+        $originStation = $this->checkin->originStopover->station;
+        $destinationStation = $this->checkin->destinationStopover->station;
+        $originRil = $originStation->getIdentifier(StationIdentifierType::DE_DB_RIL100)?->identifier;
+        $destinationRil = $destinationStation->getIdentifier(StationIdentifierType::DE_DB_RIL100)?->identifier;
+
         return __('description.status', [
             'username' => $this->user->name,
-            'origin' => $this->checkin->originStopover->station->name .
-                             ($this->checkin->originStopover->station->rilIdentifier ?
-                                 ' (' . $this->checkin->originStopover->station->rilIdentifier . ')' : ''),
-            'destination' => $this->checkin->destinationStopover->station->name .
-                             ($this->checkin->destinationStopover->station->rilIdentifier ?
-                                 ' (' . $this->checkin->destinationStopover->station->rilIdentifier . ')' : ''),
+            'origin' => $originStation->name . ($originRil ? ' (' . $originRil . ')' : ''),
+            'destination' => $destinationStation->name . ($destinationRil ? ' (' . $destinationRil . ')' : ''),
             'date' => $this->checkin->departure->isoFormat(__('datetime-format')),
             'lineName' => $this->checkin->trip->linename,
         ]);

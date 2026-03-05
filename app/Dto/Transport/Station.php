@@ -77,10 +77,10 @@ class Station
         $dto = new self();
         $dto->setId($station->id)
             ->setName($station->name)
-            ->setIbnr($station->ibnr)
+            ->setIbnr(null) // TODO: Kann das hier mittelfristig raus? Wo wird das noch über dieses DTO genutzt?
             ->setLatitude($station->latitude)
             ->setLongitude($station->longitude)
-            ->setRilIdentifier($station->rilIdentifier);
+            ->setRilIdentifier(null); // TODO: Kann das hier mittelfristig raus? Wo wird das noch über dieses DTO genutzt?
 
         return $dto;
     }

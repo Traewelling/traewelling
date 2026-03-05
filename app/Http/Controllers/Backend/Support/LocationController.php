@@ -318,27 +318,6 @@ class LocationController
         return new FeatureCollection($features);
     }
 
-    public function parseByIbnr(int|string|null $originIndex, mixed $data, int|string $key, int|string|null $destinationIndex): array
-    {
-        if ($originIndex === null
-            && $this->origin->station->ibnr === (int) $data->properties->id
-            && isset($data->properties->departure_planned) // Important for ring lines!
-            && $this->origin->departure_planned->is($data->properties->departure_planned) // ring lines!
-        ) {
-            $originIndex = $key;
-        }
-
-        if ($destinationIndex === null
-            && $this->destination->station->ibnr === (int) $data->properties->id
-            && isset($data->properties->arrival_planned) // Important for ring lines!
-            && $this->destination->arrival_planned->is($data->properties->arrival_planned) // ring lines!
-        ) {
-            $destinationIndex = $key;
-        }
-
-        return [$originIndex, $destinationIndex];
-    }
-
     public function parseByStationId(int|string|null $originIndex, mixed $data, int|string $key, int|string|null $destinationIndex): array
     {
         if ($originIndex === null
@@ -384,9 +363,6 @@ class LocationController
         $originIndex = null;
         $destinationIndex = null;
         foreach ($features as $key => $data) {
-            if (isset($data->properties->id)) {
-                [$originIndex, $destinationIndex] = $this->parseByIbnr($originIndex, $data, $key, $destinationIndex);
-            }
             if (isset($data->properties->stationId)) {
                 [$originIndex, $destinationIndex] = $this->parseByStationId($originIndex, $data, $key, $destinationIndex);
             }
@@ -508,11 +484,6 @@ class LocationController
     public function mapStopoversToPolyline(mixed $geoJsonObj, EloquentCollection|Collection $stopovers): void
     {
         foreach ($geoJsonObj->features as $polylineFeature) {
-            if (isset($polylineFeature->properties->id)) {
-                $stopover = $stopovers->where('station.ibnr', $polylineFeature->properties->id)
-                    ->where('passed', false)
-                    ->first();
-            }
             if (isset($polylineFeature->properties->stationId)) {
                 $stopover = $stopovers->where('station.id', $polylineFeature->properties->stationId)
                     ->where('passed', false)

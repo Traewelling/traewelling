@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\StationIdentifierType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 use phpGPX\Models\Point;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -92,6 +94,24 @@ class Station extends Model
     public function stationIdentifiers(): HasMany
     {
         return $this->hasMany(StationIdentifier::class, 'station_id', 'id');
+    }
+
+    public function getIdentifier(StationIdentifierType $type): ?StationIdentifier
+    {
+        if ($this->relationLoaded('stationIdentifiers')) {
+            return $this->stationIdentifiers->firstWhere('type', $type) ?? null;
+        }
+
+        return $this->stationIdentifiers()->where('type', $type->value)->first();
+    }
+
+    public function getIdentifiers(StationIdentifierType $type): Collection
+    {
+        if ($this->relationLoaded('stationIdentifiers')) {
+            return $this->stationIdentifiers->where('type', $type);
+        }
+
+        return $this->stationIdentifiers()->where('type', $type->value)->get();
     }
 
     public function stopovers(): HasMany

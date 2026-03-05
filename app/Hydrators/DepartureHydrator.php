@@ -4,6 +4,7 @@ namespace App\Hydrators;
 
 use App\Dto\Internal\Departure;
 use App\Http\Resources\StationResource;
+use App\StationIdentifierType;
 use Illuminate\Support\Collection;
 
 class DepartureHydrator
@@ -25,7 +26,7 @@ class DepartureHydrator
                 'name' => $request->station->name,
                 'location' => [
                     'type' => 'location',
-                    'id' => $request->station->ibnr,
+                    'id' => $request->station->getIdentifier(StationIdentifierType::DE_DB_IBNR)?->identifier,
                     'latitude' => $request->station->latitude,
                     'longitude' => $request->station->longitude,
                 ],
