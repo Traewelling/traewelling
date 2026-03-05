@@ -9,7 +9,7 @@ contact_links:
     about: Please check for existing requests and upvote them | Bitte prüfe bestehende Wünsche und stimme ggf. ab
 
   - name: 📜 License missing or not activated / Lizenz fehlt oder nicht aktiviert
-    url: https://github.com/Traewelling/transitous-licenses/blob/main/README.md
+    url: https://github.com/Traewelling/transitous-licenses/blob/main/docs/README.md
     about: Report missing/unclear/not activated data licenses. | Fehlende/unklare/nicht aktivierte Datenlizenz melden.
 
   - name: 🧭 Wrong operator / Falscher Betreiber (Transitous Wikidata Matching)
