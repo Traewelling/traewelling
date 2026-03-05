@@ -21,6 +21,11 @@ export default defineComponent({
             default: null,
         },
     },
+    computed: {
+        rilIdentifier(): string | null {
+            return this.station?.identifiers?.find((i) => i.type === 'de_db_ril100')?.identifier ?? null;
+        },
+    },
     methods: {
         getArea(): string {
             if (this.$props.station?.areas) {
@@ -47,8 +52,8 @@ export default defineComponent({
             <div class="flex-grow-1 overflow-hidden">
                 <div class="text-truncate">
                     {{ station?.name || text }}
-                    <span v-if="station?.rilIdentifier" class="badge rounded-pill bg-light text-muted ms-1">
-                        {{ station.rilIdentifier }}
+                    <span v-if="rilIdentifier" class="badge rounded-pill bg-light text-muted ms-1">
+                        {{ rilIdentifier }}
                     </span>
                 </div>
                 <div v-if="getArea()" class="text-sm text-muted text-truncate">
