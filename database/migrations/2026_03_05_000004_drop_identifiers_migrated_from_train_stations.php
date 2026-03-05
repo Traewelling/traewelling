@@ -19,7 +19,7 @@ return new class() extends Migration
     public function down(): void
     {
         Schema::table('train_stations', function (Blueprint $table): void {
-            $table->boolean('identifiers_migrated')->default(false);
+            $table->boolean('identifiers_migrated')->default(false)->index();
         });
     }
 };
