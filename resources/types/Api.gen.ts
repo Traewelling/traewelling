@@ -2287,7 +2287,16 @@ export class Api<
      * @request GET:/user/self/followers
      * @secure
      */
-    getFollowers: (params: RequestParams = {}) =>
+    getFollowers: (
+      query?: {
+        /**
+         * Page number for pagination
+         * @example 1
+         */
+        page?: number;
+      },
+      params: RequestParams = {},
+    ) =>
       this.request<
         {
           data?: UserResource[];
@@ -2300,6 +2309,7 @@ export class Api<
       >({
         path: `/user/self/followers`,
         method: "GET",
+        query: query,
         secure: true,
         format: "json",
         ...params,
@@ -2314,7 +2324,16 @@ export class Api<
      * @request GET:/user/self/follow-requests
      * @secure
      */
-    getFollowRequests: (params: RequestParams = {}) =>
+    getFollowRequests: (
+      query?: {
+        /**
+         * Page number for pagination
+         * @example 1
+         */
+        page?: number;
+      },
+      params: RequestParams = {},
+    ) =>
       this.request<
         {
           data?: UserResource[];
@@ -2327,6 +2346,7 @@ export class Api<
       >({
         path: `/user/self/follow-requests`,
         method: "GET",
+        query: query,
         secure: true,
         format: "json",
         ...params,
@@ -2341,7 +2361,16 @@ export class Api<
      * @request GET:/user/self/followings
      * @secure
      */
-    getFollowings: (params: RequestParams = {}) =>
+    getFollowings: (
+      query?: {
+        /**
+         * Page number for pagination
+         * @example 1
+         */
+        page?: number;
+      },
+      params: RequestParams = {},
+    ) =>
       this.request<
         {
           data?: UserResource[];
@@ -2354,6 +2383,7 @@ export class Api<
       >({
         path: `/user/self/followings`,
         method: "GET",
+        query: query,
         secure: true,
         format: "json",
         ...params,

@@ -13,10 +13,14 @@
             <div class="navbar-center hidden text-white lg:flex">
                 <ul class="menu menu-horizontal px-1">
                     <li v-for="link in links" :key="link.route">
-                        <a :href="link.route">
+                        <a v-if="link.legacy" :href="link.route">
                             <component :is="link.icon" class="inline-block w-6 h-6 mr-2" />
                             {{ trans(link.name) }}
                         </a>
+                        <router-link v-else :to="link.route">
+                            <component :is="link.icon" class="inline-block w-6 h-6 mr-2" />
+                            {{ trans(link.name) }}
+                        </router-link>
                     </li>
                 </ul>
             </div>
@@ -29,10 +33,22 @@
                     </div>
                     <ul tabindex="-1" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
                         <li v-for="link in userLinks" :key="link.route">
-                            <a v-show="link.condition === undefined || link.condition" :href="link.route">
+                            <a
+                                v-if="link.legacy"
+                                v-show="link.condition === undefined || link.condition"
+                                :href="link.route"
+                            >
                                 <component :is="link.icon" class="inline-block w-6 h-6 mr-2" />
                                 {{ trans(link.name) }}
                             </a>
+                            <router-link
+                                v-else
+                                v-show="link.condition === undefined || link.condition"
+                                :to="link.route"
+                            >
+                                <component :is="link.icon" class="inline-block w-6 h-6 mr-2" />
+                                {{ trans(link.name) }}
+                            </router-link>
                         </li>
                     </ul>
                 </div>
@@ -63,7 +79,7 @@
 
                     Version
                     <a href="/changelog" class="link link-hover">
-                        {{ config.appVersion.substring(0, 11) }}
+                        {{ config.appVersion?.substring(0, 11) }}
                     </a>
                 </p>
             </aside>
@@ -97,17 +113,25 @@
             <ul class="menu bg-base-200 min-h-full w-80 p-4">
                 <!-- Sidebar content here -->
                 <li v-for="link in links" :key="link.route">
-                    <a :href="link.route">
+                    <a v-if="link.legacy" :href="link.route">
                         <component :is="link.icon" class="inline-block w-6 h-6 mr-2" />
                         {{ trans(link.name) }}
                     </a>
+                    <router-link v-else to="link.route">
+                        <component :is="link.icon" class="inline-block w-6 h-6 mr-2" />
+                        {{ trans(link.name) }}
+                    </router-link>
                 </li>
                 <li class="border-1"></li>
                 <li v-for="link in userLinks" :key="link.route">
-                    <a v-show="link.condition === undefined || link.condition" :href="link.route">
+                    <a v-if="link.legacy" v-show="link.condition === undefined || link.condition" :href="link.route">
                         <component :is="link.icon" class="inline-block w-6 h-6 mr-2" />
                         {{ trans(link.name) }}
                     </a>
+                    <router-link v-else v-show="link.condition === undefined || link.condition" :to="link.route">
+                        <component :is="link.icon" class="inline-block w-6 h-6 mr-2" />
+                        {{ trans(link.name) }}
+                    </router-link>
                 </li>
                 <li class="p-0 mt-auto">
                     <DarkModeSelector />
@@ -145,18 +169,24 @@ const user = useUserStore();
 const config = useConfigurationStore();
 config.fetchData();
 
-const links: { name: string; icon: FunctionalComponent; route: string }[] = [
-    { name: 'menu.dashboard', icon: House, route: '/dashboard' },
-    { name: 'menu.leaderboard', icon: Medal, route: '/leaderboard' },
-    { name: 'menu.active', icon: Map, route: '/statuses/active' },
-    { name: 'stats', icon: ChartNoAxesCombined, route: '/statistics' },
+const links: { name: string; icon: FunctionalComponent; route: string; legacy: boolean; condition?: boolean }[] = [
+    { name: 'menu.dashboard', icon: House, route: '/dashboard', legacy: true },
+    { name: 'menu.leaderboard', icon: Medal, route: '/leaderboard', legacy: true },
+    { name: 'menu.active', icon: Map, route: '/statuses/active', legacy: true },
+    { name: 'stats', icon: ChartNoAxesCombined, route: '/statistics', legacy: true },
 ];
 
-const userLinks = [
-    { name: 'menu.profile', icon: User, route: '/profile' },
-    { name: 'menu.export', icon: Save, route: '/export' },
-    { name: 'menu.settings', icon: Settings, route: '/settings' },
-    { name: 'menu.about', icon: LifeBuoy, route: 'https://help.traewelling.de/faq/' },
-    { name: 'menu.backend', icon: MonitorCog, route: '/admin', condition: user.isEventModerator || user.isAdmin },
+const userLinks: { name: string; icon: FunctionalComponent; route: string; legacy: boolean; condition?: boolean }[] = [
+    { name: 'menu.profile', icon: User, route: '/profile', legacy: true },
+    { name: 'menu.export', icon: Save, route: '/export', legacy: true },
+    { name: 'menu.settings', icon: Settings, route: '/settings/profile', legacy: false },
+    { name: 'menu.about', icon: LifeBuoy, route: 'https://help.traewelling.de/faq/', legacy: true },
+    {
+        name: 'menu.backend',
+        icon: MonitorCog,
+        route: '/admin',
+        condition: user.isEventModerator || user.isAdmin,
+        legacy: true,
+    },
 ];
 </script>

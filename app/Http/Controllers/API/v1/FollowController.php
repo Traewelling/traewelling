@@ -132,6 +132,15 @@ class FollowController extends Controller
         summary: 'List all followers',
         security: [['passport' => ['read-settings-followers']], ['token' => []]],
         tags: ['User/Follow', 'Settings'],
+        parameters: [
+            new OA\Parameter(
+                name: 'page',
+                description: 'Page number for pagination',
+                in: 'query',
+                schema: new OA\Schema(type: 'integer'),
+                example: 1,
+            ),
+        ],
         responses: [
             new OA\Response(
                 response: 200,
@@ -166,6 +175,15 @@ class FollowController extends Controller
         summary: 'List all followers',
         security: [['passport' => ['read-settings-followers']], ['token' => []]],
         tags: ['User/Follow', 'Settings'],
+        parameters: [
+            new OA\Parameter(
+                name: 'page',
+                description: 'Page number for pagination',
+                in: 'query',
+                schema: new OA\Schema(type: 'integer'),
+                example: 1,
+            ),
+        ],
         responses: [
             new OA\Response(
                 response: 200,
@@ -198,6 +216,15 @@ class FollowController extends Controller
         summary: 'List all users the current user is following',
         security: [['passport' => ['read-settings-followers']], ['token' => []]],
         tags: ['User/Follow', 'Settings'],
+        parameters: [
+            new OA\Parameter(
+                name: 'page',
+                description: 'Page number for pagination',
+                in: 'query',
+                schema: new OA\Schema(type: 'integer'),
+                example: 1,
+            ),
+        ],
         responses: [
             new OA\Response(
                 response: 200,

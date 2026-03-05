@@ -1,18 +1,29 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
-import { TriangleAlert } from 'lucide-vue-next';
+import { LayoutGrid, Lock, ShieldUser, TriangleAlert, User, UserRoundKey, Users } from 'lucide-vue-next';
 import AppLayout from './AppLayout.vue';
 
 const tabs = [
-    { name: 'menu.profile', route: '/settings/profile' },
-    { name: 'settings.tab.account', route: '/settings/account' },
-    { name: 'menu.privacy', route: '/settings/privacy' },
-    { name: 'settings.title-security', route: '/settings/security' },
-    { name: 'your-apps', route: '/settings/applications' },
+    { name: 'menu.profile', route: '/settings/profile', icon: User },
+    {
+        name: 'settings.follower.manage',
+        route: '/settings/followers',
+        icon: Users,
+        activeRoutes: ['/settings/followers', '/settings/follow-requests', '/settings/followings'],
+    },
+    { name: 'settings.tab.account', route: '/settings/account', icon: ShieldUser },
+    { name: 'menu.privacy', route: '/settings/privacy', icon: Lock },
+    { name: 'settings.title-security', route: '/settings/security', icon: UserRoundKey },
 ];
 
-function isActiveTab(route: string) {
-    return window?.location?.pathname.startsWith(route);
+const legacyTabs = [{ name: 'your-apps', route: '/settings/applications', icon: LayoutGrid }];
+
+function isActiveTab(route: { route: string; activeRoutes?: string[] }): boolean {
+    if (route.activeRoutes) {
+        return route.activeRoutes.some((r) => window?.location?.pathname.startsWith(r));
+    }
+
+    return window?.location?.pathname.startsWith(route.route);
 }
 </script>
 <template>
@@ -27,18 +38,34 @@ function isActiveTab(route: string) {
                 </span>
             </div>
             <div role="tablist" class="tabs tabs-border">
-                <a
+                <router-link
                     v-for="tab in tabs"
                     :key="tab.route"
                     role="tab"
                     class="tab"
-                    :href="tab.route"
-                    :class="{ 'tab-active': isActiveTab(tab.route) }"
+                    :to="tab.route"
+                    :class="{ 'tab-active': isActiveTab(tab) }"
                 >
-                    {{ trans(tab.name) }}
+                    <component :is="tab.icon" class="size-5 md:me-1"></component>
+                    <span class="hidden md:inline">
+                        {{ trans(tab.name) }}
+                    </span>
+                </router-link>
+                <a
+                    v-for="tab in legacyTabs"
+                    :key="tab.route"
+                    role="tab"
+                    class="tab"
+                    :href="tab.route"
+                    :class="{ 'tab-active': isActiveTab(tab) }"
+                >
+                    <component :is="tab.icon" class="size-5 md:me-1"></component>
+                    <span class="hidden md:inline">
+                        {{ trans(tab.name) }}
+                    </span>
                 </a>
             </div>
-            <div class="mt-4">
+            <div class="mt-4 min-h-100">
                 <slot />
             </div>
         </div>
