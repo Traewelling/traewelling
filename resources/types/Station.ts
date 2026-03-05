@@ -1,11 +1,15 @@
+export type StationIdentifier = {
+    type: string;
+    identifier: string;
+};
+
 export type ShortStation = {
     id: number;
     name: string;
     latitude: number;
     longitude: number;
-    ibnr: number;
-    rilIdentifier: string;
     areas: Area[];
+    identifiers?: StationIdentifier[];
 };
 
 export type Area = {
