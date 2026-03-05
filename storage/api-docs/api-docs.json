@@ -7270,16 +7270,18 @@
                         "example": "Karlsruhe Hbf"
                     },
                     "rilIdentifier": {
-                        "description": "Identifier specified in 'Richtline 100' of the Deutsche Bahn",
+                        "description": "Deprecated. Always null. Use the station identifiers endpoint instead.",
                         "type": "string",
-                        "example": "RK",
-                        "nullable": true
+                        "example": null,
+                        "nullable": true,
+                        "deprecated": true
                     },
                     "evaIdentifier": {
-                        "description": "IBNR identifier of Deutsche Bahn",
+                        "description": "Deprecated. Always null. Use the station identifiers endpoint instead.",
                         "type": "string",
-                        "example": "8000191",
-                        "nullable": true
+                        "example": null,
+                        "nullable": true,
+                        "deprecated": true
                     },
                     "arrival": {
                         "description": "currently known arrival time. Equal to arrivalReal if known. Else equal to arrivalPlanned.",

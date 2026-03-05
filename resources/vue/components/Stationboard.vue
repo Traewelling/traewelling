@@ -38,7 +38,6 @@ export default {
             firstFetchTime: null,
             pushState: null,
             fastCheckinIbnr: null,
-            useInternalIdentifiers: true,
             removedLicenses: [],
         };
     },
@@ -67,7 +66,7 @@ export default {
                 window.history.back();
             } else {
                 const params = new URLSearchParams(window.location.search);
-                const destination = this.useInternalIdentifiers ? value.id : value.evaIdentifier;
+                const destination = value.id;
                 params.set('destination', destination);
                 this.pushHistory(params);
             }
@@ -106,7 +105,7 @@ export default {
             const data = new URLSearchParams({
                 tripId: selectedItem.tripId,
                 lineName: selectedItem.line.name,
-                start: this.useInternalIdentifiers ? this.selectedTrain.stop.id : this.meta.station.ibnr,
+                start: this.selectedTrain.stop.id,
                 departure: selectedItem.when,
                 category: selectedItem.line.product,
             });
@@ -214,9 +213,6 @@ export default {
                 };
                 if (urlParams.has('destination')) {
                     this.fastCheckinIbnr = urlParams.get('destination');
-                }
-                if (urlParams.has('idType')) {
-                    this.useInternalIdentifiers = urlParams.get('idType') === 'trwl';
                 }
                 this.show = true;
                 this.$refs?.modal?.show();
@@ -349,13 +345,11 @@ export default {
                 v-model:destination="selectedDestination"
                 :selected-train="selectedTrain"
                 :fast-checkin-id="fastCheckinIbnr"
-                :use-internal-identifiers="useInternalIdentifiers"
             />
             <CheckinInterface
                 v-if="showCheckinInterface"
                 :selected-train="selectedTrain"
                 :selected-destination="selectedDestination"
-                :use-internal-identifiers="useInternalIdentifiers"
             />
         </template>
         <template v-if="showCheckinInterface" #close>

@@ -101,9 +101,6 @@
                                     <div class="badge badge-lg badge-primary gap-2">
                                         <MapPin class="h-3 w-3" />
                                         {{ selectedStation.name }}
-                                        <span v-if="selectedStation.rilIdentifier" class="opacity-70">
-                                            ({{ selectedStation.rilIdentifier }})
-                                        </span>
                                         <button
                                             type="button"
                                             class="btn btn-ghost btn-xs btn-circle"
@@ -157,10 +154,18 @@
                                                         <span>
                                                             {{ station.name }}
                                                             <span
-                                                                v-if="station.rilIdentifier"
+                                                                v-if="
+                                                                    station.identifiers?.find(
+                                                                        (i) => i.type === 'de_db_ril100',
+                                                                    )
+                                                                "
                                                                 class="badge badge-xs badge-ghost ml-1"
                                                             >
-                                                                {{ station.rilIdentifier }}
+                                                                {{
+                                                                    station.identifiers?.find(
+                                                                        (i) => i.type === 'de_db_ril100',
+                                                                    )?.identifier
+                                                                }}
                                                             </span>
                                                         </span>
                                                         <span v-if="getStationArea(station)" class="text-xs opacity-50">
@@ -215,14 +220,18 @@ interface StationArea {
     adminLevel: number;
 }
 
+interface StationIdentifier {
+    type: string;
+    identifier: string;
+}
+
 interface Station {
     id: number;
     name: string;
     latitude: number;
     longitude: number;
-    ibnr: number;
-    rilIdentifier: string | null;
     areas?: StationArea[];
+    identifiers?: StationIdentifier[];
 }
 
 const form = reactive({

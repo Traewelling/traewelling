@@ -60,7 +60,7 @@ export default defineComponent({
         addMarker(data, index, length) {
             const marker = L.marker([data.latitude, data.longitude], { icon: trainIcon }).addTo(this.map);
 
-            marker.bindPopup(`<strong>${data.name}</strong> <i>${data.rilIdentifier || ''}</i>`);
+            marker.bindPopup(`<strong>${data.name}</strong>`);
 
             if (index === 'origin') {
                 if (this.origin) {

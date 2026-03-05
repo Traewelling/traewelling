@@ -1166,13 +1166,15 @@ export interface StopoverResource {
    */
   name: string;
   /**
-   * Identifier specified in 'Richtline 100' of the Deutsche Bahn
-   * @example "RK"
+   * Deprecated. Always null. Use the station identifiers endpoint instead.
+   * @deprecated
+   * @example null
    */
   rilIdentifier: string | null;
   /**
-   * IBNR identifier of Deutsche Bahn
-   * @example "8000191"
+   * Deprecated. Always null. Use the station identifiers endpoint instead.
+   * @deprecated
+   * @example null
    */
   evaIdentifier: string | null;
   /**
