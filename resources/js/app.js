@@ -1,5 +1,4 @@
 /* eslint-disable vue/one-component-per-file */
-import 'awesomplete/awesomplete';
 import 'bootstrap';
 import { i18nVue } from 'laravel-vue-i18n';
 import 'leaflet/dist/leaflet.js';
@@ -156,7 +155,6 @@ document.addEventListener('DOMContentLoaded', function () {
 window.addEventListener('load', () => {
     import('./components/progressbar');
     import('./components/settings');
-    import('./components/station-autocomplete');
     import('./api/Status');
     import('./components/export');
     import('./components/business-check-in');
