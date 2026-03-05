@@ -10,7 +10,7 @@ defineProps<{
 </script>
 
 <template>
-    <li class="list-row cursor-pointer hover:bg-base-200">
+    <li class="list-row items-center cursor-pointer hover:bg-base-200">
         <div class="list-col-grow">
             <div class="font-semibold">{{ title }}</div>
             <div v-if="description" class="text-xs opacity-60">{{ description }}</div>
