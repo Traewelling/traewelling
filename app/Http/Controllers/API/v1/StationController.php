@@ -55,6 +55,8 @@ class StationController extends Controller
             Stopover::where('train_station_id', $station->id)->exists()
             || Event::where('station_id', $station->id)->exists()
             || EventSuggestion::where('station_id', $station->id)->exists()
+            || Stopover::where('train_station_id', $station->id)->exists()
+            || Trip::where('origin_id', $station->id)->orWhere('destination_id', $station->id)->exists()
         ) {
             return $this->sendError('Station is still in use and cannot be deleted', 409);
         }
