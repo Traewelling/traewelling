@@ -487,6 +487,9 @@ jobs:
           mkdir -p database
           touch database/database.sqlite
 
+      - name: Run php artisan optimize
+        run: php artisan optimize
+
       - name: Execute tests (Unit and Feature tests) via Laravel internal test management and PHPUnit
         env:
           DB_CONNECTION: sqlite
