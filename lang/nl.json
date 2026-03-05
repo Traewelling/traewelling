@@ -297,7 +297,7 @@
     "mail.account_deletion_notification_two_weeks_before.body3": "Als je je account wilt behouden, log dan binnen 14 dagen in.",
     "mail.account_deletion_notification_two_weeks_before.subject": "Je Träwelling-account wordt over twee weken verwijderd",
     "mail.bye": "Met vriendelijke groet",
-    "mail.hello": "Hallo, :username",
+    "mail.hello": "Hallo, :username!",
     "mail.signature": "Het Träwelling-team",
     "maintenance.auto-refresh": "Deze pagina zal automatisch opnieuw worden geladen, nadat de werkzaamheden over zijn.",
     "maintenance.follow": "Volg ons op Mastodon",

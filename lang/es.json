@@ -273,7 +273,7 @@
     "mail.account_deletion_notification_two_weeks_before.body3": "Si quieres mantener tu cuenta, inicia sesión durante los próximos 14 días.",
     "mail.account_deletion_notification_two_weeks_before.subject": "Tu cuenta de Träwelling será borrada en dos semanas",
     "mail.bye": "Saludos cordiales",
-    "mail.hello": "Hola :username",
+    "mail.hello": "Hola :username!",
     "mail.signature": "Tu equipo de Träwelling",
     "maintenance.follow": "Síguenos en Mastodon",
     "maintenance.prolonged": "Este mensaje no debería estar visible más de unos minutos.",

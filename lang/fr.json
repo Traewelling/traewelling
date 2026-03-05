@@ -323,7 +323,7 @@
     "mail.account_deletion_notification_two_weeks_before.body3": "Si tu souhaites conserver ton compte, merci de te connecter d'ici les 14 prochains jours.",
     "mail.account_deletion_notification_two_weeks_before.subject": "Ton compte Träwelling sera supprimé dans deux semaines",
     "mail.bye": "Bien à toi",
-    "mail.hello": "Salut :username",
+    "mail.hello": "Salut :username!",
     "mail.signature": "Ton équipe Träwelling",
     "maintenance.auto-refresh": "Cette page s'actualisera automatiquement une fois la maintenance terminée.",
     "maintenance.follow": "Suis-nous sur Mastodon",

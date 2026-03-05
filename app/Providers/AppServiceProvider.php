@@ -2,9 +2,13 @@
 
 namespace App\Providers;
 
+use App\Helpers\Lang;
 use App\Http\Controllers\Backend\Auth\AuthorizationController;
 use App\Http\Controllers\Backend\VersionController;
+use App\Notifications\LangMailMessage;
 use Carbon\CarbonInterval;
+use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Pagination\Paginator;
@@ -62,5 +66,46 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Http::globalRequestMiddleware(fn ($request) => $request->withHeader('User-Agent', VersionController::getUserAgent()));
+
+        $this->registerMails();
+    }
+
+    private function registerMails(): void
+    {
+        ResetPassword::toMailUsing(function (object $notifiable, string $url) {
+            $locale = $notifiable->language ?? 'en';
+
+            $mail = new LangMailMessage($locale);
+            if ($notifiable->username) {
+                $mail->greeting(Lang::trans(key: 'mail.hello', replace: ['username' => $notifiable->username], locale: $locale));
+            }
+
+            $mail->subject(Lang::trans(key: 'mail.reset_password.subject', locale: $locale))
+                ->line(Lang::trans(key: 'mail.reset_password.line1', locale: $locale))
+                ->action(Lang::trans(key: 'mail.reset_password.action', locale: $locale), $url)
+                ->line(Lang::trans(
+                    key: 'mail.reset_password.line2',
+                    replace: ['count' => config('auth.passwords.' . config('auth.defaults.passwords') . '.expire')],
+                    locale: $locale
+                ))
+                ->line(Lang::trans(key: 'mail.reset_password.line3', locale: $locale))
+                ->locale($locale);
+
+            return $mail;
+        });
+
+        VerifyEmail::toMailUsing(function (object $notifiable, string $url) {
+            $locale = $notifiable->language ?? 'en';
+
+            $mail = new LangMailMessage($locale);
+            if ($notifiable->username) {
+                $mail->greeting(Lang::trans(key: 'mail.hello', replace: ['username' => $notifiable->username], locale: $locale));
+            }
+            $mail->subject(Lang::trans(key: 'mail.verify_email.subject', locale: $locale))
+                ->line(Lang::trans(key: 'mail.verify_email.line1', locale: $locale))
+                ->action(Lang::trans(key: 'mail.verify_email.action', locale: $locale), $url);
+
+            return $mail;
+        });
     }
 }
