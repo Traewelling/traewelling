@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Dto\Wikidata;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use JsonException;
 
@@ -15,7 +16,7 @@ readonly class WikidataEntity
     public array $rawData;
 
     /**
-     * @throws JsonException|ModelNotFoundException
+     * @throws JsonException|ModelNotFoundException|ConnectionException
      */
     public static function fetch(string $qId): self
     {
@@ -35,11 +36,6 @@ readonly class WikidataEntity
         $instance->rawData = $json['entities'][$qId];
 
         return $instance;
-    }
-
-    public function getLabels(): array
-    {
-        return $this->rawData['labels'] ?? [];
     }
 
     public function getLabel(string $language = 'en'): ?string
