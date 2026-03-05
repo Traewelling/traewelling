@@ -2187,6 +2187,14 @@
                             "minimum": 1
                         },
                         "example": 50
+                    },
+                    {
+                        "name": "withIdentifiers",
+                        "in": "query",
+                        "description": "Include station identifiers in the response.",
+                        "schema": {
+                            "type": "boolean"
+                        }
                     }
                 ],
                 "responses": {

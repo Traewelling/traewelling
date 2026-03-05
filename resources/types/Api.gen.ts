@@ -3772,6 +3772,8 @@ export class Api<
          * @example 50
          */
         limit?: number;
+        /** Include station identifiers in the response. */
+        withIdentifiers?: boolean;
       },
       params: RequestParams = {},
     ) =>
