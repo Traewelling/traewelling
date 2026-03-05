@@ -8,7 +8,6 @@ use App\Enum\StatusVisibility;
 use App\Enum\WebhookEvent;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\StatusController;
-use App\Http\Resources\StatusResource;
 use App\Jobs\MonitoredCallWebhookJob;
 use App\Models\User;
 use App\Repositories\CheckinHydratorRepository;
@@ -27,8 +26,6 @@ class WebhookStatusTest extends ApiTestCase
 
     public function test_webhook_sending_on_status_creation(): void
     {
-        $this->markTestIncomplete();
-
         Bus::fake();
 
         $user = User::factory()->create();
@@ -37,10 +34,8 @@ class WebhookStatusTest extends ApiTestCase
         $status = $this->createStatus($user);
 
         Bus::assertDispatched(function (MonitoredCallWebhookJob $job) use ($status) {
-            assertEquals([
-                'event' => WebhookEvent::CHECKIN_CREATE->value,
-                'status' => new StatusResource($status),
-            ], $job->payload);
+            assertEquals(WebhookEvent::CHECKIN_CREATE->value, $job->payload['event']);
+            assertEquals($status->id, $job->payload['status']['id']);
 
             return true;
         });
@@ -48,8 +43,6 @@ class WebhookStatusTest extends ApiTestCase
 
     public function test_webhook_sending_on_status_body_change()
     {
-        $this->markTestIncomplete();
-
         Bus::fake();
 
         $user = User::factory()->create();
@@ -78,8 +71,6 @@ class WebhookStatusTest extends ApiTestCase
 
     public function test_webhook_sending_on_like()
     {
-        $this->markTestIncomplete();
-
         Bus::fake();
 
         $user = User::factory()->create();
@@ -103,8 +94,6 @@ class WebhookStatusTest extends ApiTestCase
 
     public function test_webhook_sending_on_destination_change()
     {
-        $this->markTestIncomplete();
-
         Bus::fake();
 
         $user = User::factory()->create();
@@ -116,18 +105,17 @@ class WebhookStatusTest extends ApiTestCase
             tripID: self::TRIP_ID,
             lineName: self::ICE802['line']['name']
         );
-        $aachen = $trip->stopovers->where('station.ibnr', self::AACHEN_HBF['id'])->first();
-        TrainCheckinController::changeDestination($checkin, $aachen);
+        $trip->load('stopovers.station');
+        $goettingen = $trip->stopovers->first(fn ($s) => $s->station->name === self::GOETTINGEN_HBF['name']);
+        TrainCheckinController::changeDestination($checkin, $goettingen);
 
         Bus::assertDispatched(function (MonitoredCallWebhookJob $job) use ($status) {
             assertEquals(
                 WebhookEvent::CHECKIN_UPDATE->value,
                 $job->payload['event']
             );
-            assertEquals($status->id, $job->payload['status']->id);
-            // This is really hacky, but I didn't get it working otherwise.
-            $parsedStatus = json_decode($job->payload['status']->toJson());
-            assertEquals(self::AACHEN_HBF['id'], $parsedStatus->train->destination->evaIdentifier);
+            assertEquals($status->id, $job->payload['status']['id']);
+            assertEquals(self::GOETTINGEN_HBF['name'], $job->payload['status']['checkin']['destination']['name']);
 
             return true;
         });
@@ -135,8 +123,6 @@ class WebhookStatusTest extends ApiTestCase
 
     public function test_webhook_sending_on_business_change()
     {
-        $this->markTestIncomplete();
-
         Bus::fake();
 
         $user = User::factory()->create();
@@ -156,8 +142,8 @@ class WebhookStatusTest extends ApiTestCase
                 WebhookEvent::CHECKIN_UPDATE->value,
                 $job->payload['event']
             );
-            assertEquals($status->id, $job->payload['status']->id);
-            assertEquals(Business::BUSINESS, $job->payload['status']->business);
+            assertEquals($status->id, $job->payload['status']['id']);
+            assertEquals(Business::BUSINESS->value, $job->payload['status']['business']);
 
             return true;
         });
@@ -165,8 +151,6 @@ class WebhookStatusTest extends ApiTestCase
 
     public function test_webhook_sending_on_visibility_change()
     {
-        $this->markTestIncomplete();
-
         Bus::fake();
 
         $user = User::factory()->create();
@@ -186,8 +170,8 @@ class WebhookStatusTest extends ApiTestCase
                 WebhookEvent::CHECKIN_UPDATE->value,
                 $job->payload['event']
             );
-            assertEquals($status->id, $job->payload['status']->id);
-            assertEquals(StatusVisibility::UNLISTED, $job->payload['status']->visibility);
+            assertEquals($status->id, $job->payload['status']['id']);
+            assertEquals(StatusVisibility::UNLISTED->value, $job->payload['status']['visibility']);
 
             return true;
         });
@@ -195,8 +179,6 @@ class WebhookStatusTest extends ApiTestCase
 
     public function test_webhook_sending_on_status_deletion()
     {
-        $this->markTestIncomplete();
-
         Bus::fake();
 
         $user = User::factory()->create();
@@ -210,7 +192,7 @@ class WebhookStatusTest extends ApiTestCase
                 WebhookEvent::CHECKIN_DELETE->value,
                 $job->payload['event']
             );
-            assertEquals($status->id, $job->payload['status']->id);
+            assertEquals($status->id, $job->payload['status']['id']);
 
             return true;
         });
