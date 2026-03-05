@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9a5e809b3890f35cc2efcd4e2c16c336",
+    "content-hash": "c7ae53bb0e5e99a25466a2652aff13fd",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -9707,63 +9707,6 @@
             "time": "2025-11-01T09:19:43+00:00"
         },
         {
-            "name": "trwl/socialite-mastodon",
-            "version": "1.2.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/HerrLevin/socialite-mastodon.git",
-                "reference": "3b79773cde1d319ade0b528e2d5a3cb998c40e5a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/HerrLevin/socialite-mastodon/zipball/3b79773cde1d319ade0b528e2d5a3cb998c40e5a",
-                "reference": "3b79773cde1d319ade0b528e2d5a3cb998c40e5a",
-                "shasum": ""
-            },
-            "require": {
-                "ext-json": "*",
-                "laravel/socialite": "*",
-                "php": ">=7.0.0"
-            },
-            "require-dev": {
-                "mockery/mockery": "^1.0",
-                "phpunit/phpunit": "^6.0"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Revolution\\Socialite\\Mastodon\\MastodonServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Revolution\\Socialite\\Mastodon\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "kawax",
-                    "email": "kawaxbiz@gmail.com"
-                }
-            ],
-            "description": "Socialite for Mastodon",
-            "keywords": [
-                "laravel",
-                "mastodon",
-                "socialite"
-            ],
-            "support": {
-                "source": "https://github.com/HerrLevin/socialite-mastodon/tree/1.2.4"
-            },
-            "time": "2019-09-23T15:32:10+00:00"
-        },
-        {
             "name": "vlucas/phpdotenv",
             "version": "v5.6.3",
             "source": {
@@ -11300,16 +11243,16 @@
         },
         {
             "name": "php-debugbar/php-debugbar",
-            "version": "v3.4.1",
+            "version": "v3.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-debugbar/php-debugbar.git",
-                "reference": "ee9c718797a4c1fdf6c4d980cb3edcc1eeeddcc7"
+                "reference": "41ee90c66f886b3d4dbc0833dbeb9994a40f86cb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-debugbar/php-debugbar/zipball/ee9c718797a4c1fdf6c4d980cb3edcc1eeeddcc7",
-                "reference": "ee9c718797a4c1fdf6c4d980cb3edcc1eeeddcc7",
+                "url": "https://api.github.com/repos/php-debugbar/php-debugbar/zipball/41ee90c66f886b3d4dbc0833dbeb9994a40f86cb",
+                "reference": "41ee90c66f886b3d4dbc0833dbeb9994a40f86cb",
                 "shasum": ""
             },
             "require": {
@@ -11386,7 +11329,7 @@
             ],
             "support": {
                 "issues": "https://github.com/php-debugbar/php-debugbar/issues",
-                "source": "https://github.com/php-debugbar/php-debugbar/tree/v3.4.1"
+                "source": "https://github.com/php-debugbar/php-debugbar/tree/v3.5.0"
             },
             "funding": [
                 {
@@ -11398,7 +11341,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-02-26T11:40:30+00:00"
+            "time": "2026-03-05T12:38:32+00:00"
         },
         {
             "name": "php-debugbar/symfony-bridge",
