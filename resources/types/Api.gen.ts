@@ -3814,7 +3814,14 @@ export class Api<
      * @request GET:/stations/{id}
      * @secure
      */
-    showStation: (id?: any, params: RequestParams = {}) =>
+    showStation: (
+      id?: any,
+      query?: {
+        /** Include station identifiers in the response. */
+        withIdentifiers?: boolean;
+      },
+      params: RequestParams = {},
+    ) =>
       this.request<
         {
           data?: StationResource;
@@ -3823,6 +3830,7 @@ export class Api<
       >({
         path: `/stations/${id}`,
         method: "GET",
+        query: query,
         secure: true,
         format: "json",
         ...params,

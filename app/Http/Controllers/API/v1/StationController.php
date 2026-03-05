@@ -355,7 +355,15 @@ class StationController extends Controller
         summary: 'Show station',
         security: [['passport' => ['create-statuses']], ['token' => []]],
         tags: ['Checkin'],
-        parameters: [new OA\Parameter(name: 'id', description: 'station id', in: 'path', example: '1337')],
+        parameters: [
+            new OA\Parameter(name: 'id', description: 'station id', in: 'path', example: '1337'),
+            new OA\Parameter(
+                name: 'withIdentifiers',
+                description: 'Include station identifiers in the response.',
+                in: 'query',
+                schema: new OA\Schema(type: 'boolean'),
+            ),
+        ],
         responses: [
             new OA\Response(
                 response: 200,
@@ -377,9 +385,13 @@ class StationController extends Controller
             ),
         ],
     )]
-    public function show(int $id): JsonResponse
+    public function show(Request $request, int $id): JsonResponse
     {
         $station = Station::findOrFail($id);
+
+        if ($request->boolean('withIdentifiers')) {
+            $station->loadMissing('stationIdentifiers');
+        }
 
         return $this->sendResponse(new StationResource($station));
     }
