@@ -683,16 +683,16 @@
         },
         {
             "name": "dompdf/dompdf",
-            "version": "v3.1.4",
+            "version": "v3.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dompdf/dompdf.git",
-                "reference": "db712c90c5b9868df3600e64e68da62e78a34623"
+                "reference": "f11ead23a8a76d0ff9bbc6c7c8fd7e05ca328496"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dompdf/dompdf/zipball/db712c90c5b9868df3600e64e68da62e78a34623",
-                "reference": "db712c90c5b9868df3600e64e68da62e78a34623",
+                "url": "https://api.github.com/repos/dompdf/dompdf/zipball/f11ead23a8a76d0ff9bbc6c7c8fd7e05ca328496",
+                "reference": "f11ead23a8a76d0ff9bbc6c7c8fd7e05ca328496",
                 "shasum": ""
             },
             "require": {
@@ -741,9 +741,9 @@
             "homepage": "https://github.com/dompdf/dompdf",
             "support": {
                 "issues": "https://github.com/dompdf/dompdf/issues",
-                "source": "https://github.com/dompdf/dompdf/tree/v3.1.4"
+                "source": "https://github.com/dompdf/dompdf/tree/v3.1.5"
             },
-            "time": "2025-10-29T12:43:30+00:00"
+            "time": "2026-03-03T13:54:37+00:00"
         },
         {
             "name": "dompdf/php-font-lib",
@@ -3772,60 +3772,6 @@
             "time": "2026-02-13T03:05:33+00:00"
         },
         {
-            "name": "nicmart/tree",
-            "version": "0.10.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/nicmart/Tree.git",
-                "reference": "2ef11e329d26005ef49dbacd0223bcfd2515b6cc"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/nicmart/Tree/zipball/2ef11e329d26005ef49dbacd0223bcfd2515b6cc",
-                "reference": "2ef11e329d26005ef49dbacd0223bcfd2515b6cc",
-                "shasum": ""
-            },
-            "require": {
-                "php": "~8.0.0 || ~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0"
-            },
-            "require-dev": {
-                "ergebnis/composer-normalize": "^2.48.2",
-                "ergebnis/license": "^2.7.0",
-                "ergebnis/php-cs-fixer-config": "^6.28.1",
-                "fakerphp/faker": "^1.24.1",
-                "infection/infection": "~0.26.19",
-                "phpunit/phpunit": "^9.6.19",
-                "psalm/plugin-phpunit": "~0.19.0",
-                "vimeo/psalm": "^5.26.1"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Tree\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Nicolò Martini",
-                    "email": "nicmartnic@gmail.com"
-                },
-                {
-                    "name": "Andreas Möller",
-                    "email": "am@localheinz.com"
-                }
-            ],
-            "description": "A basic but flexible php tree data structure and a fluent tree builder implementation.",
-            "support": {
-                "issues": "https://github.com/nicmart/Tree/issues",
-                "source": "https://github.com/nicmart/Tree/tree/0.10.1"
-            },
-            "time": "2025-11-25T08:51:01+00:00"
-        },
-        {
             "name": "nikic/php-parser",
             "version": "v5.7.0",
             "source": {
@@ -5654,16 +5600,16 @@
         },
         {
             "name": "sabberworm/php-css-parser",
-            "version": "v9.2.0",
+            "version": "v9.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/MyIntervals/PHP-CSS-Parser.git",
-                "reference": "59373045e11ad47b5c18fc615feee0219e42f6d3"
+                "reference": "88dbd0f7f91abbfe4402d0a3071e9ff4d81ed949"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MyIntervals/PHP-CSS-Parser/zipball/59373045e11ad47b5c18fc615feee0219e42f6d3",
-                "reference": "59373045e11ad47b5c18fc615feee0219e42f6d3",
+                "url": "https://api.github.com/repos/MyIntervals/PHP-CSS-Parser/zipball/88dbd0f7f91abbfe4402d0a3071e9ff4d81ed949",
+                "reference": "88dbd0f7f91abbfe4402d0a3071e9ff4d81ed949",
                 "shasum": ""
             },
             "require": {
@@ -5690,7 +5636,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "9.3.x-dev"
+                    "dev-main": "9.4.x-dev"
                 }
             },
             "autoload": {
@@ -5728,9 +5674,9 @@
             ],
             "support": {
                 "issues": "https://github.com/MyIntervals/PHP-CSS-Parser/issues",
-                "source": "https://github.com/MyIntervals/PHP-CSS-Parser/tree/v9.2.0"
+                "source": "https://github.com/MyIntervals/PHP-CSS-Parser/tree/v9.3.0"
             },
-            "time": "2026-02-21T17:12:03+00:00"
+            "time": "2026-03-03T17:31:43+00:00"
         },
         {
             "name": "sibyx/phpgpx",
@@ -5782,102 +5728,45 @@
             "time": "2023-07-27T22:33:02+00:00"
         },
         {
-            "name": "spatie/browsershot",
-            "version": "5.2.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/spatie/browsershot.git",
-                "reference": "d2e4ac7c69162999940172a674bf83ddc5ac59ea"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/spatie/browsershot/zipball/d2e4ac7c69162999940172a674bf83ddc5ac59ea",
-                "reference": "d2e4ac7c69162999940172a674bf83ddc5ac59ea",
-                "shasum": ""
-            },
-            "require": {
-                "ext-fileinfo": "*",
-                "ext-json": "*",
-                "php": "^8.2",
-                "spatie/temporary-directory": "^2.0",
-                "symfony/process": "^6.0|^7.0|^8.0"
-            },
-            "require-dev": {
-                "pestphp/pest": "^3.0|^4.0",
-                "spatie/image": "^3.6",
-                "spatie/pdf-to-text": "^1.52",
-                "spatie/phpunit-snapshot-assertions": "^5.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Spatie\\Browsershot\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Freek Van der Herten",
-                    "email": "freek@spatie.be",
-                    "homepage": "https://github.com/freekmurze",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Convert a webpage to an image or pdf using headless Chrome",
-            "homepage": "https://github.com/spatie/browsershot",
-            "keywords": [
-                "chrome",
-                "convert",
-                "headless",
-                "image",
-                "pdf",
-                "puppeteer",
-                "screenshot",
-                "webpage"
-            ],
-            "support": {
-                "source": "https://github.com/spatie/browsershot/tree/5.2.3"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/spatie",
-                    "type": "github"
-                }
-            ],
-            "time": "2026-02-18T16:10:58+00:00"
-        },
-        {
             "name": "spatie/crawler",
-            "version": "8.5.0",
+            "version": "9.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/crawler.git",
-                "reference": "18198a2198adff1637c0028cb60d2c9559721556"
+                "reference": "6692d6e04e002e96c02ff0ba9e1aa20eb4ac7ed9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/crawler/zipball/18198a2198adff1637c0028cb60d2c9559721556",
-                "reference": "18198a2198adff1637c0028cb60d2c9559721556",
+                "url": "https://api.github.com/repos/spatie/crawler/zipball/6692d6e04e002e96c02ff0ba9e1aa20eb4ac7ed9",
+                "reference": "6692d6e04e002e96c02ff0ba9e1aa20eb4ac7ed9",
                 "shasum": ""
             },
             "require": {
                 "guzzlehttp/guzzle": "^7.3",
                 "guzzlehttp/psr7": "^2.0",
-                "illuminate/collections": "^10.0|^11.0|^12.0|^13.0",
-                "nicmart/tree": "^0.10",
-                "php": "^8.2",
-                "spatie/browsershot": "^5.0.5",
+                "php": "^8.4",
                 "spatie/robots-txt": "^2.0",
-                "symfony/dom-crawler": "^6.0|^7.0|^8.0"
+                "symfony/css-selector": "^7.0|^8.0",
+                "symfony/dom-crawler": "^7.0|^8.0"
             },
             "require-dev": {
-                "pestphp/pest": "^2.0|^3.0|^4.0",
+                "pestphp/pest": "^4.0",
+                "phpstan/extension-installer": "^1.4",
+                "phpstan/phpstan": "^2.0",
+                "phpstan/phpstan-deprecation-rules": "^2.0",
+                "phpstan/phpstan-phpunit": "^2.0",
+                "spatie/invade": "^2.1",
                 "spatie/ray": "^1.37"
             },
+            "suggest": {
+                "spatie/browsershot": "Required for JavaScript rendering with BrowsershotRenderer (^5.0.5)"
+            },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-v9": "9.x-dev"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Spatie\\Crawler\\": "src"
@@ -5903,7 +5792,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/crawler/issues",
-                "source": "https://github.com/spatie/crawler/tree/8.5.0"
+                "source": "https://github.com/spatie/crawler/tree/9.0.0"
             },
             "funding": [
                 {
@@ -5915,7 +5804,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-02-21T22:52:37+00:00"
+            "time": "2026-03-02T08:25:19+00:00"
         },
         {
             "name": "spatie/icalendar-generator",
@@ -6371,33 +6260,34 @@
         },
         {
             "name": "spatie/laravel-sitemap",
-            "version": "8.0.0",
+            "version": "8.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-sitemap.git",
-                "reference": "8c79e1420a6f41405707ea7d00bb6cc10160c0ac"
+                "reference": "6ee00c29ebed4af8c7997904a6fe0fc623f085b5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-sitemap/zipball/8c79e1420a6f41405707ea7d00bb6cc10160c0ac",
-                "reference": "8c79e1420a6f41405707ea7d00bb6cc10160c0ac",
+                "url": "https://api.github.com/repos/spatie/laravel-sitemap/zipball/6ee00c29ebed4af8c7997904a6fe0fc623f085b5",
+                "reference": "6ee00c29ebed4af8c7997904a6fe0fc623f085b5",
                 "shasum": ""
             },
             "require": {
-                "guzzlehttp/guzzle": "^7.8",
-                "illuminate/support": "^11.0|^12.0||^13.0",
+                "illuminate/support": "^12.0|^13.0",
                 "nesbot/carbon": "^2.71|^3.0",
-                "php": "^8.2||^8.3||^8.4||^8.5",
-                "spatie/crawler": "^8.0.1",
-                "spatie/laravel-package-tools": "^1.16.1",
-                "symfony/dom-crawler": "^6.3.4|^7.0|^8.0"
+                "php": "^8.4",
+                "spatie/crawler": "^9.0",
+                "spatie/laravel-package-tools": "^1.16.1"
             },
             "require-dev": {
-                "mockery/mockery": "^1.6.6",
-                "orchestra/testbench": "^9.0|^10.0||^11.0",
-                "pestphp/pest": "^3.7.4|^4.0",
+                "larastan/larastan": "^3.0",
+                "laravel/pint": "^1.13",
+                "orchestra/testbench": "^10.0|^11.0",
+                "pestphp/pest": "^4.0",
+                "phpstan/extension-installer": "^1.3",
+                "phpstan/phpstan-deprecation-rules": "^2.0",
+                "phpstan/phpstan-phpunit": "^2.0",
                 "spatie/pest-plugin-snapshots": "^2.1",
-                "spatie/phpunit-snapshot-assertions": "^5.1.2",
                 "spatie/temporary-directory": "^2.2"
             },
             "type": "library",
@@ -6432,7 +6322,7 @@
                 "spatie"
             ],
             "support": {
-                "source": "https://github.com/spatie/laravel-sitemap/tree/8.0.0"
+                "source": "https://github.com/spatie/laravel-sitemap/tree/8.0.1"
             },
             "funding": [
                 {
@@ -6440,7 +6330,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2026-02-21T23:01:14+00:00"
+            "time": "2026-03-02T13:55:21+00:00"
         },
         {
             "name": "spatie/laravel-validation-rules",
@@ -12070,12 +11960,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "89525190c449738e468ee27e77f9fdc1bc160e08"
+                "reference": "da19d9c4572f2adae57b28b2111d7fa667cd6dcb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/89525190c449738e468ee27e77f9fdc1bc160e08",
-                "reference": "89525190c449738e468ee27e77f9fdc1bc160e08",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/da19d9c4572f2adae57b28b2111d7fa667cd6dcb",
+                "reference": "da19d9c4572f2adae57b28b2111d7fa667cd6dcb",
                 "shasum": ""
             },
             "conflict": {
@@ -12204,7 +12094,7 @@
                 "commerceteam/commerce": ">=0.9.6,<0.9.9",
                 "components/jquery": ">=1.0.3,<3.5",
                 "composer/composer": "<1.10.27|>=2,<2.2.26|>=2.3,<2.9.3",
-                "concrete5/concrete5": "<9.4.3",
+                "concrete5/concrete5": "<9.4.8",
                 "concrete5/core": "<8.5.8|>=9,<9.1",
                 "contao-components/mediaelement": ">=2.14.2,<2.21.1",
                 "contao/comments-bundle": ">=2,<4.13.40|>=5.0.0.0-RC1-dev,<5.3.4",
@@ -12218,7 +12108,7 @@
                 "cosenary/instagram": "<=2.3",
                 "couleurcitron/tarteaucitron-wp": "<0.3",
                 "cpsit/typo3-mailqueue": "<0.4.3|>=0.5,<0.5.1",
-                "craftcms/cms": "<4.17.0.0-beta1|>=5,<5.9.0.0-beta1",
+                "craftcms/cms": "<4.17.0.0-beta2|>=5,<5.9.0.0-beta2",
                 "craftcms/commerce": ">=4.0.0.0-RC1-dev,<=4.10|>=5,<=5.5.1",
                 "craftcms/composer": ">=4.0.0.0-RC1-dev,<=4.10|>=5.0.0.0-RC1-dev,<=5.5.1",
                 "craftcms/craft": ">=3.5,<=4.16.17|>=5.0.0.0-RC1-dev,<=5.8.21",
@@ -12376,7 +12266,7 @@
                 "friendsoftypo3/openid": ">=4.5,<4.5.31|>=4.7,<4.7.16|>=6,<6.0.11|>=6.1,<6.1.6",
                 "froala/wysiwyg-editor": "<=4.3",
                 "frosh/adminer-platform": "<2.2.1",
-                "froxlor/froxlor": "<=2.2.5",
+                "froxlor/froxlor": "<=2.3.3",
                 "frozennode/administrator": "<=5.0.12",
                 "fuel/core": "<1.8.1",
                 "funadmin/funadmin": "<=7.1.0.0-RC4",
@@ -12426,7 +12316,7 @@
                 "ibexa/solr": ">=4.5,<4.5.4",
                 "ibexa/user": ">=4,<4.4.3|>=5,<5.0.4",
                 "icecoder/icecoder": "<=8.1",
-                "idno/known": "<=1.6.2",
+                "idno/known": "<1.6.4",
                 "ilicmiljan/secure-props": ">=1.2,<1.2.2",
                 "illuminate/auth": "<5.5.10",
                 "illuminate/cookie": ">=4,<=4.0.11|>=4.1,<6.18.31|>=7,<7.22.4",
@@ -12476,7 +12366,7 @@
                 "kelvinmo/simplexrd": "<3.1.1",
                 "kevinpapst/kimai2": "<1.16.7",
                 "khodakhah/nodcms": "<=3",
-                "kimai/kimai": "<2.46",
+                "kimai/kimai": "<=2.50",
                 "kitodo/presentation": "<3.2.3|>=3.3,<3.3.4",
                 "klaviyo/magento2-extension": ">=1,<3",
                 "knplabs/knp-snappy": "<=1.4.2",
@@ -13089,7 +12979,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-03-01T01:36:02+00:00"
+            "time": "2026-03-04T22:09:37+00:00"
         },
         {
             "name": "sebastian/cli-parser",
