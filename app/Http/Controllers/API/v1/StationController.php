@@ -112,17 +112,8 @@ class StationController extends Controller
             Event::where('station_id', $oldStation->id)->update(['station_id' => $newStation->id]);
             EventSuggestion::where('station_id', $oldStation->id)->update(['station_id' => $newStation->id]);
 
-            // merge columns from old->new if they are null
-            $columns = ['ibnr', 'wikidata_id', 'rilIdentifier', 'ifopt_a', 'ifopt_b', 'ifopt_c', 'ifopt_d', 'ifopt_e'];
-            foreach ($columns as $column) {
-                if ($newStation->{$column} === null && $oldStation->{$column} !== null) {
-                    $newStation->{$column} = $oldStation->{$column};
-                }
-            }
-
             $oldStation->delete();
 
-            // save AFTER deletion to avoid foreign key constraint errors
             if ($newStation->isDirty()) {
                 $newStation->save();
             }

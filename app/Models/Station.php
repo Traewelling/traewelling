@@ -14,21 +14,13 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @todo rename table to "Station" (without Train - we have more than just trains)
  *
  * @property int $id
- * @property int|null $ibnr
  * @property string $name
  * @property float $latitude
  * @property float $longitude
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string|null $rilIdentifier
  * @property int|null $time_offset
  * @property bool|null $shift_time
- * @property string|null $wikidata_id
- * @property int|null $ifopt_e
- * @property int|null $ifopt_d
- * @property int|null $ifopt_c
- * @property int|null $ifopt_b
- * @property string|null $ifopt_a
  * @property string|null $source
  * @property int $relevance
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $activities
@@ -36,7 +28,6 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property-read \App\Models\AreasStationsMap|null $pivot
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Area> $areas
  * @property-read int|null $areas_count
- * @property-read string|null $ifopt
  * @property-read Point $location
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StationIdentifier> $stationIdentifiers
  * @property-read int|null $station_identifiers_count
@@ -48,23 +39,15 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereIbnr($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereIfoptA($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereIfoptB($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereIfoptC($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereIfoptD($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereIfoptE($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereLatitude($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereLongitude($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereRelevance($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereRilIdentifier($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereShiftTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereSource($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereTimeOffset($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereWikidataId($value)
  *
  * @mixin \Eloquent
  */
@@ -75,8 +58,7 @@ class Station extends Model
     protected $table = 'train_stations';
 
     protected $fillable = [
-        'ibnr', 'wikidata_id', 'rilIdentifier',
-        'ifopt_a', 'ifopt_b', 'ifopt_c', 'ifopt_d', 'ifopt_e', 'relevance',
+        'relevance',
         'name', 'latitude', 'longitude', 'source', 'time_offset', 'shift_time',
     ];
 
@@ -84,20 +66,12 @@ class Station extends Model
 
     protected $casts = [
         'id' => 'integer',
-        'ibnr' => 'integer',
-        'wikidata_id' => 'string',
-        'ifopt_a' => 'string',
-        'ifopt_b' => 'integer',
-        'ifopt_c' => 'integer',
-        'ifopt_d' => 'integer',
-        'ifopt_e' => 'integer',
-        'rilIdentifier' => 'string',
         'name' => 'string',
         'latitude' => 'float',
         'longitude' => 'float',
     ];
 
-    protected $appends = ['ifopt', 'location'];
+    protected $appends = ['location'];
 
     public function getLocationAttribute(): Point
     {
@@ -106,21 +80,6 @@ class Station extends Model
         $point->longitude = $this->longitude;
 
         return $point;
-    }
-
-    public function getIfoptAttribute(): ?string
-    {
-        if (!$this->ifopt_a) {
-            return null;
-        }
-        $ifopt = $this->ifopt_a;
-        foreach (['b', 'c', 'd', 'e'] as $level) {
-            if ($this->{"ifopt_$level"}) {
-                $ifopt .= ':' . $this->{"ifopt_$level"};
-            }
-        }
-
-        return $ifopt;
     }
 
     public function getActivitylogOptions(): LogOptions
