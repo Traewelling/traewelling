@@ -124,6 +124,7 @@ function fetchStationsForCurrentView(): void {
             min_lon: min_lon,
             max_lon: max_lon,
             limit: Math.min(Math.max(props.limit, 1), 250),
+            withIdentifiers: true,
         })
         .then((res) => {
             for (const s of res.data.data || []) {
@@ -219,15 +220,24 @@ onBeforeUnmount(() => {
                             </div>
                             <div style="font-size: 12px; color: #555">
                                 <div><b>ID:</b> {{ String(station.id ?? '–') }}</div>
-                                <div>
-                                    <b>IBNR:</b> {{ station.ibnr ?? '–' }} &nbsp; <b>RIL:</b>
-                                    {{ station.rilIdentifier ?? '–' }}
-                                </div>
                                 <div v-show="station.areas"><b>Gebiet:</b> {{ getAreaName(station) }}</div>
                                 <div>
                                     <b>Lat/Lon:</b> {{ Number(station.latitude).toFixed(5) }},
                                     {{ Number(station.longitude).toFixed(5) }}
                                 </div>
+                                <details v-if="station.identifiers?.length" style="margin-top: 4px">
+                                    <summary style="cursor: pointer">
+                                        Identifiers ({{ station.identifiers.length }})
+                                    </summary>
+                                    <div
+                                        v-for="ident in station.identifiers"
+                                        :key="ident.type + ident.identifier"
+                                        style="font-family: monospace; margin-top: 2px"
+                                    >
+                                        <span style="opacity: 0.6">{{ ident.type }}</span>
+                                        {{ ident.identifier }}
+                                    </div>
+                                </details>
                             </div>
                         </div>
                     </mgl-popup>
