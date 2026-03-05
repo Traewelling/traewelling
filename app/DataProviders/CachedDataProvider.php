@@ -2,6 +2,7 @@
 
 namespace App\DataProviders;
 
+use App\Dto\Internal\Departure;
 use App\Dto\Internal\FilteredDepartures;
 use App\Enum\TravelType;
 use App\Helpers\CacheKey;
@@ -79,8 +80,8 @@ class CachedDataProvider implements DataProviderInterface
         );
 
         // filter entries by when and duration
-        return $departures->filter(function ($departure) use ($filterWhen, $duration) {
-            $depWhen = Carbon::parse($departure->when ?? $departure->plannedWhen);
+        return $departures->filter(function (Departure $departure) use ($filterWhen, $duration) {
+            $depWhen = $departure->realDeparture ?? $departure->plannedDeparture;
 
             return $depWhen->between($filterWhen, $filterWhen->copy()->addMinutes($duration));
         });

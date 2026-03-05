@@ -4018,98 +4018,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "description": "HAFAS Train model. This model might be subject to unexpected changes. See also external documentation at [https://v5.db.transport.rest/api.html#get-stopsiddepartures](https://v5.db.transport.rest/api.html#get-stopsiddepartures).",
-                                                "externalDocs": {
-                                                    "url": "https://v5.db.transport.rest/api.html#get-stopsiddepartures"
-                                                },
-                                                "example": {
-                                                    "tripId": "1|200513|0|81|6012023",
-                                                    "stop": {
-                                                        "type": "stop",
-                                                        "id": "8000191",
-                                                        "name": "Karlsruhe Hbf",
-                                                        "location": {
-                                                            "type": "location",
-                                                            "id": "8000191",
-                                                            "latitude": 48.99353,
-                                                            "longitude": 8.401939
-                                                        },
-                                                        "products": {
-                                                            "nationalExpress": true,
-                                                            "national": true,
-                                                            "regionalExp": true,
-                                                            "regional": true,
-                                                            "suburban": true,
-                                                            "bus": true,
-                                                            "ferry": false,
-                                                            "subway": false,
-                                                            "tram": true,
-                                                            "taxi": true
-                                                        }
-                                                    },
-                                                    "when": "2023-01-06T13:49:00+01:00",
-                                                    "plannedWhen": "2023-01-06T13:49:00+01:00",
-                                                    "delay": null,
-                                                    "platform": "2",
-                                                    "plannedPlatform": "2",
-                                                    "direction": "Zürich HB",
-                                                    "provenance": null,
-                                                    "line": {
-                                                        "type": "line",
-                                                        "id": "ec-9",
-                                                        "fahrtNr": "9",
-                                                        "name": "EC 9",
-                                                        "public": true,
-                                                        "adminCode": "80____",
-                                                        "productName": "EC",
-                                                        "mode": "train",
-                                                        "product": "national",
-                                                        "operator": {
-                                                            "type": "operator",
-                                                            "id": "db-fernverkehr-ag",
-                                                            "name": "DB Fernverkehr AG"
-                                                        }
-                                                    },
-                                                    "remarks": null,
-                                                    "origin": null,
-                                                    "destination": {
-                                                        "type": "stop",
-                                                        "id": "8503000",
-                                                        "name": "Zürich HB",
-                                                        "location": {
-                                                            "type": "location",
-                                                            "id": "8503000",
-                                                            "latitude": 47.378177,
-                                                            "longitude": 8.540211
-                                                        },
-                                                        "products": {
-                                                            "nationalExpress": true,
-                                                            "national": true,
-                                                            "regionalExp": true,
-                                                            "regional": true,
-                                                            "suburban": true,
-                                                            "bus": true,
-                                                            "ferry": false,
-                                                            "subway": false,
-                                                            "tram": true,
-                                                            "taxi": false
-                                                        }
-                                                    },
-                                                    "currentTripPosition": {
-                                                        "type": "location",
-                                                        "latitude": 48.725382,
-                                                        "longitude": 8.142888
-                                                    },
-                                                    "loadFactor": "high",
-                                                    "station": {
-                                                        "id": 5181,
-                                                        "ibnr": 8000191,
-                                                        "rilIdentifier": "RK",
-                                                        "name": "Karlsruhe Hbf",
-                                                        "latitude": "48.993530",
-                                                        "longitude": "8.401939"
-                                                    }
-                                                }
+                                                "$ref": "#/components/schemas/DepartureResource"
                                             }
                                         },
                                         "meta": {
@@ -6674,6 +6583,279 @@
                     "attribution": {
                         "type": "string",
                         "example": "Provided by foobar under CC BY 4.0"
+                    }
+                },
+                "type": "object"
+            },
+            "DepartureResource": {
+                "title": "Departure",
+                "description": "A single departure at a station",
+                "required": [
+                    "tripId",
+                    "stop",
+                    "when",
+                    "plannedWhen",
+                    "delay",
+                    "platform",
+                    "plannedPlatform",
+                    "direction",
+                    "line",
+                    "station"
+                ],
+                "properties": {
+                    "tripId": {
+                        "description": "Unique trip identifier",
+                        "type": "string",
+                        "example": "1|200513|0|81|6012023"
+                    },
+                    "stop": {
+                        "description": "The stop at which this departure occurs",
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "example": "stop"
+                            },
+                            "id": {
+                                "description": "Träwelling internal station ID",
+                                "type": "integer",
+                                "example": 5181
+                            },
+                            "name": {
+                                "type": "string",
+                                "example": "Karlsruhe Hbf"
+                            },
+                            "location": {
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "location"
+                                    },
+                                    "id": {
+                                        "description": "IBNR identifier (if available)",
+                                        "type": "string",
+                                        "example": "8000191",
+                                        "nullable": true
+                                    },
+                                    "latitude": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 48.993207
+                                    },
+                                    "longitude": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 8.400977
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "products": {
+                                "description": "Deprecated. Always true for all modes.",
+                                "type": "object",
+                                "deprecated": true
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "when": {
+                        "description": "Actual departure time (null if no realtime data)",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-01-06T13:49:00+01:00",
+                        "nullable": true
+                    },
+                    "plannedWhen": {
+                        "description": "Scheduled departure time",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-01-06T13:49:00+01:00"
+                    },
+                    "delay": {
+                        "description": "Delay in minutes (null if no realtime data). Deprecated, use when/plannedWhen difference.",
+                        "type": "integer",
+                        "example": 2,
+                        "nullable": true,
+                        "deprecated": true
+                    },
+                    "platform": {
+                        "description": "Actual platform (null if no realtime data)",
+                        "type": "string",
+                        "example": "3a",
+                        "nullable": true
+                    },
+                    "plannedPlatform": {
+                        "description": "Scheduled platform",
+                        "type": "string",
+                        "example": "3",
+                        "nullable": true
+                    },
+                    "direction": {
+                        "description": "Final destination of the trip",
+                        "type": "string",
+                        "example": "Zürich HB"
+                    },
+                    "provenance": {
+                        "description": "Deprecated. Always null.",
+                        "type": "string",
+                        "example": null,
+                        "nullable": true,
+                        "deprecated": true
+                    },
+                    "line": {
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "example": "line"
+                            },
+                            "id": {
+                                "type": "string",
+                                "example": "EC 9"
+                            },
+                            "fahrtNr": {
+                                "description": "Journey number",
+                                "type": "string",
+                                "example": "9"
+                            },
+                            "name": {
+                                "type": "string",
+                                "example": "EC 9"
+                            },
+                            "color": {
+                                "description": "Route color as hex (without #)",
+                                "type": "string",
+                                "example": "ff2e3e",
+                                "nullable": true
+                            },
+                            "textColor": {
+                                "description": "Route text color as hex (without #)",
+                                "type": "string",
+                                "example": "ffffff",
+                                "nullable": true
+                            },
+                            "public": {
+                                "description": "Deprecated. Always true.",
+                                "type": "boolean",
+                                "example": true,
+                                "deprecated": true
+                            },
+                            "productName": {
+                                "description": "Deprecated. Use name.",
+                                "type": "string",
+                                "example": "EC 9",
+                                "deprecated": true
+                            },
+                            "mode": {
+                                "description": "Transit mode",
+                                "type": "string",
+                                "example": "TRAIN",
+                                "nullable": true
+                            },
+                            "product": {
+                                "description": "Deprecated HAFAS product category",
+                                "type": "string",
+                                "example": "national",
+                                "nullable": true,
+                                "deprecated": true
+                            },
+                            "adminCode": {
+                                "description": "Deprecated. Always \"80____\".",
+                                "type": "string",
+                                "example": "80____",
+                                "deprecated": true
+                            },
+                            "operator": {
+                                "description": "Deprecated. Always null.",
+                                "type": "object",
+                                "nullable": true,
+                                "deprecated": true
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "remarks": {
+                        "description": "Deprecated. Always null.",
+                        "type": "array",
+                        "items": {},
+                        "nullable": true,
+                        "deprecated": true
+                    },
+                    "origin": {
+                        "description": "Deprecated. Always null.",
+                        "type": "object",
+                        "nullable": true,
+                        "deprecated": true
+                    },
+                    "destination": {
+                        "description": "Destination stop. Only name is currently populated; all other fields are deprecated placeholders.",
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "example": "stop"
+                            },
+                            "id": {
+                                "description": "Deprecated. Always 0.",
+                                "type": "integer",
+                                "example": 0,
+                                "deprecated": true
+                            },
+                            "name": {
+                                "description": "Final destination name",
+                                "type": "string",
+                                "example": "Zürich HB"
+                            },
+                            "location": {
+                                "description": "Deprecated. All values are always 0.",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "example": "location"
+                                    },
+                                    "id": {
+                                        "description": "Deprecated. Always 0.",
+                                        "type": "integer",
+                                        "example": 0,
+                                        "deprecated": true
+                                    },
+                                    "latitude": {
+                                        "description": "Deprecated. Always 0.",
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 0,
+                                        "deprecated": true
+                                    },
+                                    "longitude": {
+                                        "description": "Deprecated. Always 0.",
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 0,
+                                        "deprecated": true
+                                    }
+                                },
+                                "type": "object",
+                                "deprecated": true
+                            },
+                            "products": {
+                                "description": "Deprecated. Always true for all modes.",
+                                "type": "object",
+                                "deprecated": true
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "currentTripPosition": {
+                        "description": "Deprecated. Always null.",
+                        "type": "object",
+                        "nullable": true,
+                        "deprecated": true
+                    },
+                    "loadFactor": {
+                        "description": "Deprecated. Always null.",
+                        "type": "string",
+                        "nullable": true,
+                        "deprecated": true
+                    },
+                    "station": {
+                        "$ref": "#/components/schemas/StationResource"
                     }
                 },
                 "type": "object"
