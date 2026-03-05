@@ -19,6 +19,7 @@ const showMore = ref(false);
 const futureStatuses = ref<StatusResource[]>([]);
 const stopovers = ref<Record<string, StopoverResource[]>>({});
 const user = useUserStore();
+user.fetchSettings(false, true);
 const notyf = new Notyf({ position: { x: 'right', y: 'bottom' } });
 
 function fetchStatuses(page: number | undefined = undefined, append: boolean = false) {

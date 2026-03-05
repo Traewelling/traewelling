@@ -160,7 +160,7 @@ Route::middleware(['auth', 'privacy'])->group(function () {
             Route::post('/', [DevController::class, 'createApp'])->name('dev.apps.create.post');             // TODO: Replace with API Endpoint
         });
 
-        Route::redirect('/', 'settings/profile')->name('settings');
+        Route::redirect('/', '/settings/profile')->name('settings');
         Route::view('/profile', 'settings.profile')->name('settings.profile');
         Route::view('/privacy', 'settings.privacy')->name('settings.privacy');
         Route::post('/update/privacy', [SettingsController::class, 'updatePrivacySettings'])
@@ -197,6 +197,9 @@ Route::middleware(['auth', 'privacy'])->group(function () {
             ->name('delsession'); // TODO: Replace with API Endpoint
         Route::post('/deltoken', [UserController::class, 'deleteToken'])
             ->name('deltoken'); // TODO: Replace with API Endpoint
+        Route::get('/{any?}', function () {
+            return view('contribute');
+        })->where('any', '.*')->name('contribute');
     });
 
     Route::view('/dashboard', 'vue.dashboard')

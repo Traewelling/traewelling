@@ -685,6 +685,17 @@
                 ],
                 "summary": "List all followers",
                 "operationId": "getFollowers",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number for pagination",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "successful operation",
@@ -737,6 +748,17 @@
                 ],
                 "summary": "List all followers",
                 "operationId": "getFollowRequests",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number for pagination",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "successful operation",
@@ -783,6 +805,17 @@
                 ],
                 "summary": "List all users the current user is following",
                 "operationId": "getFollowings",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number for pagination",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "successful operation",
