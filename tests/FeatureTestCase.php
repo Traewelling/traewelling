@@ -326,13 +326,4 @@ abstract class FeatureTestCase extends BaseTestCase
 
         return WebhookController::createWebhook($request);
     }
-
-    /**
-     * @deprecated This method is only used for legacy HAFAS API tests and should not be used in new tests.
-     *             Delete if no longer needed.
-     */
-    protected function skipTestBecauseOfLegacyApiUsage(): void
-    {
-        $this->markTestIncomplete('Test depends on legacy HAFAS API and needs to be refactored when we have a long term solution API.');
-    }
 }

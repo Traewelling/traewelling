@@ -27,7 +27,7 @@ class WebhookStatusTest extends ApiTestCase
 
     public function test_webhook_sending_on_status_creation(): void
     {
-        $this->skipTestBecauseOfLegacyApiUsage();
+        $this->markTestIncomplete();
 
         Bus::fake();
 
@@ -48,7 +48,7 @@ class WebhookStatusTest extends ApiTestCase
 
     public function test_webhook_sending_on_status_body_change()
     {
-        $this->skipTestBecauseOfLegacyApiUsage();
+        $this->markTestIncomplete();
 
         Bus::fake();
 
@@ -78,7 +78,7 @@ class WebhookStatusTest extends ApiTestCase
 
     public function test_webhook_sending_on_like()
     {
-        $this->skipTestBecauseOfLegacyApiUsage();
+        $this->markTestIncomplete();
 
         Bus::fake();
 
@@ -103,7 +103,7 @@ class WebhookStatusTest extends ApiTestCase
 
     public function test_webhook_sending_on_destination_change()
     {
-        $this->skipTestBecauseOfLegacyApiUsage();
+        $this->markTestIncomplete();
 
         Bus::fake();
 
@@ -135,7 +135,7 @@ class WebhookStatusTest extends ApiTestCase
 
     public function test_webhook_sending_on_business_change()
     {
-        $this->skipTestBecauseOfLegacyApiUsage();
+        $this->markTestIncomplete();
 
         Bus::fake();
 
@@ -165,7 +165,7 @@ class WebhookStatusTest extends ApiTestCase
 
     public function test_webhook_sending_on_visibility_change()
     {
-        $this->skipTestBecauseOfLegacyApiUsage();
+        $this->markTestIncomplete();
 
         Bus::fake();
 
@@ -195,7 +195,7 @@ class WebhookStatusTest extends ApiTestCase
 
     public function test_webhook_sending_on_status_deletion()
     {
-        $this->skipTestBecauseOfLegacyApiUsage();
+        $this->markTestIncomplete();
 
         Bus::fake();
 
