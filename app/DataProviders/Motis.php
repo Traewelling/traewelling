@@ -155,8 +155,11 @@ class Motis extends Controller implements DataProviderInterface
 
         // If no identifier found, try to find a nearby station instead
         if (!$transitousIdentifiers || $transitousIdentifiers?->count() === 0) {
-            $station = $this->getNearbyStations($station->latitude, $station->longitude)->first();
-            $transitousIdentifiers = $station->stationIdentifiers->where('type', 'motis')->where('origin', $this->source->value);
+            $nearbyStation = $this->getNearbyStations($station->latitude, $station->longitude)->first();
+            if ($nearbyStation !== null) {
+                $station = $nearbyStation;
+                $transitousIdentifiers = $station->stationIdentifiers->where('type', 'motis')->where('origin', $this->source->value);
+            }
         }
 
         // Still no identifier found...? We can't continue here.
