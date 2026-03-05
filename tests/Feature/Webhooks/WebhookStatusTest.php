@@ -366,14 +366,12 @@ class WebhookStatusTest extends ApiTestCase
     {
         // Create stations in database to avoid API calls
         $origin = \App\Models\Station::factory()->create([
-            'ibnr' => self::FRANKFURT_HBF['id'],
             'name' => self::FRANKFURT_HBF['name'],
             'latitude' => self::FRANKFURT_HBF['location']['latitude'],
             'longitude' => self::FRANKFURT_HBF['location']['longitude'],
         ]);
 
         $destination = \App\Models\Station::factory()->create([
-            'ibnr' => self::HANNOVER_HBF['id'],
             'name' => self::HANNOVER_HBF['name'],
             'latitude' => self::HANNOVER_HBF['location']['latitude'],
             'longitude' => self::HANNOVER_HBF['location']['longitude'],
