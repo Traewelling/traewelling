@@ -6,6 +6,7 @@ use App\DataProviders\Hydrators\MotisHydrator;
 use App\DataProviders\Repositories\StationRepository;
 use App\DataProviders\Repositories\TripRepository;
 use App\Dto\Coordinate;
+use App\Dto\Internal\Departure;
 use App\Dto\Internal\FilteredDepartures;
 use App\Enum\DataProvider;
 use App\Enum\MotisCategory;
@@ -226,32 +227,22 @@ class Motis extends Controller implements DataProviderInterface
      */
     private function dedupeDeparturesByStation(FilteredDepartures $filtered, int $requestedStationId): FilteredDepartures
     {
-        $trackKey = static function ($it): string {
-            $scheduled = (string) (data_get($it, 'place.scheduledTrack')
-                                   ?? data_get($it, 'plannedPlatform')
-                                      ?? '');
-            $live = (string) (data_get($it, 'place.track')
-                                   ?? data_get($it, 'platform')
-                                      ?? '');
-
-            $scheduled = strtoupper(trim($scheduled));
-            $live = strtoupper(trim($live));
+        $trackKey = static function (Departure $it): string {
+            $scheduled = strtoupper(trim((string) ($it->plannedPlatform ?? '')));
+            $live = strtoupper(trim((string) ($it->realPlatform ?? '')));
 
             return $scheduled . '|' . $live;
         };
 
-        $timeKey = static function ($it): string {
-            return (string) (data_get($it, 'plannedWhen') ?? '');
+        $timeKey = static function (Departure $it): string {
+            return $it->plannedDeparture->toIso8601String();
         };
 
-        $groups = $filtered->departures->groupBy(fn ($it) => data_get($it, 'tripId'));
+        $groups = $filtered->departures->groupBy(fn (Departure $it) => $it->trip->tripId);
 
         $kept = $groups->flatMap(function ($group) use ($requestedStationId, $trackKey, $timeKey) {
-            $sameStation = $group->filter(function ($it) use ($requestedStationId) {
-                $stationId = data_get($it, 'station.id');
-                $stopId = data_get($it, 'stop.id');
-
-                return ((int) $stationId === $requestedStationId) || ((int) $stopId === $requestedStationId);
+            $sameStation = $group->filter(function (Departure $it) use ($requestedStationId) {
+                return $it->station->id === $requestedStationId;
             });
 
             if ($sameStation->isNotEmpty()) {

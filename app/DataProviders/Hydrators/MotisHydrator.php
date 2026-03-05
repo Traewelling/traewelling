@@ -12,7 +12,6 @@ use App\Dto\Internal\FilteredDepartures;
 use App\Enum\DataProvider;
 use App\Enum\MotisCategory;
 use App\Http\Controllers\TransportController;
-use App\Hydrators\DepartureHydrator;
 use App\Models\Operator;
 use App\Models\PolyLine;
 use App\Models\Station;
@@ -362,6 +361,6 @@ class MotisHydrator
             $departures->push($departure);
         }
 
-        return new FilteredDepartures(DepartureHydrator::map($departures), collect(array_values($removedEntries)), $removedCount);
+        return new FilteredDepartures($departures, collect(array_values($removedEntries)), $removedCount);
     }
 }

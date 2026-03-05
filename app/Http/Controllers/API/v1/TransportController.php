@@ -17,6 +17,7 @@ use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\Transport\StationController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Resources\CheckinSuccessResource;
+use App\Http\Resources\DepartureResource;
 use App\Http\Resources\StationResource;
 use App\Http\Resources\TripResource;
 use App\Hydrators\CheckinRequestHydrator;
@@ -117,100 +118,7 @@ class TransportController extends Controller
                         new OA\Property(
                             property: 'data',
                             type: 'array',
-                            items: new OA\Items(
-                                description: 'HAFAS Train model. This model might be subject to unexpected changes. See also external documentation at [https://v5.db.transport.rest/api.html#get-stopsiddepartures](https://v5.db.transport.rest/api.html#get-stopsiddepartures).',
-                                externalDocs: new OA\ExternalDocumentation(
-                                    url: 'https://v5.db.transport.rest/api.html#get-stopsiddepartures',
-                                ),
-                                example: [
-                                    'tripId' => '1|200513|0|81|6012023',
-                                    'stop' => [
-                                        'type' => 'stop',
-                                        'id' => '8000191',
-                                        'name' => 'Karlsruhe Hbf',
-                                        'location' => [
-                                            'type' => 'location',
-                                            'id' => '8000191',
-                                            'latitude' => 48.99353,
-                                            'longitude' => 8.401939,
-                                        ],
-                                        'products' => [
-                                            'nationalExpress' => true,
-                                            'national' => true,
-                                            'regionalExp' => true,
-                                            'regional' => true,
-                                            'suburban' => true,
-                                            'bus' => true,
-                                            'ferry' => false,
-                                            'subway' => false,
-                                            'tram' => true,
-                                            'taxi' => true,
-                                        ],
-                                    ],
-                                    'when' => '2023-01-06T13:49:00+01:00',
-                                    'plannedWhen' => '2023-01-06T13:49:00+01:00',
-                                    'delay' => null,
-                                    'platform' => '2',
-                                    'plannedPlatform' => '2',
-                                    'direction' => 'Zürich HB',
-                                    'provenance' => null,
-                                    'line' => [
-                                        'type' => 'line',
-                                        'id' => 'ec-9',
-                                        'fahrtNr' => '9',
-                                        'name' => 'EC 9',
-                                        'public' => true,
-                                        'adminCode' => '80____',
-                                        'productName' => 'EC',
-                                        'mode' => 'train',
-                                        'product' => 'national',
-                                        'operator' => [
-                                            'type' => 'operator',
-                                            'id' => 'db-fernverkehr-ag',
-                                            'name' => 'DB Fernverkehr AG',
-                                        ],
-                                    ],
-                                    'remarks' => null,
-                                    'origin' => null,
-                                    'destination' => [
-                                        'type' => 'stop',
-                                        'id' => '8503000',
-                                        'name' => 'Zürich HB',
-                                        'location' => [
-                                            'type' => 'location',
-                                            'id' => '8503000',
-                                            'latitude' => 47.378177,
-                                            'longitude' => 8.540211,
-                                        ],
-                                        'products' => [
-                                            'nationalExpress' => true,
-                                            'national' => true,
-                                            'regionalExp' => true,
-                                            'regional' => true,
-                                            'suburban' => true,
-                                            'bus' => true,
-                                            'ferry' => false,
-                                            'subway' => false,
-                                            'tram' => true,
-                                            'taxi' => false,
-                                        ],
-                                    ],
-                                    'currentTripPosition' => [
-                                        'type' => 'location',
-                                        'latitude' => 48.725382,
-                                        'longitude' => 8.142888,
-                                    ],
-                                    'loadFactor' => 'high',
-                                    'station' => [
-                                        'id' => 5181,
-                                        'ibnr' => 8000191,
-                                        'rilIdentifier' => 'RK',
-                                        'name' => 'Karlsruhe Hbf',
-                                        'latitude' => '48.993530',
-                                        'longitude' => '8.401939',
-                                    ],
-                                ],
-                            ),
+                            items: new OA\Items(ref: '#/components/schemas/DepartureResource'),
                         ),
                         new OA\Property(
                             property: 'meta',
@@ -294,16 +202,16 @@ class TransportController extends Controller
                 localtime: isset($validated['when']) && !preg_match('(\+|Z)', $validated['when'])
             );
 
-            $departures = $filtered->departures->sortBy(function ($departure) {
-                return $departure->when ?? $departure->plannedWhen;
+            $departures = $filtered->departures->sortBy(function (\App\Dto\Internal\Departure $departure) {
+                return ($departure->realDeparture ?? $departure->plannedDeparture)->toIso8601String();
             });
 
-            $times = $departures->map(fn ($d) => $d->when ?? $d->plannedWhen)->filter()->sort();
+            $times = $departures->map(fn (\App\Dto\Internal\Departure $d) => $d->realDeparture ?? $d->plannedDeparture)->filter()->sort();
             $prev = $timestamp->clone()->subMinutes(15);
-            $next = $times->isNotEmpty() ? Carbon::parse($times->last())->addMinute() : $timestamp->clone()->addMinutes(15);
+            $next = $times->isNotEmpty() ? $times->last()->clone()->addMinute() : $timestamp->clone()->addMinutes(15);
 
             return $this->sendResponse(
-                data: $departures->values(),
+                data: DepartureResource::collection($departures->values()),
                 additional: [
                     'meta' => [
                         'station' => StationDto::fromModel($station),

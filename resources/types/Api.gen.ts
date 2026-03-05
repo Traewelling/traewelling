@@ -827,6 +827,220 @@ export interface DataSourceResource {
   attribution: string;
 }
 
+/**
+ * Departure
+ * A single departure at a station
+ */
+export interface DepartureResource {
+  /**
+   * Unique trip identifier
+   * @example "1|200513|0|81|6012023"
+   */
+  tripId: string;
+  /** The stop at which this departure occurs */
+  stop: {
+    /** @example "stop" */
+    type?: string;
+    /**
+     * Träwelling internal station ID
+     * @example 5181
+     */
+    id?: number;
+    /** @example "Karlsruhe Hbf" */
+    name?: string;
+    location?: {
+      /** @example "location" */
+      type?: string;
+      /**
+       * IBNR identifier (if available)
+       * @example "8000191"
+       */
+      id?: string | null;
+      /**
+       * @format float
+       * @example 48.993207
+       */
+      latitude?: number;
+      /**
+       * @format float
+       * @example 8.400977
+       */
+      longitude?: number;
+    };
+    /**
+     * Deprecated. Always true for all modes.
+     * @deprecated
+     */
+    products?: object;
+  };
+  /**
+   * Actual departure time (null if no realtime data)
+   * @format date-time
+   * @example "2023-01-06T13:49:00+01:00"
+   */
+  when: string | null;
+  /**
+   * Scheduled departure time
+   * @format date-time
+   * @example "2023-01-06T13:49:00+01:00"
+   */
+  plannedWhen: string;
+  /**
+   * Delay in minutes (null if no realtime data). Deprecated, use when/plannedWhen difference.
+   * @deprecated
+   * @example 2
+   */
+  delay: number | null;
+  /**
+   * Actual platform (null if no realtime data)
+   * @example "3a"
+   */
+  platform: string | null;
+  /**
+   * Scheduled platform
+   * @example "3"
+   */
+  plannedPlatform: string | null;
+  /**
+   * Final destination of the trip
+   * @example "Zürich HB"
+   */
+  direction: string;
+  /**
+   * Deprecated. Always null.
+   * @deprecated
+   * @example null
+   */
+  provenance?: string | null;
+  line: {
+    /** @example "line" */
+    type?: string;
+    /** @example "EC 9" */
+    id?: string;
+    /**
+     * Journey number
+     * @example "9"
+     */
+    fahrtNr?: string;
+    /** @example "EC 9" */
+    name?: string;
+    /**
+     * Route color as hex (without #)
+     * @example "ff2e3e"
+     */
+    color?: string | null;
+    /**
+     * Route text color as hex (without #)
+     * @example "ffffff"
+     */
+    textColor?: string | null;
+    /**
+     * Deprecated. Always true.
+     * @deprecated
+     * @example true
+     */
+    public?: boolean;
+    /**
+     * Deprecated. Use name.
+     * @deprecated
+     * @example "EC 9"
+     */
+    productName?: string;
+    /**
+     * Transit mode
+     * @example "TRAIN"
+     */
+    mode?: string | null;
+    /**
+     * Deprecated HAFAS product category
+     * @deprecated
+     * @example "national"
+     */
+    product?: string | null;
+    /**
+     * Deprecated. Always "80____".
+     * @deprecated
+     * @example "80____"
+     */
+    adminCode?: string;
+    /**
+     * Deprecated. Always null.
+     * @deprecated
+     */
+    operator?: object | null;
+  };
+  /**
+   * Deprecated. Always null.
+   * @deprecated
+   */
+  remarks?: any[] | null;
+  /**
+   * Deprecated. Always null.
+   * @deprecated
+   */
+  origin?: object | null;
+  /** Destination stop. Only name is currently populated; all other fields are deprecated placeholders. */
+  destination?: {
+    /** @example "stop" */
+    type?: string;
+    /**
+     * Deprecated. Always 0.
+     * @deprecated
+     * @example 0
+     */
+    id?: number;
+    /**
+     * Final destination name
+     * @example "Zürich HB"
+     */
+    name?: string;
+    /**
+     * Deprecated. All values are always 0.
+     * @deprecated
+     */
+    location?: {
+      /** @example "location" */
+      type?: string;
+      /**
+       * Deprecated. Always 0.
+       * @deprecated
+       * @example 0
+       */
+      id?: number;
+      /**
+       * Deprecated. Always 0.
+       * @deprecated
+       * @format float
+       * @example 0
+       */
+      latitude?: number;
+      /**
+       * Deprecated. Always 0.
+       * @deprecated
+       * @format float
+       * @example 0
+       */
+      longitude?: number;
+    };
+    /**
+     * Deprecated. Always true for all modes.
+     * @deprecated
+     */
+    products?: object;
+  };
+  /**
+   * Deprecated. Always null.
+   * @deprecated
+   */
+  currentTripPosition?: object | null;
+  /**
+   * Deprecated. Always null.
+   * @deprecated
+   */
+  loadFactor?: string | null;
+  station: StationResource;
+}
+
 /** EventDetails */
 export interface EventDetailsResource {
   /** @example 39 */
@@ -4381,7 +4595,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: any[];
+          data?: DepartureResource[];
           meta?: {
             /** train station model */
             station?: Station;
