@@ -58,6 +58,11 @@ class RouteSegment extends Model
         'polyline',
         'polyline_precision',
         'path_type',
+        'custom_waypoints',
+    ];
+
+    protected $casts = [
+        'custom_waypoints' => 'array',
     ];
 
     public function fromStation(): BelongsTo
