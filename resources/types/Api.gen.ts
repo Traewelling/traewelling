@@ -1065,6 +1065,18 @@ export interface StationResource {
   latitude: number;
   /** @example "8.400977" */
   longitude: number;
+  /**
+   * Deprecated. Always null. Use identifiers with type "de_db_ibnr" instead.
+   * @deprecated
+   * @example null
+   */
+  ibnr: number | null;
+  /**
+   * Deprecated. Always null. Use identifiers with type "de_db_ril100" instead.
+   * @deprecated
+   * @example null
+   */
+  rilIdentifier: string | null;
   areas: AreaResource[];
   identifiers?: StationIdentifierResource[];
 }
