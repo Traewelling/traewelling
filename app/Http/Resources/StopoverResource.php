@@ -38,17 +38,19 @@ use OpenApi\Attributes as OA;
         ),
         new OA\Property(
             property: 'rilIdentifier',
-            description: 'Identifier specified in \'Richtline 100\' of the Deutsche Bahn',
+            description: 'Deprecated. Always null. Use the station identifiers endpoint instead.',
             type: 'string',
-            example: 'RK',
+            example: null,
             nullable: true,
+            deprecated: true,
         ),
         new OA\Property(
             property: 'evaIdentifier',
-            description: 'IBNR identifier of Deutsche Bahn',
+            description: 'Deprecated. Always null. Use the station identifiers endpoint instead.',
             type: 'string',
-            example: '8000191',
+            example: null,
             nullable: true,
+            deprecated: true,
         ),
         new OA\Property(
             property: 'arrival',
@@ -155,8 +157,8 @@ class StopoverResource extends JsonResource
         return [
             'id' => (int) $this->train_station_id,
             'name' => $this->station->name,
-            'rilIdentifier' => $this->station->rilIdentifier ?? null,
-            'evaIdentifier' => $this->station->ibnr ?? null,
+            'rilIdentifier' => null, // @deprecated
+            'evaIdentifier' => null, // @deprecated
             'arrival' => $this->arrival?->toIso8601String(), // TODO: not necessary if planned and real are available
             'arrivalPlanned' => $this->arrival_planned?->toIso8601String(),
             'arrivalReal' => $this->arrival_real?->toIso8601String(),

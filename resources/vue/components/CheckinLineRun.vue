@@ -21,11 +21,6 @@ export default {
             required: false,
             default: null,
         },
-        useInternalIdentifiers: {
-            type: Boolean,
-            required: false,
-            default: false,
-        },
     },
     emits: ['update:destination'],
     data() {
@@ -83,10 +78,7 @@ export default {
                                     return true; // Keep future stops
                                 } else if (departure.equals(givenDeparture)) {
                                     // Check if the stop is the selected train's stop at the given time
-                                    const identifier = this.useInternalIdentifiers
-                                        ? Number(item.id)
-                                        : Number(item.evaIdentifier);
-                                    return Number(this.$props.selectedTrain.stop.id) !== identifier;
+                                    return Number(this.$props.selectedTrain.stop.id) !== Number(item.id);
                                 }
                             }
 
@@ -103,16 +95,9 @@ export default {
                 });
         },
         fastCheckin() {
-            let destination;
-            if (this.useInternalIdentifiers) {
-                destination = this.lineRun.stopovers.find((item) => {
-                    return Number(item.id) === Number(this.fastCheckinId);
-                });
-            } else {
-                destination = this.lineRun.stopovers.find((item) => {
-                    return Number(item.evaIdentifier) === Number(this.fastCheckinId);
-                });
-            }
+            const destination = this.lineRun.stopovers.find((item) => {
+                return Number(item.id) === Number(this.fastCheckinId);
+            });
 
             if (destination) {
                 this.handleSetDestination(destination);

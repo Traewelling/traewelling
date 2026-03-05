@@ -62,16 +62,12 @@ export class StatusHelper {
     }
 
     public getDescription(): string {
-        const originRil = this.status.train.origin.rilIdentifier ? ` (${this.status.train.origin.rilIdentifier})` : '';
-        const destinationRil = this.status.train.destination.rilIdentifier
-            ? ` (${this.status.train.destination.rilIdentifier})`
-            : '';
         const departure = getDepartureForStatus(this.status);
 
         return trans('description.status', {
             username: this.status.userDetails.username,
-            origin: this.status.train.origin.name + originRil,
-            destination: this.status.train.destination.name + destinationRil,
+            origin: this.status.train.origin.name,
+            destination: this.status.train.destination.name,
             date: departure.toLocaleString({
                 year: 'numeric',
                 month: 'numeric',

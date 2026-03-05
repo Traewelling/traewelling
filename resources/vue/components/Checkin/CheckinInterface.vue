@@ -24,11 +24,6 @@ export default {
             type: Object,
             required: true,
         },
-        useInternalIdentifiers: {
-            type: Boolean,
-            required: false,
-            default: false,
-        },
     },
     setup() {
         const userStore = useUserStore();
@@ -96,13 +91,11 @@ export default {
                 chainPost: this.toot && this.chainPost,
                 visibility: this.visibility,
                 business: this.business,
-                ibnr: !this.useInternalIdentifiers,
+                ibnr: false,
                 tripId: this.selectedTrain.tripId,
                 lineName: this.selectedTrain.line.name ?? this.selectedTrain.line.fahrtNr,
                 start: this.selectedTrain.stop.id,
-                destination: this.useInternalIdentifiers
-                    ? this.selectedDestination.id
-                    : this.selectedDestination.evaIdentifier,
+                destination: this.selectedDestination.id,
                 departure: DateTime.fromISO(this.selectedTrain.plannedWhen).setZone('UTC').toISO(),
                 arrival: DateTime.fromISO(this.selectedDestination.arrivalPlanned).setZone('UTC').toISO(),
                 force: this.collision,
