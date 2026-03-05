@@ -68,33 +68,13 @@
                                             <small>{{$status->user->name}}</small>
                                         </td>
                                         <td>
-                                            <strong>{{$status->checkin?->originStopover->station?->name}}</strong>
-                                            @isset($status->checkin?->originStopover->station?->rilIdentifier)
-                                                <small>
-                                                    ({{$status->checkin->originStopover->station->rilIdentifier}})
-                                                </small>
-                                            @endisset
+                                            <strong>{{$status->checkin?->originStopover?->station?->name}}</strong>
                                             <br/>
-                                            @isset($status?->checkin?->originStopover->station?->ibnr)
-                                                <small>IBNR {{$status->checkin->originStopover->station->ibnr}}</small>
-                                                <br/>
-                                            @endisset
-
                                             <small>dep {{$status?->checkin?->departure->diffForHumans()}}</small>
                                         </td>
                                         <td>
-                                            <strong>{{$status->checkin?->destinationStopover->station?->name}}</strong>
-                                            @isset($status->checkin?->destinationStopover->station?->rilIdentifier)
-                                                <small>
-                                                    ({{$status->checkin->destinationStopover->station->rilIdentifier}})
-                                                </small>
-                                            @endisset
+                                            <strong>{{$status->checkin?->destinationStopover?->station?->name}}</strong>
                                             <br/>
-                                            @isset($status?->checkin?->destinationStopover->station?->ibnr)
-                                                <small>IBNR {{$status->checkin->destinationStopover->station->ibnr}}</small>
-                                                <br/>
-                                            @endisset
-
                                             <small>arr {{$status?->checkin?->arrival->diffForHumans()}}</small>
                                         </td>
                                         <td>

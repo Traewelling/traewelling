@@ -27,6 +27,7 @@ use App\Notifications\YouHaveBeenCheckedIn;
 use App\Repositories\CheckinHydratorRepository;
 use App\Repositories\StationRepository;
 use App\Services\GeoService;
+use App\StationIdentifierType;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
@@ -459,7 +460,7 @@ class TransportController extends Controller
 
             $nearestStation = Station::whereBetween('latitude', [$bbox->lowerRight->latitude, $bbox->upperLeft->latitude])
                 ->whereBetween('longitude', [$bbox->lowerRight->longitude, $bbox->upperLeft->longitude])
-                ->whereNotNull('ibnr')
+                ->whereHas('stationIdentifiers', fn ($q) => $q->where('type', StationIdentifierType::DE_DB_IBNR->value))
                 ->orderBy('id', 'asc')
                 ->first();
         }

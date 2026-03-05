@@ -22,7 +22,7 @@ class TripController
 
     public function renderTrip(int $id): View
     {
-        $trip = Trip::with(['checkins', 'polyline.parent'])
+        $trip = Trip::with(['checkins', 'polyline.parent', 'stopovers.station'])
             ->findOrFail($id);
 
         return view('admin.trips.show', [

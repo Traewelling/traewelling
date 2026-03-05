@@ -141,12 +141,8 @@
                             <tr>
                                 <th scope="col">Name</th>
                                 <th scope="col">TRWL-ID</th>
-                                <th scope="col">Wikidata</th>
-                                <th scope="col">IBNR</th>
-                                <th scope="col">RL100</th>
                                 <th scope="col">Ankunft soll / ist</th>
                                 <th scope="col">Abfahrt soll / ist</th>
-                                <th scope="col">Map</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -158,14 +154,6 @@
                                         </a>
                                     </td>
                                     <td>{{$stopover->station?->id}}</td>
-                                    <td>
-                                        <a href="https://www.wikidata.org/wiki/{{$stopover->station?->wikidata_id}}"
-                                           target="__blank">
-                                            {{$stopover->station?->wikidata_id}}
-                                        </a>
-                                    </td>
-                                    <td>{{$stopover->station?->ibnr}}</td>
-                                    <td>{{$stopover->station?->rilIdentifier}}</td>
                                     <td title="{{$stopover->arrival_planned?->format('Y-m-d')}}">
                                         <span
                                             style="color: #{{ ProfilePictureController::generateBackgroundHash($stopover->arrival_planned->format('ddmm')) }};">
@@ -188,19 +176,20 @@
                                         {{userTime($stopover->departure_real)}}
                                         </span>
                                     </td>
-                                    <td>
-                                        @if ($stopover->route_segment_id)
-                                            <a class="btn btn-primary btn-sm"
-                                               href="{{route('admin.routesegment.show', ['id' => $stopover->route_segment_id])}}">
-                                                ✅
-                                            </a>
-                                        @else
-                                            <button class="btn btn-outline-grey btn-sm" disabled>
-                                                ❌
-                                            </button>
-                                        @endif
-                                    </td>
                                 </tr>
+                                @if(!$loop->last)
+                                    <tr class="bg-body-tertiary">
+                                        <td colspan="4" class="py-1 text-center small text-body-secondary">
+                                            @if($stopover->route_segment_id)
+                                                <a href="{{route('admin.routesegment.show', ['id' => $stopover->route_segment_id])}}">
+                                                    ✅ Route segment ↓
+                                                </a>
+                                            @else
+                                                ❌ No route segment ↓
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endif
                             @endforeach
                             </tbody>
                         </table>

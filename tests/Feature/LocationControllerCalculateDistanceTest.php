@@ -160,21 +160,21 @@ class LocationControllerCalculateDistanceTest extends FeatureTestCase
 
         $this->assertEquals(8000, $result);
 
-        $result = (new LocationController($trip, $stopover1, $stopover2))->calculateDistance();
+        $result = new LocationController($trip, $stopover1, $stopover2)->calculateDistance();
         $this->assertEquals(5000, $result);
     }
 
     public function test_calculate_distance_with_polyline(): void
     {
-        $origin = Station::factory(['latitude' => 50.637486, 'longitude' => 3.071129, 'ibnr' => 8700030])->create();
-        $destination = Station::factory(['latitude' => 48.880886, 'longitude' => 2.354931, 'ibnr' => 8700014])->create();
+        $origin = Station::factory(['latitude' => 50.637486, 'longitude' => 3.071129])->create();
+        $destination = Station::factory(['latitude' => 48.880886, 'longitude' => 2.354931])->create();
 
         $geoJson = [
             'type' => 'FeatureCollection',
             'features' => [
                 [
                     'type' => 'Feature',
-                    'properties' => ['id' => 8700030, 'departure_planned' => Date::now()->toIso8601ZuluString()],
+                    'properties' => ['stationId' => $origin->id, 'departure_planned' => Date::now()->toIso8601ZuluString()],
                     'geometry' => ['type' => 'Point', 'coordinates' => [3.071129, 50.637486]],
                 ],
                 [
@@ -184,7 +184,7 @@ class LocationControllerCalculateDistanceTest extends FeatureTestCase
                 ],
                 [
                     'type' => 'Feature',
-                    'properties' => ['id' => 8700014, 'arrival_planned' => Date::now()->addHour()->toIso8601ZuluString()],
+                    'properties' => ['stationId' => $destination->id, 'arrival_planned' => Date::now()->addHour()->toIso8601ZuluString()],
                     'geometry' => ['type' => 'Point', 'coordinates' => [2.354931, 48.880886]],
                 ],
             ],

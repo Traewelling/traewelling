@@ -23,7 +23,10 @@ class StatusEditController extends Controller
         $validated = $request->validate([
             'userQuery' => ['nullable', 'max:255'],
         ]);
-        $lastStatuses = Status::orderBy('created_at', 'desc');
+        $lastStatuses = Status::with([
+            'checkin.originStopover.station',
+            'checkin.destinationStopover.station',
+        ])->orderBy('created_at', 'desc');
 
         if (isset($validated['userQuery'])) {
             $lastStatuses = $lastStatuses->whereIn(
@@ -96,9 +99,7 @@ class StatusEditController extends Controller
         );
 
         $status->checkin->update([
-            'origin' => $originStation->ibnr,
             'origin_stopover_id' => $newOrigin->id,
-            'destination' => $destinationStation->ibnr,
             'destination_stopover_id' => $newDestination->id,
             'departure' => $newDeparture,
             'arrival' => $newArrival,
