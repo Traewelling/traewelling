@@ -12,7 +12,6 @@ use Tests\Unit\UnitTestCase;
 
 class WikidataQueryServiceTest extends UnitTestCase
 {
-
     public function test_set_query_returns_self(): void
     {
         $service = new WikidataQueryService();

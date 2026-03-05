@@ -43,8 +43,7 @@
     "spatie/laravel-sitemap": "^8.0",
     "spatie/laravel-validation-rules": "^3.2",
     "spatie/laravel-webhook-server": "^3.4",
-    "traewelling/google-polyline": "^0.3.0",
-    "trwl/socialite-mastodon": "^1.2"
+    "traewelling/google-polyline": "^0.3.0"
   },
   "require-dev": {
     "ext-pdo_sqlite": "*",
