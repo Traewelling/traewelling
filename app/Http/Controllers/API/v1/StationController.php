@@ -226,6 +226,12 @@ class StationController extends Controller
                 schema: new OA\Schema(type: 'integer', maximum: 100, minimum: 1),
                 example: 50,
             ),
+            new OA\Parameter(
+                name: 'withIdentifiers',
+                description: 'Include station identifiers in the response.',
+                in: 'query',
+                schema: new OA\Schema(type: 'boolean'),
+            ),
         ],
         responses: [
             new OA\Response(
@@ -268,6 +274,8 @@ class StationController extends Controller
             'limit' => ['sometimes', 'integer', 'min:1', 'max:250'],
         ]);
 
+        $withIdentifiers = $request->boolean('withIdentifiers');
+
         $hasAnyBboxParam = $request->filled('min_lat') || $request->filled('max_lat') || $request->filled('min_lon') || $request->filled('max_lon');
 
         if ($hasAnyBboxParam) {
@@ -294,19 +302,26 @@ class StationController extends Controller
             $limit = min(max((int) $request->input('limit', 250), 1), 250);
 
             // get stations within BBOX from database
-            $stations = Station::whereBetween('latitude', [$minLat, $maxLat])
+            $query = Station::whereBetween('latitude', [$minLat, $maxLat])
                 ->whereBetween('longitude', [$minLon, $maxLon])
                 ->orderByDesc('relevance')
                 ->orderBy('name')
-                ->limit($limit)
-                ->get();
+                ->limit($limit);
 
-            return StationResource::collection($stations);
+            if ($withIdentifiers) {
+                $query->with('stationIdentifiers');
+            }
+
+            return StationResource::collection($query->get());
         }
 
         // fuzzy search
         if (array_key_exists('query', $validated)) {
             $stations = (new StationBackendController())->search($validated['query']);
+
+            if ($withIdentifiers) {
+                $stations->loadMissing('stationIdentifiers');
+            }
 
             return StationResource::collection($stations);
         }
@@ -337,6 +352,10 @@ class StationController extends Controller
 
         if (!$station) {
             return response()->json(null, 404);
+        }
+
+        if ($withIdentifiers) {
+            $station->loadMissing('stationIdentifiers');
         }
 
         return StationResource::collection([new StationResource($station)]);
