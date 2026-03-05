@@ -1,11 +1,20 @@
-{{ __('mail.hello', ['username' => $user->username]) }},<br/>
+{{-- CAUTION! This template uses markdown! Never indent the lines below or you will break the layout --}}
+{{-- Also never use __ or @lang, because mails handle translation very differently. Always use App\Helpers\Lang::trans() --}}
+@props([
+'user',
+'locale' => app()->getLocale(),
+])
+@php
+    use App\Helpers\Lang;
+@endphp
+<x-mail::message heading="{{ Lang::trans('mail.account_deletion_notification_two_weeks_before.subject') }}">
+{{ Lang::trans('mail.hello', ['username' => $user->username]) }},<br/>
 <br/>
-{{ __('mail.account_deletion_notification_two_weeks_before.body1') }}<br/>
-{{ __('mail.account_deletion_notification_two_weeks_before.body2') }}<br/>
+{{ Lang::trans('mail.account_deletion_notification_two_weeks_before.body1', locale: $locale) }}<br/>
+{{ Lang::trans('mail.account_deletion_notification_two_weeks_before.body2', locale: $locale) }}<br/>
 <br/>
-{{ __('mail.account_deletion_notification_two_weeks_before.body3') }}<br/>
+{{ Lang::trans('mail.account_deletion_notification_two_weeks_before.body3', locale: $locale) }}<br/>
 <br/>
-{{ __('mail.bye') }},<br/>
-{{ __('mail.signature') }}<br/>
-<br/>
-<a href="https://traewelling.de">https://traewelling.de</a>
+{{ Lang::trans('mail.bye', locale: $locale) }}<br/>
+{{ Lang::trans('mail.signature', locale: $locale) }}<br/>
+</x-mail::message>

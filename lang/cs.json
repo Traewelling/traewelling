@@ -279,7 +279,7 @@
     "mail.account_deletion_notification_two_weeks_before.body3": "Pokud si chcete svůj účet ponechat, přihlaste se prosím do 14 dnů.",
     "mail.account_deletion_notification_two_weeks_before.subject": "Váš účet na Träwellingu bude smazán za dva týdny",
     "mail.bye": "S pozdravem",
-    "mail.hello": "Dobrý den :username",
+    "mail.hello": "Dobrý den :username!",
     "mail.signature": "Váš tým Travellingu",
     "maintenance.auto-refresh": "Tato stránka se automaticky obnoví po dokončení údržby.",
     "maintenance.follow": "Sledujte nás na Mastodonu",

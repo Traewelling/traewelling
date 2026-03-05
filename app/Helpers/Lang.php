@@ -1,0 +1,79 @@
+<?php
+
+namespace App\Helpers;
+
+use Illuminate\Support\Facades\Log;
+
+class Lang
+{
+    public static function trans(?string $key = null, array $replace = [], ?string $locale = null)
+    {
+        if (is_null($key)) {
+            return $key;
+        }
+
+        $translation = trans($key, $replace, $locale);
+        if ($translation !== $key) {
+            return $translation;
+        }
+
+        // if locale starts with de try german first, because we offer dialects
+        if (str_starts_with($locale ?? 'en', 'de')) {
+            $translation = trans($key, $replace, 'de');
+            if ($translation !== $key) {
+                return $translation;
+            }
+        }
+
+        // if no translation for the current language is found try english...
+        $translation = trans($key, $replace, 'en');
+        if ($translation !== $key) {
+            return $translation;
+        }
+
+        // if no translation for the current language is found try german...
+        $translation = trans($key, $replace, 'de');
+        if ($translation !== $key) {
+            return $translation;
+        }
+
+        if (!(str_starts_with($key, 'tag.title.') && !str_starts_with($key, 'tag.title.trwl'))) {
+            // What? Why we don't have these translation in german? This is our main language.
+            // When we are reaching this line something is broken. Please fix it.
+            Log::warning('Missing translation for key: ' . $key);
+        }
+
+        // But nevermind, first return the key:
+        return trans($key, $replace, $locale);
+    }
+
+    public static function trans_choice($key, $number, array $replace = [], $locale = null)
+    {
+        $translation = app('translator')->choice($key, $number, $replace, $locale);
+        if ($translation !== $key) {
+            return $translation;
+        }
+        // if locale starts with de try german first, because we offer dialects
+        if (str_starts_with($locale ?? app()->getLocale(), 'de')) {
+            $translation = app('translator')->choice($key, $number, $replace, 'de');
+            if ($translation !== $key) {
+                return $translation;
+            }
+        }
+        // if no translation for the current language is found try english...
+        $translation = app('translator')->choice($key, $number, $replace, 'en');
+        if ($translation !== $key) {
+            return $translation;
+        }
+        // if no translation for the current language is found try german...
+        $translation = app('translator')->choice($key, $number, $replace, 'de');
+        if ($translation !== $key) {
+            return $translation;
+        }
+
+        // What? Why we don't have these translation in german? This is our main language.
+        // When we are reaching this line something is broken. Please fix it.
+        // But nevermind, then return the key:
+        return $translation;
+    }
+}
