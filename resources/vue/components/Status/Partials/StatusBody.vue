@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
 import { PropType, ref, watch } from 'vue';
-import { StatusResource } from '../../../../types/Api.gen';
+import { MentionDto, StatusResource, UserResource } from '../../../../types/Api.gen';
 
 const props = defineProps({
     status: {
@@ -27,57 +27,43 @@ function escapeHtml(s: string): string {
         .replaceAll(/'/g, '&#039;');
 }
 
-/**
- * Convert byte offset to character offset in a UTF-8 string.
- * PHP stores mention positions as byte offsets (from preg_match_all),
- * but JavaScript string operations work with character offsets.
- */
-function byteOffsetToCharOffset(str: string, byteOffset: number): number {
-    const encoder = new TextEncoder();
-    let charIndex = 0;
-    let byteCount = 0;
-
-    while (charIndex < str.length && byteCount < byteOffset) {
-        const char = str[charIndex];
-        const encoded = encoder.encode(char);
-        byteCount += encoded.length;
-        charIndex++;
-    }
-
-    return charIndex;
-}
-
 function buildBodyWithMentions(): string {
     const body = props.status.body ?? '';
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const mentions = (props.status as any).bodyMentions ?? [];
-    if (!body || !Array.isArray(mentions) || mentions.length === 0) {
+    const mentions: MentionDto[] = props.status.bodyMentions ?? [];
+    if (!body) {
         return escapeHtml(body);
     }
 
-    const sorted = [...mentions].sort((a, b) => a.position - b.position);
-    let result = '';
-    let cursor = 0;
-
-    for (const m of sorted) {
-        // Convert byte offsets (from PHP) to character offsets (for JavaScript)
-        const byteStart = Number(m.position) || 0;
-        const byteLength = Number(m.length) || 0;
-        const byteEnd = byteStart + byteLength;
-
-        const charStart = byteOffsetToCharOffset(body, byteStart);
-        const charEnd = byteOffsetToCharOffset(body, byteEnd);
-
-        result += escapeHtml(body.slice(cursor, charStart));
-        const mentionText = body.slice(charStart, charEnd);
-        const username = m?.user?.username ?? mentionText.replace(/^@/, '');
-        const url = `/@${encodeURIComponent(username)}`;
-
-        result += `<a href="${url}" class="mention">${escapeHtml(mentionText)}</a>`;
-        cursor = charEnd;
+    // Build a map of lowercase username -> user object from bodyMentions.
+    // We ignore backend-provided position/length values entirely, because PHP counts
+    // byte offsets while JS counts UTF-16 code units, causing mismatches with emojis.
+    // Instead, we search for @username patterns directly in the body text.
+    const userMap = new Map<string, UserResource>();
+    for (const m of mentions) {
+        if (m.user?.username) {
+            userMap.set(m.user.username.toLowerCase(), m.user);
+        }
     }
 
-    result += escapeHtml(body.slice(cursor));
+    if (userMap.size === 0) {
+        return escapeHtml(body);
+    }
+
+    const mentionRegex = /@([a-zA-Z0-9_]+)/g;
+    let result = '';
+    let lastIndex = 0;
+    let match: RegExpExecArray | null;
+
+    while ((match = mentionRegex.exec(body)) !== null) {
+        const user = userMap.get(match[1].toLowerCase());
+        if (!user) continue;
+
+        result += escapeHtml(body.slice(lastIndex, match.index));
+        result += `<a href="/@${encodeURIComponent(user.username)}" class="mention">${escapeHtml(match[0])}</a>`;
+        lastIndex = match.index + match[0].length;
+    }
+
+    result += escapeHtml(body.slice(lastIndex));
     return result;
 }
 
