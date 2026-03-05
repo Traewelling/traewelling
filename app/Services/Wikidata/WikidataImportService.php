@@ -83,6 +83,7 @@ class WikidataImportService
 
         if ($existingStation !== null) {
             self::upsertIdentifiers($existingStation, $qId, $ibnr, $rl100, $ifopt);
+
             return $existingStation;
         }
 
