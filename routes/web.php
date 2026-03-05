@@ -143,7 +143,7 @@ Route::middleware(['auth', 'privacy'])->group(function () {
 
     Route::prefix('contribute')->group(function () {
         Route::get('/{any?}', function () {
-            return view('contribute');
+            return view('vue.spa');
         })->where('any', '.*')->name('contribute');
     });
 
@@ -198,8 +198,8 @@ Route::middleware(['auth', 'privacy'])->group(function () {
         Route::post('/deltoken', [UserController::class, 'deleteToken'])
             ->name('deltoken'); // TODO: Replace with API Endpoint
         Route::get('/{any?}', function () {
-            return view('contribute');
-        })->where('any', '.*')->name('contribute');
+            return view('vue.spa');
+        })->where('any', '.*')->name('settings.vue');
     });
 
     Route::view('/dashboard', 'vue.dashboard')
