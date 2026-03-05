@@ -12,8 +12,6 @@ use App\Services\GeoService;
 use App\StationIdentifierType;
 use Illuminate\Database\Eloquent\Collection as DbCollection;
 use Illuminate\Support\Collection;
-use PDOException;
-use stdClass;
 
 class StationRepository
 {
@@ -24,61 +22,6 @@ class StationRepository
         $this->geoService = $geoService ?? new GeoService();
     }
 
-    /**
-     * @throws PDOException
-     */
-    public static function parseHafasStopObject(stdClass $hafasStop): Station
-    {
-
-        $data = [
-            'name' => $hafasStop->name,
-            'latitude' => $hafasStop->location?->latitude,
-            'longitude' => $hafasStop->location?->longitude,
-        ];
-
-        if (isset($hafasStop->ril100)) {
-            $data['rilIdentifier'] = $hafasStop->ril100;
-        }
-
-        return Station::updateOrCreate(
-            ['ibnr' => $hafasStop->id],
-            $data
-        );
-    }
-
-    public static function parseHafasStops(array $hafasResponse): Collection
-    {
-        $payload = [];
-        foreach ($hafasResponse as $hafasStation) {
-            $payload[] = [
-                'ibnr' => $hafasStation->id,
-                'name' => $hafasStation->name,
-                'latitude' => $hafasStation?->location?->latitude,
-                'longitude' => $hafasStation?->location?->longitude,
-            ];
-        }
-
-        return self::upsertStations($payload);
-    }
-
-    public static function upsertStations(array $payload)
-    {
-        $ibnrs = array_column($payload, 'ibnr');
-        if (empty($ibnrs)) {
-            return new Collection();
-        }
-        Station::upsert($payload, ['ibnr'], ['name', 'latitude', 'longitude']);
-
-        return Station::whereIn('ibnr', $ibnrs)->get()
-            ->sortBy(function (Station $station) use ($ibnrs) {
-                return array_search($station->ibnr, $ibnrs);
-            })
-            ->values();
-    }
-
-    /**
-     * @return Collection|Station[]
-     */
     public function getStationsByIdentifiers(string|array $stationIds, DataProvider $source, string $type = 'motis'): Collection
     {
         if (is_string($stationIds)) {
@@ -95,16 +38,23 @@ class StationRepository
 
     public function getStationByIfopt(string $ifopt): ?Station
     {
-        $ifoptParts = explode(':', $ifopt);
-        if (count($ifoptParts) < 3) {
-            return null;
+        // Check direct IFOPT identifier first
+        $station = StationIdentifier::with(['station.areas', 'station.stationIdentifiers'])
+            ->where('type', StationIdentifierType::IFOPT->value)
+            ->where('identifier', $ifopt)
+            ->first()
+            ?->station;
+
+        if ($station !== null) {
+            return $station;
         }
 
-        return Station::with(['areas', 'stationIdentifiers'])->where([
-            'ifopt_a' => $ifoptParts[0],
-            'ifopt_b' => $ifoptParts[1],
-            'ifopt_c' => $ifoptParts[2],
-        ])->first();
+        // Fall back to DELFI MOTIS identifier (stored as "de-DELFI_{ifopt}")
+        return StationIdentifier::with(['station.areas', 'station.stationIdentifiers'])
+            ->where('type', StationIdentifierType::MOTIS->value)
+            ->where('identifier', 'de-DELFI_' . $ifopt)
+            ->first()
+            ?->station;
     }
 
     public function updateStationIdentifier(?Station $station, string $identifier, ?DataProvider $source = null, StationIdentifierType $type = StationIdentifierType::MOTIS, ?float $latitude = null, ?float $longitude = null): void
@@ -174,7 +124,11 @@ class StationRepository
 
     public function getStationByrilIdentifier(string $rilIdentifier): ?Station
     {
-        return Station::where('rilIdentifier', $rilIdentifier)->first();
+        return StationIdentifier::with('station')
+            ->where('type', StationIdentifierType::DE_DB_RIL100->value)
+            ->where('identifier', $rilIdentifier)
+            ->first()
+            ?->station;
     }
 
     public function updateStationAreas(Station $station, $areas): void
@@ -258,7 +212,6 @@ class StationRepository
         });
 
         return $stations->sortBy([
-            ['ibnr', 'desc'],
             ['relevance', 'desc'],
             ['tempNameSimilarityPercent', 'desc'],
         ]);
