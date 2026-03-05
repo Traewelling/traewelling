@@ -31,7 +31,6 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property string|null $ifopt_a
  * @property string|null $source
  * @property int $relevance
- * @property int $identifiers_migrated
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $activities
  * @property-read int|null $activities_count
  * @property-read \App\Models\AreasStationsMap|null $pivot
@@ -51,7 +50,6 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereIbnr($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereIdentifiersMigrated($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereIfoptA($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereIfoptB($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereIfoptC($value)
