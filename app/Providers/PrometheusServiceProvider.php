@@ -119,12 +119,6 @@ class PrometheusServiceProvider extends ServiceProvider
                 return Station::count();
             });
 
-        Prometheus::addGauge('Migrated stations count')
-            ->helpText('How many stations have been migrated to the station identifiers?')
-            ->value(function () {
-                return Station::where('identifiers_migrated', 1)->count();
-            });
-
         Prometheus::addGauge('Station identifiers count')
             ->helpText('How many station identifiers exist in the database?')
             ->value(function () {
