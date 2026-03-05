@@ -13,7 +13,6 @@ use App\Console\Commands\ReduceRelevance;
 use App\Console\Commands\RefreshCurrentTrips;
 use App\Console\Commands\RefreshOperatorMappings;
 use App\Jobs\FetchManualTransitousLicenses;
-use App\Jobs\MigrationStationIdentifiers;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Spatie\PersonalDataExport\Commands\CleanOldPersonalDataExportsCommand;
@@ -27,9 +26,6 @@ class Kernel extends ConsoleKernel
 
         // every five minutes
         $schedule->command(CacheLeaderboard::class)->withoutOverlapping()->everyFiveMinutes();
-        $schedule->job(MigrationStationIdentifiers::class)->withoutOverlapping()->everyFiveMinutes();
-        $schedule->job(MigrationStationIdentifiers::class)->withoutOverlapping()->between('00:00', '02:00')->everyThirtySeconds();
-
         // hourly tasks
         $schedule->command(HideStatus::class)->hourly();
         $schedule->command(RefreshOperatorMappings::class)->hourly();
