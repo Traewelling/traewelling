@@ -37,8 +37,6 @@ class StationController extends Controller
         $this->authorize('create', Station::class);
 
         $validated = $request->validate([
-            'ibnr' => ['nullable', 'numeric', 'unique:train_stations'],
-            'rilIdentifier' => ['nullable', 'string', 'max:10'],
             'name' => ['required', 'string', 'max:255'],
             'latitude' => ['required', 'numeric', 'between:-90,90'],
             'longitude' => ['required', 'numeric', 'between:-180,180'],
@@ -57,8 +55,8 @@ class StationController extends Controller
             Stopover::where('train_station_id', $station->id)->exists()
             || Event::where('station_id', $station->id)->exists()
             || EventSuggestion::where('station_id', $station->id)->exists()
-            || Checkin::where('origin', $station->ibnr)->orWhere('destination', $station->ibnr)->exists()
-            || Trip::where('origin', $station->ibnr)->orWhere('destination', $station->ibnr)->exists()
+            || Stopover::where('train_station_id', $station->id)->exists()
+            || Trip::where('origin_id', $station->id)->orWhere('destination_id', $station->id)->exists()
         ) {
             return $this->sendError('Station is still in use and cannot be deleted', 409);
         }
@@ -112,17 +110,8 @@ class StationController extends Controller
             Event::where('station_id', $oldStation->id)->update(['station_id' => $newStation->id]);
             EventSuggestion::where('station_id', $oldStation->id)->update(['station_id' => $newStation->id]);
 
-            // merge columns from old->new if they are null
-            $columns = ['ibnr', 'wikidata_id', 'rilIdentifier', 'ifopt_a', 'ifopt_b', 'ifopt_c', 'ifopt_d', 'ifopt_e'];
-            foreach ($columns as $column) {
-                if ($newStation->{$column} === null && $oldStation->{$column} !== null) {
-                    $newStation->{$column} = $oldStation->{$column};
-                }
-            }
-
             $oldStation->delete();
 
-            // save AFTER deletion to avoid foreign key constraint errors
             if ($newStation->isDirty()) {
                 $newStation->save();
             }
@@ -145,8 +134,6 @@ class StationController extends Controller
         $this->authorize('update', $station);
 
         $validated = $request->validate([
-            'ibnr' => ['nullable', 'numeric', 'unique:train_stations,ibnr,' . $station->id],
-            'rilIdentifier' => ['nullable', 'string', 'max:10'],
             'name' => ['nullable', 'string', 'max:255'],
             'latitude' => ['nullable', 'numeric', 'between:-90,90'],
             'longitude' => ['nullable', 'numeric', 'between:-180,180'],

@@ -10,7 +10,7 @@
                 <div class="card-body">
                     <form method="GET">
                         <input type="text" class="form-control" name="query"
-                               placeholder="ID, name, rilIdentifier, IBNR or Wikidata ID"
+                               placeholder="ID or name"
                                value="{{request()->get('query')}}"
                         />
                     </form>
@@ -29,8 +29,6 @@
                                 <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>WikiData</th>
-                                    <th>RilIdentifier</th>
                                     <th>Name</th>
                                     <th>Relevance</th>
                                     <th></th>
@@ -40,13 +38,6 @@
                                 @foreach($stations as $station)
                                     <tr>
                                         <td>{{$station->id}}</td>
-                                        <td>
-                                            <a href="https://www.wikidata.org/wiki/{{$station->wikidata_id}}"
-                                               target="{{$station->wikidata_id}}">
-                                                {{$station->wikidata_id}}
-                                            </a>
-                                        </td>
-                                        <td>{{$station->rilIdentifier}}</td>
                                         <td>
                                             <a href="{{route('admin.station', $station->id)}}">
                                                 {{$station->name}}
@@ -112,14 +103,6 @@
                             <input type="text" class="form-control" id="create-station-name" required>
                             <label for="create-station-name" class="form-label">Name</label>
                         </div>
-                        <div class="mb-3 form-floating">
-                            <input type="text" class="form-control" id="create-station-ibnr">
-                            <label for="create-station-ibnr" class="form-label">IBNR</label>
-                        </div>
-                        <div class="mb-3 form-floating">
-                            <input type="text" class="form-control" id="create-station-rilIdentifier">
-                            <label for="create-station-rilIdentifier" class="form-label">RilIdentifier</label>
-                        </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <div class="form-floating">
@@ -142,8 +125,6 @@
                             event.preventDefault();
 
                             const name = document.getElementById('create-station-name').value;
-                            const ibnr = document.getElementById('create-station-ibnr').value;
-                            const rilIdentifier = document.getElementById('create-station-rilIdentifier').value;
                             const latitude = document.getElementById('create-station-lat').value;
                             const longitude = document.getElementById('create-station-lon').value;
 
@@ -154,8 +135,6 @@
                                 },
                                 body: JSON.stringify({
                                     name,
-                                    ibnr,
-                                    rilIdentifier,
                                     latitude,
                                     longitude,
                                 }),

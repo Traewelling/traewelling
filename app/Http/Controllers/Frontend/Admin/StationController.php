@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers\Frontend\Admin;
 
-use App\Dto\Coordinate;
 use App\Exceptions\DataProviderException;
 use App\Exceptions\Wikidata\FetchException;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\StationResource;
 use App\Models\Station;
-use App\Objects\LineSegment;
 use App\Services\StationService;
 use App\Services\Wikidata\WikidataImportService;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -34,10 +32,7 @@ class StationController extends Controller
                 }
             }
 
-            $stations->where('name', 'LIKE', '%' . $query . '%')
-                ->orWhere('ibnr', 'LIKE', '%' . $query . '%')
-                ->orWhere('rilIdentifier', 'LIKE', '%' . $query . '%')
-                ->orWhere('wikidata_id', 'LIKE', '%' . $query . '%');
+            $stations->where('name', 'LIKE', '%' . $query . '%');
 
             if ($stations->count() === 1) {
                 return redirect()->route('admin.station', ['id' => $stations->first()->id]);
@@ -55,26 +50,8 @@ class StationController extends Controller
 
         $station = Station::findOrFail($id);
 
-        if (isset($station->ifopt_a, $station->ifopt_b, $station->ifopt_c)) {
-            $stationsWithSameIfopt = Station::where('ifopt_a', $station->ifopt_a)
-                ->where('ifopt_b', $station->ifopt_b)
-                ->where('ifopt_c', $station->ifopt_c)
-                ->limit(100)
-                ->get()
-                ->reject(fn (Station $s) => $s->id === $station->id)
-                ->map(function (Station $s) use ($station) {
-                    $stationCoordinate = new Coordinate($s->latitude, $s->longitude);
-                    $sameStationCoordinate = new Coordinate($station->latitude, $station->longitude);
-                    $lineSegment = new LineSegment($stationCoordinate, $sameStationCoordinate);
-                    $s->distanceToSimilarStation = $lineSegment->calculateDistance();
-
-                    return $s;
-                });
-        }
-
         return view('admin.stations.show', [
             'station' => $station,
-            'stationsWithSameIfopt' => $stationsWithSameIfopt ?? [],
             'nearbyStations' => StationService::getNearbyStations($station),
             'latestCheckins' => StationService::getLatestCheckins($station),
         ]);
