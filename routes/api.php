@@ -15,7 +15,6 @@ use App\Http\Controllers\API\v1\AlertController;
 use App\Http\Controllers\API\v1\AuthController as v1Auth;
 use App\Http\Controllers\API\v1\CommunityController;
 use App\Http\Controllers\API\v1\EventController;
-use App\Http\Controllers\API\v1\ExperimentalController;
 use App\Http\Controllers\API\v1\ExportController;
 use App\Http\Controllers\API\v1\FollowController;
 use App\Http\Controllers\API\v1\IcsController;
@@ -198,12 +197,6 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::apiResource('operators', OperatorController::class)->only(['index']);
         Route::apiResource('alerts', AlertController::class);
         Route::put('/operators/{oldOperatorId}/merge/{newOperatorId}', [OperatorController::class, 'merge']); // currently admin/backend only
-
-        Route::prefix('experimental')->group(function () {
-            // undocumented, unstable, experimental endpoints. don't use in external applications!
-
-            Route::post('/station/{id}/wikidata', [ExperimentalController::class, 'fetchWikidata']);
-        });
 
         Route::prefix('community')->group(static function () {
             Route::get('profile', [CommunityController::class, 'getMyProfile']);

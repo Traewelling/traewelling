@@ -75,64 +75,25 @@ class WikidataImportService
         $ibnr = $wikidataEntity->getClaims('P954')[0]['mainsnak']['datavalue']['value'] ?? null;    // P954 = IBNR
         $rl100 = $wikidataEntity->getClaims('P8671')[0]['mainsnak']['datavalue']['value'] ?? null;   // P8671 = RL100
         $ifopt = $wikidataEntity->getClaims('P12393')[0]['mainsnak']['datavalue']['value'] ?? null;  // P12393 = IFOPT
-        if ($ifopt !== null) {
-            $splitIfopt = explode(':', $ifopt);
-        }
 
         // if ibnr is already in use, we can't import the station, but we can add the wikidata information to the existing station
-        if ($ibnr !== null && Station::where('ibnr', $ibnr)->exists()) {
-            $station = Station::where('ibnr', $ibnr)->first();
-            $station->wikidata_id = $qId;
+        $existingStation = $ibnr !== null
+            ? Station::whereHas('stationIdentifiers', fn ($q) => $q->where('type', StationIdentifierType::DE_DB_IBNR)->where('identifier', (string) $ibnr))->first()
+            : null;
 
-            if ($station->ifopt_a === null && isset($splitIfopt)) {
-                $station->ifopt_a = $splitIfopt[0] ?? null;
-                $station->ifopt_b = $splitIfopt[1] ?? null;
-                $station->ifopt_c = $splitIfopt[2] ?? null;
-                $station->ifopt_d = $splitIfopt[3] ?? null;
-                $station->ifopt_e = $splitIfopt[4] ?? null;
-            }
-
-            if ($station->rilIdentifier === null && $rl100 !== null) {
-                $station->rilIdentifier = $rl100;
-            }
-
-            $station->save();
-
-            return $station;
+        if ($existingStation !== null) {
+            self::upsertIdentifiers($existingStation, $qId, $ibnr, $rl100, $ifopt);
+            return $existingStation;
         }
 
-        $station = Station::create(
-            [
-                'name' => $name,
-                'latitude' => $coordinates->latitude,
-                'longitude' => $coordinates->longitude,
-                'ifopt_a' => $splitIfopt[0] ?? null, // @deprecated: save in station_identifiers later
-                'ifopt_b' => $splitIfopt[1] ?? null, // @deprecated: save in station_identifiers later
-                'ifopt_c' => $splitIfopt[2] ?? null, // @deprecated: save in station_identifiers later
-                'ifopt_d' => $splitIfopt[3] ?? null, // @deprecated: save in station_identifiers later
-                'ifopt_e' => $splitIfopt[4] ?? null, // @deprecated: save in station_identifiers later
-                'source' => 'wikidata',
-            ]
-        );
-
-        $station->stationIdentifiers()->create([
-            'type' => StationIdentifierType::WIKIDATA_ID,
-            'identifier' => $qId,
+        $station = Station::create([
+            'name' => $name,
+            'latitude' => $coordinates->latitude,
+            'longitude' => $coordinates->longitude,
+            'source' => 'wikidata',
         ]);
 
-        if ($rl100) {
-            $station->stationIdentifiers()->create([
-                'type' => StationIdentifierType::DE_DB_RIL100,
-                'identifier' => $rl100,
-            ]);
-        }
-
-        if ($ibnr) {
-            $station->stationIdentifiers()->create([
-                'type' => StationIdentifierType::DE_DB_IBNR,
-                'identifier' => (string) $ibnr,
-            ]);
-        }
+        self::upsertIdentifiers($station, $qId, $ibnr, $rl100, $ifopt);
 
         return $station;
     }
@@ -142,40 +103,65 @@ class WikidataImportService
      */
     public static function searchStation(Station $station): void
     {
-        // P054 = IBNR
+        $ibnr = $station->stationIdentifiers()
+            ->where('type', StationIdentifierType::DE_DB_IBNR)
+            ->value('identifier');
+
+        if ($ibnr === null) {
+            throw new FetchException('No IBNR identifier found for station ' . $station->id);
+        }
+
+        // P954 = IBNR
         $sparqlQuery = <<<SPARQL
-            SELECT ?item WHERE { ?item wdt:P954 "{$station->ibnr}". }
+            SELECT ?item WHERE { ?item wdt:P954 "{$ibnr}". }
         SPARQL;
 
-        $objects = (new WikidataQueryService())->setQuery($sparqlQuery)->execute()->getObjects();
+        $objects = new WikidataQueryService()->setQuery($sparqlQuery)->execute()->getObjects();
         if (count($objects) > 1) {
-            Log::debug('More than one object found for station ' . $station->ibnr . ' (' . $station->id . ') - skipping');
-            throw new FetchException('There are multiple Wikidata entitied with IBNR ' . $station->ibnr);
+            Log::debug('More than one object found for station ' . $ibnr . ' (' . $station->id . ') - skipping');
+            throw new FetchException('There are multiple Wikidata entities with IBNR ' . $ibnr);
         }
 
         if (empty($objects)) {
-            Log::debug('No object found for station ' . $station->ibnr . ' (' . $station->id . ') - skipping');
-            throw new FetchException('No Wikidata entity found for IBNR ' . $station->ibnr);
+            Log::debug('No object found for station ' . $ibnr . ' (' . $station->id . ') - skipping');
+            throw new FetchException('No Wikidata entity found for IBNR ' . $ibnr);
         }
 
         $object = $objects[0];
-        $station->update(['wikidata_id' => $object->qId]);
+        $rl100 = $object->getClaims('P8671')[0]['mainsnak']['datavalue']['value'] ?? null;
+        $ifopt = $object->getClaims('P12393')[0]['mainsnak']['datavalue']['value'] ?? null;
+
+        self::upsertIdentifiers($station, $object->qId, null, $rl100, $ifopt);
+
         activity()->performedOn($station)->log('Linked wikidata entity ' . $object->qId);
         Log::debug('Fetched object ' . $object->qId . ' for station ' . $station->name . ' (Trwl-ID: ' . $station->id . ')');
+    }
 
-        $ifopt = $object->getClaims('P12393')[0]['mainsnak']['datavalue']['value'] ?? null;
-        if ($station->ifopt_a === null && $ifopt !== null) {
-            $splitIfopt = explode(':', $ifopt);
-            $station->update([
-                'ifopt_a' => $splitIfopt[0] ?? null,
-                'ifopt_b' => $splitIfopt[1] ?? null,
-                'ifopt_c' => $splitIfopt[2] ?? null,
-            ]);
+    private static function upsertIdentifiers(Station $station, string $qId, ?string $ibnr, ?string $rl100, ?string $ifopt): void
+    {
+        $station->stationIdentifiers()->firstOrCreate(
+            ['type' => StationIdentifierType::WIKIDATA_ID->value],
+            ['identifier' => $qId],
+        );
+
+        if ($ibnr !== null) {
+            $station->stationIdentifiers()->firstOrCreate(
+                ['type' => StationIdentifierType::DE_DB_IBNR->value, 'identifier' => (string) $ibnr],
+            );
         }
 
-        $rl100 = $object->getClaims('P8671')[0]['mainsnak']['datavalue']['value'] ?? null;
-        if ($station->rilIdentifier === null && $rl100 !== null) {
-            $station->update(['rilIdentifier' => $rl100]);
+        if ($rl100 !== null) {
+            $station->stationIdentifiers()->firstOrCreate(
+                ['type' => StationIdentifierType::DE_DB_RIL100->value],
+                ['identifier' => $rl100],
+            );
+        }
+
+        if ($ifopt !== null) {
+            $station->stationIdentifiers()->firstOrCreate(
+                ['type' => StationIdentifierType::IFOPT->value],
+                ['identifier' => $ifopt],
+            );
         }
     }
 
