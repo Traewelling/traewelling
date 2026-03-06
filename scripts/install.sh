@@ -161,33 +161,6 @@ finish_application() {
   php artisan up
 }
 
-restart_services() {
-  if ! command -v systemctl &> /dev/null; then
-    echo -e "${RED}Systemd is not available on this system. Skipping service restart.${RESET}"
-    return
-  fi
-
-  echo -e "\n\n${CYAN}Restarting services...${RESET}"
-  echo -e "${YELLOW}You may be asked to enter your password here if you're not running as root.${RESET}\n\n"
-
-  services=(
-    "traewelling-queue"
-    "traewelling-queue-webhook"
-    "traewelling-queue-export"
-  )
-
-  for service in "${services[@]}"; do
-    service_path="/etc/systemd/system/${service}.service"
-    if [ -f "$service_path" ]; then
-      echo -e "${YELLOW}Restarting ${service} service...${RESET}"
-      sudo systemctl restart "$service"
-      echo -e "${GREEN}${service} service restarted successfully!${RESET}"
-    else
-      ask_to_install_service "$service"
-    fi
-  done
-}
-
 remove_old_log() {
   echo -e "${YELLOW}Removing old logs...${RESET}"
   rm -f "${REPO_ROOT}/storage/logs/install-*.log"
@@ -202,7 +175,6 @@ run_installation() {
   install_npm_dependencies | sed "s/^/[npm] /"
   run_migrations | sed "s/^/[Migration] /"
   finish_application | sed "s/^/[PostInstall] /"
-  restart_services | sed "s/^/[ServiceManager] /"
 
   echo -e "\n\n${GREEN}Application updated successfully at $(date --iso-8601=seconds)!${RESET}"
 }
