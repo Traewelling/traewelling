@@ -195,7 +195,6 @@
 </div>
 <script>
     var token = '{{ csrf_token() }}';
-    var urlDisconnect = '{{ route('provider.destroy') }}';
 </script>
 </body>
 </html>

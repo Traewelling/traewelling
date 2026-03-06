@@ -21,7 +21,6 @@ use App\Http\Controllers\Frontend\LandingPageController;
 use App\Http\Controllers\Frontend\LeaderboardController;
 use App\Http\Controllers\Frontend\SettingsController;
 use App\Http\Controllers\Frontend\Social\MastodonController;
-use App\Http\Controllers\Frontend\Social\SocialController;
 use App\Http\Controllers\Frontend\StatisticController;
 use App\Http\Controllers\Frontend\Stats\DailyStatsController;
 use App\Http\Controllers\Frontend\Transport\StatusController;
@@ -122,9 +121,6 @@ Route::middleware(['auth', 'privacy'])->group(function () {
         ->name('ics.createPersonalAccessToken'); // TODO: Replace with API Endpoint
     Route::post('/ics/revokeToken', [IcsController::class, 'revokeIcsToken'])
         ->name('ics.revokeToken'); // TODO: Replace with API Endpoint
-
-    Route::post('/destroy/provider', [SocialController::class, 'destroyProvider'])
-        ->name('provider.destroy');
 
     Route::prefix('stats')->group(static function () {
         Route::permanentRedirect('/', '/statistics');
