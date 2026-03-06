@@ -4500,6 +4500,61 @@
                 ]
             }
         },
+        "/trips/{id}/statuses": {
+            "get": {
+                "tags": [
+                    "Trips"
+                ],
+                "summary": "[Auth optional] Get statuses for a trip",
+                "description": "Returns all statuses visible to the (un)authenticated user for a given trip",
+                "operationId": "getTripStatuses",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Internal trip ID (available as checkin.trip in the status response)",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 4711
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/StatusResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Trip not found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "read-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/user/{user}/trusted": {
             "get": {
                 "tags": [
@@ -8420,6 +8475,10 @@
         {
             "name": "Security",
             "description": "Security"
+        },
+        {
+            "name": "Trips",
+            "description": "Trips"
         }
     ]
 }

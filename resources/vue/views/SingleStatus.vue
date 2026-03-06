@@ -7,6 +7,7 @@ import CheckinSuccessHelper from '../components/CheckinSuccessHelper.vue';
 import Error403 from '../components/Errors/403.vue';
 import Error404 from '../components/Errors/404.vue';
 import LoadingSkeletonRows from '../components/Loader/LoadingSkeletonRows.vue';
+import CoPassengers from '../components/Status/CoPassengers.vue';
 import StatusCard from '../components/Status/StatusCard.vue';
 import TagHelper from '../components/TagHelper.vue';
 import { getDepartureForStatus } from '../helpers/DateTimeHelper';
@@ -107,69 +108,83 @@ fetchLikes();
 </script>
 
 <template>
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-7">
-            <template v-if="loading">
+    <template v-if="loading">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-7">
                 <LoadingSkeletonRows :row-height="30" :rows="1" />
                 <LoadingSkeletonRows :row-height="600" :rows="1" />
-            </template>
-
-            <template v-else>
-                <template v-if="status">
-                    <CheckinSuccessHelper v-if="user.user && status.userDetails.id === user.user.id" />
-                    <h2 class="fs-5">
-                        {{ getDepartureForStatus(status).toLocaleString(DateTime.DATE_HUGE) }}
-                    </h2>
-                    <StatusCard
-                        :status
-                        :show-map="true"
-                        :authenticated-user="user.user"
-                        :stopovers
-                        @status-liked="addSelfToLikes()"
-                        @status-unliked="removeSelfFromLikes()"
-                    />
-                    <TagHelper
-                        :status-id="status.id"
-                        :status-object="status"
-                        :editable="status.userDetails.id === user.user?.id"
-                        class="mb-3"
-                    />
-
-                    <div v-show="likedBy.length" class="card">
-                        <div v-for="like in likedBy" :key="like.id" class="card-footer text-muted clearfix">
-                            <a :href="`/@${like.username}`" class="float-start">
-                                <img
-                                    loading="lazy"
-                                    :src="like.profilePicture"
-                                    class="profile-image float-start me-2"
-                                    :alt="trans('settings.picture')"
-                                />
-                            </a>
-                            <span class="like-text pl-2 d-table-cell">
-                                <a :href="`/@${like.username}`">
-                                    {{ like.username }}
-                                </a>
-                                <span v-if="like.id === status.userDetails.id">
-                                    &thinsp;{{ trans('user.liked-own-status') }}
-                                </span>
-                                <span v-else> &thinsp;{{ trans('user.liked-status') }} </span>
-                            </span>
-                        </div>
-                    </div>
-                    <span v-if="status.checkin.dataSource?.attribution" class="text-muted text-xs mt-3 d-block">
-                        {{ status.checkin.dataSource?.attribution }}
-                    </span>
-                </template>
-
-                <template v-else-if="pageError === '403'">
-                    <Error403 :status-id="statusId" />
-                </template>
-                <template v-else-if="pageError === '404'">
-                    <Error404 />
-                </template>
-            </template>
+            </div>
         </div>
-    </div>
+    </template>
+
+    <template v-else-if="status">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-7">
+                <CheckinSuccessHelper v-if="user.user && status.userDetails.id === user.user.id" />
+                <h2 class="fs-5">
+                    {{ getDepartureForStatus(status).toLocaleString(DateTime.DATE_HUGE) }}
+                </h2>
+            </div>
+            <div class="d-none d-lg-block col-lg-5"></div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-7">
+                <StatusCard
+                    :status
+                    :show-map="true"
+                    :authenticated-user="user.user"
+                    :stopovers
+                    @status-liked="addSelfToLikes()"
+                    @status-unliked="removeSelfFromLikes()"
+                />
+                <TagHelper
+                    :status-id="status.id"
+                    :status-object="status"
+                    :editable="status.userDetails.id === user.user?.id"
+                    class="mb-3"
+                />
+
+                <div v-show="likedBy.length" class="card">
+                    <div v-for="like in likedBy" :key="like.id" class="card-footer text-muted clearfix">
+                        <a :href="`/@${like.username}`" class="float-start">
+                            <img
+                                loading="lazy"
+                                :src="like.profilePicture"
+                                class="profile-image float-start me-2"
+                                :alt="trans('settings.picture')"
+                            />
+                        </a>
+                        <span class="like-text pl-2 d-table-cell">
+                            <a :href="`/@${like.username}`">
+                                {{ like.username }}
+                            </a>
+                            <span v-if="like.id === status.userDetails.id">
+                                &thinsp;{{ trans('user.liked-own-status') }}
+                            </span>
+                            <span v-else> &thinsp;{{ trans('user.liked-status') }} </span>
+                        </span>
+                    </div>
+                </div>
+                <span v-if="status.checkin.dataSource?.attribution" class="text-muted text-xs mt-3 d-block">
+                    {{ status.checkin.dataSource?.attribution }}
+                </span>
+            </div>
+
+            <div class="col-md-8 col-lg-5">
+                <CoPassengers :trip-id="status.checkin.trip" :current-status-id="status.id" />
+            </div>
+        </div>
+    </template>
+
+    <template v-else>
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-7">
+                <Error403 v-if="pageError === '403'" :status-id="statusId" />
+                <Error404 v-else-if="pageError === '404'" />
+            </div>
+        </div>
+    </template>
 </template>
 
 <style scoped lang="scss">
