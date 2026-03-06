@@ -28,8 +28,9 @@ export default {
         time: { type: DateTime, required: false, default: null },
         showFilterButton: { type: Boolean, required: false, default: false },
         showGpsButton: { type: Boolean, required: false, default: false },
+        minDate: { type: Date, required: false, default: null },
     },
-    emits: ['update:station', 'update:time', 'update:travelType'],
+    emits: ['update:station', 'update:time', 'update:travelType', 'invalid-date'],
     setup() {
         const userStore = useUserStore();
         userStore.fetchSettings();
@@ -265,6 +266,11 @@ export default {
             this.stationInput = '';
             this.$refs.stationInput?.focus();
         },
+        onPickerClick(event) {
+            if (event.target.closest('.dp__cell_disabled, .dp__overlay_cell_disabled')) {
+                this.$emit('invalid-date');
+            }
+        },
     },
 };
 </script>
@@ -405,20 +411,23 @@ export default {
                     </Transition>
                 </div>
 
-                <VueDatePicker
-                    ref="picker"
-                    v-model="date"
-                    :time-config="{ timePickerInline: true }"
-                    :dark="dark"
-                    :action-row="{ showSelect: true, showCancel: true, showNow: true, showPreview: true }"
-                    @update:model-value="setTime"
-                >
-                    <template #trigger>
-                        <button type="button" class="btn btn-outline-dark stationSearchButton" hidden>
-                            <i class="fa fa-calendar" aria-hidden="true" />
-                        </button>
-                    </template>
-                </VueDatePicker>
+                <div @click.capture="onPickerClick">
+                    <VueDatePicker
+                        ref="picker"
+                        v-model="date"
+                        :time-config="{ timePickerInline: true }"
+                        :dark="dark"
+                        :action-row="{ showSelect: true, showCancel: true, showNow: true, showPreview: true }"
+                        :min-date="minDate"
+                        @update:model-value="setTime"
+                    >
+                        <template #trigger>
+                            <button type="button" class="btn btn-outline-dark stationSearchButton" hidden>
+                                <i class="fa fa-calendar" aria-hidden="true" />
+                            </button>
+                        </template>
+                    </VueDatePicker>
+                </div>
             </div>
         </div>
     </div>

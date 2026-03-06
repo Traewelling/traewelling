@@ -59,6 +59,12 @@ export default {
         showHiddenSection() {
             return !this.loading && this.removedLicensesCount > 0;
         },
+        isPastLimit() {
+            return this.fetchTime && this.fetchTime < DateTime.now().minus({ hours: 24 });
+        },
+        minSelectableDate() {
+            return DateTime.now().minus({ hours: 24 }).toJSDate();
+        },
     },
     watch: {
         selectedDestination(value) {
@@ -144,6 +150,12 @@ export default {
                 time = this.fetchTime.minus({ minutes: 5 }).toString();
             }
             if (this.trwlStationId === null) {
+                return;
+            }
+
+            if (this.isPastLimit) {
+                this.loading = false;
+                window.notyf.error(trans('stationboard.no-past-data'));
                 return;
             }
 
@@ -250,6 +262,9 @@ export default {
             this.selectedDestination = null;
             this.fastCheckinIbnr = null;
         },
+        showPastDataError() {
+            window.notyf.error(trans('stationboard.no-past-data'));
+        },
     },
 };
 </script>
@@ -260,9 +275,11 @@ export default {
         :station="meta?.station"
         :time="now"
         :show-filter-button="true"
+        :min-date="minSelectableDate"
         @update:time="updateTime"
         @update:station="updateStation"
         @update:travel-type="updateTravelType"
+        @invalid-date="showPastDataError"
     />
 
     <div v-if="showHiddenSection" class="accordion mb-4">
@@ -358,7 +375,7 @@ export default {
     </FullScreenModal>
 
     <div class="text-center mb-2">
-        <button type="button" class="btn btn-primary" :disabled="loading" @click="fetchPrevious">
+        <button type="button" class="btn btn-primary" :disabled="loading || isPastLimit" @click="fetchPrevious">
             <i class="fa-solid fa-angle-up" />
         </button>
     </div>
