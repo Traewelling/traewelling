@@ -10,6 +10,10 @@ const props = defineProps<{
     currentStatusId: number;
 }>();
 
+const emit = defineEmits<{
+    hasCoPassengers: [value: boolean];
+}>();
+
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 const passengers = ref<StatusResource[]>([]);
 
@@ -19,10 +23,12 @@ onMounted(() => {
         .then((response) => {
             response.json().then((data) => {
                 passengers.value = (data.data as StatusResource[]).filter((s) => s.id !== props.currentStatusId);
+                emit('hasCoPassengers', passengers.value.length > 0);
             });
         })
         .catch((error) => {
             console.error('Error fetching co-passengers:', error);
+            emit('hasCoPassengers', false);
         });
 });
 
