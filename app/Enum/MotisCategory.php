@@ -85,12 +85,12 @@ enum MotisCategory: string
         return in_array($this, self::ALLOWED_CATEGORIES, true);
     }
 
-    // todo: this needs to be better
     public function getHTT(): HafasTravelType
     {
         return match ($this) {
-            self::HIGHSPEED_RAIL, self::REGIONAL_FAST_RAIL => HafasTravelType::NATIONAL_EXPRESS,
-            self::LONG_DISTANCE => HafasTravelType::REGIONAL_EXP,
+            self::HIGHSPEED_RAIL => HafasTravelType::NATIONAL_EXPRESS,
+            self::LONG_DISTANCE, self::NIGHT_RAIL, self::RAIL => HafasTravelType::NATIONAL,
+            self::REGIONAL_FAST_RAIL => HafasTravelType::REGIONAL_EXP,
             self::METRO, self::SUBURBAN => HafasTravelType::SUBURBAN,
             self::BUS, self::COACH => HafasTravelType::BUS,
             self::FERRY => HafasTravelType::FERRY,
