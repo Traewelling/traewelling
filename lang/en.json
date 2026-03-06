@@ -844,6 +844,7 @@
     "trip-info.arrival": "Arrival",
     "trip-info.departure": "Departure",
     "trip-info.destination": "Destination",
+    "trip-info.also-in-this-connection": "Also in this connection",
     "trip-info.in-this-connection": "In this connection",
     "trip-info.origin": "Origin",
     "trip-info.stopover": "Stopover",
