@@ -6534,7 +6534,7 @@
                     "points": {
                         "$ref": "#/components/schemas/Points"
                     },
-                    "alsoOnThisconnection": {
+                    "alsoOnThisConnection": {
                         "description": "Statuses of other people on this connection",
                         "type": "array",
                         "items": {

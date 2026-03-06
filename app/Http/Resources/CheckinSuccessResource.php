@@ -42,7 +42,7 @@ use OpenApi\Attributes as OA;
             description: 'points and reasons for the points',
         ),
         new OA\Property(
-            property: 'alsoOnThisconnection',
+            property: 'alsoOnThisConnection',
             description: 'Statuses of other people on this connection',
             type: 'array',
             items: new OA\Items(ref: '#/components/schemas/StatusResource'),

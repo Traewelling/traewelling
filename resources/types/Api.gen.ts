@@ -747,7 +747,7 @@ export interface CheckinSuccessResource {
   /** Points model */
   points?: Points;
   /** Statuses of other people on this connection */
-  alsoOnThisconnection?: StatusResource[];
+  alsoOnThisConnection?: StatusResource[];
 }
 
 /** Client */
