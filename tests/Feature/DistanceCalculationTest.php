@@ -8,7 +8,7 @@ use App\Http\Controllers\Backend\Support\LocationController;
 use App\Models\Station;
 use App\Models\Stopover;
 use App\Models\Trip;
-use App\Objects\LineSegment;
+use App\Services\GeoService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Date;
 use Tests\FeatureTestCase;
@@ -17,28 +17,22 @@ class DistanceCalculationTest extends FeatureTestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @deprecated Remove once LineSegment is removed
-     */
     public function test_distance_calculation_between_hanover_and_karlsruhe(): void
     {
-        $result = new LineSegment(
+        $result = new GeoService()->getDistance(
             new Coordinate(52.376589, 9.741083),
             new Coordinate(48.993962, 8.401107)
         );
-        $this->assertEquals(388213, $result->calculateDistance());
+        $this->assertEquals(388213, $result);
     }
 
-    /**
-     * @deprecated Remove once LineSegment is removed
-     */
-    public function test_distance_calculation_between_hanover_hbf_and_hanover_kroepcke()
+    public function test_distance_calculation_between_hanover_hbf_and_hanover_kroepcke(): void
     {
-        $result = new LineSegment(
+        $result = new GeoService()->getDistance(
             new Coordinate(52.376589, 9.741083),
             new Coordinate(52.374497, 9.738573)
         );
-        $this->assertEquals(289, $result->calculateDistance());
+        $this->assertEquals(289, $result);
     }
 
     public function test_distance_calculation_between_simple_stopovers()
@@ -78,7 +72,7 @@ class DistanceCalculationTest extends FeatureTestCase
 
         $trip->load(['stopovers']);
 
-        $result = (new LocationController($trip, $originStopover, $destinationStopover))->calculateDistance();
+        $result = new LocationController($trip, $originStopover, $destinationStopover)->calculateDistance();
         $this->assertEquals(4526, $result);
     }
 
@@ -121,7 +115,7 @@ class DistanceCalculationTest extends FeatureTestCase
 
         $trip->load(['stopovers']);
 
-        $result = (new LocationController($trip, $originStopover, $destinationStopover))->calculateDistance();
+        $result = new LocationController($trip, $originStopover, $destinationStopover)->calculateDistance();
         $this->assertEquals(202210, $result);
     }
 }
