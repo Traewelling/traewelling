@@ -1553,8 +1553,8 @@ export interface TransportResource {
   manualArrival: string | null;
   origin: StopoverResource;
   destination: StopoverResource;
-  operator: OperatorResource | null;
-  dataSource: DataSourceResource | null;
+  operator?: OperatorResource | null;
+  dataSource?: DataSourceResource | null;
 }
 
 /** TripResource */

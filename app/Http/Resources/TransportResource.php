@@ -24,8 +24,6 @@ use OpenApi\Attributes as OA;
         'manualArrival',
         'origin',
         'destination',
-        'operator',
-        'dataSource',
         'mode',
     ],
     properties: [
