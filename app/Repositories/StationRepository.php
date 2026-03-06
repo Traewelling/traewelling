@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
+use App\Enum\StationIdentifierType;
 use App\Models\Station;
 use App\Models\StationIdentifier;
 use App\Models\User;
 use App\Services\Wikidata\WikidataImportService;
-use App\StationIdentifierType;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;

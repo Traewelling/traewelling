@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\OpenRailRoutingProfile;
 use App\Exceptions\OpenRailRoutingResponseFailed;
 use App\Jobs\RecalculateStatusesDistanceForTrip;
 use App\Models\Stopover;
 use App\Models\Trip;
-use App\OpenRailRoutingProfile;
 use App\Repositories\TripRepository;
 use App\Services\OpenRailRoutingService;
 use GuzzleHttp\Exception\ClientException;

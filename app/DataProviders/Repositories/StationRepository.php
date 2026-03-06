@@ -4,12 +4,12 @@ namespace App\DataProviders\Repositories;
 
 use App\Dto\Coordinate;
 use App\Enum\DataProvider;
+use App\Enum\StationIdentifierType;
 use App\Helpers\Formatter;
 use App\Models\Area;
 use App\Models\Station;
 use App\Models\StationIdentifier;
 use App\Services\GeoService;
-use App\StationIdentifierType;
 use Illuminate\Database\Eloquent\Collection as DbCollection;
 use Illuminate\Support\Collection;
 

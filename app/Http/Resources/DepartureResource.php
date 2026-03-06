@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Resources;
 
 use App\Dto\Internal\Departure;
-use App\StationIdentifierType;
+use App\Enum\StationIdentifierType;
 use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Attributes as OA;
 
