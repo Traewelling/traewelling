@@ -106,6 +106,22 @@ class LocationController
             $this->destination = $newStopovers[1];
             $polyline = $this->getPolylineBetween(false);
 
+            // normalize FeatureColelction to stdClass (fix for routes with route segment)
+            if ($polyline instanceof FeatureCollection) {
+                $normalizedFeatures = [];
+                foreach ($polyline->features as $feature) {
+                    foreach ($feature->getCoordinates() as $coordinate) {
+                        $point = new stdClass();
+                        $point->geometry = new stdClass();
+                        $point->geometry->coordinates = [$coordinate->longitude, $coordinate->latitude];
+                        $normalizedFeatures[] = $point;
+                    }
+                }
+                $polyline = new stdClass();
+                $polyline->type = 'FeatureCollection';
+                $polyline->features = $normalizedFeatures;
+            }
+
             $meters = $this->getDistanceFromGeoJson($polyline) * $percentage;
             $recentPoint = null;
             $distance = 0;
