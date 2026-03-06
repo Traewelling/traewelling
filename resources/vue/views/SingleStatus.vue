@@ -172,7 +172,7 @@ fetchLikes();
                 </span>
             </div>
 
-            <div class="col-md-8 col-lg-5">
+            <div class="col-md-8 col-lg-5 mt-3 mt-lg-0">
                 <CoPassengers
                     :trip-id="status.checkin.trip"
                     :current-status-id="status.id"
