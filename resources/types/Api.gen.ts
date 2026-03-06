@@ -1672,10 +1672,10 @@ export interface UserProfileSettingsResource {
   /** What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the user specify? */
   defaultStatusVisibility: StatusVisibility;
   /**
-   * Number of days to hide the user's location history
+   * Number of days to hide the user's location history. Null if disabled.
    * @example 1
    */
-  privacyHideDays: number;
+  privacyHideDays?: number | null;
   /** @example true */
   password: boolean;
   /** @example "gertrud@traewelling.de" */

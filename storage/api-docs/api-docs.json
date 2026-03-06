@@ -8046,7 +8046,6 @@
                     "privateProfile",
                     "preventIndex",
                     "defaultStatusVisibility",
-                    "privacyHideDays",
                     "password",
                     "email",
                     "emailVerified",
@@ -8088,9 +8087,10 @@
                         "$ref": "#/components/schemas/StatusVisibility"
                     },
                     "privacyHideDays": {
-                        "description": "Number of days to hide the user's location history",
+                        "description": "Number of days to hide the user's location history. Null if disabled.",
                         "type": "integer",
-                        "example": 1
+                        "example": 1,
+                        "nullable": true
                     },
                     "password": {
                         "type": "boolean",
