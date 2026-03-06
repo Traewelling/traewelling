@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Backend;
 
 use App\Dto\Internal\GlobalCheckinStats;
 use App\Http\Controllers\Controller;
-use App\Models\Station;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -222,42 +221,5 @@ abstract class StatisticController extends Controller
 
                 return $row;
             });
-    }
-
-    public static function getUsedStations(User $user, Carbon $from, Carbon $until): Collection
-    {
-        $qUsedStations = DB::table('train_checkins')
-            ->join('train_stopovers', 'train_checkins.trip_id', '=', 'train_stopovers.trip_id')
-            ->where('user_id', '=', $user->id)
-            ->where('departure', '>=', $from->toIso8601String())
-            ->where('departure', '<=', $until->toIso8601String())
-            ->select(['origin_stopover_id', 'destination_stopover_id'])
-            ->get();
-
-        $usedStationIds = $qUsedStations->pluck('origin_stopover_id')
-            ->merge($qUsedStations->pluck('destination_stopover_id'))
-            ->unique();
-
-        return Station::join('train_stopovers', 'train_stopovers.train_station_id', '=', 'train_stations.id')
-            ->whereIn('train_stopovers.id', $usedStationIds)->get();
-    }
-
-    public static function getPassedStations(User $user, ?Carbon $from = null, ?Carbon $to = null): Collection
-    {
-        $query = DB::table('train_checkins')
-            ->join('train_stopovers', 'train_checkins.trip_id', '=', 'train_stopovers.trip_id')
-            ->where('user_id', '=', $user->id)
-            ->whereRaw('train_checkins.departure <= train_stopovers.departure_planned')
-            ->whereRaw('train_checkins.arrival >= train_stopovers.arrival_planned')
-            ->groupBy('train_stopovers.train_station_id')
-            ->select('train_stopovers.train_station_id');
-        if ($from !== null) {
-            $query->where('train_checkins.departure', '>=', $from->toIso8601String());
-        }
-        if ($to !== null) {
-            $query->where('train_checkins.departure', '<=', $to->toIso8601String());
-        }
-
-        return Station::whereIn('id', $query)->get();
     }
 }
