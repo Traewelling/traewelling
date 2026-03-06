@@ -212,6 +212,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::get('status', [StatusController::class, 'list']);
             Route::get('status/{id}', [StatusController::class, 'show']);
             Route::get('status/{id}/likes', [LikesController::class, 'show']);
+            Route::get('trips/{id}/statuses', [TripController::class, 'statuses'])->whereNumber('id');
             Route::get('status/{statusId}/tags', [StatusTagController::class, 'index']);
             Route::get('statuses/{statusIds}/tags', [StatusTagController::class, 'indexForMultiple']);
             Route::get('stopovers/{parameters}', [StatusController::class, 'getStopovers']);

@@ -4811,6 +4811,30 @@ export class Api<
         ...params,
       }),
   };
+  trips = {
+    /**
+     * @description Returns all statuses visible to the (un)authenticated user for a given trip
+     *
+     * @tags Trips
+     * @name GetTripStatuses
+     * @summary [Auth optional] Get statuses for a trip
+     * @request GET:/trips/{id}/statuses
+     * @secure
+     */
+    getTripStatuses: (id: number, params: RequestParams = {}) =>
+      this.request<
+        {
+          data?: StatusResource[];
+        },
+        void
+      >({
+        path: `/trips/${id}/statuses`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+  };
   webhooks = {
     /**
      * @description Returns all webhooks which are created for the current user and which the current authorized applicaton has access to.
