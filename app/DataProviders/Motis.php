@@ -327,7 +327,7 @@ class Motis extends Controller implements DataProviderInterface
                     'body' => $response->body(),
                 ]);
 
-                if (str_contains($response->body(), 'could not find timetable location')) {
+                if (str_contains(strtolower($response->body()), 'could not find timetable location')) {
                     throw new TimetableLocationNotFoundException();
                 }
 
