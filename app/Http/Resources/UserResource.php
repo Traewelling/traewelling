@@ -164,9 +164,7 @@ class UserResource extends JsonResource
             'displayName' => (string) $this->name,
             'username' => (string) $this->username,
             'profilePicture' => ProfilePictureController::getUrlForUserId($this->id),
-            'trainDistance' => (float) $this->train_distance, // @deprecated: remove after 2024-08
             'totalDistance' => (float) $this->train_distance,
-            'trainDuration' => (int) $this->train_duration, // @deprecated: remove after 2024-08
             'totalDuration' => (int) $this->train_duration,
             'points' => (int) $pointsEnabled ? $this->points : 0,
             'mastodonUrl' => $this->mastodonUrl ?? null,

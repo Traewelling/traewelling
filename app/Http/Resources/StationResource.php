@@ -52,8 +52,8 @@ class StationResource extends JsonResource
             'name' => $this->name,
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
-            'ibnr' => null, // @deprecated - see identifiers
-            'rilIdentifier' => null, // @deprecated - see identifiers
+            'ibnr' => null, // @deprecated - remove after 2025-09
+            'rilIdentifier' => null, // @deprecated - remove after 2025-09
             'areas' => AreaResource::collection($this->whenLoaded('areas')),
             'identifiers' => StationIdentifierResource::collection($this->whenLoaded('stationIdentifiers')),
         ];

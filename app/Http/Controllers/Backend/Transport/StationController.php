@@ -23,32 +23,6 @@ class StationController extends Controller
         $this->stationRepository = $stationRepository ?? new StationRepository();
     }
 
-    /**
-     * @deprecated
-     */
-    public static function getAlternativeDestinationsForCheckin(Checkin $checkin): Collection
-    {
-        $encounteredOrigin = false;
-
-        return $checkin->trip->stopovers
-            ->filter(function (Stopover $stopover) use ($checkin, &$encounteredOrigin): bool {
-                if (!$encounteredOrigin) { // this assumes stopovers being ordered correctly
-                    $encounteredOrigin = $stopover->departure_planned == $checkin->departure && $stopover->is($checkin->originStopover);
-
-                    return false;
-                }
-
-                return true;
-            })
-            ->map(function (Stopover $stopover) {
-                return [
-                    'id' => $stopover->id,
-                    'name' => $stopover->station->name,
-                    'arrival_planned' => userTime($stopover->arrival_planned ?? $stopover->departure_planned),
-                ];
-            });
-    }
-
     public function search(string $search): Collection
     {
         if (!is_numeric($search) && strlen($search) <= 5 && ctype_upper($search)) {
