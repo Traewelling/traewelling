@@ -48,6 +48,17 @@ We also encourage you to help us out by fixing bugs and implementing new feature
 
 Please see the [contributing guidelines](docs/contributing) for more information.
 
+## Related Repositories
+
+Träwelling consists of multiple repositories, each handling a specific aspect of the platform:
+
+| Repository                                                                                                        | Description                                                                                                                                            |
+|-------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [**help-pages**](https://github.com/Traewelling/help-pages)                                                       | Source for [help.traewelling.de](https://help.traewelling.de): user-facing documentation built with Hugo. Contributions welcome as plain Markdown.     |
+| [**line-colors**](https://github.com/Traewelling/line-colors)                                                     | Community-maintained CSV files with background/text/border colors and shape definitions for public transit lines across Germany, Austria, Switzerland. |
+| [**transitous-licenses**](https://github.com/Traewelling/transitous-licenses)                                     | JSON-based configuration for overwriting third party licenses.                                                                                         |
+| [**transitous-wikidata-operator-matching**](https://github.com/Traewelling/transitous-wikidata-operator-matching) | CSV mapping from Motis/Transitous operator IDs to Wikidata identifiers. Enables consistent, deduplicated operator data across the platform.            |
+
 ## License
 
 We are using the [Affero General Public License](/LICENSE) ([why?](http://www.gnu.org/licenses/why-affero-gpl)) - you
