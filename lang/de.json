@@ -728,6 +728,7 @@
     "stationboard.new-checkin": "Neuer Check-in",
     "stationboard.next-stop": "Nächster Halt:",
     "stationboard.no-departures": "Für diese Uhrzeit/diesen Filter gibt es derzeit leider keine Abfahrten.",
+    "stationboard.no-past-data": "Wir haben keine Abfahrtsdaten, die älter als 24 Stunden sind. Bitte wähle einen aktuelleren Zeitpunkt.",
     "stationboard.plus-15": "+15 Minuten",
     "stationboard.position-unavailable": "Wir können deine Position nicht ermitteln. Bitte prüfe, ob du den Standortzugriff erlaubt hast.",
     "stationboard.search-by-location": "Standortbasierte Suche",

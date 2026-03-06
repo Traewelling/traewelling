@@ -698,6 +698,7 @@
     "stationboard.new-checkin": "Nouvel enregistrement",
     "stationboard.next-stop": "Prochain arrêt :",
     "stationboard.no-departures": "Malheureusement, il n'y a actuellement aucun départ pour cette heure / avec ces filtres.",
+    "stationboard.no-past-data": "Nous ne disposons pas de données d'horaires de plus de 24 heures. Veuillez sélectionner un horaire plus récent.",
     "stationboard.plus-15": "+15 minutes",
     "stationboard.position-unavailable": "Nous ne pouvons pas déterminer ta position. Vérifie si tu as autorisé l'accès à la localisation.",
     "stationboard.search-by-location": "Recherche basée sur la position",
