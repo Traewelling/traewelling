@@ -21,7 +21,6 @@ use App\Http\Controllers\Frontend\LandingPageController;
 use App\Http\Controllers\Frontend\LeaderboardController;
 use App\Http\Controllers\Frontend\SettingsController;
 use App\Http\Controllers\Frontend\Social\MastodonController;
-use App\Http\Controllers\Frontend\StatisticController;
 use App\Http\Controllers\Frontend\Stats\DailyStatsController;
 use App\Http\Controllers\Frontend\Transport\StatusController;
 use App\Http\Controllers\Frontend\User\ProfilePictureController;
@@ -124,15 +123,12 @@ Route::middleware(['auth', 'privacy'])->group(function () {
 
     Route::prefix('stats')->group(static function () {
         Route::permanentRedirect('/', '/statistics');
-        Route::permanentRedirect('/stations', '/statistics/stations');
         Route::permanentRedirect('/daily/{dateString}', '/statistics/daily/{dateString}');
     });
 
     Route::prefix('statistics')->group(static function () {
         Route::get('/', [VueFrontendController::class, 'statsDashboard'])
             ->name('stats');
-        Route::get('/stations', [StatisticController::class, 'renderStations'])
-            ->name('stats.stations');
         Route::get('/daily/{dateString}', [DailyStatsController::class, 'renderDailyStats'])
             ->name('stats.daily');
     });
