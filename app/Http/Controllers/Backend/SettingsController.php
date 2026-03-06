@@ -4,10 +4,15 @@ namespace App\Http\Controllers\Backend;
 
 use App\Exceptions\RateLimitExceededException;
 use App\Http\Controllers\Controller;
+use App\Jobs\SendEmailChangedMail;
+use App\Jobs\SendVerificationEmail;
+use App\Models\MailChange;
 use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\RateLimiter;
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\ImageManager as Image;
 
@@ -74,12 +79,18 @@ abstract class SettingsController extends Controller
 
     public static function updateMail(string $newMail, User $user): User
     {
-        // todo: #4459 implement notification on mail change
+        $change = MailChange::create([
+            'user_id' => $user->id,
+            'old_email' => $user->email,
+            'new_email' => $newMail,
+        ]);
+
+        SendEmailChangedMail::dispatch($user, $change);
 
         $user->email = $newMail;
         $user->email_verified_at = null;
         $user->save();
-        $user->sendEmailVerificationNotification();
+        self::sendEmailVerificationNotification($user);
 
         return $user;
     }
@@ -125,5 +136,29 @@ abstract class SettingsController extends Controller
         ]);
 
         return true;
+    }
+
+    public static function sendEmailVerificationNotification(User $user): void
+    {
+        Log::info('Attempting to send verification email.', ['user_id' => $user->id, 'email' => $user->email]);
+
+        $executed = RateLimiter::attempt(
+            key: 'verification-mail-sent-' . $user->email,
+            maxAttempts: 1,
+            callback: function () use ($user) {
+                SendVerificationEmail::dispatch($user);
+                Log::info('Dispatched SendVerificationEmail job.', ['user_id' => $user->id, 'email' => $user->email]);
+            },
+            decaySeconds: 5 * 60,
+        );
+
+        if (!$executed) {
+            Log::info(sprintf(
+                'Sending the verification email for user#%s w/mail %s was rate-limited.',
+                $user->id,
+                $user->email
+            ));
+            throw new RateLimitExceededException();
+        }
     }
 }

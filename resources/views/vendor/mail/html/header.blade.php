@@ -7,7 +7,7 @@
 <tr>
 <td class="header" style="text-align: right;">
 <a href="{{ $url }}" style="display: inline-block;">
-<img src="{{ $url  }}/images/icons/logo512.png" class="logo" alt="Laravel Logo">
+<img src="{{ $url  }}/images/icons/logo512.png" class="logo" alt="Träwelling Logo">
 </a>
 </td>
 <td class="header" style="text-align: left;">
