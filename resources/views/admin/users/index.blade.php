@@ -10,10 +10,16 @@
                    placeholder="Search by: UserID, Username or Displayname. Exact match: 'id:1234'"
                    value="{{ request('query') }}"
                    aria-describedby="button-search"/>
-            <button class="btn btn-outline-secondary" type="button" id="button-search">
+            <button class="btn btn-outline-secondary" type="submit" id="button-search">
                 <i class="fa-solid fa-magnifying-glass"></i>
                 Search
             </button>
+        </div>
+        <div class="input-group mb-3">
+            <input type="text" name="mailchange_id" class="form-control"
+                   placeholder="Search for mailchange id"
+                   value="{{ request('mailchange_id') }}"
+                   />
         </div>
     </form>
 

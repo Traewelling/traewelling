@@ -45,6 +45,29 @@
                                 @endisset
                             </td>
                         </tr>
+                        <tr>
+                            <th>Mail changes</th>
+                            <td>
+                                @if($user->mailChanges->count() === 0)
+                                    <small class="text-success">
+                                        <i class="fa-solid fa-check"></i>
+                                        No mail changes
+                                    </small>
+                                @else
+                                    <details>
+                                        <summary>Click for recent Mail changes</summary>
+                                        <ul>
+                                            @foreach($user->mailChanges()->orderByDesc('created_at')->get() as $mailChange)
+                                                <li>
+                                                    {{ $mailChange->old_email }} &rarr; {{ $mailChange->new_email }}<br/>
+                                                    <small>{{ $mailChange->created_at }}</small><br>
+                                                    <pre class="code">{{ $mailChange->id }}</pre>
+                                                </li>
+                                        @endforeach
+                                    </details>
+                                @endif
+                            </td>
+                        </tr>
                         <tr class="collapse" id="mailCollapse">
                             <th></th>
                             <td>
@@ -185,38 +208,38 @@
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Trip</th>
-                                    <th>Origin / Destination</th>
-                                    <th>Points</th>
-                                    <th>Created at</th>
-                                </tr>
+                            <tr>
+                                <th>ID</th>
+                                <th>Trip</th>
+                                <th>Origin / Destination</th>
+                                <th>Points</th>
+                                <th>Created at</th>
+                            </tr>
                             </thead>
                             <tbody>
-                                @foreach($user->statuses()->orderByDesc('created_at')->limit(15)->get() as $status)
-                                    <tr>
-                                        <td>
-                                            <a href="{{route('admin.statuses.edit', ['statusId' => $status->id])}}">
-                                                {{ $status->id }}
-                                            </a>
-                                        </td>
-                                        <td>
-                                            <a href="{{route('admin.trips.show', ['id' => $status->checkin->trip->id])}}">
-                                                {{ $status->checkin->id }} ({{ $status->checkin->trip->source }})
-                                            </a>
-                                            <br/>
-                                            <code>{{ $status->checkin->trip->linename }}</code>
-                                        </td>
-                                        <td>
-                                            {{ $status->checkin->originStopover->station->name }}
-                                            &rarr;
-                                            {{ $status->checkin->destinationStopover->station->name }}
-                                        </td>
-                                        <td>{{ $status->checkin->points }}</td>
-                                        <td>{{ $status->created_at }}</td>
-                                    </tr>
-                                @endforeach
+                            @foreach($user->statuses()->orderByDesc('created_at')->limit(15)->get() as $status)
+                                <tr>
+                                    <td>
+                                        <a href="{{route('admin.statuses.edit', ['statusId' => $status->id])}}">
+                                            {{ $status->id }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="{{route('admin.trips.show', ['id' => $status->checkin->trip->id])}}">
+                                            {{ $status->checkin->id }} ({{ $status->checkin->trip->source }})
+                                        </a>
+                                        <br/>
+                                        <code>{{ $status->checkin->trip->linename }}</code>
+                                    </td>
+                                    <td>
+                                        {{ $status->checkin->originStopover->station->name }}
+                                        &rarr;
+                                        {{ $status->checkin->destinationStopover->station->name }}
+                                    </td>
+                                    <td>{{ $status->checkin->points }}</td>
+                                    <td>{{ $status->created_at }}</td>
+                                </tr>
+                            @endforeach
                             </tbody>
                         </table>
                     </div>

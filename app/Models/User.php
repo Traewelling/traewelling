@@ -7,8 +7,8 @@ use App\Enum\MapProvider;
 use App\Enum\StatusVisibility;
 use App\Enum\User\FriendCheckinSetting;
 use App\Exceptions\RateLimitExceededException;
+use App\Http\Controllers\Backend\SettingsController;
 use App\Http\Controllers\Backend\Social\MastodonProfileDetails;
-use App\Jobs\SendVerificationEmail;
 use App\Services\PersonalDataSelection\UserGdprDataService;
 use Carbon\Carbon;
 use Illuminate\Auth\MustVerifyEmail;
@@ -20,8 +20,6 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\RateLimiter;
 use Laravel\Passport\Contracts\OAuthenticatable;
 use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasPermissions;
@@ -157,6 +155,16 @@ use Spatie\PersonalDataExport\PersonalDataSelection;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUsername($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutPermission($permissions)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutRole($roles, $guard = null)
+ *
+ * @property int $contribution_xp
+ * @property int $contribution_level
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MailChange> $mailChanges
+ * @property-read int|null $mail_changes_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\OAuthClient> $oauthApps
+ * @property-read int|null $oauth_apps_count
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereContributionLevel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereContributionXp($value)
  *
  * @mixin \Eloquent
  */
@@ -411,26 +419,7 @@ class User extends Authenticatable implements ExportsPersonalData, OAuthenticata
      */
     public function sendEmailVerificationNotification(): void
     {
-        Log::info('Attempting to send verification email.', ['user_id' => $this->id, 'email' => $this->email]);
-
-        $executed = RateLimiter::attempt(
-            key: 'verification-mail-sent-' . $this->email,
-            maxAttempts: 1,
-            callback: function () {
-                SendVerificationEmail::dispatch($this);
-                Log::info('Dispatched SendVerificationEmail job.', ['user_id' => $this->id, 'email' => $this->email]);
-            },
-            decaySeconds: 5 * 60,
-        );
-
-        if (!$executed) {
-            Log::info(sprintf(
-                'Sending the verification email for user#%s w/mail %s was rate-limited.',
-                $this->id,
-                $this->email
-            ));
-            throw new RateLimitExceededException();
-        }
+        SettingsController::sendEmailVerificationNotification($this);
     }
 
     /**
@@ -464,5 +453,10 @@ class User extends Authenticatable implements ExportsPersonalData, OAuthenticata
     public function profileLinks(): HasMany
     {
         return $this->hasMany(ProfileLink::class, 'user_id', 'id');
+    }
+
+    public function mailChanges(): HasMany
+    {
+        return $this->hasMany(MailChange::class, 'user_id', 'id');
     }
 }

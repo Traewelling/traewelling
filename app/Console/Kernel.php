@@ -12,6 +12,7 @@ use App\Console\Commands\HideStatus;
 use App\Console\Commands\ReduceRelevance;
 use App\Console\Commands\RefreshCurrentTrips;
 use App\Console\Commands\RefreshOperatorMappings;
+use App\Jobs\CleanMailChanges;
 use App\Jobs\FetchManualTransitousLicenses;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -42,6 +43,7 @@ class Kernel extends ConsoleKernel
             FetchManualTransitousLicenses::dispatch();
         });
         $schedule->command(ReduceRelevance::class)->daily();
+        $schedule->job(CleanMailChanges::class)->daily();
 
         // weekly tasks
         $schedule->command(MastodonServers::class)->weekly();
