@@ -4,8 +4,8 @@ export type User = {
     displayName: string;
     username: string;
     profilePicture: string;
-    trainDistance: number; // @todo: rename key - we have more than just trains
-    trainDuration: number; // @todo: rename key - we have more than just trains
+    totalDistance: number;
+    totalDuration: number;
     points: number;
     mastodonUrl: string | null;
     privateProfile: boolean;

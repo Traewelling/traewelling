@@ -82,7 +82,7 @@ const isOwnProfile = computed(() => {
 
     <div v-if="!loadingStatuses && !statuses.length && userData" class="text-center my-4">
         <span class="text-danger fs-3">
-            <template v-if="(userData?.trainDistance ?? 0) > 0">
+            <template v-if="(userData?.totalDistance ?? 0) > 0">
                 {{ trans('profile.no-visible-statuses', { username: userData.displayName }) }}
             </template>
             <template v-else>

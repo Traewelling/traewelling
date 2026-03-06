@@ -13,12 +13,12 @@ const props = defineProps<{
 
 // Metrics
 const kmDisplay = computed(() => {
-    const meters = props.userData.trainDistance ?? 0;
+    const meters = props.userData.totalDistance ?? 0;
     const km = meters / 1000;
     return km.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 });
 const durationParts = computed(() => {
-    const minutes = props.userData.trainDuration ?? 0;
+    const minutes = props.userData.totalDuration ?? 0;
     const dur = Duration.fromObject({ minutes }).shiftTo('days', 'hours', 'minutes');
     return { d: dur.days ?? 0, h: dur.hours ?? 0, m: Math.round(dur.minutes ?? 0) };
 });
