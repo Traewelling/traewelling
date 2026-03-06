@@ -103,7 +103,7 @@ abstract class ExportController extends Controller
             case ExportableColumn::DEPARTURE_PLANNED:
                 return $status->checkin->originStopover?->departure_planned?->toIso8601String();
             case ExportableColumn::DEPARTURE_REAL:
-                return $status->checkin->originStopover?->departure?->toIso8601String();
+                return $status->checkin->display_departure->time?->toIso8601String();
             case ExportableColumn::DESTINATION_NAME:
                 return $status->checkin->destinationStopover->station->name;
             case ExportableColumn::DESTINATION_COORDINATES:
@@ -112,7 +112,7 @@ abstract class ExportController extends Controller
             case ExportableColumn::ARRIVAL_PLANNED:
                 return $status->checkin->destinationStopover?->arrival_planned?->toIso8601String();
             case ExportableColumn::ARRIVAL_REAL:
-                return $status->checkin->destinationStopover?->arrival?->toIso8601String();
+                return $status->checkin->display_arrival->time?->toIso8601String();
             case ExportableColumn::DURATION:
                 return $status->checkin->duration;
             case ExportableColumn::DISTANCE:
