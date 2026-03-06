@@ -2,10 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Enum\OpenRailRoutingProfile;
 use App\Models\RouteSegment;
 use App\Models\Station;
 use App\Models\Stopover;
-use App\OpenRailRoutingProfile;
 
 class TripRepository
 {

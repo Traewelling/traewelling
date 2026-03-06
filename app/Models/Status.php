@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use App\Enum\Business;
+use App\Enum\StationIdentifierType;
 use App\Enum\StatusVisibility;
-use App\StationIdentifierType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

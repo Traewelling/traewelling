@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Tests\Unit\Services\Wikidata;
 
 use App\Dto\Wikidata\WikidataEntity;
+use App\Enum\StationIdentifierType;
 use App\Exceptions\Wikidata\FetchException;
 use App\Models\Station;
 use App\Services\Wikidata\WikidataImportService;
-use App\StationIdentifierType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Tests\Unit\UnitTestCase;

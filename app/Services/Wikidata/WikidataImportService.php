@@ -6,9 +6,9 @@ namespace App\Services\Wikidata;
 
 use App\Dto\Coordinate;
 use App\Dto\Wikidata\WikidataEntity;
+use App\Enum\StationIdentifierType;
 use App\Exceptions\Wikidata\FetchException;
 use App\Models\Station;
-use App\StationIdentifierType;
 use Illuminate\Support\Facades\Log;
 
 class WikidataImportService

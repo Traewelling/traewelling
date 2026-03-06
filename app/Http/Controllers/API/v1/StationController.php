@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\v1;
 
 use App\DataProviders\Motis;
 use App\Enum\DataProvider;
+use App\Enum\StationIdentifierType;
 use App\Http\Controllers\Backend\Transport\StationController as StationBackendController;
 use App\Http\Resources\StationResource;
 use App\Models\Checkin;
@@ -14,7 +15,6 @@ use App\Models\StationIdentifier;
 use App\Models\Stopover;
 use App\Models\Trip;
 use App\Repositories\StationRepository;
-use App\StationIdentifierType;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
