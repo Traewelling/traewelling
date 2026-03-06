@@ -432,7 +432,7 @@ export default {
         </div>
     </div>
 
-    <ActiveStatusCard v-if="userStore.hasBeta" />
+    <ActiveStatusCard />
 </template>
 
 <style lang="scss" scoped>
