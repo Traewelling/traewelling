@@ -1,16 +1,10 @@
 <script setup lang="ts">
 import { Tooltip } from 'bootstrap';
-import { onBeforeUnmount, onMounted, PropType, ref, useTemplateRef } from 'vue';
+import { onBeforeUnmount, onMounted, PropType, ref } from 'vue';
 import { StatusResource, StopoverResource } from '../../../types/Api.gen';
-import {
-    getArrivalForStatus,
-    getArrivalForStopover,
-    getDepartureForStatus,
-    getDepartureForStopover,
-} from '../../helpers/DateTimeHelper';
+import { getArrivalForStatus, getDepartureForStatus } from '../../helpers/DateTimeHelper';
 import { useActiveCheckin } from '../../stores/activeCheckin';
 import { useUserStore } from '../../stores/user';
-import ActiveJourneyMap from '../ActiveJourneyMap.vue';
 import Map from '../Map/Map.vue';
 import DestinationRow from './Partials/DestinationRow.vue';
 import NextStop from './Partials/NextStop.vue';
@@ -41,9 +35,6 @@ const progress = ref(0);
 const interval = ref<number | null>(null);
 const deleted = ref(false);
 const deleting = ref(false);
-const map = useTemplateRef('map');
-const departure = getDepartureForStopover(statusObject.value.train.origin).dateTime;
-const arrival = getArrivalForStopover(statusObject.value.train.destination).dateTime;
 const activeCheckin = useActiveCheckin();
 const rootEl = ref<HTMLElement | null>(null);
 let delegatedTip: Tooltip | null = null;
@@ -127,9 +118,6 @@ function deleteSelf() {
 function statusUpdated(status: StatusResource) {
     statusObject.value = status;
     updateProgress();
-    if (props.showMap && map.value) {
-        map.value.fetchStatusPolyline();
-    }
 }
 </script>
 
@@ -137,20 +125,8 @@ function statusUpdated(status: StatusResource) {
     <Transition>
         <div v-show="!deleted" ref="rootEl" class="card status mb-3 position-relative">
             <div v-if="showMap" class="card-img-top">
-                <div
-                    id="activeJourneys"
-                    class="statusMap embed-responsive"
-                    :class="{ 'map embed-responsive-16by9': !userStore?.hasBeta }"
-                >
-                    <Map v-if="userStore?.hasBeta" :statuses="[statusObject]" />
-                    <ActiveJourneyMap
-                        v-else
-                        ref="map"
-                        :status-id="statusObject.id"
-                        :departure="departure.toSeconds()"
-                        :arrival="arrival.toSeconds()"
-                        :line-color="statusObject.train.routeColor"
-                    />
+                <div id="activeJourneys" class="statusMap embed-responsive">
+                    <Map :statuses="[statusObject]" />
                 </div>
             </div>
             <div class="card-body row">
