@@ -111,9 +111,8 @@ document.querySelectorAll('.disconnect').forEach((button) => {
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
         try {
-            // eslint-disable-next-line no-undef
-            const response = await fetch(urlDisconnect, {
-                method: 'POST',
+            const response = await fetch('/api/v1/security/social', {
+                method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': csrfToken,
@@ -124,9 +123,9 @@ document.querySelectorAll('.disconnect').forEach((button) => {
             if (response.ok) {
                 location.reload();
             } else {
-                const errorText = await response.text();
+                const errorData = await response.json();
                 // eslint-disable-next-line no-undef
-                notyf.error(errorText);
+                notyf.error(errorData?.message ?? errorData?.error?.message ?? 'Ein Fehler ist aufgetreten.');
             }
         } catch (error) {
             // eslint-disable-next-line no-undef
