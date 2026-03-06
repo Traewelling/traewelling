@@ -20,6 +20,7 @@ const statusId = Number.parseInt(window.location.pathname.split('/').pop() || '0
 const user = useUserStore();
 const pageError = ref<'403' | '404' | null>(null);
 const stopovers = ref<StopoverResource[]>([]);
+const hasCoPassengers = ref(false);
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 
@@ -119,17 +120,17 @@ fetchLikes();
 
     <template v-else-if="status">
         <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-7">
+            <div :class="hasCoPassengers ? 'col-md-8 col-lg-7' : 'col-md-8'">
                 <CheckinSuccessHelper v-if="user.user && status.userDetails.id === user.user.id" />
                 <h2 class="fs-5">
                     {{ getDepartureForStatus(status).toLocaleString(DateTime.DATE_HUGE) }}
                 </h2>
             </div>
-            <div class="d-none d-lg-block col-lg-5"></div>
+            <div v-if="hasCoPassengers" class="d-none d-lg-block col-lg-5"></div>
         </div>
 
         <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-7">
+            <div :class="hasCoPassengers ? 'col-md-8 col-lg-7' : 'col-md-8'">
                 <StatusCard
                     :status
                     :show-map="true"
@@ -172,7 +173,11 @@ fetchLikes();
             </div>
 
             <div class="col-md-8 col-lg-5">
-                <CoPassengers :trip-id="status.checkin.trip" :current-status-id="status.id" />
+                <CoPassengers
+                    :trip-id="status.checkin.trip"
+                    :current-status-id="status.id"
+                    @has-co-passengers="hasCoPassengers = $event"
+                />
             </div>
         </div>
     </template>
