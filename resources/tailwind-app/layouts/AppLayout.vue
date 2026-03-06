@@ -158,7 +158,7 @@ import {
     Settings,
     User,
 } from 'lucide-vue-next';
-import { FunctionalComponent } from 'vue';
+import { computed, FunctionalComponent } from 'vue';
 import { useConfigurationStore } from '../../vue/stores/configuration';
 import { useUserStore } from '../../vue/stores/user';
 import DarkModeSelector from './Footer/DarkModeSelector.vue';
@@ -176,8 +176,10 @@ const links: { name: string; icon: FunctionalComponent; route: string; legacy: b
     { name: 'stats', icon: ChartNoAxesCombined, route: '/statistics', legacy: true },
 ];
 
-const userLinks: { name: string; icon: FunctionalComponent; route: string; legacy: boolean; condition?: boolean }[] = [
-    { name: 'menu.profile', icon: User, route: '/profile', legacy: true },
+const userLinks = computed<
+    { name: string; icon: FunctionalComponent; route: string; legacy: boolean; condition?: boolean }[]
+>(() => [
+    { name: 'menu.profile', icon: User, route: `/@${user.getUsername}`, legacy: true },
     { name: 'menu.export', icon: Save, route: '/export', legacy: true },
     { name: 'menu.settings', icon: Settings, route: '/settings/profile', legacy: false },
     { name: 'menu.about', icon: LifeBuoy, route: 'https://help.traewelling.de/faq/', legacy: true },
@@ -188,5 +190,5 @@ const userLinks: { name: string; icon: FunctionalComponent; route: string; legac
         condition: user.isEventModerator || user.isAdmin,
         legacy: true,
     },
-];
+]);
 </script>
