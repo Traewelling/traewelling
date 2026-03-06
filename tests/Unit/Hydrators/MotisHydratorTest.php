@@ -13,7 +13,7 @@ use App\Models\Station;
 use App\Models\StationIdentifier;
 use App\Services\LicenseService;
 use App\Services\OperatorService;
-use App\StationIdentifierType;
+use App\Enum\StationIdentifierType;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use PHPUnit\Framework\Attributes\DataProvider;
