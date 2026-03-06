@@ -16,7 +16,7 @@ class CleanMailChanges implements ShouldQueue
     public function handle(): void
     {
         Log::info('Starting to clean up old mail changes.');
-        $done = MailChange::whereCreatedAt('<', now()->subDays(30))->delete();
+        $done = MailChange::where('created_at', '<', now()->subDays(30))->delete();
         Log::info("Finished cleaning up old mail changes. Deleted $done entries.");
     }
 }
