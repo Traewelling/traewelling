@@ -5,9 +5,7 @@ namespace App\Http\Controllers\Backend\Transport;
 use App\DataProviders\DataProviderBuilder;
 use App\DataProviders\DataProviderInterface;
 use App\Http\Controllers\Controller;
-use App\Models\Checkin;
 use App\Models\Station;
-use App\Models\Stopover;
 use App\Repositories\StationRepository;
 use Illuminate\Support\Collection;
 
