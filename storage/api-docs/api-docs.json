@@ -7081,7 +7081,7 @@
                         "description": "UUID",
                         "type": "string",
                         "format": "uuid",
-                        "example": "00000000-0000-0000-0000-000000000001"
+                        "example": "00000000-0000-0000-0000-000000000000"
                     },
                     "displayName": {
                         "type": "string",
@@ -7887,7 +7887,7 @@
                         "description": "UUID",
                         "type": "string",
                         "format": "uuid",
-                        "example": "00000000-0000-0000-0000-000000000001"
+                        "example": "00000000-0000-0000-0000-000000000000"
                     },
                     "displayName": {
                         "type": "string",
@@ -8164,7 +8164,7 @@
                         "description": "UUID",
                         "type": "string",
                         "format": "uuid",
-                        "example": "00000000-0000-0000-0000-000000000001"
+                        "example": "00000000-0000-0000-0000-000000000000"
                     },
                     "displayName": {
                         "description": "Display name of the user",

@@ -34,7 +34,7 @@ use OpenApi\Attributes as OA;
     ],
     properties: [
         new OA\Property(property: 'id', description: 'ID', type: 'integer', example: 1),
-        new OA\Property(property: 'uuid', description: 'UUID', type: 'string', format: 'uuid', example: '00000000-0000-0000-0000-000000000001'),
+        new OA\Property(property: 'uuid', description: 'UUID', type: 'string', format: 'uuid', example: '00000000-0000-0000-0000-000000000000'),
         new OA\Property(
             property: 'displayName',
             description: 'Display name of the user',
