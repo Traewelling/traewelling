@@ -1733,15 +1733,15 @@ export interface UserResource {
    */
   profilePicture: any;
   /**
-   * distance travelled by train in meters
+   * distance travelled in meters
    * @example 12345
    */
-  trainDistance: number;
+  totalDistance: number;
   /**
-   * duration travelled by train in minutes
+   * duration travelled in minutes
    * @example 6
    */
-  trainDuration: number;
+  totalDuration: number;
   /**
    * Current points of the last 7 days
    * @example 300

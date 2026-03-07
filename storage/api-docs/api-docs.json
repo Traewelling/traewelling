@@ -8159,8 +8159,8 @@
                     "displayName",
                     "username",
                     "profilePicture",
-                    "trainDistance",
-                    "trainDuration",
+                    "totalDistance",
+                    "totalDuration",
                     "points",
                     "mastodonUrl",
                     "privateProfile",
@@ -8193,13 +8193,13 @@
                         "description": "URL of the profile picture of the user",
                         "example": "https://traewelling.de/@Gertrud123/picture"
                     },
-                    "trainDistance": {
-                        "description": "distance travelled by train in meters",
+                    "totalDistance": {
+                        "description": "distance travelled in meters",
                         "type": "integer",
                         "example": 12345
                     },
-                    "trainDuration": {
-                        "description": "duration travelled by train in minutes",
+                    "totalDuration": {
+                        "description": "duration travelled in minutes",
                         "type": "integer",
                         "example": 6
                     },
