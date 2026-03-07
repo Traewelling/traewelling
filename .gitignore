@@ -23,6 +23,7 @@ storage/*.key
 Homestead.yaml
 Homestead.json
 storage/framework/maintenance.php
+_ide_helper.php
 
 # Rocketeer PHP task runner and deployment package. https://github.com/rocketeers/rocketeer
 .rocketeer/
