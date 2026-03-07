@@ -2454,7 +2454,7 @@ export class Api<
      * @request POST:/user/{id}/follow
      * @secure
      */
-    createFollow: (id?: number, params: RequestParams = {}) =>
+    createFollow: (id?: string, params: RequestParams = {}) =>
       this.request<
         {
           /** User model */
@@ -2478,7 +2478,7 @@ export class Api<
      * @request DELETE:/user/{id}/follow
      * @secure
      */
-    destroyFollow: (id?: number, params: RequestParams = {}) =>
+    destroyFollow: (id?: string, params: RequestParams = {}) =>
       this.request<
         {
           /** User model */
@@ -2613,7 +2613,7 @@ export class Api<
      * @request DELETE:/user/self/followers/{userId}
      * @secure
      */
-    removeFollower: (userId?: number, params: RequestParams = {}) =>
+    removeFollower: (userId?: string, params: RequestParams = {}) =>
       this.request<void, void>({
         path: `/user/self/followers/${userId}`,
         method: "DELETE",
@@ -2630,7 +2630,7 @@ export class Api<
      * @request PUT:/user/self/follow-requests/{userId}
      * @secure
      */
-    acceptFollowRequest: (userId?: number, params: RequestParams = {}) =>
+    acceptFollowRequest: (userId?: string, params: RequestParams = {}) =>
       this.request<void, void>({
         path: `/user/self/follow-requests/${userId}`,
         method: "PUT",
@@ -2647,7 +2647,7 @@ export class Api<
      * @request DELETE:/user/self/follow-requests/{userId}
      * @secure
      */
-    rejectFollowRequest: (userId?: number, params: RequestParams = {}) =>
+    rejectFollowRequest: (userId?: string, params: RequestParams = {}) =>
       this.request<void, void>({
         path: `/user/self/follow-requests/${userId}`,
         method: "DELETE",
@@ -2710,8 +2710,11 @@ export class Api<
     trustedUserStore: (
       user: string,
       data: {
-        /** @example "1" */
-        userId?: number;
+        /**
+         * User-ID or UUID
+         * @example "00000000-0000-0000-0000-000000000000"
+         */
+        userId?: string;
         /**
          * @format date-time
          * @example "2024-07-28T00:00:00Z"
@@ -2759,7 +2762,7 @@ export class Api<
      */
     trustedUserDestroy: (
       user: string,
-      trusted: number,
+      trusted: string,
       params: RequestParams = {},
     ) =>
       this.request<void, void>({
@@ -2850,7 +2853,7 @@ export class Api<
      * @request POST:/user/{id}/block
      * @secure
      */
-    createBlock: (id?: number, params: RequestParams = {}) =>
+    createBlock: (id?: string, params: RequestParams = {}) =>
       this.request<
         {
           /** User model */
@@ -2874,7 +2877,7 @@ export class Api<
      * @request DELETE:/user/{id}/block
      * @secure
      */
-    destroyBlock: (id?: number, params: RequestParams = {}) =>
+    destroyBlock: (id?: string, params: RequestParams = {}) =>
       this.request<
         {
           /** User model */
@@ -2898,7 +2901,7 @@ export class Api<
      * @request POST:/user/{id}/mute
      * @secure
      */
-    createMute: (id?: number, params: RequestParams = {}) =>
+    createMute: (id?: string, params: RequestParams = {}) =>
       this.request<
         {
           /** User model */
@@ -2922,7 +2925,7 @@ export class Api<
      * @request DELETE:/user/{id}/mute
      * @secure
      */
-    destroyMute: (id?: number, params: RequestParams = {}) =>
+    destroyMute: (id?: string, params: RequestParams = {}) =>
       this.request<
         {
           /** User model */

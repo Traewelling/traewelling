@@ -126,7 +126,7 @@ class TrustedUserController extends Controller
             content: new OA\JsonContent(
                 required: ['user_id'],
                 properties: [
-                    new OA\Property(property: 'userId', type: 'integer', example: '1'),
+                    new OA\Property(property: 'userId', type: 'string', description: 'User-ID or UUID', example: '00000000-0000-0000-0000-000000000000'),
                     new OA\Property(
                         property: 'expiresAt',
                         type: 'string',
@@ -160,10 +160,10 @@ class TrustedUserController extends Controller
     {
         $user = $this->getUserOrSelf($userIdOrSelf);
         $validated = $request->validate([
-            'userId' => ['required', 'exists:users,id'],
+            'userId' => ['required', 'string'],
             'expiresAt' => ['nullable', 'date', 'after:now'],
         ]);
-        $trustedUser = User::find($validated['userId']);
+        $trustedUser = $this->resolveUserByIdOrUuid($validated['userId']);
         $this->authorize('update', $user);
         TrustedUser::updateOrCreate(
             [
@@ -190,17 +190,17 @@ class TrustedUserController extends Controller
         parameters: [
             new OA\Parameter(
                 name: 'user',
-                description: 'ID of the user (or string \'self\' for current user)',
+                description: 'ID or UUID of the user (or string \'self\' for current user)',
                 in: 'path',
                 required: true,
                 schema: new OA\Schema(type: 'string'),
             ),
             new OA\Parameter(
                 name: 'trusted',
-                description: 'ID of the trusted user',
+                description: 'ID or UUID of the trusted user',
                 in: 'path',
                 required: true,
-                schema: new OA\Schema(type: 'integer'),
+                schema: new OA\Schema(type: 'string'),
             ),
         ],
         responses: [
@@ -211,10 +211,10 @@ class TrustedUserController extends Controller
             new OA\Response(response: '500', description: 'Internal Server Error'),
         ],
     )]
-    public function destroy(string|int $userIdOrSelf, int $trusted): Response
+    public function destroy(string|int $userIdOrSelf, string|int $trusted): Response
     {
         $user = $this->getUserOrSelf($userIdOrSelf);
-        $trusted = User::findOrFail($trusted);
+        $trusted = $this->resolveUserByIdOrUuid($trusted);
         $this->authorize('update', $user);
         TrustedUser::where('user_id', $user->id)->where('trusted_id', $trusted->id)->delete();
 

@@ -47,25 +47,21 @@ abstract class FollowController extends Controller
         return $follow->delete();
     }
 
-    public static function rejectFollower(int $userId, int $followerID): ?FollowRequest
+    public static function rejectFollower(User $user, User $follower): void
     {
-        $request = FollowRequest::where('user_id', $followerID)->where('follow_id', $userId)->firstOrFail();
-
-        $request->delete();
-
-        return $request;
+        FollowRequest::where('user_id', $follower->id)->where('follow_id', $user->id)->firstOrFail()->delete();
     }
 
     /**
-     * @param  int  $userId  The id of the user who is approving a follower
-     * @param  int  $approverId  The id of a to-be-approved follower
+     * @param  User  $user  The user who is approving the follow request
+     * @param  User  $approver  The user whose follow request is being approved
      *
      * @throws ModelNotFoundException
      * @throws AuthorizationException
      */
-    public static function approveFollower(int $userId, int $approverId): bool
+    public static function approveFollower(User $user, User $approver): bool
     {
-        $request = FollowRequest::where('user_id', $approverId)->where('follow_id', $userId)->firstOrFail();
+        $request = FollowRequest::where('user_id', $approver->id)->where('follow_id', $user->id)->firstOrFail();
 
         try {
             $follow = UserController::createFollow($request->user, $request->requestedFollow, true);
