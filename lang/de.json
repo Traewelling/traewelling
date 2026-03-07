@@ -726,6 +726,7 @@
     "stationboard.line": "Linie",
     "stationboard.minus-15": "-15 Minuten",
     "stationboard.new-checkin": "Neuer Check-in",
+    "stationboard.current-stop": "Aktueller Halt:",
     "stationboard.next-stop": "Nächster Halt:",
     "stationboard.no-departures": "Für diese Uhrzeit/diesen Filter gibt es derzeit leider keine Abfahrten.",
     "stationboard.no-past-data": "Wir haben keine Abfahrtsdaten, die älter als 24 Stunden sind. Bitte wähle einen aktuelleren Zeitpunkt.",

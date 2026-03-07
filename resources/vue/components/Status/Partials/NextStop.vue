@@ -3,7 +3,7 @@ import { trans } from 'laravel-vue-i18n';
 import { DateTime } from 'luxon';
 import { PropType, ref, watch } from 'vue';
 import { StopoverResource } from '../../../../types/Api.gen';
-import { getArrivalForStopover } from '../../../helpers/DateTimeHelper';
+import { getArrivalForStopover, getDepartureForStopover } from '../../../helpers/DateTimeHelper';
 
 const props = defineProps({
     stopovers: {
@@ -17,22 +17,33 @@ const props = defineProps({
 });
 
 const nextStop = ref(null as StopoverResource | null);
+const isAtStop = ref(false);
 
 function getNextStop() {
     if (!props.inProgress) {
         nextStop.value = null;
+        isAtStop.value = false;
         return;
     }
 
+    let found = false;
     props.stopovers.every((stopover) => {
-        const diff = getArrivalForStopover(stopover).dateTime.diffNow('seconds');
-        if (diff.seconds > 0) {
+        const departureDiff = getDepartureForStopover(stopover).dateTime.diffNow('seconds');
+        if (departureDiff.seconds > 0) {
             nextStop.value = stopover;
+            const arrivalDiff = getArrivalForStopover(stopover).dateTime.diffNow('seconds');
+            isAtStop.value = arrivalDiff.seconds <= 0;
+            found = true;
             return false;
         }
 
         return true;
     });
+
+    if (!found) {
+        nextStop.value = null;
+        isAtStop.value = false;
+    }
 }
 
 watch(
@@ -50,6 +61,7 @@ watch(
             setInterval(getNextStop, 10000);
         } else {
             nextStop.value = null;
+            isAtStop.value = false;
         }
     },
     { immediate: true },
@@ -64,7 +76,7 @@ if (props.inProgress) {
 <template>
     <li v-if="nextStop">
         <p class="text-muted font-italic mt-2">
-            {{ trans('stationboard.next-stop') }}
+            {{ isAtStop ? trans('stationboard.current-stop') : trans('stationboard.next-stop') }}
 
             <a :href="`/stationboard?stationId=${nextStop.id}&stationName=${nextStop.name}`" class="text-trwl clearfix">
                 {{ nextStop.name }}

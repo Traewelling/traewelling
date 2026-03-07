@@ -726,6 +726,7 @@
     "stationboard.line": "Line",
     "stationboard.minus-15": "-15 Minutes",
     "stationboard.new-checkin": "New check-in",
+    "stationboard.current-stop": "Current stop:",
     "stationboard.next-stop": "Next stop:",
     "stationboard.no-departures": "Unfortunately, there are currently no departures for this time / filter.",
     "stationboard.no-past-data": "We do not have departure data older than 24 hours. Please select a more recent time.",
