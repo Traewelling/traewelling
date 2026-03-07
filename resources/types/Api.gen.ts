@@ -1114,6 +1114,12 @@ export interface LeaderboardUserResource {
 export interface LightUserResource {
   /** @example 1 */
   id: number;
+  /**
+   * UUID
+   * @format uuid
+   * @example "00000000-0000-0000-0000-000000000001"
+   */
+  uuid: string;
   /** @example "Gertrud" */
   displayName: string;
   /** @example "Gertrud123" */
@@ -1572,6 +1578,12 @@ export interface TrustedUserResource {
 export interface UserAuthResource {
   /** @example "1" */
   id: number;
+  /**
+   * UUID
+   * @format uuid
+   * @example "00000000-0000-0000-0000-000000000001"
+   */
+  uuid?: string;
   /** @example "Gertrud" */
   displayName: string;
   /** @example "Gertrud123" */
@@ -1696,6 +1708,12 @@ export interface UserResource {
    * @example 1
    */
   id: number;
+  /**
+   * UUID
+   * @format uuid
+   * @example "00000000-0000-0000-0000-000000000001"
+   */
+  uuid: string;
   /**
    * Display name of the user
    * @example "Gertrud"

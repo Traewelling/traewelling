@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 use Laravel\Passport\Contracts\OAuthenticatable;
 use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasPermissions;
@@ -172,7 +173,21 @@ class User extends Authenticatable implements ExportsPersonalData, OAuthenticata
 {
     use HasApiTokens, HasFactory, HasPermissions, HasRoles, MustVerifyEmail, Notifiable;
 
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        // UUID is not yet the primary key, so we can't use the HasUuids trait here.
+        // Once the migration to UUID as primary key is complete, this can be replaced with the trait.
+        static::creating(function (self $user): void {
+            if (empty($user->uuid)) {
+                $user->uuid = Str::uuid()->toString();
+            }
+        });
+    }
+
     protected $fillable = [
+        'uuid',
         'username', 'name', 'avatar', 'email', 'email_verified_at', 'password', 'home_id', 'privacy_ack_at',
         'default_status_visibility', 'likes_enabled', 'points_enabled', 'private_profile', 'prevent_index',
         'privacy_hide_days', 'language', 'last_login', 'mapprovider', 'timezone', 'friend_checkin', 'data_provider', 'recent_gdpr_export',
@@ -191,6 +206,7 @@ class User extends Authenticatable implements ExportsPersonalData, OAuthenticata
 
     protected $casts = [
         'id' => 'integer',
+        'uuid' => 'string',
         'email_verified_at' => 'datetime',
         'privacy_ack_at' => 'datetime',
         'home_id' => 'integer',

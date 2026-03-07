@@ -7066,6 +7066,7 @@
                 "description": "User model with just basic information",
                 "required": [
                     "id",
+                    "uuid",
                     "displayName",
                     "username",
                     "profilePicture",
@@ -7075,6 +7076,12 @@
                     "id": {
                         "type": "integer",
                         "example": 1
+                    },
+                    "uuid": {
+                        "description": "UUID",
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "00000000-0000-0000-0000-000000000001"
                     },
                     "displayName": {
                         "type": "string",
@@ -7876,6 +7883,12 @@
                         "type": "integer",
                         "example": "1"
                     },
+                    "uuid": {
+                        "description": "UUID",
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "00000000-0000-0000-0000-000000000001"
+                    },
                     "displayName": {
                         "type": "string",
                         "example": "Gertrud"
@@ -8121,6 +8134,7 @@
                 "description": "User model",
                 "required": [
                     "id",
+                    "uuid",
                     "displayName",
                     "username",
                     "profilePicture",
@@ -8145,6 +8159,12 @@
                         "description": "ID",
                         "type": "integer",
                         "example": 1
+                    },
+                    "uuid": {
+                        "description": "UUID",
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "00000000-0000-0000-0000-000000000001"
                     },
                     "displayName": {
                         "description": "Display name of the user",
