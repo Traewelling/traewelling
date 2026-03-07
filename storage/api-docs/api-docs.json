@@ -8305,6 +8305,7 @@
                     "clientId",
                     "client",
                     "userId",
+                    "user",
                     "url",
                     "createdAt",
                     "events"
@@ -8319,14 +8320,19 @@
                         "$ref": "#/components/schemas/ClientResource"
                     },
                     "clientId": {
-                        "description": "ID of the client which created this webhook",
+                        "description": "Deprecated. Use client.id instead.",
                         "format": "int",
-                        "example": 12345
+                        "example": 12345,
+                        "deprecated": true
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/LightUserResource"
                     },
                     "userId": {
-                        "description": "ID of the user which created this webhook",
+                        "description": "Deprecated. Use user.id instead.",
                         "format": "int",
-                        "example": 12345
+                        "example": 12345,
+                        "deprecated": true
                     },
                     "url": {
                         "description": "URL where the webhook gets sent to",

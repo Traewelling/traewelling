@@ -9,8 +9,7 @@ use OpenApi\Attributes as OA;
 #[OA\Schema(
     title: 'WebhookResource',
     description: 'Webhook model',
-    required: ['id', 'clientId', 'client', 'userId', 'url', 'createdAt', 'events'],
-    type: 'object',
+    required: ['id', 'clientId', 'client', 'userId', 'user', 'url', 'createdAt', 'events'],
     properties: [
         new OA\Property(
             property: 'id',
@@ -20,20 +19,27 @@ use OpenApi\Attributes as OA;
         ),
         new OA\Property(
             property: 'client',
-            description: 'Client which created this webhook',
-            ref: '#/components/schemas/ClientResource'
+            ref: '#/components/schemas/ClientResource',
+            description: 'Client which created this webhook'
         ),
         new OA\Property(
             property: 'clientId',
-            description: 'ID of the client which created this webhook',
+            description: 'Deprecated. Use client.id instead.',
             format: 'int',
-            example: 12345
+            example: 12345,
+            deprecated: true,
+        ),
+        new OA\Property(
+            property: 'user',
+            ref: '#/components/schemas/LightUserResource',
+            description: 'User who created this webhook'
         ),
         new OA\Property(
             property: 'userId',
-            description: 'ID of the user which created this webhook',
+            description: 'Deprecated. Use user.id instead.',
             format: 'int',
-            example: 12345
+            example: 12345,
+            deprecated: true,
         ),
         new OA\Property(
             property: 'url',
@@ -53,7 +59,8 @@ use OpenApi\Attributes as OA;
             type: 'array',
             items: new OA\Items(ref: '#/components/schemas/WebhookEventResource')
         ),
-    ]
+    ],
+    type: 'object'
 )]
 class WebhookResource extends JsonResource
 {
@@ -66,9 +73,10 @@ class WebhookResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'clientId' => $this->oauth_client_id, // TODO: should be removed
+            'clientId' => $this->oauth_client_id, // @deprecated - remove after 2026-09-30
             'client' => new ClientResource($this->client),
-            'userId' => $this->user_id, // TODO: should be removed and replaced with user object
+            'userId' => $this->user_id, // @deprecated - remove after 2026-09-30
+            'user' => new LightUserResource($this->user),
             'url' => $this->url,
             'createdAt' => $this->created_at->toIso8601String(),
             'events' => WebhookEventResource::collection($this->events),
