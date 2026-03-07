@@ -1006,9 +1006,27 @@ export interface EventDetailsResource {
   id?: number;
   /** @example "9_euro_ticket" */
   slug?: string;
-  /** @example 12345 */
+  /**
+   * distance travelled in meters
+   * @example 12345
+   */
+  totalDistance?: number;
+  /**
+   * duration travelled in minutes
+   * @example 12345
+   */
+  totalDuration?: number;
+  /**
+   * Deprecated. Use totalDistance instead.
+   * @deprecated
+   * @example 12345
+   */
   trainDistance?: number;
-  /** @example 12345 */
+  /**
+   * Deprecated. Use totalDuration instead.
+   * @deprecated
+   * @example 12345
+   */
   trainDuration?: number;
 }
 

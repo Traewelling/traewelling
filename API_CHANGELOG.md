@@ -14,6 +14,8 @@ Check back here regularly to stay ahead of removals.
 
 | Announced  | What?                                                                                                                                                                                                                             | Safe until | PR                                                            |
 |------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------|---------------------------------------------------------------|
+| 2026-03-07 | `EventDetailsResource.trainDistance` is deprecated → use `totalDistance` instead                                                                                                                                                  | 2026-09-30 | -                                                             |
+| 2026-03-07 | `EventDetailsResource.trainDuration` is deprecated → use `totalDuration` instead                                                                                                                                                  | 2026-09-30 | -                                                             |
 | 2026-03-07 | `CheckinSuccessResource.points.additional` is always `null` and deprecated                                                                                                                                                        | 2026-09-30 | [#4553](https://github.com/Traewelling/traewelling/pull/4553) |
 | 2026-03-07 | `DepartureResource.destination` is deprecated → use `direction` instead                                                                                                                                                           | 2026-09-30 | [#4552](https://github.com/Traewelling/traewelling/pull/4552) |
 | 2026-03-07 | `DepartureResource.delay` is deprecated → use `when`/`plannedWhen` difference instead                                                                                                                                             | 2026-09-30 | [#4552](https://github.com/Traewelling/traewelling/pull/4552) |
@@ -33,6 +35,9 @@ Check back here regularly to stay ahead of removals.
 ---
 
 # 2026-03-07
+
+The `EventDetailsResource` fields `trainDistance` and `trainDuration` are now **deprecated** and will be removed after **2026-09-30**.
+Use `totalDistance` and `totalDuration` instead — both fields are now returned alongside the old ones.
 
 The `CheckinSuccessResource.points.additional` field is now **deprecated** (always `null`) and will be removed after **2026-09-30**.
 
