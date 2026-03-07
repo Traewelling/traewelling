@@ -12,23 +12,32 @@ Fields and endpoints listed here are deprecated and will be removed at the indic
 During the transition period they continue to work but should no longer be relied upon.
 Check back here regularly to stay ahead of removals.
 
-| Announced  | What?                                                                                                        | Safe until | PR                                                            |
-|------------|--------------------------------------------------------------------------------------------------------------|------------|---------------------------------------------------------------|
-| 2026-03-07 | `WebhookResource.clientId` is deprecated → use `client.id` instead                                           | 2026-09-30 | [#4550](https://github.com/Traewelling/traewelling/pull/4550) |
-| 2026-03-07 | `WebhookResource.userId` is deprecated → use `user.id` instead                                               | 2026-09-30 | [#4550](https://github.com/Traewelling/traewelling/pull/4550) |
-| 2026-03-05 | `StationResource.ibnr` is always `null` → use `identifiers` array with type `de_db_ibnr` instead             | 2026-09-30 | [#4500](https://github.com/Traewelling/traewelling/pull/4500) |
-| 2026-03-05 | `StationResource.rilIdentifier` is always `null` → use `identifiers` array with type `de_db_ril100` instead  | 2026-09-30 | [#4500](https://github.com/Traewelling/traewelling/pull/4500) |
-| 2026-03-07 | `StopoverResource.arrival` is deprecated → use `arrivalReal` (if not null) or `arrivalPlanned` instead       | 2026-09-30 | [#4551](https://github.com/Traewelling/traewelling/pull/4551) |
-| 2026-03-07 | `StopoverResource.departure` is deprecated → use `departureReal` (if not null) or `departurePlanned` instead | 2026-09-30 | [#4551](https://github.com/Traewelling/traewelling/pull/4551) |
-| 2026-03-05 | `StopoverResource.rilIdentifier` is always `null` → use the station identifiers endpoint instead             | 2026-09-30 | [#4502](https://github.com/Traewelling/traewelling/pull/4502) |
-| 2026-03-05 | `StopoverResource.evaIdentifier` is always `null` → use the station identifiers endpoint instead             | 2026-09-30 | [#4502](https://github.com/Traewelling/traewelling/pull/4502) |
-| 2026-01-20 | `StatusResource.train` is deprecated → use `checkin` instead                                                 | 2026-07-31 | [#4313](https://github.com/Traewelling/traewelling/pull/4313) |
-| 2026-01-20 | `StatusResource.userDetails` is deprecated → use `user` instead                                              | 2026-07-31 | [#4313](https://github.com/Traewelling/traewelling/pull/4313) |
-| 2026-01-20 | `LightUserResource.mastodonUrl` is always `null` → use `mastodon.server` instead                             | 2026-07-31 | [#4313](https://github.com/Traewelling/traewelling/pull/4313) |
+| Announced  | What?                                                                                                                                                                                                                             | Safe until | PR                                                            |
+|------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------|---------------------------------------------------------------|
+| 2026-03-07 | `DepartureResource.destination` is deprecated → use `direction` instead                                                                                                                                                           | 2026-09-30 | [#4552](https://github.com/Traewelling/traewelling/pull/4552) |
+| 2026-03-07 | `DepartureResource.delay` is deprecated → use `when`/`plannedWhen` difference instead                                                                                                                                             | 2026-09-30 | [#4552](https://github.com/Traewelling/traewelling/pull/4552) |
+| 2026-03-07 | `DepartureResource` HAFAS-compat fields deprecated: `provenance`, `remarks`, `origin`, `currentTripPosition`, `loadFactor`, `stop.products`, `line.public`, `line.adminCode`, `line.productName`, `line.product`, `line.operator` | 2026-09-30 | [#4552](https://github.com/Traewelling/traewelling/pull/4552) |
+| 2026-03-07 | `WebhookResource.clientId` is deprecated → use `client.id` instead                                                                                                                                                                | 2026-09-30 | [#4550](https://github.com/Traewelling/traewelling/pull/4550) |
+| 2026-03-07 | `WebhookResource.userId` is deprecated → use `user.id` instead                                                                                                                                                                    | 2026-09-30 | [#4550](https://github.com/Traewelling/traewelling/pull/4550) |
+| 2026-03-05 | `StationResource.ibnr` is always `null` → use `identifiers` array with type `de_db_ibnr` instead                                                                                                                                  | 2026-09-30 | [#4500](https://github.com/Traewelling/traewelling/pull/4500) |
+| 2026-03-05 | `StationResource.rilIdentifier` is always `null` → use `identifiers` array with type `de_db_ril100` instead                                                                                                                       | 2026-09-30 | [#4500](https://github.com/Traewelling/traewelling/pull/4500) |
+| 2026-03-07 | `StopoverResource.arrival` is deprecated → use `arrivalReal` (if not null) or `arrivalPlanned` instead                                                                                                                            | 2026-09-30 | [#4551](https://github.com/Traewelling/traewelling/pull/4551) |
+| 2026-03-07 | `StopoverResource.departure` is deprecated → use `departureReal` (if not null) or `departurePlanned` instead                                                                                                                      | 2026-09-30 | [#4551](https://github.com/Traewelling/traewelling/pull/4551) |
+| 2026-03-05 | `StopoverResource.rilIdentifier` is always `null` → use the station identifiers endpoint instead                                                                                                                                  | 2026-09-30 | [#4502](https://github.com/Traewelling/traewelling/pull/4502) |
+| 2026-03-05 | `StopoverResource.evaIdentifier` is always `null` → use the station identifiers endpoint instead                                                                                                                                  | 2026-09-30 | [#4502](https://github.com/Traewelling/traewelling/pull/4502) |
+| 2026-01-20 | `StatusResource.train` is deprecated → use `checkin` instead                                                                                                                                                                      | 2026-07-31 | [#4313](https://github.com/Traewelling/traewelling/pull/4313) |
+| 2026-01-20 | `StatusResource.userDetails` is deprecated → use `user` instead                                                                                                                                                                   | 2026-07-31 | [#4313](https://github.com/Traewelling/traewelling/pull/4313) |
+| 2026-01-20 | `LightUserResource.mastodonUrl` is always `null` → use `mastodon.server` instead                                                                                                                                                  | 2026-07-31 | [#4313](https://github.com/Traewelling/traewelling/pull/4313) |
 
 ---
 
 # 2026-03-07
+
+The following fields of `DepartureResource` are now **deprecated** and will be removed after **2026-09-30**:
+
+- `destination` → use `direction` for the destination name
+- `delay` → calculate from `when`/`plannedWhen` difference instead
+- HAFAS-compatibility placeholders (always static/null values): `provenance`, `remarks`, `origin`, `currentTripPosition`, `loadFactor`, `stop.products`, `line.public`, `line.adminCode`, `line.productName`, `line.product`, `line.operator`
 
 The `StopoverResource.arrival` and `StopoverResource.departure` fields are now **deprecated**.
 Use `arrivalReal` (falling back to `arrivalPlanned`) and `departureReal` (falling back to `departurePlanned`) instead.

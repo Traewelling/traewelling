@@ -6759,7 +6759,7 @@
                         "example": "2023-01-06T13:49:00+01:00"
                     },
                     "delay": {
-                        "description": "Delay in minutes (null if no realtime data). Deprecated, use when/plannedWhen difference.",
+                        "description": "Deprecated. Use the difference between when and plannedWhen instead.",
                         "type": "integer",
                         "example": 2,
                         "nullable": true,
@@ -6874,61 +6874,9 @@
                         "deprecated": true
                     },
                     "destination": {
-                        "description": "Destination stop. Only name is currently populated; all other fields are deprecated placeholders.",
-                        "properties": {
-                            "type": {
-                                "type": "string",
-                                "example": "stop"
-                            },
-                            "id": {
-                                "description": "Deprecated. Always 0.",
-                                "type": "integer",
-                                "example": 0,
-                                "deprecated": true
-                            },
-                            "name": {
-                                "description": "Final destination name",
-                                "type": "string",
-                                "example": "Zürich HB"
-                            },
-                            "location": {
-                                "description": "Deprecated. All values are always 0.",
-                                "properties": {
-                                    "type": {
-                                        "type": "string",
-                                        "example": "location"
-                                    },
-                                    "id": {
-                                        "description": "Deprecated. Always 0.",
-                                        "type": "integer",
-                                        "example": 0,
-                                        "deprecated": true
-                                    },
-                                    "latitude": {
-                                        "description": "Deprecated. Always 0.",
-                                        "type": "number",
-                                        "format": "float",
-                                        "example": 0,
-                                        "deprecated": true
-                                    },
-                                    "longitude": {
-                                        "description": "Deprecated. Always 0.",
-                                        "type": "number",
-                                        "format": "float",
-                                        "example": 0,
-                                        "deprecated": true
-                                    }
-                                },
-                                "type": "object",
-                                "deprecated": true
-                            },
-                            "products": {
-                                "description": "Deprecated. Always true for all modes.",
-                                "type": "object",
-                                "deprecated": true
-                            }
-                        },
-                        "type": "object"
+                        "description": "Deprecated. Use direction instead.",
+                        "type": "object",
+                        "deprecated": true
                     },
                     "currentTripPosition": {
                         "description": "Deprecated. Always null.",

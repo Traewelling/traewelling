@@ -43,7 +43,7 @@ use OpenApi\Attributes as OA;
         ),
         new OA\Property(property: 'when', description: 'Actual departure time (null if no realtime data)', type: 'string', format: 'date-time', example: '2023-01-06T13:49:00+01:00', nullable: true),
         new OA\Property(property: 'plannedWhen', description: 'Scheduled departure time', type: 'string', format: 'date-time', example: '2023-01-06T13:49:00+01:00'),
-        new OA\Property(property: 'delay', description: 'Delay in minutes (null if no realtime data). Deprecated, use when/plannedWhen difference.', type: 'integer', example: 2, nullable: true, deprecated: true),
+        new OA\Property(property: 'delay', description: 'Deprecated. Use the difference between when and plannedWhen instead.', type: 'integer', example: 2, nullable: true, deprecated: true),
         new OA\Property(property: 'platform', description: 'Actual platform (null if no realtime data)', type: 'string', example: '3a', nullable: true),
         new OA\Property(property: 'plannedPlatform', description: 'Scheduled platform', type: 'string', example: '3', nullable: true),
         new OA\Property(property: 'direction', description: 'Final destination of the trip', type: 'string', example: 'Zürich HB'),
@@ -70,31 +70,9 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'origin', description: 'Deprecated. Always null.', type: 'object', nullable: true, deprecated: true),
         new OA\Property(
             property: 'destination',
-            description: 'Destination stop. Only name is currently populated; all other fields are deprecated placeholders.',
-            properties: [
-                new OA\Property(property: 'type', type: 'string', example: 'stop'),
-                new OA\Property(property: 'id', description: 'Deprecated. Always 0.', type: 'integer', example: 0, deprecated: true),
-                new OA\Property(property: 'name', description: 'Final destination name', type: 'string', example: 'Zürich HB'),
-                new OA\Property(
-                    property: 'location',
-                    description: 'Deprecated. All values are always 0.',
-                    properties: [
-                        new OA\Property(property: 'type', type: 'string', example: 'location'),
-                        new OA\Property(property: 'id', description: 'Deprecated. Always 0.', type: 'integer', example: 0, deprecated: true),
-                        new OA\Property(property: 'latitude', description: 'Deprecated. Always 0.', type: 'number', format: 'float', example: 0, deprecated: true),
-                        new OA\Property(property: 'longitude', description: 'Deprecated. Always 0.', type: 'number', format: 'float', example: 0, deprecated: true),
-                    ],
-                    type: 'object',
-                    deprecated: true,
-                ),
-                new OA\Property(
-                    property: 'products',
-                    description: 'Deprecated. Always true for all modes.',
-                    type: 'object',
-                    deprecated: true,
-                ),
-            ],
+            description: 'Deprecated. Use direction instead.',
             type: 'object',
+            deprecated: true,
         ),
         new OA\Property(property: 'currentTripPosition', description: 'Deprecated. Always null.', type: 'object', nullable: true, deprecated: true),
         new OA\Property(property: 'loadFactor', description: 'Deprecated. Always null.', type: 'string', nullable: true, deprecated: true),
@@ -120,15 +98,15 @@ class DepartureResource extends JsonResource
                     'latitude' => $this->resource->station->latitude,
                     'longitude' => $this->resource->station->longitude,
                 ],
-                'products' => $this->placeholderProducts(), // deprecated in documentation
+                'products' => $this->placeholderProducts(), // @deprecated - remove after 2026-09-30
             ],
             'when' => $this->resource->realDeparture?->toIso8601String(),
             'plannedWhen' => $this->resource->plannedDeparture->toIso8601String(),
-            'delay' => $this->resource->getDelay(), // deprecated in documentation
+            'delay' => $this->resource->getDelay(), // @deprecated - remove after 2026-09-30, use when/plannedWhen difference instead
             'platform' => $this->resource->realPlatform,
             'plannedPlatform' => $this->resource->plannedPlatform,
             'direction' => $this->resource->trip->direction,
-            'provenance' => null, // deprecated in documentation
+            'provenance' => null, // @deprecated - remove after 2026-09-30
             'line' => [
                 'type' => 'line',
                 'id' => $this->resource->trip->lineName,
@@ -136,29 +114,29 @@ class DepartureResource extends JsonResource
                 'name' => $this->resource->trip->lineName,
                 'color' => $this->resource->trip->routeColor,
                 'textColor' => $this->resource->trip->routeTextColor,
-                'public' => true, // deprecated in documentation
-                'adminCode' => '80____', // deprecated in documentation
-                'productName' => $this->resource->trip->lineName, // deprecated in documentation
+                'public' => true, // @deprecated - remove after 2026-09-30
+                'adminCode' => '80____', // @deprecated - remove after 2026-09-30
+                'productName' => $this->resource->trip->lineName, // @deprecated - remove after 2026-09-30, use name instead
                 'mode' => $this->resource->trip->mode?->value,
-                'product' => $this->resource->trip->category, // deprecated in documentation
-                'operator' => null, // deprecated in documentation
+                'product' => $this->resource->trip->category, // @deprecated - remove after 2026-09-30
+                'operator' => null, // @deprecated - remove after 2026-09-30
             ],
-            'remarks' => null, // deprecated in documentation
-            'origin' => null, // deprecated in documentation
-            'destination' => [
+            'remarks' => null, // @deprecated - remove after 2026-09-30
+            'origin' => null, // @deprecated - remove after 2026-09-30
+            'destination' => [ // @deprecated - remove after 2026-09-30, use direction instead
                 'type' => 'stop',
-                'id' => 0, // deprecated in documentation
+                'id' => 0,
                 'name' => $this->resource->trip->direction,
-                'location' => [ // deprecated in documentation
+                'location' => [
                     'type' => 'location',
-                    'id' => 0, // deprecated in documentation
-                    'latitude' => 0, // deprecated in documentation
-                    'longitude' => 0, // deprecated in documentation
+                    'id' => 0,
+                    'latitude' => 0,
+                    'longitude' => 0,
                 ],
-                'products' => $this->placeholderProducts(), // deprecated in documentation
+                'products' => $this->placeholderProducts(),
             ],
-            'currentTripPosition' => null, // deprecated in documentation
-            'loadFactor' => null, // deprecated in documentation
+            'currentTripPosition' => null, // @deprecated - remove after 2026-09-30
+            'loadFactor' => null, // @deprecated - remove after 2026-09-30
             'station' => new StationResource($this->resource->station),
         ];
     }
