@@ -5,7 +5,7 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build",
-        "api": "npx swagger-typescript-api generate --path storage/api-docs/api-docs.json --custom-config {} --output resources/types --name='Api.gen.ts'",
+        "api": "php artisan l5-swagger:generate && npx swagger-typescript-api generate --path storage/api-docs/api-docs.json --custom-config {} --output resources/types --name='Api.gen.ts'",
         "lint": "npx eslint . --fix",
         "lint:check": "npx eslint .",
         "format": "prettier --write resources/",
