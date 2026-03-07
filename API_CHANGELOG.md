@@ -14,8 +14,8 @@ Check back here regularly to stay ahead of removals.
 
 | Announced  | What?                                                                                                       | Safe until  | PR     |
 |------------|-------------------------------------------------------------------------------------------------------------|-------------|--------|
-| 2026-03-07 | `WebhookResource.clientId` is deprecated → use `client.id` instead                                         | 2026-09-30  | -      |
-| 2026-03-07 | `WebhookResource.userId` is deprecated → use `user.id` instead                                             | 2026-09-30  | -      |
+| 2026-03-07 | `WebhookResource.clientId` is deprecated → use `client.id` instead                                         | 2026-09-30  | [#4550](https://github.com/Traewelling/traewelling/pull/4550) |
+| 2026-03-07 | `WebhookResource.userId` is deprecated → use `user.id` instead                                             | 2026-09-30  | [#4550](https://github.com/Traewelling/traewelling/pull/4550) |
 | 2026-03-05 | `StationResource.ibnr` is always `null` → use `identifiers` array with type `de_db_ibnr` instead           | 2026-09-30  | [#4500](https://github.com/Traewelling/traewelling/pull/4500) |
 | 2026-03-05 | `StationResource.rilIdentifier` is always `null` → use `identifiers` array with type `de_db_ril100` instead | 2026-09-30  | [#4500](https://github.com/Traewelling/traewelling/pull/4500) |
 | 2026-03-05 | `StopoverResource.rilIdentifier` is always `null` → use the station identifiers endpoint instead            | 2026-09-30  | [#4502](https://github.com/Traewelling/traewelling/pull/4502) |
