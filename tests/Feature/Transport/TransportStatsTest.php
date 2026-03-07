@@ -14,6 +14,72 @@ class TransportStatsTest extends FeatureTestCase
 {
     use RefreshDatabase;
 
+    public function test_trips_by_speed_returns_correct_order(): void
+    {
+        $user = User::factory()->create();
+        $from = Carbon::now()->subYear();
+        $to = Carbon::now()->addYear();
+
+        // fast trip: 200 km in 120 min → 100 km/h
+        $fastCheckin = Checkin::factory()->create([
+            'user_id' => $user->id,
+            'distance' => 200_000,
+            'duration' => 120,
+        ]);
+
+        // medium trip: 100 km in 120 min → 50 km/h
+        $mediumCheckin = Checkin::factory()->create([
+            'user_id' => $user->id,
+            'distance' => 100_000,
+            'duration' => 120,
+        ]);
+
+        // slow trip: 30 km in 120 min → 15 km/h
+        $slowCheckin = Checkin::factory()->create([
+            'user_id' => $user->id,
+            'distance' => 30_000,
+            'duration' => 120,
+        ]);
+
+        // zero-duration trip should be excluded
+        Checkin::factory()->create([
+            'user_id' => $user->id,
+            'distance' => 500_000,
+            'duration' => 0,
+        ]);
+
+        $fastest = TransportStatsController::getTripsBySpeed($user, $from, $to, 'desc', 3);
+        $slowest = TransportStatsController::getTripsBySpeed($user, $from, $to, 'asc', 3);
+
+        // fastest first, slowest last
+        $this->assertEquals($fastCheckin->id, $fastest->first()->id);
+        $this->assertEquals($slowCheckin->id, $fastest->last()->id);
+
+        // slowest first, fastest last
+        $this->assertEquals($slowCheckin->id, $slowest->first()->id);
+        $this->assertEquals($fastCheckin->id, $slowest->last()->id);
+
+        // regression: fastest trip must have higher speed than slowest trip (issue #4199)
+        $this->assertGreaterThan($slowest->first()->speed, $fastest->first()->speed);
+    }
+
+    public function test_trips_by_speed_excludes_zero_duration(): void
+    {
+        $user = User::factory()->create();
+        $from = Carbon::now()->subYear();
+        $to = Carbon::now()->addYear();
+
+        Checkin::factory()->create([
+            'user_id' => $user->id,
+            'distance' => 100_000,
+            'duration' => 0,
+        ]);
+
+        $result = TransportStatsController::getTripsBySpeed($user, $from, $to, 'desc');
+
+        $this->assertCount(0, $result);
+    }
+
     public function test_most_liked_statuses(): void
     {
         $user = User::factory()->create();
