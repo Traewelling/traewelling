@@ -4,6 +4,24 @@ In this we try to keep track of changes to the API.
 Primarily this should document changes that are not backwards compatible or belongs to already documented endpoints.
 This is to help you keep track of the changes and to help you update your code accordingly.
 
+Want to be notified about breaking API changes? Comment in [Discussion #2619](https://github.com/Traewelling/traewelling/discussions/2619) to join the notification team.
+
+## Upcoming Breaking Changes
+
+Fields and endpoints listed here are deprecated and will be removed at the indicated date.
+During the transition period they continue to work but should no longer be relied upon.
+Check back here regularly to stay ahead of removals.
+
+| Announced  | What?                                                                                                       | Safe until  | PR     |
+|------------|-------------------------------------------------------------------------------------------------------------|-------------|--------|
+| 2026-03-05 | `StationResource.ibnr` is always `null` → use `identifiers` array with type `de_db_ibnr` instead           | 2026-09-05  | [#4500](https://github.com/Traewelling/traewelling/pull/4500) |
+| 2026-03-05 | `StationResource.rilIdentifier` is always `null` → use `identifiers` array with type `de_db_ril100` instead | 2026-09-05  | [#4500](https://github.com/Traewelling/traewelling/pull/4500) |
+| 2026-03-05 | `StopoverResource.rilIdentifier` is always `null` → use the station identifiers endpoint instead            | 2026-09-05  | [#4502](https://github.com/Traewelling/traewelling/pull/4502) |
+| 2026-03-05 | `StopoverResource.evaIdentifier` is always `null` → use the station identifiers endpoint instead            | 2026-09-05  | [#4502](https://github.com/Traewelling/traewelling/pull/4502) |
+| 2026-01-20 | `LightUserResource.mastodonUrl` is always `null` → use `mastodon.server` instead                            | 2026-07-01  | [#4313](https://github.com/Traewelling/traewelling/pull/4313) |
+
+---
+
 # 2024-08-14
 
 The following endpoints were migrated to match the API conventions. Please also have a look at the API documentation
