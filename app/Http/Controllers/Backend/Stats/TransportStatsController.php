@@ -179,8 +179,8 @@ abstract class TransportStatsController extends Controller
         }
 
         return self::getTrainCheckinsBetween($user, $from, $to, true)
-            ->whereNotNull(DB::raw('(train_checkins.distance/1000) / TIMESTAMPDIFF(HOUR, train_checkins.departure, train_checkins.arrival)'))
-            ->orderBy(DB::raw('(train_checkins.distance/1000) / TIMESTAMPDIFF(HOUR, train_checkins.departure, train_checkins.arrival)'), $sortBy)
+            ->where('train_checkins.duration', '>', 0)
+            ->orderBy(DB::raw('train_checkins.distance / train_checkins.duration'), $sortBy)
             ->limit($limit)
             ->get();
     }
