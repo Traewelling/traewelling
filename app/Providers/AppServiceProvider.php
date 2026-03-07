@@ -72,7 +72,7 @@ class AppServiceProvider extends ServiceProvider
 
     private function registerMails(): void
     {
-        ResetPassword::toMailUsing(function (object $notifiable, string $url) {
+        ResetPassword::toMailUsing(function (object $notifiable, string $token) {
             $locale = $notifiable->language ?? 'en';
 
             $mail = new LangMailMessage($locale);
@@ -82,7 +82,12 @@ class AppServiceProvider extends ServiceProvider
 
             $mail->subject(Lang::trans(key: 'mail.reset_password.subject', locale: $locale))
                 ->line(Lang::trans(key: 'mail.reset_password.line1', locale: $locale))
-                ->action(Lang::trans(key: 'mail.reset_password.action', locale: $locale), $url)
+                ->action(
+                    Lang::trans(key: 'mail.reset_password.action', locale: $locale),
+                    url(route('password.reset', [
+                        'token' => $token,
+                        'email' => $notifiable->getEmailForPasswordReset(),
+                    ], false)))
                 ->line(Lang::trans(
                     key: 'mail.reset_password.line2',
                     replace: ['count' => config('auth.passwords.' . config('auth.defaults.passwords') . '.expire')],
