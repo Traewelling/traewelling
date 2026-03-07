@@ -214,10 +214,10 @@ class UserController extends Controller
         parameters: [
             new OA\Parameter(
                 name: 'id',
-                description: 'User-ID',
+                description: 'User-ID or UUID',
                 in: 'path',
-                schema: new OA\Schema(type: 'integer'),
-                example: 1337,
+                schema: new OA\Schema(type: 'string'),
+                example: '00000000-0000-0000-0000-000000000000',
             ),
         ],
         responses: [
@@ -235,10 +235,10 @@ class UserController extends Controller
             new OA\Response(response: 409, description: 'User is already blocked'),
         ],
     )]
-    public function createBlock(int $userId): JsonResponse
+    public function createBlock(string|int $userId): JsonResponse
     {
         try {
-            $userToBeBlocked = User::findOrFail($userId);
+            $userToBeBlocked = $this->resolveUserByIdOrUuid($userId);
             $blockUserResponse = BackendUserBackend::blockUser(auth()->user(), $userToBeBlocked);
             $userToBeBlocked->refresh();
             if ($blockUserResponse) {
@@ -268,10 +268,10 @@ class UserController extends Controller
         parameters: [
             new OA\Parameter(
                 name: 'id',
-                description: 'User-ID',
+                description: 'User-ID or UUID',
                 in: 'path',
-                schema: new OA\Schema(type: 'integer'),
-                example: 1337,
+                schema: new OA\Schema(type: 'string'),
+                example: '00000000-0000-0000-0000-000000000000',
             ),
         ],
         responses: [
@@ -289,10 +289,10 @@ class UserController extends Controller
             new OA\Response(response: 409, description: 'User is not blocked'),
         ],
     )]
-    public function destroyBlock(int $userId): JsonResponse
+    public function destroyBlock(string|int $userId): JsonResponse
     {
         try {
-            $userToBeUnblocked = User::findOrFail($userId);
+            $userToBeUnblocked = $this->resolveUserByIdOrUuid($userId);
             $unblockUserResponse = BackendUserBackend::unblockUser(auth()->user(), $userToBeUnblocked);
             $userToBeUnblocked->refresh();
             if ($unblockUserResponse) {
@@ -322,10 +322,10 @@ class UserController extends Controller
         parameters: [
             new OA\Parameter(
                 name: 'id',
-                description: 'User-ID',
+                description: 'User-ID or UUID',
                 in: 'path',
-                schema: new OA\Schema(type: 'integer'),
-                example: 1337,
+                schema: new OA\Schema(type: 'string'),
+                example: '00000000-0000-0000-0000-000000000000',
             ),
         ],
         responses: [
@@ -342,10 +342,10 @@ class UserController extends Controller
             new OA\Response(response: 403, description: 'User not authorized'),
         ],
     )]
-    public function createMute(int $userId): JsonResponse
+    public function createMute(string|int $userId): JsonResponse
     {
         try {
-            $userToBeMuted = User::findOrFail($userId);
+            $userToBeMuted = $this->resolveUserByIdOrUuid($userId);
             $muteUserResponse = BackendUserBackend::muteUser(auth()->user(), $userToBeMuted);
             $userToBeMuted->refresh();
             if ($muteUserResponse) {
@@ -375,10 +375,10 @@ class UserController extends Controller
         parameters: [
             new OA\Parameter(
                 name: 'id',
-                description: 'User-ID',
+                description: 'User-ID or UUID',
                 in: 'path',
-                schema: new OA\Schema(type: 'integer'),
-                example: 1337,
+                schema: new OA\Schema(type: 'string'),
+                example: '00000000-0000-0000-0000-000000000000',
             ),
         ],
         responses: [
@@ -395,10 +395,10 @@ class UserController extends Controller
             new OA\Response(response: 403, description: 'User not authorized'),
         ],
     )]
-    public function destroyMute(int $userId): JsonResponse
+    public function destroyMute(string|int $userId): JsonResponse
     {
         try {
-            $userToBeUnmuted = User::findOrFail($userId);
+            $userToBeUnmuted = $this->resolveUserByIdOrUuid($userId);
             $unmuteUserResponse = BackendUserBackend::unmuteUser(auth()->user(), $userToBeUnmuted);
             $userToBeUnmuted->refresh();
             if ($unmuteUserResponse) {

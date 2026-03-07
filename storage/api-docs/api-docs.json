@@ -578,11 +578,11 @@
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "User-ID",
+                        "description": "User-ID or UUID",
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         },
-                        "example": 1337
+                        "example": "00000000-0000-0000-0000-000000000000"
                     }
                 ],
                 "responses": {
@@ -632,11 +632,11 @@
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "User-ID",
+                        "description": "User-ID or UUID",
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         },
-                        "example": 1337
+                        "example": "00000000-0000-0000-0000-000000000000"
                     }
                 ],
                 "responses": {
@@ -865,11 +865,11 @@
                     {
                         "name": "userId",
                         "in": "path",
-                        "description": "User-ID",
+                        "description": "User-ID or UUID",
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         },
-                        "example": 1337
+                        "example": "00000000-0000-0000-0000-000000000000"
                     }
                 ],
                 "responses": {
@@ -912,11 +912,11 @@
                     {
                         "name": "userId",
                         "in": "path",
-                        "description": "User-ID",
+                        "description": "User-ID or UUID",
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         },
-                        "example": 1337
+                        "example": "00000000-0000-0000-0000-000000000000"
                     }
                 ],
                 "responses": {
@@ -954,11 +954,11 @@
                     {
                         "name": "userId",
                         "in": "path",
-                        "description": "User-ID",
+                        "description": "User-ID or UUID",
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         },
-                        "example": 1337
+                        "example": "00000000-0000-0000-0000-000000000000"
                     }
                 ],
                 "responses": {
@@ -4635,8 +4635,9 @@
                                 ],
                                 "properties": {
                                     "userId": {
-                                        "type": "integer",
-                                        "example": "1"
+                                        "description": "User-ID or UUID",
+                                        "type": "string",
+                                        "example": "00000000-0000-0000-0000-000000000000"
                                     },
                                     "expiresAt": {
                                         "type": "string",
@@ -4719,7 +4720,7 @@
                     {
                         "name": "user",
                         "in": "path",
-                        "description": "ID of the user (or string 'self' for current user)",
+                        "description": "ID or UUID of the user (or string 'self' for current user)",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -4728,10 +4729,10 @@
                     {
                         "name": "trusted",
                         "in": "path",
-                        "description": "ID of the trusted user",
+                        "description": "ID or UUID of the trusted user",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -4981,11 +4982,11 @@
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "User-ID",
+                        "description": "User-ID or UUID",
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         },
-                        "example": 1337
+                        "example": "00000000-0000-0000-0000-000000000000"
                     }
                 ],
                 "responses": {
@@ -5042,11 +5043,11 @@
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "User-ID",
+                        "description": "User-ID or UUID",
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         },
-                        "example": 1337
+                        "example": "00000000-0000-0000-0000-000000000000"
                     }
                 ],
                 "responses": {
@@ -5105,11 +5106,11 @@
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "User-ID",
+                        "description": "User-ID or UUID",
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         },
-                        "example": 1337
+                        "example": "00000000-0000-0000-0000-000000000000"
                     }
                 ],
                 "responses": {
@@ -5163,11 +5164,11 @@
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "User-ID",
+                        "description": "User-ID or UUID",
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         },
-                        "example": 1337
+                        "example": "00000000-0000-0000-0000-000000000000"
                     }
                 ],
                 "responses": {

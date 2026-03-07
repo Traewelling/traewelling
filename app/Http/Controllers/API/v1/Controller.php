@@ -142,6 +142,21 @@ class Controller extends \App\Http\Controllers\Controller
             return auth()->user();
         }
 
-        return User::findOrFail($userIdOrSelf);
+        return $this->resolveUserByIdOrUuid($userIdOrSelf);
+    }
+
+    /**
+     * Resolve a User by numeric ID or UUID (transition helper while migrating to UUID primary keys).
+     */
+    protected function resolveUserByIdOrUuid(string|int $idOrUuid): User
+    {
+        if (
+            is_string($idOrUuid)
+            && preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $idOrUuid)
+        ) {
+            return User::where('uuid', $idOrUuid)->firstOrFail();
+        }
+
+        return User::findOrFail($idOrUuid);
     }
 }

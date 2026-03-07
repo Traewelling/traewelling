@@ -10,6 +10,7 @@ use App\Http\Controllers\Backend\User\FollowController as SettingsBackend;
 use App\Http\Controllers\Backend\User\SessionController;
 use App\Http\Controllers\Backend\User\TokenController;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
@@ -122,7 +123,7 @@ class SettingsController extends Controller
         ]);
 
         try {
-            $approval = SettingsBackend::approveFollower(auth()->user()->id, $validated['user_id']);
+            $approval = SettingsBackend::approveFollower(auth()->user(), User::findOrFail($validated['user_id']));
         } catch (ModelNotFoundException) {
             abort(404);
         }
@@ -146,15 +147,11 @@ class SettingsController extends Controller
             ],
         ]);
         try {
-            $approval = FollowController::rejectFollower(auth()->user()->id, $validated['user_id']);
+            FollowController::rejectFollower(auth()->user(), User::findOrFail($validated['user_id']));
         } catch (ModelNotFoundException) {
             abort(404);
         }
 
-        if ($approval) {
-            return back()->with('success', __('settings.request.reject-success'));
-        }
-
-        return back()->with('danger', __('messages.exception.general'));
+        return back()->with('success', __('settings.request.reject-success'));
     }
 }

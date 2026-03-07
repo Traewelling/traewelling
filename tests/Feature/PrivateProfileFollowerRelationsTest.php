@@ -66,7 +66,7 @@ class PrivateProfileFollowerRelationsTest extends ApiTestCase
         $response->assertJsonFragment(['type' => 'FollowRequestIssued']);
 
         // bob accepts the request
-        FollowController::approveFollower($bob->id, $alice->id);
+        FollowController::approveFollower($bob, $alice);
 
         Passport::actingAs($alice, ['*']);
         // alice should have a notification

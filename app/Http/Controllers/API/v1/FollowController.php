@@ -7,7 +7,6 @@ use App\Http\Controllers\Backend\User\FollowController as FollowBackend;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Http\Resources\UserResource;
 use App\Models\Follow;
-use App\Models\User;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -30,10 +29,10 @@ class FollowController extends Controller
         parameters: [
             new OA\Parameter(
                 name: 'id',
-                description: 'User-ID',
+                description: 'User-ID or UUID',
                 in: 'path',
-                schema: new OA\Schema(type: 'integer'),
-                example: 1337,
+                schema: new OA\Schema(type: 'string'),
+                example: '00000000-0000-0000-0000-000000000000',
             ),
         ],
         responses: [
@@ -55,11 +54,11 @@ class FollowController extends Controller
             new OA\Response(response: 403, description: 'User is blocked'),
         ],
     )]
-    public function createFollow(int $userId): JsonResponse
+    public function createFollow(string|int $userId): JsonResponse
     {
         try {
             $this->authorize('create', Follow::class);
-            $userToFollow = User::findOrFail($userId);
+            $userToFollow = $this->resolveUserByIdOrUuid($userId);
             $createFollowResponse = FollowBackend::createOrRequestFollow(Auth::user(), $userToFollow);
 
             return $this->sendResponse(new UserResource($createFollowResponse), 201);
@@ -83,10 +82,10 @@ class FollowController extends Controller
         parameters: [
             new OA\Parameter(
                 name: 'id',
-                description: 'User-ID',
+                description: 'User-ID or UUID',
                 in: 'path',
-                schema: new OA\Schema(type: 'integer'),
-                example: 1337,
+                schema: new OA\Schema(type: 'string'),
+                example: '00000000-0000-0000-0000-000000000000',
             ),
         ],
         responses: [
@@ -108,10 +107,10 @@ class FollowController extends Controller
             new OA\Response(response: 409, description: 'Already following'),
         ],
     )]
-    public function destroyFollow(int $userId): JsonResponse
+    public function destroyFollow(string|int $userId): JsonResponse
     {
         try {
-            $userToUnfollow = User::findOrFail($userId);
+            $userToUnfollow = $this->resolveUserByIdOrUuid($userId);
             $destroyFollowResponse = UserBackend::destroyFollow(Auth::user(), $userToUnfollow);
             if ($destroyFollowResponse === false) {
                 return $this->sendError(['message' => __('controller.user.follow-404')], 409);
@@ -266,10 +265,10 @@ class FollowController extends Controller
         parameters: [
             new OA\Parameter(
                 name: 'userId',
-                description: 'User-ID',
+                description: 'User-ID or UUID',
                 in: 'path',
-                schema: new OA\Schema(type: 'integer'),
-                example: 1337,
+                schema: new OA\Schema(type: 'string'),
+                example: '00000000-0000-0000-0000-000000000000',
             ),
         ],
         responses: [
@@ -280,10 +279,11 @@ class FollowController extends Controller
             new OA\Response(response: 500, description: 'Unknown error'),
         ],
     )]
-    public function removeFollowerByUserId(int $userId): JsonResponse
+    public function removeFollowerByUserId(string|int $userId): JsonResponse
     {
         try {
-            $follow = Follow::where('user_id', $userId)
+            $follower = $this->resolveUserByIdOrUuid($userId);
+            $follow = Follow::where('user_id', $follower->id)
                 ->where('follow_id', auth()->user()->id)
                 ->firstOrFail();
 
@@ -313,10 +313,10 @@ class FollowController extends Controller
         parameters: [
             new OA\Parameter(
                 name: 'userId',
-                description: 'User-ID',
+                description: 'User-ID or UUID',
                 in: 'path',
-                schema: new OA\Schema(type: 'integer'),
-                example: 1337,
+                schema: new OA\Schema(type: 'string'),
+                example: '00000000-0000-0000-0000-000000000000',
             ),
         ],
         responses: [
@@ -326,10 +326,11 @@ class FollowController extends Controller
             new OA\Response(response: 404, description: 'Request not found'),
         ],
     )]
-    public function approveFollowRequestByUserId(int $userId): JsonResponse
+    public function approveFollowRequestByUserId(string|int $userId): JsonResponse
     {
         try {
-            FollowBackend::approveFollower(auth()->user()->id, $userId);
+            $requester = $this->resolveUserByIdOrUuid($userId);
+            FollowBackend::approveFollower(auth()->user(), $requester);
 
             return $this->sendResponse();
         } catch (ModelNotFoundException) {
@@ -356,10 +357,10 @@ class FollowController extends Controller
         parameters: [
             new OA\Parameter(
                 name: 'userId',
-                description: 'User-ID',
+                description: 'User-ID or UUID',
                 in: 'path',
-                schema: new OA\Schema(type: 'integer'),
-                example: 1337,
+                schema: new OA\Schema(type: 'string'),
+                example: '00000000-0000-0000-0000-000000000000',
             ),
         ],
         responses: [
@@ -369,10 +370,11 @@ class FollowController extends Controller
             new OA\Response(response: 404, description: 'Request not found'),
         ],
     )]
-    public function rejectFollowRequestByUserId(int $userId): JsonResponse
+    public function rejectFollowRequestByUserId(string|int $userId): JsonResponse
     {
         try {
-            FollowBackend::rejectFollower(auth()->user()->id, $userId);
+            $requester = $this->resolveUserByIdOrUuid($userId);
+            FollowBackend::rejectFollower(auth()->user(), $requester);
 
             return $this->sendResponse();
         } catch (ModelNotFoundException) {
