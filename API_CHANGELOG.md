@@ -34,6 +34,15 @@ Check back here regularly to stay ahead of removals.
 
 ---
 
+# 2026-03-07 (UUID support for Users)
+
+The `UserResource` now includes a `uuid` field alongside the existing integer `id`.
+All API endpoints that previously accepted a numeric user ID in the path (e.g. `/user/{id}/follow`, `/user/{id}/block`, `/user/{id}/mute`, `/user/self/followers/{userId}`, `/user/self/follow-requests/{userId}`, `/user/{user}/trusted`, `/user/{user}/trusted/{trusted}`) now accept **both** the integer ID and the UUID interchangeably.
+
+Where possible, prefer using the UUID, it will become the primary identifier once the migration is complete.
+
+The integer ID is **not** deprecated and will continue to work until further notice.
+
 # 2026-03-07
 
 The `EventDetailsResource` fields `trainDistance` and `trainDuration` are now **deprecated** and will be removed after **2026-09-30**.

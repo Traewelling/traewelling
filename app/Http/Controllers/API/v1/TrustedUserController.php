@@ -160,7 +160,7 @@ class TrustedUserController extends Controller
     {
         $user = $this->getUserOrSelf($userIdOrSelf);
         $validated = $request->validate([
-            'userId' => ['required', 'string'],
+            'userId' => ['required'],
             'expiresAt' => ['nullable', 'date', 'after:now'],
         ]);
         $trustedUser = $this->resolveUserByIdOrUuid($validated['userId']);
