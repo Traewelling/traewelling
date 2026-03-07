@@ -886,7 +886,7 @@ export interface DepartureResource {
    */
   plannedWhen: string;
   /**
-   * Delay in minutes (null if no realtime data). Deprecated, use when/plannedWhen difference.
+   * Deprecated. Use the difference between when and plannedWhen instead.
    * @deprecated
    * @example 2
    */
@@ -979,55 +979,11 @@ export interface DepartureResource {
    * @deprecated
    */
   origin?: object | null;
-  /** Destination stop. Only name is currently populated; all other fields are deprecated placeholders. */
-  destination?: {
-    /** @example "stop" */
-    type?: string;
-    /**
-     * Deprecated. Always 0.
-     * @deprecated
-     * @example 0
-     */
-    id?: number;
-    /**
-     * Final destination name
-     * @example "Zürich HB"
-     */
-    name?: string;
-    /**
-     * Deprecated. All values are always 0.
-     * @deprecated
-     */
-    location?: {
-      /** @example "location" */
-      type?: string;
-      /**
-       * Deprecated. Always 0.
-       * @deprecated
-       * @example 0
-       */
-      id?: number;
-      /**
-       * Deprecated. Always 0.
-       * @deprecated
-       * @format float
-       * @example 0
-       */
-      latitude?: number;
-      /**
-       * Deprecated. Always 0.
-       * @deprecated
-       * @format float
-       * @example 0
-       */
-      longitude?: number;
-    };
-    /**
-     * Deprecated. Always true for all modes.
-     * @deprecated
-     */
-    products?: object;
-  };
+  /**
+   * Deprecated. Use direction instead.
+   * @deprecated
+   */
+  destination?: object;
   /**
    * Deprecated. Always null.
    * @deprecated
