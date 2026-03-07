@@ -7562,11 +7562,12 @@
                         "deprecated": true
                     },
                     "arrival": {
-                        "description": "currently known arrival time. Equal to arrivalReal if known. Else equal to arrivalPlanned.",
+                        "description": "Deprecated. Use arrivalReal (if not null) or arrivalPlanned instead.",
                         "type": "string",
                         "format": "date-time",
                         "example": "2022-07-17T13:37:00+02:00",
-                        "nullable": true
+                        "nullable": true,
+                        "deprecated": true
                     },
                     "arrivalPlanned": {
                         "description": "planned arrival according to timetable records",
@@ -7595,11 +7596,12 @@
                         "nullable": true
                     },
                     "departure": {
-                        "description": "currently known departure time. Equal to departureReal if known. Else equal to departurePlanned.",
+                        "description": "Deprecated. Use departureReal (if not null) or departurePlanned instead.",
                         "type": "string",
                         "format": "date-time",
                         "example": "2022-07-17T13:37:00+02:00",
-                        "nullable": true
+                        "nullable": true,
+                        "deprecated": true
                     },
                     "departurePlanned": {
                         "description": "planned departure according to timetable records",

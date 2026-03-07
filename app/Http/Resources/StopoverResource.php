@@ -54,11 +54,12 @@ use OpenApi\Attributes as OA;
         ),
         new OA\Property(
             property: 'arrival',
-            description: 'currently known arrival time. Equal to arrivalReal if known. Else equal to arrivalPlanned.',
+            description: 'Deprecated. Use arrivalReal (if not null) or arrivalPlanned instead.',
             type: 'string',
             format: 'date-time',
             example: '2022-07-17T13:37:00+02:00',
             nullable: true,
+            deprecated: true,
         ),
         new OA\Property(
             property: 'arrivalPlanned',
@@ -92,11 +93,12 @@ use OpenApi\Attributes as OA;
         ),
         new OA\Property(
             property: 'departure',
-            description: 'currently known departure time. Equal to departureReal if known. Else equal to departurePlanned.',
+            description: 'Deprecated. Use departureReal (if not null) or departurePlanned instead.',
             type: 'string',
             format: 'date-time',
             example: '2022-07-17T13:37:00+02:00',
             nullable: true,
+            deprecated: true,
         ),
         new OA\Property(
             property: 'departurePlanned',
@@ -157,14 +159,14 @@ class StopoverResource extends JsonResource
         return [
             'id' => (int) $this->train_station_id,
             'name' => $this->station->name,
-            'rilIdentifier' => null, // @deprecated
-            'evaIdentifier' => null, // @deprecated
-            'arrival' => $this->arrival?->toIso8601String(), // TODO: not necessary if planned and real are available
+            'rilIdentifier' => null, // @deprecated - remove after 2026-09-30
+            'evaIdentifier' => null, // @deprecated - remove after 2026-09-30
+            'arrival' => $this->arrival?->toIso8601String(), // @deprecated - remove after 2026-09-30
             'arrivalPlanned' => $this->arrival_planned?->toIso8601String(),
             'arrivalReal' => $this->arrival_real?->toIso8601String(),
             'arrivalPlatformPlanned' => $this->arrival_platform_planned ?? null,
             'arrivalPlatformReal' => $this->arrival_platform_real ?? null,
-            'departure' => $this->departure?->toIso8601String(), // TODO: not necessary if planned and real are available
+            'departure' => $this->departure?->toIso8601String(), // @deprecated - remove after 2026-09-30
             'departurePlanned' => $this->departure_planned?->toIso8601String(),
             'departureReal' => $this->departure_real?->toIso8601String(),
             'departurePlatformPlanned' => $this->departure_platform_planned ?? null,
