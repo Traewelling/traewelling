@@ -1392,7 +1392,8 @@ export interface StopoverResource {
    */
   evaIdentifier: string | null;
   /**
-   * currently known arrival time. Equal to arrivalReal if known. Else equal to arrivalPlanned.
+   * Deprecated. Use arrivalReal (if not null) or arrivalPlanned instead.
+   * @deprecated
    * @format date-time
    * @example "2022-07-17T13:37:00+02:00"
    */
@@ -1420,7 +1421,8 @@ export interface StopoverResource {
    */
   arrivalPlatformReal: string | null;
   /**
-   * currently known departure time. Equal to departureReal if known. Else equal to departurePlanned.
+   * Deprecated. Use departureReal (if not null) or departurePlanned instead.
+   * @deprecated
    * @format date-time
    * @example "2022-07-17T13:37:00+02:00"
    */

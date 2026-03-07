@@ -12,21 +12,27 @@ Fields and endpoints listed here are deprecated and will be removed at the indic
 During the transition period they continue to work but should no longer be relied upon.
 Check back here regularly to stay ahead of removals.
 
-| Announced  | What?                                                                                                       | Safe until  | PR     |
-|------------|-------------------------------------------------------------------------------------------------------------|-------------|--------|
-| 2026-03-07 | `WebhookResource.clientId` is deprecated → use `client.id` instead                                         | 2026-09-30  | [#4550](https://github.com/Traewelling/traewelling/pull/4550) |
-| 2026-03-07 | `WebhookResource.userId` is deprecated → use `user.id` instead                                             | 2026-09-30  | [#4550](https://github.com/Traewelling/traewelling/pull/4550) |
-| 2026-03-05 | `StationResource.ibnr` is always `null` → use `identifiers` array with type `de_db_ibnr` instead           | 2026-09-30  | [#4500](https://github.com/Traewelling/traewelling/pull/4500) |
-| 2026-03-05 | `StationResource.rilIdentifier` is always `null` → use `identifiers` array with type `de_db_ril100` instead | 2026-09-30  | [#4500](https://github.com/Traewelling/traewelling/pull/4500) |
-| 2026-03-05 | `StopoverResource.rilIdentifier` is always `null` → use the station identifiers endpoint instead            | 2026-09-30  | [#4502](https://github.com/Traewelling/traewelling/pull/4502) |
-| 2026-03-05 | `StopoverResource.evaIdentifier` is always `null` → use the station identifiers endpoint instead            | 2026-09-30  | [#4502](https://github.com/Traewelling/traewelling/pull/4502) |
-| 2026-01-20 | `StatusResource.train` is deprecated → use `checkin` instead                                                | 2026-07-31  | [#4313](https://github.com/Traewelling/traewelling/pull/4313) |
-| 2026-01-20 | `StatusResource.userDetails` is deprecated → use `user` instead                                             | 2026-07-31  | [#4313](https://github.com/Traewelling/traewelling/pull/4313) |
-| 2026-01-20 | `LightUserResource.mastodonUrl` is always `null` → use `mastodon.server` instead                            | 2026-07-31  | [#4313](https://github.com/Traewelling/traewelling/pull/4313) |
+| Announced  | What?                                                                                                        | Safe until | PR                                                            |
+|------------|--------------------------------------------------------------------------------------------------------------|------------|---------------------------------------------------------------|
+| 2026-03-07 | `WebhookResource.clientId` is deprecated → use `client.id` instead                                           | 2026-09-30 | [#4550](https://github.com/Traewelling/traewelling/pull/4550) |
+| 2026-03-07 | `WebhookResource.userId` is deprecated → use `user.id` instead                                               | 2026-09-30 | [#4550](https://github.com/Traewelling/traewelling/pull/4550) |
+| 2026-03-05 | `StationResource.ibnr` is always `null` → use `identifiers` array with type `de_db_ibnr` instead             | 2026-09-30 | [#4500](https://github.com/Traewelling/traewelling/pull/4500) |
+| 2026-03-05 | `StationResource.rilIdentifier` is always `null` → use `identifiers` array with type `de_db_ril100` instead  | 2026-09-30 | [#4500](https://github.com/Traewelling/traewelling/pull/4500) |
+| 2026-03-07 | `StopoverResource.arrival` is deprecated → use `arrivalReal` (if not null) or `arrivalPlanned` instead       | 2026-09-30 | -                                                             |
+| 2026-03-07 | `StopoverResource.departure` is deprecated → use `departureReal` (if not null) or `departurePlanned` instead | 2026-09-30 | -                                                             |
+| 2026-03-05 | `StopoverResource.rilIdentifier` is always `null` → use the station identifiers endpoint instead             | 2026-09-30 | [#4502](https://github.com/Traewelling/traewelling/pull/4502) |
+| 2026-03-05 | `StopoverResource.evaIdentifier` is always `null` → use the station identifiers endpoint instead             | 2026-09-30 | [#4502](https://github.com/Traewelling/traewelling/pull/4502) |
+| 2026-01-20 | `StatusResource.train` is deprecated → use `checkin` instead                                                 | 2026-07-31 | [#4313](https://github.com/Traewelling/traewelling/pull/4313) |
+| 2026-01-20 | `StatusResource.userDetails` is deprecated → use `user` instead                                              | 2026-07-31 | [#4313](https://github.com/Traewelling/traewelling/pull/4313) |
+| 2026-01-20 | `LightUserResource.mastodonUrl` is always `null` → use `mastodon.server` instead                             | 2026-07-31 | [#4313](https://github.com/Traewelling/traewelling/pull/4313) |
 
 ---
 
 # 2026-03-07
+
+The `StopoverResource.arrival` and `StopoverResource.departure` fields are now **deprecated**.
+Use `arrivalReal` (falling back to `arrivalPlanned`) and `departureReal` (falling back to `departurePlanned`) instead.
+Both deprecated fields will be removed after **2026-09-30**.
 
 The `WebhookResource` now includes a `user` field containing the full `LightUserResource` of the user who created
 the webhook.
