@@ -29,6 +29,7 @@ use OpenApi\Attributes as OA;
     ],
     properties: [
         new OA\Property(property: 'id', type: 'integer', example: '1'),
+        new OA\Property(property: 'uuid', description: 'UUID', type: 'string', format: 'uuid', example: '00000000-0000-0000-0000-000000000000'),
         new OA\Property(property: 'displayName', type: 'string', example: 'Gertrud'),
         new OA\Property(property: 'username', type: 'string', example: 'Gertrud123'),
         new OA\Property(
@@ -74,6 +75,7 @@ class UserAuthResource extends JsonResource
         /** @var User $this */
         return [
             'id' => (int) $this->id,
+            'uuid' => (string) $this->uuid,
             'displayName' => (string) $this->name,
             'username' => (string) $this->username,
             'profilePicture' => ProfilePictureController::getUrlForUserId($this->id),

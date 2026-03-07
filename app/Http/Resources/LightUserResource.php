@@ -15,9 +15,10 @@ use OpenApi\Attributes as OA;
 #[OA\Schema(
     title: 'LightUser',
     description: 'User model with just basic information',
-    required: ['id', 'displayName', 'username', 'profilePicture', 'preventIndex'],
+    required: ['id', 'uuid', 'displayName', 'username', 'profilePicture', 'preventIndex'],
     properties: [
         new OA\Property(property: 'id', type: 'integer', example: 1),
+        new OA\Property(property: 'uuid', description: 'UUID', type: 'string', format: 'uuid', example: '00000000-0000-0000-0000-000000000000'),
         new OA\Property(property: 'displayName', type: 'string', example: 'Gertrud'),
         new OA\Property(property: 'username', type: 'string', example: 'Gertrud123'),
         new OA\Property(
@@ -46,6 +47,7 @@ class LightUserResource extends JsonResource
 
         return [
             'id' => (int) $user->id,
+            'uuid' => (string) $user->uuid,
             'displayName' => (string) $user->name,
             'username' => (string) $user->username,
             'profilePicture' => ProfilePictureController::getUrl($user),
