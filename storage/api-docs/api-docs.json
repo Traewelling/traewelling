@@ -6908,13 +6908,27 @@
                         "type": "string",
                         "example": "9_euro_ticket"
                     },
-                    "trainDistance": {
+                    "totalDistance": {
+                        "description": "distance travelled in meters",
                         "type": "integer",
                         "example": 12345
                     },
-                    "trainDuration": {
+                    "totalDuration": {
+                        "description": "duration travelled in minutes",
                         "type": "integer",
                         "example": 12345
+                    },
+                    "trainDistance": {
+                        "description": "Deprecated. Use totalDistance instead.",
+                        "type": "integer",
+                        "example": 12345,
+                        "deprecated": true
+                    },
+                    "trainDuration": {
+                        "description": "Deprecated. Use totalDuration instead.",
+                        "type": "integer",
+                        "example": 12345,
+                        "deprecated": true
                     }
                 },
                 "type": "object"
