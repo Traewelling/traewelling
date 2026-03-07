@@ -696,6 +696,7 @@
     "stationboard.line": "Ligne",
     "stationboard.minus-15": "-15 minutes",
     "stationboard.new-checkin": "Nouvel enregistrement",
+    "stationboard.current-stop": "Arrêt actuel :",
     "stationboard.next-stop": "Prochain arrêt :",
     "stationboard.no-departures": "Malheureusement, il n'y a actuellement aucun départ pour cette heure / avec ces filtres.",
     "stationboard.no-past-data": "Nous ne disposons pas de données d'horaires de plus de 24 heures. Veuillez sélectionner un horaire plus récent.",
