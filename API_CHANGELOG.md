@@ -14,6 +14,7 @@ Check back here regularly to stay ahead of removals.
 
 | Announced  | What?                                                                                                                                                                                                                             | Safe until | PR                                                            |
 |------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------|---------------------------------------------------------------|
+| 2026-03-07 | `CheckinSuccessResource.points.additional` is always `null` and deprecated                                                                                                                                                        | 2026-09-30 | [#4553](https://github.com/Traewelling/traewelling/pull/4553) |
 | 2026-03-07 | `DepartureResource.destination` is deprecated → use `direction` instead                                                                                                                                                           | 2026-09-30 | [#4552](https://github.com/Traewelling/traewelling/pull/4552) |
 | 2026-03-07 | `DepartureResource.delay` is deprecated → use `when`/`plannedWhen` difference instead                                                                                                                                             | 2026-09-30 | [#4552](https://github.com/Traewelling/traewelling/pull/4552) |
 | 2026-03-07 | `DepartureResource` HAFAS-compat fields deprecated: `provenance`, `remarks`, `origin`, `currentTripPosition`, `loadFactor`, `stop.products`, `line.public`, `line.adminCode`, `line.productName`, `line.product`, `line.operator` | 2026-09-30 | [#4552](https://github.com/Traewelling/traewelling/pull/4552) |
@@ -32,6 +33,8 @@ Check back here regularly to stay ahead of removals.
 ---
 
 # 2026-03-07
+
+The `CheckinSuccessResource.points.additional` field is now **deprecated** (always `null`) and will be removed after **2026-09-30**.
 
 The following fields of `DepartureResource` are now **deprecated** and will be removed after **2026-09-30**:
 

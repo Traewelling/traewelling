@@ -737,7 +737,10 @@ export interface Points {
    */
   points?: number;
   calculation?: PointsCalculation;
-  /** extra points that can be given */
+  /**
+   * Deprecated. Always null.
+   * @deprecated
+   */
   additional?: any[] | null;
 }
 

@@ -39,24 +39,24 @@ abstract class PointsCalculationController extends Controller
         $distance = ceil($distanceInMeter / 10000);
 
         return self::calculatePointsWithReason(
-            basePoints: $base,
-            distancePoints: $distance,
+            base: $base,
+            distance: $distance,
             pointReason: self::getReason($departure, $arrival, $forceCheckin, $tripSource, $timestampOfView),
         );
     }
 
     #[Pure]
     private static function calculatePointsWithReason(
-        float $basePoints,
-        float $distancePoints,
+        float $base,
+        float $distance,
         PointReason $pointReason
     ): PointCalculation {
         $factor = self::getFactorByReason($pointReason);
 
         return new PointCalculation(
-            points: self::getPointsByReason($pointReason, ($basePoints + $distancePoints), $factor),
-            basePoints: $basePoints,
-            distancePoints: $distancePoints,
+            points: self::getPointsByReason($pointReason, ($base + $distance), $factor),
+            base: $base,
+            distance: $distance,
             reason: $pointReason,
             factor: $factor,
         );
@@ -66,8 +66,8 @@ abstract class PointsCalculationController extends Controller
     {
         return new PointCalculation(
             points: 0,
-            basePoints: 0,
-            distancePoints: 0,
+            base: 0,
+            distance: 0,
             reason: PointReason::POINTS_DISABLED,
             factor: 0,
         );

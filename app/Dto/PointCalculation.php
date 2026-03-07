@@ -10,9 +10,9 @@ class PointCalculation
 {
     public readonly int $points;
 
-    public readonly int $basePoints;
+    public readonly int $base;
 
-    public readonly int $distancePoints;
+    public readonly int $distance;
 
     public readonly PointReason $reason;
 
@@ -20,14 +20,14 @@ class PointCalculation
 
     public function __construct(
         int $points,
-        int $basePoints,
-        int $distancePoints,
+        int $base,
+        int $distance,
         PointReason $reason,
         float $factor,
     ) {
         $this->points = $points;
-        $this->basePoints = $basePoints;
-        $this->distancePoints = $distancePoints;
+        $this->base = $base;
+        $this->distance = $distance;
         $this->reason = $reason;
         $this->factor = $factor;
     }

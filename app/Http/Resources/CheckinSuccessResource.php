@@ -25,7 +25,7 @@ use OpenApi\Attributes as OA;
     properties: [
         new OA\Property(property: 'points', description: 'points', type: 'integer', example: 1),
         new OA\Property(property: 'calculation', ref: '#/components/schemas/PointsCalculation'),
-        new OA\Property(property: 'additional', description: 'extra points that can be given', type: 'array', items: new OA\Items(), nullable: true),
+        new OA\Property(property: 'additional', description: 'Deprecated. Always null.', type: 'array', items: new OA\Items(), nullable: true, deprecated: true),
     ],
 )]
 #[OA\Schema(
@@ -56,16 +56,15 @@ class CheckinSuccessResource extends JsonResource
         /** @var CheckinSuccessDto $this */
         return [
             'status' => new StatusResource($this->status),
-            // ToDo: Rewrite ['points'] so the DTO will match the documented structure -> non-breaking api change
             'points' => [
                 'points' => $this->pointCalculation->points,
                 'calculation' => [
-                    'base' => $this->pointCalculation->basePoints,
-                    'distance' => $this->pointCalculation->distancePoints,
+                    'base' => $this->pointCalculation->base,
+                    'distance' => $this->pointCalculation->distance,
                     'factor' => $this->pointCalculation->factor,
                     'reason' => $this->pointCalculation->reason->value,
                 ],
-                'additional' => null, // unused old attribute (not removed so this isn't breaking)
+                'additional' => null, // @deprecated - remove after 2026-09-30
             ],
             'alsoOnThisConnection' => StatusResource::collection($this->alsoOnThisConnection),
         ];

@@ -6517,10 +6517,11 @@
                         "$ref": "#/components/schemas/PointsCalculation"
                     },
                     "additional": {
-                        "description": "extra points that can be given",
+                        "description": "Deprecated. Always null.",
                         "type": "array",
                         "items": {},
-                        "nullable": true
+                        "nullable": true,
+                        "deprecated": true
                     }
                 },
                 "type": "object"
