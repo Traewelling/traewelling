@@ -1216,15 +1216,18 @@ export interface RouteSegmentResource {
    * @example "01960000-0000-7000-8000-000000000001"
    */
   id: string;
-  /** @example 8000105 */
-  fromStationId: number;
-  /** @example 8000261 */
-  toStationId: number;
+  fromStation: Station | null;
+  toStation: Station | null;
   /**
    * Distance in meters
    * @example 42300
    */
   distance: number | null;
+  /**
+   * Duration in seconds
+   * @example 5400
+   */
+  duration: number | null;
   /** @example "rails" */
   pathType: string | null;
   /**
@@ -1234,6 +1237,11 @@ export interface RouteSegmentResource {
   polyline: string;
   /** @example 5 */
   polylinePrecision: number;
+  /**
+   * Number of custom waypoints, or null if none set
+   * @example 4
+   */
+  customWaypointsCount?: number | null;
 }
 
 export interface SessionResource {
@@ -3849,6 +3857,27 @@ export class Api<
       }),
   };
   routeSegments = {
+    /**
+     * No description
+     *
+     * @tags Polyline
+     * @name GetRouteSegment
+     * @summary Get a single route segment with station names and counts (admin only).
+     * @request GET:/route-segments/{id}
+     */
+    getRouteSegment: (id: string, params: RequestParams = {}) =>
+      this.request<
+        {
+          data?: RouteSegmentResource;
+        },
+        void
+      >({
+        path: `/route-segments/${id}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
     /**
      * No description
      *

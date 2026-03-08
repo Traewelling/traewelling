@@ -10,8 +10,8 @@
     foreach ($coordinates as $coord) {
         $points[] = [(float)$coord->latitude, (float)$coord->longitude];
     }
-    $fromStation = $segment->fromStation;
-    $toStation   = $segment->toStation;
+    $fromStation     = $segment->fromStation;
+    $toStation       = $segment->toStation;
     $customWaypoints = $segment->custom_waypoints ?? null;
 @endphp
 
@@ -37,44 +37,7 @@
     <div class="row">
         <div class="col-md-4 card">
             <div class="card-body">
-                <table class="table table-bordered table-striped">
-                    <thead>
-                    <tr>
-                        <th colspan="2">Segment Details</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>From Station</td><td>{{ $fromStation->name }}</td>
-                    </tr>
-                    <tr>
-                        <td>To Station</td><td>{{ $toStation->name }}</td>
-                    </tr>
-                    <tr>
-                        <td>Distance</td><td id="detail-distance">{{ $segment->distance/1000 }} km</td>
-                    </tr>
-                    <tr>
-                        <td>Duration</td><td id="detail-duration">{{ gmdate("H:i:s", $segment->duration) }}</td>
-                    </tr>
-                    <tr>
-                        <td>Polyline</td><td><input class="input w-100" value="{{ $segment->polyline }}" disabled></td>
-                    </tr>
-                    <tr>
-                        <td>Polyline Precision</td><td>{{ $segment->polyline_precision }}</td>
-                    </tr>
-                    <tr>
-                        <td>Path Type</td><td>{{ $segment->path_type }}</td>
-                    </tr>
-                    <tr>
-                        <td>Stopovers</td><td>{{ $segment->stopOvers()->count() }}</td>
-                    </tr>
-                    @if($customWaypoints)
-                    <tr>
-                        <td>Custom Waypoints</td><td>{{ count($customWaypoints) }} points</td>
-                    </tr>
-                    @endif
-                    </tbody>
-                </table>
+                <div id="vue-route-segment-details" data-segment-id="{{ $segment->id }}"></div>
             </div>
         </div>
 

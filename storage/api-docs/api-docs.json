@@ -1740,6 +1740,52 @@
                 ]
             }
         },
+        "/route-segments/{id}": {
+            "get": {
+                "tags": [
+                    "Polyline"
+                ],
+                "summary": "Get a single route segment with station names and counts (admin only).",
+                "operationId": "getRouteSegment",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/RouteSegmentResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            }
+        },
         "/route-segments": {
             "post": {
                 "tags": [
@@ -1800,7 +1846,7 @@
                         "description": "Forbidden"
                     },
                     "404": {
-                        "description": "Station or stopover not found"
+                        "description": "Not Found"
                     },
                     "422": {
                         "description": "Validation error"
@@ -7293,9 +7339,10 @@
                 "title": "RouteSegmentResource",
                 "required": [
                     "id",
-                    "fromStationId",
-                    "toStationId",
+                    "fromStation",
+                    "toStation",
                     "distance",
+                    "duration",
                     "pathType",
                     "polyline",
                     "polylinePrecision"
@@ -7306,18 +7353,32 @@
                         "format": "uuid",
                         "example": "01960000-0000-7000-8000-000000000001"
                     },
-                    "fromStationId": {
-                        "type": "integer",
-                        "example": 8000105
+                    "fromStation": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/Station"
+                            }
+                        ],
+                        "nullable": true
                     },
-                    "toStationId": {
-                        "type": "integer",
-                        "example": 8000261
+                    "toStation": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/Station"
+                            }
+                        ],
+                        "nullable": true
                     },
                     "distance": {
                         "description": "Distance in meters",
                         "type": "integer",
                         "example": 42300,
+                        "nullable": true
+                    },
+                    "duration": {
+                        "description": "Duration in seconds",
+                        "type": "integer",
+                        "example": 5400,
                         "nullable": true
                     },
                     "pathType": {
@@ -7333,6 +7394,12 @@
                     "polylinePrecision": {
                         "type": "integer",
                         "example": 5
+                    },
+                    "customWaypointsCount": {
+                        "description": "Number of custom waypoints, or null if none set",
+                        "type": "integer",
+                        "example": 4,
+                        "nullable": true
                     }
                 },
                 "type": "object"
