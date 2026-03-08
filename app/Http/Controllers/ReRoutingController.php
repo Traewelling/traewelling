@@ -110,8 +110,8 @@ class ReRoutingController extends Controller
     {
         Log::debug('RerouteStops', [$start, $end, $pathType]);
 
-        $startTime = $start->departure ?? $start->arrival;
-        $endTime = $end->arrival ?? $end->departure;
+        $startTime = $start->departure_planned ?? $start->arrival_planned;
+        $endTime = $end->arrival_planned ?? $end->departure_planned;
         $startLocation = $start->stationIdentifier?->location ?? $start->station?->location;
         $endLocation = $end->stationIdentifier?->location ?? $end->station?->location;
         if (!$startLocation || !$endLocation) {

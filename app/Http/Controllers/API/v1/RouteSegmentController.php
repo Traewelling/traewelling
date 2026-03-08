@@ -224,8 +224,8 @@ class RouteSegmentController extends Controller
      */
     private function deriveDurationFromPair(Stopover $from, Stopover $to): ?int
     {
-        $startTime = $from->departure ?? $from->arrival;
-        $endTime = $to->arrival ?? $to->departure;
+        $startTime = $from->departure_planned ?? $from->arrival_planned;
+        $endTime = $to->arrival_planned ?? $to->departure_planned;
 
         if ($startTime === null || $endTime === null || !$startTime->isValid() || !$endTime->isValid()) {
             return null;
