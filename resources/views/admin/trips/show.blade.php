@@ -156,7 +156,7 @@
                                     <td>{{$stopover->station?->id}}</td>
                                     <td title="{{$stopover->arrival_planned?->format('Y-m-d')}}">
                                         <span
-                                            style="color: #{{ ProfilePictureController::generateBackgroundHash($stopover->arrival_planned->format('ddmm')) }};">
+                                            style="color: #{{ ProfilePictureController::generateBackgroundHash($stopover->arrival_planned?->format('ddmm') ?? '') }};">
                                             {{userTime($stopover->arrival_planned)}}
                                         </span>
                                         /
@@ -167,7 +167,7 @@
                                     </td>
                                     <td title="{{$stopover->departure_planned?->format('Y-m-d')}}">
                                         <span
-                                            style="color: #{{ ProfilePictureController::generateBackgroundHash($stopover->departure_planned->format('ddmm')) }};">
+                                            style="color: #{{ ProfilePictureController::generateBackgroundHash($stopover->departure_planned?->format('ddmm') ?? '') }};">
                                             {{userTime($stopover->departure_planned)}}
                                         </span>
                                         /
