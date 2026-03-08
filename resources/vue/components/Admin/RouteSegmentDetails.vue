@@ -38,52 +38,56 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div v-if="error" class="alert alert-danger">{{ error }}</div>
+    <div class="card mb-3">
+        <div class="card-body">
+            <div v-if="error" class="alert alert-danger">{{ error }}</div>
 
-    <div v-else-if="!segment" class="text-center text-muted py-3">
-        <span class="spinner-border spinner-border-sm me-2" role="status"></span>
-        Loading…
+            <div v-else-if="!segment" class="text-center text-muted py-3">
+                <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                Loading…
+            </div>
+
+            <table v-else class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th colspan="2">Segment Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>From Station</td>
+                        <td>{{ segment.fromStation?.name ?? '' }}</td>
+                    </tr>
+                    <tr>
+                        <td>To Station</td>
+                        <td>{{ segment.toStation?.name ?? '' }}</td>
+                    </tr>
+                    <tr>
+                        <td>Distance</td>
+                        <td>{{ formatDistance(segment.distance) }}</td>
+                    </tr>
+                    <tr>
+                        <td>Duration</td>
+                        <td>{{ formatDuration(segment.duration) }}</td>
+                    </tr>
+                    <tr>
+                        <td>Polyline</td>
+                        <td><input class="input w-100" :value="segment.polyline" disabled /></td>
+                    </tr>
+                    <tr>
+                        <td>Polyline Precision</td>
+                        <td>{{ segment.polylinePrecision }}</td>
+                    </tr>
+                    <tr>
+                        <td>Path Type</td>
+                        <td>{{ segment.pathType ?? '' }}</td>
+                    </tr>
+                    <tr v-if="segment.customWaypointsCount !== null">
+                        <td>Custom Waypoints</td>
+                        <td>{{ segment.customWaypointsCount }} points</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
-
-    <table v-else class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th colspan="2">Segment Details</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>From Station</td>
-                <td>{{ segment.fromStation?.name ?? '' }}</td>
-            </tr>
-            <tr>
-                <td>To Station</td>
-                <td>{{ segment.toStation?.name ?? '' }}</td>
-            </tr>
-            <tr>
-                <td>Distance</td>
-                <td>{{ formatDistance(segment.distance) }}</td>
-            </tr>
-            <tr>
-                <td>Duration</td>
-                <td>{{ formatDuration(segment.duration) }}</td>
-            </tr>
-            <tr>
-                <td>Polyline</td>
-                <td><input class="input w-100" :value="segment.polyline" disabled /></td>
-            </tr>
-            <tr>
-                <td>Polyline Precision</td>
-                <td>{{ segment.polylinePrecision }}</td>
-            </tr>
-            <tr>
-                <td>Path Type</td>
-                <td>{{ segment.pathType ?? '' }}</td>
-            </tr>
-            <tr v-if="segment.customWaypointsCount !== null">
-                <td>Custom Waypoints</td>
-                <td>{{ segment.customWaypointsCount }} points</td>
-            </tr>
-        </tbody>
-    </table>
 </template>

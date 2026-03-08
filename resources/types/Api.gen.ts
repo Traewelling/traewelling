@@ -3861,19 +3861,26 @@ export class Api<
      * No description
      *
      * @tags Polyline
-     * @name GetRouteSegment
-     * @summary Get a single route segment with station names and counts (admin only).
-     * @request GET:/route-segments/{id}
+     * @name ListRouteSegments
+     * @summary List route segments for a given station pair (admin only).
+     * @request GET:/route-segments
      */
-    getRouteSegment: (id: string, params: RequestParams = {}) =>
+    listRouteSegments: (
+      query: {
+        from_station_id: number;
+        to_station_id: number;
+      },
+      params: RequestParams = {},
+    ) =>
       this.request<
         {
-          data?: RouteSegmentResource;
+          data?: RouteSegmentResource[];
         },
         void
       >({
-        path: `/route-segments/${id}`,
+        path: `/route-segments`,
         method: "GET",
+        query: query,
         format: "json",
         ...params,
       }),
@@ -3910,6 +3917,27 @@ export class Api<
         method: "POST",
         body: data,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Polyline
+     * @name GetRouteSegment
+     * @summary Get a single route segment with station names and counts (admin only).
+     * @request GET:/route-segments/{id}
+     */
+    getRouteSegment: (id: string, params: RequestParams = {}) =>
+      this.request<
+        {
+          data?: RouteSegmentResource;
+        },
+        void
+      >({
+        path: `/route-segments/${id}`,
+        method: "GET",
         format: "json",
         ...params,
       }),

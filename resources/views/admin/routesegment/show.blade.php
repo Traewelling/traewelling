@@ -35,10 +35,11 @@
     </div>
 
     <div class="row">
-        <div class="col-md-4 card">
-            <div class="card-body">
-                <div id="vue-route-segment-details" data-segment-id="{{ $segment->id }}"></div>
-            </div>
+        <div class="col-md-4">
+            <div id="vue-route-segment-panel"
+                 data-segment-id="{{ $segment->id }}"
+                 data-from-station-id="{{ $fromStation->id }}"
+                 data-to-station-id="{{ $toStation->id }}"></div>
         </div>
 
         <div class="col-md-8">
