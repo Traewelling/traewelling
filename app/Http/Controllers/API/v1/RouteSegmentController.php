@@ -44,7 +44,7 @@ class RouteSegmentController extends Controller
                 ],
             ),
         ),
-        tags: ['Admin'],
+        tags: ['Polyline'],
         responses: [
             new OA\Response(
                 response: 201,
