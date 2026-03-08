@@ -6841,11 +6841,10 @@
                                 "nullable": true
                             },
                             "product": {
-                                "description": "Deprecated HAFAS product category",
+                                "description": "Product category",
                                 "type": "string",
                                 "example": "national",
-                                "nullable": true,
-                                "deprecated": true
+                                "nullable": true
                             },
                             "adminCode": {
                                 "description": "Deprecated. Always \"80____\".",

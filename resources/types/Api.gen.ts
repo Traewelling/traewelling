@@ -955,8 +955,7 @@ export interface DepartureResource {
      */
     mode?: string | null;
     /**
-     * Deprecated HAFAS product category
-     * @deprecated
+     * Product category
      * @example "national"
      */
     product?: string | null;

@@ -60,7 +60,7 @@ use OpenApi\Attributes as OA;
                 new OA\Property(property: 'public', description: 'Deprecated. Always true.', type: 'boolean', example: true, deprecated: true),
                 new OA\Property(property: 'productName', description: 'Deprecated. Use name.', type: 'string', example: 'EC 9', deprecated: true),
                 new OA\Property(property: 'mode', description: 'Transit mode', type: 'string', example: 'TRAIN', nullable: true),
-                new OA\Property(property: 'product', description: 'Deprecated HAFAS product category', type: 'string', example: 'national', nullable: true, deprecated: true),
+                new OA\Property(property: 'product', description: 'Product category', type: 'string', example: 'national', nullable: true),
                 new OA\Property(property: 'adminCode', description: 'Deprecated. Always "80____".', type: 'string', example: '80____', deprecated: true),
                 new OA\Property(property: 'operator', description: 'Deprecated. Always null.', type: 'object', nullable: true, deprecated: true),
             ],
@@ -118,7 +118,7 @@ class DepartureResource extends JsonResource
                 'adminCode' => '80____', // @deprecated - remove after 2026-09-30
                 'productName' => $this->resource->trip->lineName, // @deprecated - remove after 2026-09-30, use name instead
                 'mode' => $this->resource->trip->mode?->value,
-                'product' => $this->resource->trip->category, // @deprecated - remove after 2026-09-30
+                'product' => $this->resource->trip->category,
                 'operator' => null, // @deprecated - remove after 2026-09-30
             ],
             'remarks' => null, // @deprecated - remove after 2026-09-30
