@@ -1209,6 +1209,33 @@ export interface ProfileLinkResource {
   url: string;
 }
 
+/** RouteSegmentResource */
+export interface RouteSegmentResource {
+  /**
+   * @format uuid
+   * @example "01960000-0000-7000-8000-000000000001"
+   */
+  id: string;
+  /** @example 8000105 */
+  fromStationId: number;
+  /** @example 8000261 */
+  toStationId: number;
+  /**
+   * Distance in meters
+   * @example 42300
+   */
+  distance: number | null;
+  /** @example "rails" */
+  pathType: string | null;
+  /**
+   * Google Encoded Polyline
+   * @example "_p~iF~ps|U_ulLnnqC_mqNvxq`@"
+   */
+  polyline: string;
+  /** @example 5 */
+  polylinePrecision: number;
+}
+
 export interface SessionResource {
   /**
    * The session ID
@@ -3818,6 +3845,43 @@ export class Api<
         body: data,
         secure: true,
         type: ContentType.Json,
+        ...params,
+      }),
+  };
+  routeSegments = {
+    /**
+     * No description
+     *
+     * @tags Polyline
+     * @name CreateRouteSegment
+     * @summary Create a straight-line route segment between two stations (admin only).
+     * @request POST:/route-segments
+     */
+    createRouteSegment: (
+      data: {
+        /** @example 8000105 */
+        from_station_id: number;
+        /** @example 8000261 */
+        to_station_id: number;
+        /**
+         * If provided, the new segment is assigned to this stopover and the duration is derived from the timetable.
+         * @example 42
+         */
+        stopover_id?: number | null;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data?: RouteSegmentResource;
+        },
+        void
+      >({
+        path: `/route-segments`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
         ...params,
       }),
   };

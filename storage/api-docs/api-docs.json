@@ -1740,6 +1740,74 @@
                 ]
             }
         },
+        "/route-segments": {
+            "post": {
+                "tags": [
+                    "Polyline"
+                ],
+                "summary": "Create a straight-line route segment between two stations (admin only).",
+                "operationId": "createRouteSegment",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "from_station_id",
+                                    "to_station_id"
+                                ],
+                                "properties": {
+                                    "from_station_id": {
+                                        "type": "integer",
+                                        "example": 8000105
+                                    },
+                                    "to_station_id": {
+                                        "type": "integer",
+                                        "example": 8000261
+                                    },
+                                    "stopover_id": {
+                                        "description": "If provided, the new segment is assigned to this stopover and the duration is derived from the timetable.",
+                                        "type": "integer",
+                                        "example": 42,
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Route segment created successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/RouteSegmentResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Station or stopover not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
         "/security/sessions": {
             "get": {
                 "tags": [
@@ -7221,6 +7289,54 @@
                 },
                 "type": "object"
             },
+            "RouteSegmentResource": {
+                "title": "RouteSegmentResource",
+                "required": [
+                    "id",
+                    "fromStationId",
+                    "toStationId",
+                    "distance",
+                    "pathType",
+                    "polyline",
+                    "polylinePrecision"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "01960000-0000-7000-8000-000000000001"
+                    },
+                    "fromStationId": {
+                        "type": "integer",
+                        "example": 8000105
+                    },
+                    "toStationId": {
+                        "type": "integer",
+                        "example": 8000261
+                    },
+                    "distance": {
+                        "description": "Distance in meters",
+                        "type": "integer",
+                        "example": 42300,
+                        "nullable": true
+                    },
+                    "pathType": {
+                        "type": "string",
+                        "example": "rails",
+                        "nullable": true
+                    },
+                    "polyline": {
+                        "description": "Google Encoded Polyline",
+                        "type": "string",
+                        "example": "_p~iF~ps|U_ulLnnqC_mqNvxq`@"
+                    },
+                    "polylinePrecision": {
+                        "type": "integer",
+                        "example": 5
+                    }
+                },
+                "type": "object"
+            },
             "SessionResource": {
                 "required": [
                     "id",
@@ -8414,16 +8530,40 @@
             "description": "Events that users can check in to"
         },
         {
-            "name": "Notifications",
-            "description": "Get notifications and mark them as read or unread"
+            "name": "ICS Tokens",
+            "description": "Manage ICS Tokens for calendar export"
         },
         {
-            "name": "Status",
-            "description": "Endpoints for accessing and manipulating Statusses and their additional data"
+            "name": "Leaderboard",
+            "description": "Leaderboard related endpoints"
         },
         {
             "name": "Likes",
             "description": "Likes regarding a single status"
+        },
+        {
+            "name": "Notifications",
+            "description": "Get notifications and mark them as read or unread"
+        },
+        {
+            "name": "Polyline",
+            "description": "Manage route polylines and segments"
+        },
+        {
+            "name": "Report",
+            "description": "Report a Status, Event or User to the admins"
+        },
+        {
+            "name": "Settings",
+            "description": "User/Profile-Settings"
+        },
+        {
+            "name": "Statistics",
+            "description": "Statistics related endpoints"
+        },
+        {
+            "name": "Status",
+            "description": "Endpoints for accessing and manipulating Statusses and their additional data"
         },
         {
             "name": "User",
@@ -8438,28 +8578,8 @@
             "description": "Mute and block users"
         },
         {
-            "name": "Leaderboard",
-            "description": "Leaderboard related endpoints"
-        },
-        {
-            "name": "Statistics",
-            "description": "Statistics related endpoints"
-        },
-        {
-            "name": "ICS Tokens",
-            "description": "Manage ICS Tokens for calendar export"
-        },
-        {
-            "name": "Settings",
-            "description": "User/Profile-Settings"
-        },
-        {
             "name": "Webhooks",
             "description": "Manage Webhooks for third party applications"
-        },
-        {
-            "name": "Report",
-            "description": "Report a Status, Event or User to the admins"
         },
         {
             "name": "Security",

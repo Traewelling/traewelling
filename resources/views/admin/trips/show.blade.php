@@ -178,6 +178,7 @@
                                     </td>
                                 </tr>
                                 @if(!$loop->last)
+                                    @php $nextStopover = $trip->stopovers[$loop->index + 1]; @endphp
                                     <tr class="bg-body-tertiary">
                                         <td colspan="4" class="py-1 text-center small text-body-secondary">
                                             @if($stopover->route_segment_id)
@@ -186,6 +187,10 @@
                                                 </a>
                                             @else
                                                 ❌ No route segment ↓
+                                                <button class="btn btn-sm btn-primary ms-2"
+                                                        onclick="createRouteSegment(this, {{ $stopover->id }}, {{ $stopover->train_station_id }}, {{ $nextStopover->train_station_id }})">
+                                                    ➕ Create straight-line segment
+                                                </button>
                                             @endif
                                         </td>
                                     </tr>
@@ -201,4 +206,43 @@
                 </div>
             </div>
         </div>
+@endsection
+
+@section('scripts')
+<script>
+    async function createRouteSegment(btn, stopoverId, fromStationId, toStationId) {
+        btn.disabled = true;
+        btn.textContent = '...';
+
+        try {
+            const response = await fetch('/api/v1/route-segments', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                },
+                body: JSON.stringify({
+                    from_station_id: fromStationId,
+                    to_station_id: toStationId,
+                    stopover_id: stopoverId,
+                }),
+            });
+
+            if (!response.ok) {
+                const err = await response.json().catch(() => ({}));
+                alert('Error: ' + (err.message ?? response.statusText));
+                btn.disabled = false;
+                btn.textContent = '➕ Create straight-line segment';
+                return;
+            }
+
+            const json = await response.json();
+            window.location.href = '{{ url('/admin/routesegment') }}/' + json.data.id;
+        } catch (e) {
+            alert('Network error: ' + e.message);
+            btn.disabled = false;
+            btn.textContent = '➕ Create straight-line segment';
+        }
+    }
+</script>
 @endsection

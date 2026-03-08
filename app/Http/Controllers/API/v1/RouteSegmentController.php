@@ -1,0 +1,160 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Controllers\API\v1;
+
+use App\Dto\Coordinate;
+use App\Http\Resources\RouteSegmentResource;
+use App\Models\RouteSegment;
+use App\Models\Station;
+use App\Models\Stopover;
+use App\Repositories\TripRepository;
+use App\Services\GeoService;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use OpenApi\Attributes as OA;
+use Traewelling\GooglePolyline\PolylineTranscoder;
+
+class RouteSegmentController extends Controller
+{
+    /**
+     * @throws AuthorizationException
+     * @throws ValidationException
+     */
+    #[OA\Post(
+        path: '/route-segments',
+        operationId: 'createRouteSegment',
+        summary: 'Create a straight-line route segment between two stations (admin only).',
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['from_station_id', 'to_station_id'],
+                properties: [
+                    new OA\Property(property: 'from_station_id', type: 'integer', example: 8000105),
+                    new OA\Property(property: 'to_station_id', type: 'integer', example: 8000261),
+                    new OA\Property(
+                        property: 'stopover_id',
+                        description: 'If provided, the new segment is assigned to this stopover and the duration is derived from the timetable.',
+                        type: 'integer',
+                        example: 42,
+                        nullable: true,
+                    ),
+                ],
+            ),
+        ),
+        tags: ['Polyline'],
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: 'Route segment created successfully.',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            ref: '#/components/schemas/RouteSegmentResource',
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 401, description: 'Unauthenticated'),
+            new OA\Response(response: 403, description: 'Forbidden'),
+            new OA\Response(response: 404, description: 'Station or stopover not found'),
+            new OA\Response(response: 422, description: 'Validation error'),
+        ],
+    )]
+    public function store(Request $request, TripRepository $tripRepository, GeoService $geoService): JsonResponse
+    {
+        $this->authorize('create', RouteSegment::class);
+
+        $validated = $request->validate([
+            'from_station_id' => ['required', 'integer', 'exists:train_stations,id'],
+            'to_station_id' => ['required', 'integer', 'exists:train_stations,id', 'different:from_station_id'],
+            'stopover_id' => ['nullable', 'integer', 'exists:train_stopovers,id'],
+        ]);
+
+        $fromStation = Station::findOrFail($validated['from_station_id']);
+        $toStation = Station::findOrFail($validated['to_station_id']);
+
+        $encodedPolyline = new PolylineTranscoder()->encodePolyline([
+            [$fromStation->longitude, $fromStation->latitude],
+            [$toStation->longitude, $toStation->latitude],
+        ]);
+
+        $distanceInMeters = (int) $geoService->getDistance(
+            new Coordinate($fromStation->latitude, $fromStation->longitude),
+            new Coordinate($toStation->latitude, $toStation->longitude),
+        );
+
+        $duration = null;
+        $stopover = null;
+
+        if (isset($validated['stopover_id'])) {
+            $stopover = Stopover::with('trip.stopovers')->findOrFail($validated['stopover_id']);
+            $next = $this->findNextStopover($stopover);
+
+            if ($stopover->train_station_id !== $validated['from_station_id']) {
+                throw ValidationException::withMessages([
+                    'from_station_id' => ['The from_station_id does not match the stopover\'s station.'],
+                ]);
+            }
+
+            if ($next === null || $next->train_station_id !== $validated['to_station_id']) {
+                throw ValidationException::withMessages([
+                    'to_station_id' => ['The to_station_id does not match the next stopover\'s station in this trip.'],
+                ]);
+            }
+
+            $duration = $this->deriveDurationFromPair($stopover, $next);
+        }
+
+        $segment = $tripRepository->createRouteSegment(
+            fromStation: $fromStation,
+            toStation: $toStation,
+            encodedPolyline: $encodedPolyline,
+            duration: $duration,
+            distanceInMeters: $distanceInMeters,
+        );
+
+        if ($stopover !== null) {
+            $tripRepository->setRouteSegmentForStop($stopover, $segment);
+        }
+
+        return new RouteSegmentResource($segment)
+            ->response()
+            ->setStatusCode(201);
+    }
+
+    /**
+     * Return the stopover that immediately follows the given one in the same trip.
+     * (ordered by arrival_planned, then departure_planned).
+     */
+    private function findNextStopover(Stopover $stopover): ?Stopover
+    {
+        $stopovers = $stopover->trip->stopovers;
+        $index = $stopovers->search(fn (Stopover $s) => $s->id === $stopover->id);
+
+        if ($index === false) {
+            return null;
+        }
+
+        return $stopovers->get($index + 1);
+    }
+
+    /**
+     * Derive the segment duration in seconds from a consecutive stopover pair.
+     */
+    private function deriveDurationFromPair(Stopover $from, Stopover $to): ?int
+    {
+        $startTime = $from->departure ?? $from->arrival;
+        $endTime = $to->arrival ?? $to->departure;
+
+        if ($startTime === null || $endTime === null || !$startTime->isValid() || !$endTime->isValid()) {
+            return null;
+        }
+
+        return (int) round($startTime->diffInSeconds($endTime));
+    }
+}
