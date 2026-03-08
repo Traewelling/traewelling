@@ -1746,7 +1746,7 @@
                     "Polyline"
                 ],
                 "summary": "Create a straight-line route segment between two stations (admin only).",
-                "operationId": "de265336554ebc34f0503455266d3a2c",
+                "operationId": "createRouteSegment",
                 "requestBody": {
                     "required": true,
                     "content": {

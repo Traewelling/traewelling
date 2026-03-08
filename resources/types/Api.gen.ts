@@ -3852,12 +3852,12 @@ export class Api<
     /**
      * No description
      *
-     * @tags Admin
-     * @name De265336554Ebc34F0503455266D3A2C
+     * @tags Polyline
+     * @name CreateRouteSegment
      * @summary Create a straight-line route segment between two stations (admin only).
      * @request POST:/route-segments
      */
-    de265336554Ebc34F0503455266D3A2C: (
+    createRouteSegment: (
       data: {
         /** @example 8000105 */
         from_station_id: number;
