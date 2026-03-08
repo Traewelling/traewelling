@@ -21,6 +21,51 @@ use Traewelling\GooglePolyline\PolylineTranscoder;
 class RouteSegmentController extends Controller
 {
     #[OA\Get(
+        path: '/route-segments',
+        operationId: 'listRouteSegments',
+        summary: 'List route segments for a given station pair (admin only).',
+        tags: ['Polyline'],
+        parameters: [
+            new OA\Parameter(name: 'from_station_id', in: 'query', required: true, schema: new OA\Schema(type: 'integer')),
+            new OA\Parameter(name: 'to_station_id', in: 'query', required: true, schema: new OA\Schema(type: 'integer')),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: self::OA_DESC_SUCCESS,
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/RouteSegmentResource'),
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 401, description: self::OA_DESC_UNAUTHENTICATED),
+            new OA\Response(response: 403, description: self::OA_DESC_FORBIDDEN),
+            new OA\Response(response: 422, description: self::OA_DESC_UNPROCESSABLE),
+        ],
+    )]
+    public function index(Request $request): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+    {
+        $this->authorize('viewAny', RouteSegment::class);
+
+        $validated = $request->validate([
+            'from_station_id' => ['required', 'integer', 'exists:train_stations,id'],
+            'to_station_id' => ['required', 'integer', 'exists:train_stations,id'],
+        ]);
+
+        $segments = RouteSegment::where('from_station_id', $validated['from_station_id'])
+            ->where('to_station_id', $validated['to_station_id'])
+            ->orderBy('duration')
+            ->get();
+
+        return RouteSegmentResource::collection($segments);
+    }
+
+    #[OA\Get(
         path: '/route-segments/{id}',
         operationId: 'getRouteSegment',
         summary: 'Get a single route segment with station names and counts (admin only).',
