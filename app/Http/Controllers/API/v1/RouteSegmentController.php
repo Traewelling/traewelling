@@ -26,6 +26,7 @@ class RouteSegmentController extends Controller
      */
     #[OA\Post(
         path: '/route-segments',
+        operationId: 'createRouteSegment',
         summary: 'Create a straight-line route segment between two stations (admin only).',
         requestBody: new OA\RequestBody(
             required: true,

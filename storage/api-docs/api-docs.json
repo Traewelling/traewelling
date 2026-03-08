@@ -1743,7 +1743,7 @@
         "/route-segments": {
             "post": {
                 "tags": [
-                    "Admin"
+                    "Polyline"
                 ],
                 "summary": "Create a straight-line route segment between two stations (admin only).",
                 "operationId": "de265336554ebc34f0503455266d3a2c",
@@ -8530,16 +8530,40 @@
             "description": "Events that users can check in to"
         },
         {
-            "name": "Notifications",
-            "description": "Get notifications and mark them as read or unread"
+            "name": "ICS Tokens",
+            "description": "Manage ICS Tokens for calendar export"
         },
         {
-            "name": "Status",
-            "description": "Endpoints for accessing and manipulating Statusses and their additional data"
+            "name": "Leaderboard",
+            "description": "Leaderboard related endpoints"
         },
         {
             "name": "Likes",
             "description": "Likes regarding a single status"
+        },
+        {
+            "name": "Notifications",
+            "description": "Get notifications and mark them as read or unread"
+        },
+        {
+            "name": "Polyline",
+            "description": "Manage route polylines and segments"
+        },
+        {
+            "name": "Report",
+            "description": "Report a Status, Event or User to the admins"
+        },
+        {
+            "name": "Settings",
+            "description": "User/Profile-Settings"
+        },
+        {
+            "name": "Statistics",
+            "description": "Statistics related endpoints"
+        },
+        {
+            "name": "Status",
+            "description": "Endpoints for accessing and manipulating Statusses and their additional data"
         },
         {
             "name": "User",
@@ -8554,32 +8578,8 @@
             "description": "Mute and block users"
         },
         {
-            "name": "Leaderboard",
-            "description": "Leaderboard related endpoints"
-        },
-        {
-            "name": "Statistics",
-            "description": "Statistics related endpoints"
-        },
-        {
-            "name": "ICS Tokens",
-            "description": "Manage ICS Tokens for calendar export"
-        },
-        {
-            "name": "Settings",
-            "description": "User/Profile-Settings"
-        },
-        {
             "name": "Webhooks",
             "description": "Manage Webhooks for third party applications"
-        },
-        {
-            "name": "Report",
-            "description": "Report a Status, Event or User to the admins"
-        },
-        {
-            "name": "Admin",
-            "description": "Admin"
         },
         {
             "name": "Security",
