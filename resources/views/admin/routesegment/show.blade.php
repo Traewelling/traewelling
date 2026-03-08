@@ -17,24 +17,6 @@
 
 @section('content')
     <div class="row">
-        <!-- links to all trips in use -->
-        <div class="w-100 accordion mb-2" id="tripsAccordion">
-            <div class="accordion-item">
-                <h5 class="accordion-header">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                    Trips using this Segment: {{ $segment->trips->count()  }}
-                    </button>
-                </h5>
-                <div class="flex flex-wrap accordion-collapse collapse p-2" id="collapseOne" aria-labelledby="headingOne" data-bs-parent="#tripsAccordion">
-                    @foreach($segment->trips as $trip)
-                        <a class="btn btn-primary btn-sm mt-1" href="{{ route('admin.trips.show', $trip) }}">Trip #{{ $trip->id }}</a>
-                    @endforeach
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
         <div class="col-md-4">
             <div id="vue-route-segment-panel"
                  data-segment-id="{{ $segment->id }}"
@@ -64,9 +46,23 @@
                 Distance: <span id="preview-distance">-</span> km &nbsp;|&nbsp;
                 Duration: <span id="preview-duration">-</span>
             </div>
-        </div>
-    </div>
 
+            <!-- links to all trips in use -->
+            <div class="accordion" id="tripsAccordion">
+                <div class="accordion-item">
+                    <h5 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                            Trips using this Segment: {{ $segment->trips->count() }}
+                        </button>
+                    </h5>
+                    <div class="flex flex-wrap accordion-collapse collapse p-2" id="collapseOne" aria-labelledby="headingOne" data-bs-parent="#tripsAccordion">
+                        @foreach($segment->trips as $trip)
+                            <a class="btn btn-primary btn-sm mt-1" href="{{ route('admin.trips.show', $trip) }}">Trip #{{ $trip->id }}</a>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
     {{-- Hidden form for saving (waypoint inputs are injected dynamically) --}}
     <form id="form-save" method="POST" action="{{ route('admin.routesegment.save-from-brouter', $segment->id) }}" class="d-none">
         @csrf
