@@ -47,9 +47,13 @@ class Controller extends \App\Http\Controllers\Controller
 
     public const string OA_DESC_NO_CONTENT = 'No Content';
 
+    public const string OA_DESC_UNAUTHENTICATED = 'Unauthenticated';
+
     public const string OA_DESC_FORBIDDEN = 'Forbidden';
 
     public const string OA_DESC_BAD_REQUEST = 'Bad Request';
+
+    public const string OA_DESC_UNPROCESSABLE = 'Validation error';
 
     public const string OA_DESC_NOT_FOUND = 'Not Found';
 

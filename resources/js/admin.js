@@ -3,9 +3,18 @@ import 'bootstrap';
 import 'leaflet';
 import 'leaflet/dist/leaflet.js';
 import { Notyf } from 'notyf';
+import { createApp } from 'vue';
+import RouteSegmentDetails from '../vue/components/Admin/RouteSegmentDetails.vue';
 import './components/maps';
 
 window.Popper = Popper;
+
+document.addEventListener('DOMContentLoaded', () => {
+    const el = document.getElementById('vue-route-segment-details');
+    if (el) {
+        createApp(RouteSegmentDetails, { segmentId: el.dataset.segmentId }).mount(el);
+    }
+});
 
 window.notyf = new Notyf({
     duration: 5000,

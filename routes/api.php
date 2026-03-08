@@ -199,8 +199,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::apiResource('alerts', AlertController::class);
         Route::put('/operators/{oldOperatorId}/merge/{newOperatorId}', [OperatorController::class, 'merge']); // currently admin/backend only
 
-        Route::post('route-segments', [RouteSegmentController::class, 'store'])
-            ->name('api.v1.route-segments.store');
+        Route::apiResource('route-segments', RouteSegmentController::class)->only(['show', 'store']);
 
         Route::prefix('community')->group(static function () {
             Route::get('profile', [CommunityController::class, 'getMyProfile']);

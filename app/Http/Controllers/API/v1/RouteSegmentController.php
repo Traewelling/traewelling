@@ -20,6 +20,37 @@ use Traewelling\GooglePolyline\PolylineTranscoder;
 
 class RouteSegmentController extends Controller
 {
+    #[OA\Get(
+        path: '/route-segments/{id}',
+        operationId: 'getRouteSegment',
+        summary: 'Get a single route segment with station names and counts (admin only).',
+        tags: ['Polyline'],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid')),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: self::OA_DESC_SUCCESS,
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'data', ref: '#/components/schemas/RouteSegmentResource'),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 401, description: self::OA_DESC_UNAUTHENTICATED),
+            new OA\Response(response: 403, description: self::OA_DESC_FORBIDDEN),
+            new OA\Response(response: 404, description: self::OA_DESC_NOT_FOUND),
+        ],
+    )]
+    public function show(string $id): RouteSegmentResource
+    {
+        $segment = RouteSegment::with(['fromStation', 'toStation'])->findOrFail($id);
+        $this->authorize('view', $segment);
+
+        return new RouteSegmentResource($segment);
+    }
+
     /**
      * @throws AuthorizationException
      * @throws ValidationException
@@ -59,10 +90,10 @@ class RouteSegmentController extends Controller
                     ],
                 ),
             ),
-            new OA\Response(response: 401, description: 'Unauthenticated'),
-            new OA\Response(response: 403, description: 'Forbidden'),
-            new OA\Response(response: 404, description: 'Station or stopover not found'),
-            new OA\Response(response: 422, description: 'Validation error'),
+            new OA\Response(response: 401, description: self::OA_DESC_UNAUTHENTICATED),
+            new OA\Response(response: 403, description: self::OA_DESC_FORBIDDEN),
+            new OA\Response(response: 404, description: self::OA_DESC_NOT_FOUND),
+            new OA\Response(response: 422, description: self::OA_DESC_UNPROCESSABLE),
         ],
     )]
     public function store(Request $request, TripRepository $tripRepository, GeoService $geoService): JsonResponse
