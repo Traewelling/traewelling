@@ -50,7 +50,7 @@ class DevController extends Controller
         ]);
     }
 
-    public function updateApp(int $appId, Request $request): RedirectResponse
+    public function updateApp(int $appId, Request $request): View
     {
         $validated = $request->validate([
             'name' => ['required', 'string'],
@@ -68,7 +68,7 @@ class DevController extends Controller
             abort(404);
         }
 
-        $clients->update(
+        $client = $clients->update(
             $app,
             $validated['name'],
             $validated['redirect'],
@@ -78,10 +78,10 @@ class DevController extends Controller
             isset($validated['confidential'])
         );
 
-        return redirect(route('dev.apps'))->with('success', __('settings.saved'));
+        return view('dev.apps-edit', ['app' => $client])->with('success', __('settings.saved'));
     }
 
-    public function createApp(Request $request): RedirectResponse
+    public function createApp(Request $request): View
     {
         $validated = $request->validate([
             'name' => ['required', 'string'],
@@ -93,7 +93,7 @@ class DevController extends Controller
         ]);
 
         $clients = new OAuthClientRepository();
-        $clients->create(
+        $client = $clients->create(
             userId: auth()->user()->id,
             name: $validated['name'],
             redirect: $validated['redirect'],
@@ -103,7 +103,7 @@ class DevController extends Controller
             authorizedWebhookUrl: $validated['authorized_webhook_url'],
         );
 
-        return redirect(route('dev.apps'))->with('success', __('settings.saved'));
+        return view('dev.apps-edit', ['app' => $client]);
     }
 
     public function destroyApp(int $appId): RedirectResponse

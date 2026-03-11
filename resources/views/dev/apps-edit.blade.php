@@ -13,31 +13,37 @@
                           action="{{Route::currentRouteName() === 'dev.apps.create' ? route('dev.apps.create.post') : route('dev.apps.edit', ['appId' => $app->id]) }}"
                     >
                         @csrf
-
                         @isset($app)
-                            <div class="row my-2">
-                                <table class="table table-striped table-dark">
-                                    <tr>
-                                        <td>Client Id</td>
-                                        <td><code>{{ $app->id }}</code></td>
-                                    </tr>
-                                    @if($app->confidential())
-                                        <tr>
-                                            <td>Client Secret</td>
-                                            <td><code>{{ $app->secret }}</code></td>
-                                        </tr>
-                                    @endif
-                                </table>
-                                <hr>
-                            </div>
+                            @if($app->plainSecret)
+                                <div class="alert alert-danger">
+                                    <b>Your client secret is only shown once. Make sure to copy it now, as you
+                                    won't be able to see it again.</b>
+                                    <input type="text" class="form-control mt-2" value="{{ $app->plainSecret }}" readonly
+                                           onclick="this.select(); document.execCommand('copy');">
+                                    <button type="button" class="btn btn-sm btn-secondary mt-2" onclick="navigator.clipboard.writeText('{{ $app->plainSecret }}'); alert('Client secret copied to clipboard');">
+                                        Copy to Clipboard
+                                    </button>
+                                </div>
+                            @endif
                             <div class="alert alert-warning">
                                 @if($app?->confidential())
-                                    WARNING: Changing the <code>confidential</code> field will delete your client secret
+                                    <b>WARNING:</b> Changing the <code>confidential</code> field will delete your client secret
                                     and revoke all existing tokens.
                                 @else
-                                    WARNING: Changing the <code>confidential</code> field will generate a new client
+                                    <b>WARNING:</b> Changing the <code>confidential</code> field will generate a new client
                                     secret and revoke all existing tokens.
                                 @endif
+                            </div>
+                            <div class="form-group row my-1">
+                                <label for="client_id" class="col-md-4 col-form-label text-md-right">
+                                    Client ID
+                                </label>
+                                <div class="col-md-6">
+                                    <input id="client_id" type="text" class="form-control" name="client_id"
+                                           placeholder="my-app" required value="{{ $app?->id }}" autofocus
+                                               disabled
+                                    >
+                                </div>
                             </div>
                         @endisset
                         <div class="form-group row my-1">
