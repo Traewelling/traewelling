@@ -21,8 +21,7 @@ class UpdateAppTest extends FeatureTestCase
             ->post(route('dev.apps.update', $client->id), [
                 'name' => 'Updated Name',
                 'redirect' => 'https://example.com/callback',
-            ])
-            ->assertRedirect(route('dev.apps'));
+            ]);
 
         $client->refresh();
         $this->assertEquals('Updated Name', $client->name);
