@@ -86,11 +86,10 @@ class LeaderboardController extends Controller
 
         $sumDistance = 'SUM(train_checkins.distance)';
 
-        $query = DB::table('statuses')
-            ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
-            ->join('users', 'statuses.user_id', '=', 'users.id')
-            ->where('train_checkins.departure', '>=', $since->toIso8601String())
-            ->where('train_checkins.departure', '<=', $until->toIso8601String())
+        $query = DB::table('train_checkins')
+            ->join('users', 'train_checkins.user_id', '=', 'users.id')
+            ->where('train_checkins.departure', '>=', $since->utc()->format('Y-m-d H:i:s'))
+            ->where('train_checkins.departure', '<=', $until->utc()->format('Y-m-d H:i:s'))
             ->where(function (Builder $query) {
                 $query->where('users.private_profile', 0);
                 if (auth()->check()) {
@@ -98,9 +97,9 @@ class LeaderboardController extends Controller
                         ->orWhere('users.id', auth()->user()->id);
                 }
             })
-            ->groupBy('statuses.user_id')
+            ->groupBy('train_checkins.user_id')
             ->select([
-                'statuses.user_id',
+                'train_checkins.user_id',
                 DB::raw('SUM(train_checkins.points) AS points'),
                 DB::raw($sumDistance . ' AS distance'),
                 DB::raw(self::getDurationSelector() . ' AS duration'),
@@ -111,8 +110,8 @@ class LeaderboardController extends Controller
 
         if ($onlyFollowings && auth()->check()) {
             $query->where(function ($query) {
-                $query->whereIn('statuses.user_id', auth()->user()->follows->pluck('id'))
-                    ->orWhere('statuses.user_id', auth()->user()->id);
+                $query->whereIn('train_checkins.user_id', auth()->user()->follows->pluck('id'))
+                    ->orWhere('train_checkins.user_id', auth()->user()->id);
             });
         }
 
@@ -134,18 +133,17 @@ class LeaderboardController extends Controller
             return collect();
         }
 
-        $data = DB::table('statuses')
-            ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
-            ->join('users', 'statuses.user_id', '=', 'users.id')
+        $data = DB::table('train_checkins')
+            ->join('users', 'train_checkins.user_id', '=', 'users.id')
             ->where(
                 'train_checkins.departure',
                 '>=',
-                $date->clone()->firstOfMonth()->toIso8601String()
+                $date->clone()->firstOfMonth()->utc()->format('Y-m-d H:i:s')
             )
             ->where(
                 'train_checkins.departure',
                 '<=',
-                $date->clone()->lastOfMonth()->endOfDay()->toIso8601String()
+                $date->clone()->lastOfMonth()->endOfDay()->utc()->format('Y-m-d H:i:s')
             )
             ->where(function (Builder $query) {
                 $query->where('users.private_profile', 0);
@@ -155,13 +153,13 @@ class LeaderboardController extends Controller
                 }
             })
             ->select([
-                'statuses.user_id',
+                'train_checkins.user_id',
                 DB::raw('SUM(train_checkins.points) AS points'),
                 DB::raw('SUM(train_checkins.distance) AS distance'),
                 DB::raw(self::getDurationSelector() . ' AS duration'),
                 DB::raw('SUM(train_checkins.distance) / (' . self::getDurationSelector() . ' / 60) AS speed'),
             ])
-            ->groupBy('user_id')
+            ->groupBy('train_checkins.user_id')
             ->orderByDesc('points')
             ->limit(100)
             ->get();
