@@ -733,8 +733,8 @@ class StatusController extends Controller
     )]
     public function getStopovers(string $parameters): JsonResponse
     {
-        $tripIds = explode(',', $parameters, 50);
-        $trips = Trip::whereIn('id', $tripIds)->get()->mapWithKeys(function ($trip) {
+        $tripIds = array_unique(explode(',', $parameters, 50));
+        $trips = Trip::with('stopovers.station')->whereIn('id', $tripIds)->get()->mapWithKeys(function ($trip) {
             return [$trip->id => StopoverResource::collection($trip->stopovers)];
         });
 
