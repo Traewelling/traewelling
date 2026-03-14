@@ -189,12 +189,16 @@ class ReRoutingController extends Controller
                 return;
             }
 
+            // TODO: path_type is temporarily set to null because the existing OpenRailRoutingProfile
+            //       values (e.g. tgv_all, all_tracks) are not meaningful for our use.
+            //       Introduce a proper categorisation (e.g. rail, street, water, air) and
+            //       re-enable path_type assignment here once that is in place.
             $segment = $this->tripRepository->createRouteSegment(
                 fromStation: $start->station,
                 toStation: $end->station,
                 encodedPolyline: $encodedPolyline,
                 duration: $duration,
-                pathType: $pathType,
+                pathType: null,
                 distanceInMeters: $route->distanceInMeters
             );
             $this->tripRepository->setRouteSegmentForStop($start, $segment);
