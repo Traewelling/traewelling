@@ -200,7 +200,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::apiResource('alerts', AlertController::class);
         Route::put('/operators/{oldOperatorId}/merge/{newOperatorId}', [OperatorController::class, 'merge']); // currently admin/backend only
 
-        Route::apiResource('route-segments', RouteSegmentController::class)->only(['index', 'show', 'store']);
+        Route::apiResource('route-segments', RouteSegmentController::class)->only(['index', 'show', 'store', 'destroy']);
         Route::post('route-segments/{id}/assign-stopovers', [RouteSegmentController::class, 'assignStopovers']);
 
         Route::prefix('community')->group(static function () {
