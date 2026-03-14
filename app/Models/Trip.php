@@ -6,11 +6,13 @@ use App\Casts\UTCDateTime;
 use App\Enum\HafasTravelType;
 use App\Enum\MotisCategory;
 use App\Enum\TripSource;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Carbon;
 
 /**
  * @todo rename table only to "Trip" (without Hafas)
@@ -25,10 +27,10 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int|null $polyline_id
  * @property $departure
  * @property $arrival
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property int|null $operator_id
- * @property \Illuminate\Support\Carbon|null $last_refreshed
+ * @property Carbon|null $last_refreshed
  * @property int|null $journey_number
  * @property TripSource $source
  * @property int|null $user_id
@@ -39,16 +41,16 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string|null $route_color
  * @property MotisCategory|null $mode
  * @property string|null $route_text_color
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Checkin> $checkins
+ * @property-read Collection<int, Checkin> $checkins
  * @property-read int|null $checkins_count
- * @property-read \App\Models\Station|null $destinationStation
- * @property-read \App\Models\MotisSourceLicense|null $motisSourceLicense
- * @property-read \App\Models\Operator|null $operator
- * @property-read \App\Models\Station|null $originStation
- * @property-read \App\Models\PolyLine|null $polyline
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Stopover> $stopovers
+ * @property-read Station|null $destinationStation
+ * @property-read MotisSourceLicense|null $motisSourceLicense
+ * @property-read Operator|null $operator
+ * @property-read Station|null $originStation
+ * @property-read PolyLine|null $polyline
+ * @property-read Collection<int, Stopover> $stopovers
  * @property-read int|null $stopovers_count
- * @property-read \App\Models\User|null $user
+ * @property-read User|null $user
  *
  * @method static \Database\Factories\TripFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip newModelQuery()

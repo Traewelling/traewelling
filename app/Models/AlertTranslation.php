@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property string $id
@@ -13,9 +14,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $title
  * @property string $content
  * @property string|null $url
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Alert|null $banner
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Alert|null $banner
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|AlertTranslation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|AlertTranslation newQuery()

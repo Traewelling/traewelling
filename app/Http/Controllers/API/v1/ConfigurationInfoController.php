@@ -32,7 +32,7 @@ class ConfigurationInfoController
             ),
         ]
     )]
-    public function getConfigurationInfo(): \App\Dto\ConfigurationInformation\ConfigurationInformation
+    public function getConfigurationInfo(): ConfigurationInformation
     {
         return $this->backendController->getConfigurationInfo();
     }

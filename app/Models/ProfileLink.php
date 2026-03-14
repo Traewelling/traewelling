@@ -6,15 +6,16 @@ use App\Enum\ProfileLinkName;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property string $id
  * @property int $user_id
  * @property ProfileLinkName $name
  * @property string $url
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\User $user
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read User $user
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProfileLink newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProfileLink newQuery()

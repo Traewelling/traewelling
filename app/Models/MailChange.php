@@ -6,15 +6,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 /**
  * @property string $id
  * @property int $user_id
  * @property string $old_email
  * @property string $new_email
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\User $user
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read User $user
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MailChange newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MailChange newQuery()

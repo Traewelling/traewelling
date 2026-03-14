@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\v1;
 use App\Dto\Coordinate;
 use App\Dto\Internal\CheckInRequestDto;
 use App\Dto\Internal\CheckinSuccessDto;
+use App\Dto\Internal\Departure;
 use App\Dto\Transport\Station as StationDto;
 use App\Enum\Business;
 use App\Enum\StationIdentifierType;
@@ -202,11 +203,11 @@ class TransportController extends Controller
                 localtime: isset($validated['when']) && !preg_match('(\+|Z)', $validated['when'])
             );
 
-            $departures = $filtered->departures->sortBy(function (\App\Dto\Internal\Departure $departure) {
+            $departures = $filtered->departures->sortBy(function (Departure $departure) {
                 return ($departure->realDeparture ?? $departure->plannedDeparture)->toIso8601String();
             });
 
-            $times = $departures->map(fn (\App\Dto\Internal\Departure $d) => $d->realDeparture ?? $d->plannedDeparture)->filter()->sort();
+            $times = $departures->map(fn (Departure $d) => $d->realDeparture ?? $d->plannedDeparture)->filter()->sort();
             $prev = $timestamp->clone()->subMinutes(15);
             $next = $times->isNotEmpty() ? $times->last()->clone()->addMinute() : $timestamp->clone()->addMinutes(15);
 

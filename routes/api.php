@@ -14,6 +14,7 @@
 use App\Http\Controllers\API\v1\AlertController;
 use App\Http\Controllers\API\v1\AuthController as v1Auth;
 use App\Http\Controllers\API\v1\CommunityController;
+use App\Http\Controllers\API\v1\ConfigurationInfoController;
 use App\Http\Controllers\API\v1\EventController;
 use App\Http\Controllers\API\v1\ExportController;
 use App\Http\Controllers\API\v1\FollowController;
@@ -49,7 +50,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         });
     });
 
-    Route::get('app/configuration', [\App\Http\Controllers\API\v1\ConfigurationInfoController::class, 'getConfigurationInfo'])
+    Route::get('app/configuration', [ConfigurationInfoController::class, 'getConfigurationInfo'])
         ->name('api.v1.getConfigurationInfo');
 
     Route::get('static/privacy', [PrivacyPolicyController::class, 'getPrivacyPolicy'])

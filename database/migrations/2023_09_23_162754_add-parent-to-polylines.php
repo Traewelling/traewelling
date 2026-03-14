@@ -27,7 +27,7 @@ return new class() extends Migration
                 $table->dropForeign(['parent_id']);
                 $table->dropColumn('parent_id');
             });
-        } catch (\Throwable) {
+        } catch (Throwable) {
             $output = new ConsoleOutput();
             $output->writeln("\nForeign key didn't exist. Dropping only column.");
 

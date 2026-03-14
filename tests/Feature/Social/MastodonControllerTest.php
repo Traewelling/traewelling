@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Laravel\Socialite\Two\User as SocialiteUser;
 use Revolution\Mastodon\Facades\Mastodon;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Tests\FeatureTestCase;
 
 class MastodonControllerTest extends FeatureTestCase
@@ -606,7 +607,7 @@ class MastodonControllerTest extends FeatureTestCase
 
         $socialiteUser = $this->makeSocialiteUser('88888', 'some_token', 'Another User', 'anotheruser');
 
-        $this->expectException(\Symfony\Component\HttpKernel\Exception\HttpException::class);
+        $this->expectException(HttpException::class);
 
         MastodonController::getUserFromSocialite($socialiteUser, $server);
     }

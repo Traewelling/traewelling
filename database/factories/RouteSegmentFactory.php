@@ -2,11 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Models\RouteSegment;
 use App\Models\Station;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\RouteSegment>
+ * @extends Factory<RouteSegment>
  */
 class RouteSegmentFactory extends Factory
 {
