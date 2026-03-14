@@ -233,7 +233,7 @@ class User extends Authenticatable implements ExportsPersonalData, OAuthenticata
 
     public function getTrainDistanceAttribute(): float
     {
-        return (float) $this->getDistanceDurationSums()->distance;
+        return Checkin::where('user_id', $this->id)->sum('distance');
     }
 
     public function trainCheckins(): HasMany
@@ -246,14 +246,7 @@ class User extends Authenticatable implements ExportsPersonalData, OAuthenticata
      */
     public function getTrainDurationAttribute(): float
     {
-        return (float) $this->getDistanceDurationSums()->duration;
-    }
-
-    private function getDistanceDurationSums(): object
-    {
-        return $this->distanceDurationSums ??= Checkin::where('user_id', $this->id)
-            ->selectRaw('SUM(distance) as distance, SUM(duration) as duration')
-            ->first();
+        return Checkin::where('user_id', $this->id)->sum('duration');
     }
 
     public function socialProfile(): HasOne
