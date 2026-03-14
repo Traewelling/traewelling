@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Backend;
 
 use App\Helpers\CacheKey;
@@ -19,7 +21,7 @@ class LeaderboardController extends Controller
 {
     private const string CACHE_RETENTION_CONFIG_KEY = 'trwl.cache.leaderboard-retention-seconds';
 
-    private $ttl;
+    private int $ttl;
 
     public function __construct()
     {
@@ -32,9 +34,7 @@ class LeaderboardController extends Controller
             CacheKey::LEADERBOARD_GLOBAL_POINTS,
             $this->ttl,
             fn () => $this->getLeaderboard()
-        )->filter(function (stdClass $row) {
-            return Gate::allows('view', $row->user);
-        });
+        )->filter(fn (stdClass $row) => Gate::allows('view', $row->user));
     }
 
     public function getCachedFriendsLeaderboard(): ?Collection
@@ -53,9 +53,7 @@ class LeaderboardController extends Controller
             CacheKey::LEADERBOARD_GLOBAL_DISTANCE,
             $this->ttl,
             fn () => $this->getLeaderboard(orderBy: 'distance')
-        )->filter(function (stdClass $row) {
-            return Gate::allows('view', $row->user);
-        });
+        )->filter(fn (stdClass $row) => Gate::allows('view', $row->user));
     }
 
     private function getLeaderboard(
@@ -85,22 +83,16 @@ class LeaderboardController extends Controller
         }
 
         $sumDistance = 'SUM(train_checkins.distance)';
+        $followIds = auth()->check() ? auth()->user()->follows->pluck('id') : collect();
 
-        $query = DB::table('statuses')
-            ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
-            ->join('users', 'statuses.user_id', '=', 'users.id')
-            ->where('train_checkins.departure', '>=', $since->toIso8601String())
-            ->where('train_checkins.departure', '<=', $until->toIso8601String())
-            ->where(function (Builder $query) {
-                $query->where('users.private_profile', 0);
-                if (auth()->check()) {
-                    $query->orWhereIn('users.id', auth()->user()->follows->pluck('id'))
-                        ->orWhere('users.id', auth()->user()->id);
-                }
-            })
-            ->groupBy('statuses.user_id')
+        $query = DB::table('train_checkins')
+            ->join('users', 'train_checkins.user_id', '=', 'users.id')
+            ->where('train_checkins.departure', '>=', $since->utc()->format('Y-m-d H:i:s'))
+            ->where('train_checkins.departure', '<=', $until->utc()->format('Y-m-d H:i:s'))
+            ->where(fn (Builder $q) => $this->applyPrivacyFilter($q, $followIds))
+            ->groupBy('train_checkins.user_id')
             ->select([
-                'statuses.user_id',
+                'train_checkins.user_id',
                 DB::raw('SUM(train_checkins.points) AS points'),
                 DB::raw($sumDistance . ' AS distance'),
                 DB::raw(self::getDurationSelector() . ' AS duration'),
@@ -110,16 +102,18 @@ class LeaderboardController extends Controller
             ->limit($limit);
 
         if ($onlyFollowings && auth()->check()) {
-            $query->where(function ($query) {
-                $query->whereIn('statuses.user_id', auth()->user()->follows->pluck('id'))
-                    ->orWhere('statuses.user_id', auth()->user()->id);
+            $query->where(function (Builder $q) use ($followIds): void {
+                $q->whereIn('train_checkins.user_id', $followIds)
+                    ->orWhere('train_checkins.user_id', auth()->id());
             });
         }
 
         $data = $query->get();
 
         // Fetch user models in ONE query and map it to the collection
-        $userCache = User::with(['blockedByUsers', 'blockedUsers'])->whereIn('id', $data->pluck('user_id'))->get();
+        $userCache = User::with(['blockedByUsers', 'blockedUsers'])
+            ->whereIn('id', $data->pluck('user_id'))
+            ->get();
 
         return $data->map(function ($row) use ($userCache) {
             $row->user = $userCache->where('id', $row->user_id)->first();
@@ -134,46 +128,44 @@ class LeaderboardController extends Controller
             return collect();
         }
 
-        $data = DB::table('statuses')
-            ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
-            ->join('users', 'statuses.user_id', '=', 'users.id')
-            ->where(
-                'train_checkins.departure',
-                '>=',
-                $date->clone()->firstOfMonth()->toIso8601String()
-            )
-            ->where(
-                'train_checkins.departure',
-                '<=',
-                $date->clone()->lastOfMonth()->endOfDay()->toIso8601String()
-            )
-            ->where(function (Builder $query) {
-                $query->where('users.private_profile', 0);
-                if (auth()->check()) {
-                    $query->orWhereIn('users.id', auth()->user()->follows->pluck('id'))
-                        ->orWhere('users.id', auth()->user()->id);
-                }
-            })
+        $followIds = auth()->check() ? auth()->user()->follows->pluck('id') : collect();
+
+        $data = DB::table('train_checkins')
+            ->join('users', 'train_checkins.user_id', '=', 'users.id')
+            ->where('train_checkins.departure', '>=', $date->clone()->firstOfMonth()->utc()->format('Y-m-d H:i:s'))
+            ->where('train_checkins.departure', '<=', $date->clone()->lastOfMonth()->endOfDay()->utc()->format('Y-m-d H:i:s'))
+            ->where(fn (Builder $q) => self::applyPrivacyFilter($q, $followIds))
             ->select([
-                'statuses.user_id',
+                'train_checkins.user_id',
                 DB::raw('SUM(train_checkins.points) AS points'),
                 DB::raw('SUM(train_checkins.distance) AS distance'),
                 DB::raw(self::getDurationSelector() . ' AS duration'),
                 DB::raw('SUM(train_checkins.distance) / (' . self::getDurationSelector() . ' / 60) AS speed'),
             ])
-            ->groupBy('user_id')
+            ->groupBy('train_checkins.user_id')
             ->orderByDesc('points')
             ->limit(100)
             ->get();
 
         // Fetch user models in ONE query and map it to the collection
-        $userCache = User::whereIn('id', $data->pluck('user_id'))->get();
+        $userCache = User::with(['blockedByUsers', 'blockedUsers'])
+            ->whereIn('id', $data->pluck('user_id'))
+            ->get();
 
         return $data->map(function ($row) use ($userCache) {
             $row->user = $userCache->where('id', $row->user_id)->first();
 
             return $row;
         });
+    }
+
+    private static function applyPrivacyFilter(Builder $query, Collection $followIds): void
+    {
+        $query->where('users.private_profile', 0);
+        if (auth()->check()) {
+            $query->orWhereIn('users.id', $followIds)
+                ->orWhere('users.id', auth()->id());
+        }
     }
 
     private static function getDurationSelector(): string
