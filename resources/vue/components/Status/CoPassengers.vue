@@ -8,6 +8,8 @@ import { getArrivalForStopover, getDepartureForStopover } from '../../helpers/Da
 const props = defineProps<{
     tripId: number;
     currentStatusId: number;
+    departurePlanned: string | null;
+    arrivalPlanned: string | null;
 }>();
 
 const emit = defineEmits<{
@@ -22,7 +24,17 @@ onMounted(() => {
         .getTripStatuses(props.tripId)
         .then((response) => {
             response.json().then((data) => {
-                passengers.value = (data.data as StatusResource[]).filter((s) => s.id !== props.currentStatusId);
+                passengers.value = (data.data as StatusResource[]).filter((s) => {
+                    if (s.id === props.currentStatusId) return false;
+
+                    const otherDeparturePlanned = s.checkin?.origin?.departurePlanned;
+                    const otherArrivalPlanned = s.checkin?.destination?.arrivalPlanned;
+
+                    if (!otherDeparturePlanned || !otherArrivalPlanned) return true;
+                    if (!props.departurePlanned || !props.arrivalPlanned) return true;
+
+                    return otherArrivalPlanned > props.departurePlanned && otherDeparturePlanned < props.arrivalPlanned;
+                });
                 emit('hasCoPassengers', passengers.value.length > 0);
             });
         })
