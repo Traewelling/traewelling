@@ -6,6 +6,7 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Dto\Coordinate;
 use App\Http\Resources\RouteSegmentResource;
+use App\Jobs\AssignRouteSegmentToStopovers;
 use App\Models\RouteSegment;
 use App\Models\Station;
 use App\Models\Stopover;
@@ -202,6 +203,31 @@ class RouteSegmentController extends Controller
         return new RouteSegmentResource($segment)
             ->response()
             ->setStatusCode(201);
+    }
+
+    #[OA\Post(
+        path: '/route-segments/{id}/assign-stopovers',
+        operationId: 'assignRouteSegmentToStopovers',
+        summary: 'Dispatch a background job that assigns this segment to all matching unassigned stopovers (admin only).',
+        tags: ['Polyline'],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid')),
+        ],
+        responses: [
+            new OA\Response(response: 202, description: 'Job dispatched successfully.'),
+            new OA\Response(response: 401, description: self::OA_DESC_UNAUTHENTICATED),
+            new OA\Response(response: 403, description: self::OA_DESC_FORBIDDEN),
+            new OA\Response(response: 404, description: self::OA_DESC_NOT_FOUND),
+        ],
+    )]
+    public function assignStopovers(string $id): JsonResponse
+    {
+        $segment = RouteSegment::findOrFail($id);
+        $this->authorize('assignStopovers', $segment);
+
+        AssignRouteSegmentToStopovers::dispatch($segment);
+
+        return response()->json([], 202);
     }
 
     /**

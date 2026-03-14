@@ -1,11 +1,24 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import type { RouteSegmentResource } from '../../../types/Api.gen';
+import { Api, type RouteSegmentResource } from '../../../types/Api.gen';
+
+const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 
 const props = defineProps<{ segmentId: string }>();
 
 const segment = ref<RouteSegmentResource | null>(null);
 const error = ref<string | null>(null);
+const assignStatus = ref<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+async function assignStopovers() {
+    assignStatus.value = 'loading';
+    try {
+        await api.routeSegments.assignRouteSegmentToStopovers(props.segmentId);
+        assignStatus.value = 'success';
+    } catch {
+        assignStatus.value = 'error';
+    }
+}
 
 function formatDistance(meters: number | null): string {
     if (meters === null) return '';
@@ -22,15 +35,8 @@ function formatDuration(seconds: number | null): string {
 
 onMounted(async () => {
     try {
-        const res = await fetch(`/api/v1/route-segments/${props.segmentId}`, {
-            headers: { Accept: 'application/json' },
-        });
-        if (!res.ok) {
-            error.value = `Error ${res.status}: ${res.statusText}`;
-            return;
-        }
-        const json = await res.json();
-        segment.value = json.data;
+        const res = await api.routeSegments.getRouteSegment(props.segmentId);
+        segment.value = res.data.data ?? null;
     } catch (e) {
         error.value = e instanceof Error ? e.message : 'Unknown error';
     }
@@ -88,6 +94,24 @@ onMounted(async () => {
                     </tr>
                 </tbody>
             </table>
+            <div class="mt-2">
+                <button
+                    class="btn btn-sm"
+                    :class="{
+                        'btn-secondary': assignStatus === 'idle',
+                        'btn-warning': assignStatus === 'loading',
+                        'btn-success': assignStatus === 'success',
+                        'btn-danger': assignStatus === 'error',
+                    }"
+                    :disabled="assignStatus === 'loading' || assignStatus === 'success'"
+                    @click="assignStopovers"
+                >
+                    <span v-if="assignStatus === 'loading'">Dispatching...</span>
+                    <span v-else-if="assignStatus === 'success'">Job dispatched ✓</span>
+                    <span v-else-if="assignStatus === 'error'">Error | retry?</span>
+                    <span v-else>Re-Assign Stopovers</span>
+                </button>
+            </div>
         </div>
     </div>
 </template>

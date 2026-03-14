@@ -15,6 +15,7 @@ use App\Models\Checkin;
 use App\Models\Follow;
 use App\Models\Like;
 use App\Models\Report;
+use App\Models\RouteSegment;
 use App\Models\Status;
 use App\Models\Trip;
 use App\Models\User;
@@ -22,6 +23,7 @@ use App\Observers\CheckinObserver;
 use App\Observers\FollowObserver;
 use App\Observers\LikeObserver;
 use App\Observers\ReportObserver;
+use App\Observers\RouteSegmentObserver;
 use App\Observers\StatusObserver;
 use App\Observers\TripObserver;
 use App\Observers\UserObserver;
@@ -65,6 +67,7 @@ class EventServiceProvider extends ServiceProvider
         Follow::class => [FollowObserver::class],
         Like::class => [LikeObserver::class],
         Report::class => [ReportObserver::class],
+        RouteSegment::class => [RouteSegmentObserver::class],
         Status::class => [StatusObserver::class],
         Trip::class => [TripObserver::class],
         User::class => [UserObserver::class],

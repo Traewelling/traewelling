@@ -1908,6 +1908,40 @@
                 }
             }
         },
+        "/route-segments/{id}/assign-stopovers": {
+            "post": {
+                "tags": [
+                    "Polyline"
+                ],
+                "summary": "Dispatch a background job that assigns this segment to all matching unassigned stopovers (admin only).",
+                "operationId": "assignRouteSegmentToStopovers",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Job dispatched successfully."
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            }
+        },
         "/security/sessions": {
             "get": {
                 "tags": [
