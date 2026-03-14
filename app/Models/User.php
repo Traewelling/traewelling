@@ -326,9 +326,8 @@ class User extends Authenticatable implements ExportsPersonalData, OAuthenticata
 
     public function getPointsAttribute(): int
     {
-        return Checkin::whereIn('status_id', $this->statuses()->select('id'))
-            ->where('departure', '>=', Carbon::now()->subDays(7)->toIso8601String())
-            ->select('points')
+        return Checkin::where('user_id', $this->id)
+            ->where('departure', '>=', Carbon::now()->subDays(7)->format('Y-m-d H:i:s'))
             ->sum('points');
     }
 
