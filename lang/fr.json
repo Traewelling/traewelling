@@ -797,6 +797,7 @@
     "transport_types.businessPlural": "Voyages professionnels",
     "transport_types.express": "Grandes lignes",
     "transport_types.ferry": "Ferry",
+    "transport_types.freightTrain": "Train de marchandises",
     "transport_types.national": "Trains Intercity et Eurocity",
     "transport_types.nationalExpress": "Trains à grande vitesse",
     "transport_types.plane": "Avion",

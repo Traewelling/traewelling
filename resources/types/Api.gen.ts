@@ -152,6 +152,7 @@ export enum HafasTravelType {
   Tram = "tram",
   Taxi = "taxi",
   Plane = "plane",
+  FreightTrain = "freightTrain",
 }
 
 /**

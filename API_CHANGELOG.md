@@ -35,6 +35,12 @@ Check back here regularly to stay ahead of removals.
 
 ---
 
+# 2026-03-14 (Freight train category)
+
+Added new transport category `freightTrain` to `HafasTravelType`. Users can now create manual trips with the freight train type.
+
+---
+
 # 2026-03-07 (UUID support for Users)
 
 The `UserResource` now includes a `uuid` field alongside the existing integer `id`.
