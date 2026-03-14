@@ -832,6 +832,7 @@
     "transport_types.businessPlural": "Geschäftliche Reisen",
     "transport_types.express": "Fernverkehr",
     "transport_types.ferry": "Schiffe",
+    "transport_types.freightTrain": "Güterzug",
     "transport_types.national": "Intercity- und Eurocityzüge",
     "transport_types.nationalExpress": "Hochgeschwindigkeitszüge",
     "transport_types.plane": "Flugzeug",

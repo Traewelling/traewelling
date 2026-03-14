@@ -832,6 +832,7 @@
     "transport_types.businessPlural": "Business trips",
     "transport_types.express": "Express",
     "transport_types.ferry": "Ferry",
+    "transport_types.freightTrain": "Freight train",
     "transport_types.national": "Intercity and Eurocity trains",
     "transport_types.nationalExpress": "High speed trains",
     "transport_types.plane": "Plane",

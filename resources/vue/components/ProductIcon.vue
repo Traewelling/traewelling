@@ -20,16 +20,18 @@ const iconForProduct = (product: string) => {
     return null;
 };
 
-const fontAwesomeIcon = (product: string) => {
+const fontAwesomeIcons = (product: string): string[] => {
     switch (product) {
         case 'taxi':
-            return 'fa-taxi';
+            return ['fa-taxi'];
         case 'plane':
-            return 'fa-plane';
+            return ['fa-plane'];
         case 'ferry':
-            return 'fa-ship';
+            return ['fa-ship'];
+        case 'freightTrain':
+            return ['fa-train', 'fa-boxes-stacked'];
         default:
-            return 'fa-train';
+            return ['fa-train'];
     }
 };
 
@@ -67,7 +69,9 @@ const motisFontAwesomeIcon = (mode: MotisCategory) => {
 <template>
     <template v-if="mode === null">
         <img v-if="iconForProduct(product)" :alt="product" :src="iconForProduct(product) || ''" class="product-icon" />
-        <i v-else class="fas" :class="fontAwesomeIcon(product)" />
+        <template v-else>
+            <i v-for="icon in fontAwesomeIcons(product)" :key="icon" class="fas" :class="icon" />
+        </template>
     </template>
     <template v-else>
         <img v-if="iconForMode(mode)" :alt="mode?.toString()" :src="iconForMode(mode) || ''" class="product-icon" />

@@ -45,6 +45,7 @@ export default {
                 { value: 'tram', text: 'tram', emoji: '🚊' },
                 { value: 'taxi', text: 'taxi', emoji: '🚖' },
                 { value: 'plane', text: 'plane', emoji: '✈️' },
+                { value: 'freightTrain', text: 'freightTrain', emoji: '🚂' },
             ],
             operators: [],
             disallowed: ['fahrrad', 'auto', 'fuss', 'fuß', 'foot', 'car', 'bike'],
