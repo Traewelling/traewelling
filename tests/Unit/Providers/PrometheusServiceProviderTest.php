@@ -4,10 +4,9 @@ namespace Tests\Unit\Providers;
 
 use App\Providers\PrometheusServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
-use function PHPUnit\Framework\assertEquals;
+use function PHPUnit\Framework\assertEqualsCanonicalizing;
 
 use Tests\ApiTestCase;
 
@@ -15,30 +14,40 @@ class PrometheusServiceProviderTest extends ApiTestCase
 {
     use RefreshDatabase;
 
-    const TABLENAME = 'jobs';
+    private const TABLENAME = 'jobs';
 
-    public function test_get_jobs_by_display_name()
+    private function insertJob(string $queue, string $displayName): void
     {
-        // GIVEN
-        DB::shouldReceive('table')
-            ->with(self::TABLENAME)
-            ->once()
-            ->andReturnSelf();
+        DB::table(self::TABLENAME)->insert([
+            'queue' => $queue,
+            'payload' => json_encode(['displayName' => $displayName]),
+            'attempts' => 0,
+            'available_at' => now()->timestamp,
+            'created_at' => now()->timestamp,
+        ]);
+    }
 
-        DB::shouldReceive('get')
-            ->with(['queue', 'payload'])
-            ->andReturn(
-                Collection::make(
-                    array_merge([
-                        ...array_fill(0, 4, (object) ['queue' => 'default', 'payload' => json_encode(['displayName' => 'JobA'])]),
-                        ...array_fill(0, 7, (object) ['queue' => 'webhook', 'payload' => json_encode(['displayName' => 'JobB'])]),
-                        ...array_fill(0, 2, (object) ['queue' => 'default', 'payload' => json_encode(['displayName' => 'JobC'])]),
-                        ...array_fill(0, 5, (object) ['queue' => 'webhook', 'payload' => json_encode(['displayName' => 'JobC'])]),
-                    ])));
+    public function test_get_jobs_by_display_name(): void
+    {
+        // GIVEN: insert real rows so SQL JSON extraction can be tested end-to-end
+        foreach (range(1, 4) as $_) {
+            $this->insertJob('default', 'JobA');
+        }
+        foreach (range(1, 7) as $_) {
+            $this->insertJob('webhook', 'JobB');
+        }
+        foreach (range(1, 2) as $_) {
+            $this->insertJob('default', 'JobC');
+        }
+        foreach (range(1, 5) as $_) {
+            $this->insertJob('webhook', 'JobC');
+        }
 
+        // WHEN
         $actual = PrometheusServiceProvider::getJobsByDisplayName(self::TABLENAME);
 
-        assertEquals([
+        // THEN: order is not guaranteed by GROUP BY, so use canonical comparison
+        assertEqualsCanonicalizing([
             [4, ['JobA', 'default']],
             [7, ['JobB', 'webhook']],
             [2, ['JobC', 'default']],
