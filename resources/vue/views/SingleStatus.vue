@@ -176,6 +176,8 @@ fetchLikes();
                 <CoPassengers
                     :trip-id="status.checkin.trip"
                     :current-status-id="status.id"
+                    :departure-planned="status.checkin.origin.departurePlanned"
+                    :arrival-planned="status.checkin.destination.arrivalPlanned"
                     @has-co-passengers="hasCoPassengers = $event"
                 />
             </div>
