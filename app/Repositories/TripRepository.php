@@ -25,7 +25,7 @@ class TripRepository
     ): ?RouteSegment {
         return RouteSegment::where('from_station_id', $start->train_station_id)
             ->where('to_station_id', $end->train_station_id)
-            ->where('path_type', $pathType)
+            ->where(fn ($q) => $q->where('path_type', $pathType)->orWhereNull('path_type'))
             ->whereBetween('duration', [$duration * 0.9, $duration * 1.1])
             ->first();
     }
