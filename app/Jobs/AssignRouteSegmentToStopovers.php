@@ -24,7 +24,7 @@ class AssignRouteSegmentToStopovers implements ShouldQueue
 
     public int $backoff = 30;
 
-    public int $timeout = 60;
+    public int $timeout = 600;
 
     public function __construct(private readonly RouteSegment $segment) {}
 
@@ -34,12 +34,13 @@ class AssignRouteSegmentToStopovers implements ShouldQueue
         $segmentDuration = $segment->duration ?? 0;
         $tolerance = max(300, (int) round($segmentDuration * 0.1));
         $assigned = 0;
+        $affectedTrips = [];
 
         Stopover::where('train_station_id', $segment->from_station_id)
             ->whereNull('route_segment_id')
             ->with('trip')
             ->chunkById(200, function (Collection $fromStopovers) use (
-                $segment, $segmentDuration, $tolerance, $tripRepository, &$assigned,
+                $segment, $segmentDuration, $tolerance, $tripRepository, &$assigned, &$affectedTrips,
             ): void {
                 // Batch-load ALL stopovers for all trips in this chunk.
                 // We need every stop to determine which stop is immediately next after each fromStop,
@@ -96,12 +97,18 @@ class AssignRouteSegmentToStopovers implements ShouldQueue
 
                     $tripRepository->setRouteSegmentForStop($fromStop, $segment);
                     $assigned++;
+                    $affectedTrips[$fromStop->trip_id] = true;
                 }
             });
+
+        foreach (array_keys($affectedTrips) as $tripId) {
+            RecalculateStatusesDistanceForTrip::dispatch($tripId);
+        }
 
         Log::info('AssignRouteSegmentToStopovers: Completed', [
             'segment_id' => $segment->id,
             'assigned' => $assigned,
+            'trips_queued' => count($affectedTrips),
         ]);
     }
 }
