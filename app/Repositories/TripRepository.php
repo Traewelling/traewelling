@@ -23,10 +23,13 @@ class TripRepository
         int $duration,
         OpenRailRoutingProfile $pathType = OpenRailRoutingProfile::ALL_TRACKS
     ): ?RouteSegment {
+        // Use ±10% tolerance, but at least ±5 minutes for short-distance segments
+        $tolerance = max(300, (int) round($duration * 0.1));
+
         return RouteSegment::where('from_station_id', $start->train_station_id)
             ->where('to_station_id', $end->train_station_id)
             ->where(fn ($q) => $q->where('path_type', $pathType)->orWhereNull('path_type'))
-            ->whereBetween('duration', [$duration * 0.9, $duration * 1.1])
+            ->whereBetween('duration', [max(0, $duration - $tolerance), $duration + $tolerance])
             ->first();
     }
 
