@@ -3947,6 +3947,21 @@ export class Api<
      * No description
      *
      * @tags Polyline
+     * @name DeleteRouteSegment
+     * @summary Delete a route segment (admin only). All stopovers using this segment are reassigned to another matching segment if available, otherwise their assignment is cleared.
+     * @request DELETE:/route-segments/{id}
+     */
+    deleteRouteSegment: (id: string, params: RequestParams = {}) =>
+      this.request<void, void>({
+        path: `/route-segments/${id}`,
+        method: "DELETE",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Polyline
      * @name AssignRouteSegmentToStopovers
      * @summary Dispatch a background job that assigns this segment to all matching unassigned stopovers (admin only).
      * @request POST:/route-segments/{id}/assign-stopovers

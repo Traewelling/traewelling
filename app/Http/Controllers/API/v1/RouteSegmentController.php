@@ -7,6 +7,7 @@ namespace App\Http\Controllers\API\v1;
 use App\Dto\Coordinate;
 use App\Http\Resources\RouteSegmentResource;
 use App\Jobs\AssignRouteSegmentToStopovers;
+use App\Jobs\DeleteRouteSegment;
 use App\Models\RouteSegment;
 use App\Models\Station;
 use App\Models\Stopover;
@@ -220,6 +221,31 @@ class RouteSegmentController extends Controller
             new OA\Response(response: 404, description: self::OA_DESC_NOT_FOUND),
         ],
     )]
+    #[OA\Delete(
+        path: '/route-segments/{id}',
+        operationId: 'deleteRouteSegment',
+        summary: 'Delete a route segment (admin only). All stopovers using this segment are reassigned to another matching segment if available, otherwise their assignment is cleared.',
+        tags: ['Polyline'],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid')),
+        ],
+        responses: [
+            new OA\Response(response: 202, description: 'Deletion job dispatched. Stopovers will be reassigned and the segment deleted in the background.'),
+            new OA\Response(response: 401, description: self::OA_DESC_UNAUTHENTICATED),
+            new OA\Response(response: 403, description: self::OA_DESC_FORBIDDEN),
+            new OA\Response(response: 404, description: self::OA_DESC_NOT_FOUND),
+        ],
+    )]
+    public function destroy(string $id): JsonResponse
+    {
+        $segment = RouteSegment::findOrFail($id);
+        $this->authorize('delete', $segment);
+
+        DeleteRouteSegment::dispatch($segment);
+
+        return response()->json([], 202);
+    }
+
     public function assignStopovers(string $id): JsonResponse
     {
         $segment = RouteSegment::findOrFail($id);

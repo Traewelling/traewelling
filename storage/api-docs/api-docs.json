@@ -1906,6 +1906,38 @@
                         "description": "Not Found"
                     }
                 }
+            },
+            "delete": {
+                "tags": [
+                    "Polyline"
+                ],
+                "summary": "Delete a route segment (admin only). All stopovers using this segment are reassigned to another matching segment if available, otherwise their assignment is cleared.",
+                "operationId": "deleteRouteSegment",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Deletion job dispatched. Stopovers will be reassigned and the segment deleted in the background."
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
             }
         },
         "/route-segments/{id}/assign-stopovers": {

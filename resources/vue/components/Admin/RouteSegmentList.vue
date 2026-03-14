@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import type { RouteSegmentResource } from '../../../types/Api.gen';
+import { Api, type RouteSegmentResource } from '../../../types/Api.gen';
+
+const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 
 const props = defineProps<{
     fromStationId: number;
@@ -10,6 +12,7 @@ const props = defineProps<{
 
 const segments = ref<RouteSegmentResource[]>([]);
 const error = ref<string | null>(null);
+const deletingIds = ref<Set<string>>(new Set());
 
 function formatDuration(seconds: number | null): string {
     if (seconds === null) return '';
@@ -28,25 +31,42 @@ function segmentUrl(id: string): string {
     return `/admin/routesegment/${id}`;
 }
 
-onMounted(async () => {
+async function fetchSegments(): Promise<void> {
+    error.value = null;
     try {
-        const params = new URLSearchParams({
-            from_station_id: String(props.fromStationId),
-            to_station_id: String(props.toStationId),
+        const res = await api.routeSegments.listRouteSegments({
+            from_station_id: props.fromStationId,
+            to_station_id: props.toStationId,
         });
-        const res = await fetch(`/api/v1/route-segments?${params}`, {
-            headers: { Accept: 'application/json' },
-        });
-        if (!res.ok) {
-            error.value = `Error ${res.status}: ${res.statusText}`;
-            return;
-        }
-        const json = await res.json();
-        segments.value = json.data;
+        segments.value = res.data?.data ?? [];
     } catch (e) {
         error.value = e instanceof Error ? e.message : 'Unknown error';
     }
-});
+}
+
+async function deleteSegment(id: string): Promise<void> {
+    if (
+        !confirm(
+            'Delete this route segment? All stopovers using it will be reassigned to another matching segment if possible.',
+        )
+    ) {
+        return;
+    }
+
+    deletingIds.value = new Set([...deletingIds.value, id]);
+    try {
+        await api.routeSegments.deleteRouteSegment(id);
+        segments.value = segments.value.filter((s) => s.id !== id);
+    } catch (e) {
+        error.value = e instanceof Error ? e.message : 'Unknown error';
+    } finally {
+        const next = new Set(deletingIds.value);
+        next.delete(id);
+        deletingIds.value = next;
+    }
+}
+
+onMounted(fetchSegments);
 </script>
 
 <template>
@@ -80,12 +100,22 @@ onMounted(async () => {
                             <td>{{ formatDistance(segment.distance) }}</td>
                             <td>{{ segment.pathType ?? '' }}</td>
                             <td>
-                                <a
-                                    v-if="segment.id !== currentSegmentId"
-                                    :href="segmentUrl(segment.id)"
-                                    class="btn btn-primary btn-sm"
-                                    >Open</a
-                                >
+                                <template v-if="segment.id !== currentSegmentId">
+                                    <a :href="segmentUrl(segment.id)" class="btn btn-primary btn-sm me-1">Open</a>
+                                    <button
+                                        v-if="segments.length > 1"
+                                        class="btn btn-danger btn-sm"
+                                        :disabled="deletingIds.has(segment.id)"
+                                        @click="deleteSegment(segment.id)"
+                                    >
+                                        <span
+                                            v-if="deletingIds.has(segment.id)"
+                                            class="spinner-border spinner-border-sm"
+                                            role="status"
+                                        ></span>
+                                        <span v-else>Delete</span>
+                                    </button>
+                                </template>
                                 <span v-else class="badge bg-secondary">Current</span>
                             </td>
                         </tr>
