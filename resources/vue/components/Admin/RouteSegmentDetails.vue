@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import type { RouteSegmentResource } from '../../../types/Api.gen';
+import { Api, type RouteSegmentResource } from '../../../types/Api.gen';
+
+const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 
 const props = defineProps<{ segmentId: string }>();
 
@@ -11,11 +13,8 @@ const assignStatus = ref<'idle' | 'loading' | 'success' | 'error'>('idle');
 async function assignStopovers() {
     assignStatus.value = 'loading';
     try {
-        const res = await fetch(`/api/v1/route-segments/${props.segmentId}/assign-stopovers`, {
-            method: 'POST',
-            headers: { Accept: 'application/json' },
-        });
-        assignStatus.value = res.status === 202 ? 'success' : 'error';
+        await api.routeSegments.assignRouteSegmentToStopovers(props.segmentId);
+        assignStatus.value = 'success';
     } catch {
         assignStatus.value = 'error';
     }
@@ -36,15 +35,8 @@ function formatDuration(seconds: number | null): string {
 
 onMounted(async () => {
     try {
-        const res = await fetch(`/api/v1/route-segments/${props.segmentId}`, {
-            headers: { Accept: 'application/json' },
-        });
-        if (!res.ok) {
-            error.value = `Error ${res.status}: ${res.statusText}`;
-            return;
-        }
-        const json = await res.json();
-        segment.value = json.data;
+        const res = await api.routeSegments.getRouteSegment(props.segmentId);
+        segment.value = res.data.data ?? null;
     } catch (e) {
         error.value = e instanceof Error ? e.message : 'Unknown error';
     }
