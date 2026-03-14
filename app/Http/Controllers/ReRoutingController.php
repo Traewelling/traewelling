@@ -78,7 +78,7 @@ class ReRoutingController extends Controller
         }
 
         if ($errorPercentage < 10) {
-            RecalculateStatusesDistanceForTrip::dispatch($trip->id);
+            RecalculateStatusesDistanceForTrip::dispatch($trip->trip_id);
         }
 
         return $errorPercentage;
