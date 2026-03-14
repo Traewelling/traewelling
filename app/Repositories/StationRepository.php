@@ -116,19 +116,19 @@ class StationRepository
     {
         $latestStations = DB::table('train_checkins')
             ->join('train_stopovers', 'train_checkins.destination_stopover_id', '=', 'train_stopovers.id')
-            ->join('train_stations', 'train_stopovers.train_station_id', '=', 'train_stations.id')
             ->where('train_checkins.user_id', $user->id)
-            ->groupBy('train_stations.id')
-            ->select(['train_stations.id', DB::raw('MAX(train_checkins.arrival) as last_arrival')])
-            ->orderByDesc(DB::raw('MAX(train_checkins.arrival)'))
-            ->limit($maxCount)
-            ->get();
+            ->orderByDesc('train_checkins.arrival')
+            ->select(['train_stopovers.train_station_id', 'train_checkins.arrival'])
+            ->limit($maxCount * 10)
+            ->get()
+            ->unique('train_station_id')
+            ->take($maxCount);
 
         return Station::with(['areas', 'stationIdentifiers'])
-            ->whereIn('id', $latestStations->pluck('id'))
+            ->whereIn('id', $latestStations->pluck('train_station_id'))
             ->get()
             ->sortBy(function (Station $station) use ($latestStations) {
-                return $latestStations->firstWhere('id', $station->id)->last_arrival;
+                return $latestStations->firstWhere('train_station_id', $station->id)->arrival;
             }, SORT_REGULAR, true);
     }
 }
