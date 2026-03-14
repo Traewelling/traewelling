@@ -5,16 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Support\Carbon;
 
 /**
  * @property string $id
  * @property string $station_id
  * @property string $area_id
  * @property bool $default
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Area $area
- * @property-read \App\Models\Station $station
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Area $area
+ * @property-read Station $station
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|AreasStationsMap newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|AreasStationsMap newQuery()

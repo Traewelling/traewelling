@@ -32,7 +32,7 @@ class PolylinesBrouter extends Command
         }
     }
 
-    private function updateTrips(string $ids, Polyline $polyline): void
+    private function updateTrips(string $ids, PolyLine $polyline): void
     {
         Trip::whereIn('polyline_id', explode(',', $ids))
             ->orderBy('id', 'desc')
@@ -40,9 +40,9 @@ class PolylinesBrouter extends Command
             ->each(fn ($trip) => $trip->update(['polyline_id' => $polyline->id]));
     }
 
-    private function fetchAndUpdatePolyline(int $parent_id): Polyline
+    private function fetchAndUpdatePolyline(int $parent_id): PolyLine
     {
-        $polyline = Polyline::where('parent_id', $parent_id)->orderBy('id', 'desc')->first();
+        $polyline = PolyLine::where('parent_id', $parent_id)->orderBy('id', 'desc')->first();
         $geoJson = json_decode($polyline->polyline, true);
         foreach ($geoJson['features'] as $key => $feature) {
             if (empty($feature['properties'])) {

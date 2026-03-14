@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -14,10 +15,10 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int $mentioned_id
  * @property int $position
  * @property int $length
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\User|null $mentioned
- * @property-read \App\Models\Status $status
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read User|null $mentioned
+ * @property-read Status $status
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Mention newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Mention newQuery()

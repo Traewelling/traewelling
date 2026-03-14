@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Models\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
@@ -28,17 +30,17 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property int|null $approved_by
  * @property \Illuminate\Support\Carbon $checkin_start
  * @property \Illuminate\Support\Carbon $checkin_end
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $activities
+ * @property-read Collection<int, Activity> $activities
  * @property-read int|null $activities_count
- * @property-read \App\Models\User|null $approvedBy
+ * @property-read User|null $approvedBy
  * @property-read \Illuminate\Support\Carbon $end
  * @property-read bool $has_extended_checkin
  * @property-read bool $is_pride
  * @property-read \Illuminate\Support\Carbon $start
  * @property-read int $total_distance
  * @property-read int $total_duration
- * @property-read \App\Models\Station|null $station
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Status> $statuses
+ * @property-read Station|null $station
+ * @property-read Collection<int, Status> $statuses
  * @property-read int|null $statuses_count
  *
  * @method static \Database\Factories\EventFactory factory($count = null, $state = [])

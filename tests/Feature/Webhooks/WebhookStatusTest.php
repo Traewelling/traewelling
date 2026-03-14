@@ -9,6 +9,7 @@ use App\Enum\WebhookEvent;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\StatusController;
 use App\Jobs\MonitoredCallWebhookJob;
+use App\Models\Station;
 use App\Models\User;
 use App\Repositories\CheckinHydratorRepository;
 use Carbon\Carbon;
@@ -365,13 +366,13 @@ class WebhookStatusTest extends ApiTestCase
     protected function createStatus(User $user)
     {
         // Create stations in database to avoid API calls
-        $origin = \App\Models\Station::factory()->create([
+        $origin = Station::factory()->create([
             'name' => self::FRANKFURT_HBF['name'],
             'latitude' => self::FRANKFURT_HBF['location']['latitude'],
             'longitude' => self::FRANKFURT_HBF['location']['longitude'],
         ]);
 
-        $destination = \App\Models\Station::factory()->create([
+        $destination = Station::factory()->create([
             'name' => self::HANNOVER_HBF['name'],
             'latitude' => self::HANNOVER_HBF['location']['latitude'],
             'longitude' => self::HANNOVER_HBF['location']['longitude'],

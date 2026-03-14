@@ -15,8 +15,8 @@ use Laravel\Passport\Passport;
  * @property \Illuminate\Support\Carbon $expires_at
  * @property string $events
  * @property string $url
- * @property-read \App\Models\OAuthClient $client
- * @property-read \App\Models\User $user
+ * @property-read OAuthClient $client
+ * @property-read User $user
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|WebhookCreationRequest newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|WebhookCreationRequest newQuery()

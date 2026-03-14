@@ -10,7 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use OpenApi\Attributes as OA;
 
-class WebhookController extends Controller
+class WebhookController extends APIController
 {
     #[OA\Get(
         path: '/webhooks',
