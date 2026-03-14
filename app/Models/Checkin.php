@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -28,8 +29,8 @@ use stdClass;
  * @property $departure
  * @property $arrival
  * @property int|null $points
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property int|null $user_id
  * @property bool $forced
  * @property $manual_departure
@@ -37,15 +38,15 @@ use stdClass;
  * @property int $duration
  * @property int|null $origin_stopover_id
  * @property int|null $destination_stopover_id
- * @property-read \App\Models\Stopover|null $destinationStopover
- * @property-read \Illuminate\Support\Collection<Status> $also_on_this_connection
+ * @property-read Stopover|null $destinationStopover
+ * @property-read Collection<Status> $also_on_this_connection
  * @property-read stdClass $display_arrival
  * @property-read stdClass $display_departure
  * @property-read float $speed
- * @property-read \App\Models\Stopover|null $originStopover
- * @property-read \App\Models\Status|null $status
- * @property-read \App\Models\Trip|null $trip
- * @property-read \App\Models\User|null $user
+ * @property-read Stopover|null $originStopover
+ * @property-read Status|null $status
+ * @property-read Trip|null $trip
+ * @property-read User|null $user
  *
  * @method static \Database\Factories\CheckinFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin newModelQuery()

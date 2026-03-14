@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Event;
 use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Attributes as OA;
 
@@ -25,7 +26,7 @@ class EventResource extends JsonResource
 {
     public function toArray($request): array
     {
-        /** @var \App\Models\Event $this */
+        /** @var Event $this */
         return [
             'id' => $this->id,
             'name' => $this->name,

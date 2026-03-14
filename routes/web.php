@@ -175,7 +175,7 @@ Route::middleware(['auth', 'privacy'])->group(function () {
 
         Route::get('/follower', [SettingsController::class, 'renderFollowerSettings'])
             ->name('settings.follower');
-        Route::post('/follower/remove', [\App\Http\Controllers\SettingsController::class, 'removeFollower'])
+        Route::post('/follower/remove', [App\Http\Controllers\SettingsController::class, 'removeFollower'])
             ->name('settings.follower.remove'); // TODO: Replace with API Endpoint
         Route::post('/follower/approve', [SettingsController::class, 'approveFollower'])
             ->name('settings.follower.approve'); // TODO: Replace with API Endpoint
@@ -220,13 +220,13 @@ Route::middleware(['auth', 'privacy'])->group(function () {
 
     Route::get('/search/', [FrontendUserController::class, 'searchUser'])->name('userSearch');
 
-    Route::post('/user/block', [\App\Http\Controllers\Frontend\UserController::class, 'blockUser'])
+    Route::post('/user/block', [App\Http\Controllers\Frontend\UserController::class, 'blockUser'])
         ->name('user.block'); // TODO: Replace with API Endpoint
-    Route::post('/user/unblock', [\App\Http\Controllers\Frontend\UserController::class, 'unblockUser'])
+    Route::post('/user/unblock', [App\Http\Controllers\Frontend\UserController::class, 'unblockUser'])
         ->name('user.unblock'); // TODO: Replace with API Endpoint
-    Route::post('/user/mute', [\App\Http\Controllers\Frontend\UserController::class, 'muteUser'])
+    Route::post('/user/mute', [App\Http\Controllers\Frontend\UserController::class, 'muteUser'])
         ->name('user.mute'); // TODO: Replace with API Endpoint
-    Route::post('/user/unmute', [\App\Http\Controllers\Frontend\UserController::class, 'unmuteUser'])
+    Route::post('/user/unmute', [App\Http\Controllers\Frontend\UserController::class, 'unmuteUser'])
         ->name('user.unmute'); // TODO: Replace with API Endpoint
 });
 

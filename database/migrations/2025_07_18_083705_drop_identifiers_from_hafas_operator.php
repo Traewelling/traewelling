@@ -70,10 +70,10 @@ return new class() extends Migration
                     $operator->motis_source = $identifier->source;
                     $operator->save();
                 }
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 // Handle any exceptions that may occur during the migration
                 // For example, log the error or rethrow it
-                \Log::error('Error migrating identifiers for operator ID ' . $operator->id . ': ' . $e->getMessage());
+                Log::error('Error migrating identifiers for operator ID ' . $operator->id . ': ' . $e->getMessage());
             }
         }
     }

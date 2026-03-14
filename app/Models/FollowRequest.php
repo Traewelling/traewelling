@@ -4,15 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
  * @property int $user_id
  * @property int $follow_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\User $requestedFollow
- * @property-read \App\Models\User $user
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read User $requestedFollow
+ * @property-read User $user
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FollowRequest newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FollowRequest newQuery()

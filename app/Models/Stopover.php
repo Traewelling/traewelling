@@ -31,18 +31,18 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property bool $cancelled
  * @property string|null $route_segment_id
  * @property string|null $station_identifier_id
- * @property-read \Carbon\Carbon|null $arrival
- * @property-read \Carbon\Carbon|null $departure
+ * @property-read Carbon|null $arrival
+ * @property-read Carbon|null $departure
  * @property-read bool $is_arrival_cancelled
  * @property-read bool $is_arrival_delayed
  * @property-read bool $is_departure_cancelled
  * @property-read bool $is_departure_delayed
  * @property-read string|null $platform
- * @property-read \App\Models\RouteSegment|null $routeSegment
- * @property-read \App\Models\Station $station
- * @property-read \App\Models\StationIdentifier|null $stationIdentifier
- * @property-read \App\Models\Station $trainStation
- * @property-read \App\Models\Trip $trip
+ * @property-read RouteSegment|null $routeSegment
+ * @property-read Station $station
+ * @property-read StationIdentifier|null $stationIdentifier
+ * @property-read Station $trainStation
+ * @property-read Trip $trip
  *
  * @method static \Database\Factories\StopoverFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover newModelQuery()

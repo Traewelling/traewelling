@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enum\MastodonVisibility;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -12,11 +13,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int|null $mastodon_id
  * @property int|null $mastodon_server
  * @property string|null $mastodon_token
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property MastodonVisibility $mastodon_visibility
- * @property-read \App\Models\MastodonServer|null $mastodonServer
- * @property-read \App\Models\User|null $user
+ * @property-read MastodonServer|null $mastodonServer
+ * @property-read User|null $user
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile newQuery()

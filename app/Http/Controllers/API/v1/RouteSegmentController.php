@@ -14,6 +14,7 @@ use App\Services\GeoService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Validation\ValidationException;
 use OpenApi\Attributes as OA;
 use Traewelling\GooglePolyline\PolylineTranscoder;
@@ -48,7 +49,7 @@ class RouteSegmentController extends Controller
             new OA\Response(response: 422, description: self::OA_DESC_UNPROCESSABLE),
         ],
     )]
-    public function index(Request $request): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+    public function index(Request $request): AnonymousResourceCollection
     {
         $this->authorize('viewAny', RouteSegment::class);
 

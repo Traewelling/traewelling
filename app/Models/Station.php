@@ -7,9 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use phpGPX\Models\Point;
 use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Models\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
@@ -19,21 +21,21 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property string $name
  * @property float $latitude
  * @property float $longitude
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property int|null $time_offset
  * @property bool|null $shift_time
  * @property string|null $source
  * @property int $relevance
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $activities
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Activity> $activities
  * @property-read int|null $activities_count
- * @property-read \App\Models\AreasStationsMap|null $pivot
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Area> $areas
+ * @property-read AreasStationsMap|null $pivot
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Area> $areas
  * @property-read int|null $areas_count
  * @property-read Point $location
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StationIdentifier> $stationIdentifiers
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, StationIdentifier> $stationIdentifiers
  * @property-read int|null $station_identifiers_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Stopover> $stopovers
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Stopover> $stopovers
  * @property-read int|null $stopovers_count
  *
  * @method static \Database\Factories\StationFactory factory($count = null, $state = [])
