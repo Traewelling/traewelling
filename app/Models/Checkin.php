@@ -8,6 +8,7 @@ use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
@@ -108,6 +109,11 @@ class Checkin extends Model
     public function status(): BelongsTo
     {
         return $this->belongsTo(Status::class);
+    }
+
+    public function statusTags(): HasMany
+    {
+        return $this->hasMany(StatusTag::class, 'status_id', 'status_id');
     }
 
     public function user(): BelongsTo

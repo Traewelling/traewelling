@@ -9,6 +9,7 @@ use App\Http\Controllers\Backend\User\SessionController;
 use App\Http\Controllers\Backend\User\TokenController;
 use App\Models\Follow;
 use App\Models\FollowRequest;
+use App\Models\Status;
 use App\Models\User;
 use App\Notifications\FollowRequestApproved;
 use App\Notifications\FollowRequestIssued;
@@ -34,17 +35,22 @@ class UserController extends Controller
     {
         Gate::authorize('view', $user);
 
-        return $user->statuses()
+        return Status::query()
             ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
+            ->where('train_checkins.user_id', $user->id)
             ->with([
                 'event',
                 'likes',
                 'user.blockedByUsers',
                 'user.blockedUsers',
-                'checkin',
+                'client',
+                'checkin.statusTags',
                 'tags',
+                'mentions.mentioned',
                 'checkin.originStopover.station',
                 'checkin.destinationStopover.station',
+                'checkin.trip.operator',
+                'checkin.trip.motisSourceLicense',
                 'checkin.trip.stopovers.station',
             ])
             ->where(function ($query) {
