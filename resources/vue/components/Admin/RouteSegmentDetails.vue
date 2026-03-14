@@ -6,6 +6,20 @@ const props = defineProps<{ segmentId: string }>();
 
 const segment = ref<RouteSegmentResource | null>(null);
 const error = ref<string | null>(null);
+const assignStatus = ref<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+async function assignStopovers() {
+    assignStatus.value = 'loading';
+    try {
+        const res = await fetch(`/api/v1/route-segments/${props.segmentId}/assign-stopovers`, {
+            method: 'POST',
+            headers: { Accept: 'application/json' },
+        });
+        assignStatus.value = res.status === 202 ? 'success' : 'error';
+    } catch {
+        assignStatus.value = 'error';
+    }
+}
 
 function formatDistance(meters: number | null): string {
     if (meters === null) return '';
@@ -88,6 +102,24 @@ onMounted(async () => {
                     </tr>
                 </tbody>
             </table>
+            <div class="mt-2">
+                <button
+                    class="btn btn-sm"
+                    :class="{
+                        'btn-secondary': assignStatus === 'idle',
+                        'btn-warning': assignStatus === 'loading',
+                        'btn-success': assignStatus === 'success',
+                        'btn-danger': assignStatus === 'error',
+                    }"
+                    :disabled="assignStatus === 'loading' || assignStatus === 'success'"
+                    @click="assignStopovers"
+                >
+                    <span v-if="assignStatus === 'loading'">Dispatching...</span>
+                    <span v-else-if="assignStatus === 'success'">Job dispatched ✓</span>
+                    <span v-else-if="assignStatus === 'error'">Error | retry?</span>
+                    <span v-else>Re-Assign Stopovers</span>
+                </button>
+            </div>
         </div>
     </div>
 </template>

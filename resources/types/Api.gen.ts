@@ -3941,6 +3941,21 @@ export class Api<
         format: "json",
         ...params,
       }),
+
+    /**
+     * No description
+     *
+     * @tags Polyline
+     * @name AssignRouteSegmentToStopovers
+     * @summary Dispatch a background job that assigns this segment to all matching unassigned stopovers (admin only).
+     * @request POST:/route-segments/{id}/assign-stopovers
+     */
+    assignRouteSegmentToStopovers: (id: string, params: RequestParams = {}) =>
+      this.request<void, void>({
+        path: `/route-segments/${id}/assign-stopovers`,
+        method: "POST",
+        ...params,
+      }),
   };
   security = {
     /**

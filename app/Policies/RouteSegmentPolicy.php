@@ -38,4 +38,9 @@ class RouteSegmentPolicy
         // TODO: open up to contributors once route segment editing leaves experimental state
         return $user->hasRole('admin');
     }
+
+    public function assignStopovers(User $user, RouteSegment $routeSegment): bool
+    {
+        return $user->hasRole('admin');
+    }
 }
