@@ -12,6 +12,7 @@ use App\Http\Controllers\Backend\Social\MastodonProfileDetails;
 use App\Services\PersonalDataSelection\UserGdprDataService;
 use Carbon\Carbon;
 use Illuminate\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -19,10 +20,14 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Laravel\Passport\Contracts\OAuthenticatable;
 use Laravel\Passport\HasApiTokens;
+use Laravel\Passport\Token;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasPermissions;
 use Spatie\Permission\Traits\HasRoles;
 use Spatie\PersonalDataExport\ExportsPersonalData;
@@ -58,19 +63,19 @@ use Spatie\PersonalDataExport\PersonalDataSelection;
  * @property \Illuminate\Support\Carbon|null $recent_gdpr_export
  * @property DataProvider $data_provider
  * @property string|null $bio
- * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $blockedByUsers
+ * @property-read Collection<int, User> $blockedByUsers
  * @property-read int|null $blocked_by_users_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $blockedUsers
+ * @property-read Collection<int, User> $blockedUsers
  * @property-read int|null $blocked_users_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\OAuthClient> $clients
+ * @property-read Collection<int, OAuthClient> $clients
  * @property-read int|null $clients_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FollowRequest> $followRequests
+ * @property-read Collection<int, FollowRequest> $followRequests
  * @property-read int|null $follow_requests_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Follow> $followers
+ * @property-read Collection<int, Follow> $followers
  * @property-read int|null $followers_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Follow> $followings
+ * @property-read Collection<int, Follow> $followings
  * @property-read int|null $followings_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $follows
+ * @property-read Collection<int, User> $follows
  * @property-read int|null $follows_count
  * @property-read bool $follow_pending
  * @property-read bool $followed_by
@@ -83,43 +88,43 @@ use Spatie\PersonalDataExport\PersonalDataSelection;
  * @property-read float $train_distance
  * @property-read float $train_duration
  * @property-read bool $user_invisible_to_me
- * @property-read \App\Models\Station|null $home
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\IcsToken> $icsTokens
+ * @property-read Station|null $home
+ * @property-read Collection<int, IcsToken> $icsTokens
  * @property-read int|null $ics_tokens_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Like> $likes
+ * @property-read Collection<int, Like> $likes
  * @property-read int|null $likes_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $mutedUsers
+ * @property-read Collection<int, User> $mutedUsers
  * @property-read int|null $muted_users_count
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, DatabaseNotification> $notifications
+ * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\OAuthClient> $oAuthClients
+ * @property-read Collection<int, OAuthClient> $oAuthClients
  * @property-read int|null $o_auth_clients_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Permission> $permissions
+ * @property-read Collection<int, Permission> $permissions
  * @property-read int|null $permissions_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProfileLink> $profileLinks
+ * @property-read Collection<int, ProfileLink> $profileLinks
  * @property-read int|null $profile_links_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Role> $roles
+ * @property-read Collection<int, Role> $roles
  * @property-read int|null $roles_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Session> $sessions
+ * @property-read Collection<int, Session> $sessions
  * @property-read int|null $sessions_count
- * @property-read \App\Models\SocialLoginProfile|null $socialProfile
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Status> $statuses
+ * @property-read SocialLoginProfile|null $socialProfile
+ * @property-read Collection<int, Status> $statuses
  * @property-read int|null $statuses_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Passport\Token> $tokens
+ * @property-read Collection<int, Token> $tokens
  * @property-read int|null $tokens_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Checkin> $trainCheckins
+ * @property-read Collection<int, Checkin> $trainCheckins
  * @property-read int|null $train_checkins_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TrustedUser> $trustedByUsers
+ * @property-read Collection<int, TrustedUser> $trustedByUsers
  * @property-read int|null $trusted_by_users_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TrustedUser> $trustedUsers
+ * @property-read Collection<int, TrustedUser> $trustedUsers
  * @property-read int|null $trusted_users_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $userFollowRequests
+ * @property-read Collection<int, User> $userFollowRequests
  * @property-read int|null $user_follow_requests_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $userFollowers
+ * @property-read Collection<int, User> $userFollowers
  * @property-read int|null $user_followers_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $userFollowings
+ * @property-read Collection<int, User> $userFollowings
  * @property-read int|null $user_followings_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Webhook> $webhooks
+ * @property-read Collection<int, Webhook> $webhooks
  * @property-read int|null $webhooks_count
  *
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
@@ -159,9 +164,9 @@ use Spatie\PersonalDataExport\PersonalDataSelection;
  *
  * @property int $contribution_xp
  * @property int $contribution_level
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MailChange> $mailChanges
+ * @property-read Collection<int, MailChange> $mailChanges
  * @property-read int|null $mail_changes_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\OAuthClient> $oauthApps
+ * @property-read Collection<int, OAuthClient> $oauthApps
  * @property-read int|null $oauth_apps_count
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereContributionLevel($value)

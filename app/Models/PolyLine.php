@@ -3,21 +3,23 @@
 namespace App\Models;
 
 use App\Services\PolylineStorageService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
  * @property string $hash
  * @property string $polyline
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property string|null $source
  * @property int|null $parent_id
  * @property-read PolyLine|null $parent
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Trip> $trips
+ * @property-read Collection<int, Trip> $trips
  * @property-read int|null $trips_count
  *
  * @method static \Database\Factories\PolyLineFactory factory($count = null, $state = [])

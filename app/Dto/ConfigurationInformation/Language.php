@@ -2,6 +2,7 @@
 
 namespace App\Dto\ConfigurationInformation;
 
+use App\Traits\JsonResponseObject;
 use OpenApi\Attributes as OA;
 
 #[OA\Schema(
@@ -26,7 +27,7 @@ use OpenApi\Attributes as OA;
 )]
 readonly class Language
 {
-    use \App\Traits\JsonResponseObject;
+    use JsonResponseObject;
 
     public function __construct(
         public string $code,

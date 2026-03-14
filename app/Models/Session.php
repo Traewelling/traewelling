@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $user_agent
  * @property string $payload
  * @property int $last_activity
- * @property-read \App\Models\User|null $user
+ * @property-read User|null $user
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Session newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Session newQuery()

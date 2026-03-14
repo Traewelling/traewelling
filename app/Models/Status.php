@@ -5,13 +5,16 @@ namespace App\Models;
 use App\Enum\Business;
 use App\Enum\StationIdentifierType;
 use App\Enum\StatusVisibility;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Models\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
@@ -22,8 +25,8 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property string|null $body
  * @property int $user_id
  * @property Business|null $business
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property int|null $event_id
  * @property StatusVisibility $visibility
  * @property string|null $mastodon_post_id
@@ -31,23 +34,23 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property string|null $moderation_notes
  * @property bool $lock_visibility
  * @property bool $hide_body
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $activities
+ * @property-read Collection<int, Activity> $activities
  * @property-read int|null $activities_count
- * @property-read \App\Models\Checkin|null $checkin
- * @property-read \App\Models\OAuthClient|null $client
- * @property-read \App\Models\User|null $createdByUser
- * @property-read \App\Models\Event|null $event
+ * @property-read Checkin|null $checkin
+ * @property-read OAuthClient|null $client
+ * @property-read User|null $createdByUser
+ * @property-read Event|null $event
  * @property-read string $description
  * @property-read bool|null $favorited
  * @property-read bool $status_invisible_to_me
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Like> $likes
+ * @property-read Collection<int, Like> $likes
  * @property-read int|null $likes_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Mention> $mentions
+ * @property-read Collection<int, Mention> $mentions
  * @property-read int|null $mentions_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StatusTag> $tags
+ * @property-read Collection<int, StatusTag> $tags
  * @property-read int|null $tags_count
- * @property-read \App\Models\Checkin|null $trainCheckin
- * @property-read \App\Models\User|null $user
+ * @property-read Checkin|null $trainCheckin
+ * @property-read User|null $user
  *
  * @method static \Database\Factories\StatusFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Status newModelQuery()

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -13,15 +14,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $name
  * @property string|null $host
  * @property string|null $url
- * @property \Illuminate\Support\Carbon|null $begin
- * @property \Illuminate\Support\Carbon|null $end
+ * @property Carbon|null $begin
+ * @property Carbon|null $end
  * @property bool $processed
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property string|null $hashtag
  * @property int|null $admin_notification_id
- * @property-read \App\Models\Station|null $station
- * @property-read \App\Models\User|null $user
+ * @property-read Station|null $station
+ * @property-read User|null $user
  *
  * @method static \Database\Factories\EventSuggestionFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventSuggestion newModelQuery()

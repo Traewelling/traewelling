@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 /**
  * @property string $id
@@ -17,13 +19,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string|null $source_url
  * @property string|null $spdx
  * @property int $active
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property string|null $human_name
  * @property string|null $license_id
  * @property int $force_active
- * @property-read \App\Models\License|null $manualLicense
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Trip> $trips
+ * @property-read License|null $manualLicense
+ * @property-read Collection<int, Trip> $trips
  * @property-read int|null $trips_count
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MotisSourceLicense newModelQuery()

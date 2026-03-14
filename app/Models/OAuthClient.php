@@ -2,7 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Carbon;
+use Laravel\Passport\AuthCode;
 use Laravel\Passport\Client as PassportClient;
+use Laravel\Passport\Token;
 
 /**
  * @property int $id
@@ -14,17 +18,17 @@ use Laravel\Passport\Client as PassportClient;
  * @property bool $personal_access_client
  * @property bool $password_client
  * @property bool $revoked
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property string|null $authorized_webhook_url
  * @property string|null $privacy_policy_url
  * @property bool $webhooks_enabled
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Passport\AuthCode> $authCodes
+ * @property-read Collection<int, AuthCode> $authCodes
  * @property-read int|null $auth_codes_count
  * @property-read string|null $plain_secret
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Passport\Token> $tokens
+ * @property-read Collection<int, Token> $tokens
  * @property-read int|null $tokens_count
- * @property-read \App\Models\User|null $user
+ * @property-read User|null $user
  *
  * @method static \Laravel\Passport\Database\Factories\ClientFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OAuthClient newModelQuery()

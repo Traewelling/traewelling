@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 use phpGPX\Models\Point;
 
 /**
@@ -16,13 +17,13 @@ use phpGPX\Models\Point;
  * @property string|null $origin
  * @property string $identifier
  * @property string|null $name
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property int $relevance
  * @property float|null $latitude
  * @property float|null $longitude
  * @property-read Point $location
- * @property-read \App\Models\Station $station
+ * @property-read Station $station
  *
  * @method static \Database\Factories\StationIdentifierFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StationIdentifier newModelQuery()

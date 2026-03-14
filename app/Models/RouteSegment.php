@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use App\Dto\Coordinate;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Support\Carbon;
 use Traewelling\GooglePolyline\PolylineTranscoder;
 
 /**
@@ -20,13 +22,13 @@ use Traewelling\GooglePolyline\PolylineTranscoder;
  * @property string|null $path_type
  * @property string $polyline
  * @property int $polyline_precision
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Station $fromStation
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Stopover> $stopOvers
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Station $fromStation
+ * @property-read Collection<int, Stopover> $stopOvers
  * @property-read int|null $stop_overs_count
- * @property-read \App\Models\Station $toStation
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Trip> $trips
+ * @property-read Station $toStation
+ * @property-read Collection<int, Trip> $trips
  * @property-read int|null $trips_count
  *
  * @method static \Database\Factories\RouteSegmentFactory factory($count = null, $state = [])

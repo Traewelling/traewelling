@@ -24,7 +24,7 @@ class PrometheusServiceProvider extends ServiceProvider
     /**
      * The queue manager instance.
      *
-     * @var \Illuminate\Contracts\Queue\Factory
+     * @var Factory
      */
     protected $queueFactoryManager;
 

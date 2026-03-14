@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 /**
  * @property int $webhook_id
  * @property WebhookEventEnum $event
- * @property-read \App\Models\Webhook|null $webhook
+ * @property-read Webhook|null $webhook
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|WebhookEvent newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|WebhookEvent newQuery()
