@@ -24,6 +24,8 @@ import EventPage from '../vue/views/Event.vue';
 import Profile from '../vue/views/Profile/Profile.vue';
 import SingleStatus from '../vue/views/SingleStatus.vue';
 import StatsDaily from '../vue/views/Stats/Daily.vue';
+import TicketDetail from '../vue/views/TicketDetail.vue';
+import Tickets from '../vue/views/Tickets.vue';
 import './api/api';
 import './components/maps';
 
@@ -143,6 +145,8 @@ document.addEventListener('DOMContentLoaded', function () {
         contentApp.component('ActiveJourneys', ActiveJourneys);
         contentApp.component('StationMap', StationMap);
         contentApp.component('Leaderboard', Leaderboard);
+        contentApp.component('TicketDetail', TicketDetail);
+        contentApp.component('Tickets', Tickets);
         contentApp.use(i18nVue, i18nOptions);
         contentApp.use(pinia);
         contentApp.mount('#vue-content');

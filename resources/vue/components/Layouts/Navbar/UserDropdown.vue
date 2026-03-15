@@ -63,6 +63,11 @@ function logout() {
                     {{ trans('help') }}
                 </a>
             </li>
+            <li v-if="user.isClosedBeta">
+                <a class="dropdown-item" href="/tickets">
+                    <i class="fa-solid fa-ticket" /> {{ trans('tickets.title') }}
+                </a>
+            </li>
             <li v-if="user.isAdmin || user.isEventModerator">
                 <a class="dropdown-item" href="/admin"> <i class="fas fa-tools" /> Backend </a>
             </li>

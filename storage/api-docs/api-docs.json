@@ -3575,6 +3575,67 @@
                 ]
             }
         },
+        "/statuses/{id}/tickets": {
+            "put": {
+                "tags": [
+                    "Tickets"
+                ],
+                "summary": "Assign or remove a ticket from a status",
+                "description": "Assign or remove a ticket from a status. Only the status owner can perform this action.",
+                "operationId": "assignTicketToStatus",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Status-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StatusAssignTicketBody"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/StatusResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Status or ticket not found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/polyline/{ids}": {
             "get": {
                 "tags": [
@@ -4087,6 +4148,399 @@
                     {
                         "passport": [
                             "write-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/tickets": {
+            "get": {
+                "tags": [
+                    "Tickets"
+                ],
+                "summary": "List all tickets of the current user",
+                "description": "Returns all tickets of the currently authenticated user. Only available to users with the closed-beta role. Optionally filter by validity date using the `validOn` parameter.",
+                "operationId": "getTickets",
+                "parameters": [
+                    {
+                        "name": "validOn",
+                        "in": "query",
+                        "description": "Only return tickets valid on this date (YYYY-MM-DD). A ticket is valid if its valid_from is on or before this date (or null) and its valid_until is on or after this date (or null).",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2026-01-15"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/TicketResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Tickets"
+                ],
+                "summary": "Create a ticket",
+                "description": "Creates a new ticket for the currently authenticated user. Only available to users with the closed-beta role.",
+                "operationId": "createTicket",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "My BahnCard 100"
+                                    },
+                                    "valid_from": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-01-01",
+                                        "nullable": true
+                                    },
+                                    "valid_until": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-12-31",
+                                        "nullable": true
+                                    },
+                                    "price": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 3199,
+                                        "nullable": true
+                                    },
+                                    "currency": {
+                                        "type": "string",
+                                        "example": "EUR",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TicketResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden – closed-beta role required"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/tickets/{id}": {
+            "get": {
+                "tags": [
+                    "Tickets"
+                ],
+                "summary": "Get a ticket",
+                "description": "Returns a single ticket of the currently authenticated user.",
+                "operationId": "getTicket",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Ticket UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TicketResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Tickets"
+                ],
+                "summary": "Update a ticket",
+                "description": "Updates a ticket of the currently authenticated user.",
+                "operationId": "updateTicket",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Ticket UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "My BahnCard 100"
+                                    },
+                                    "valid_from": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-01-01",
+                                        "nullable": true
+                                    },
+                                    "valid_until": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-12-31",
+                                        "nullable": true
+                                    },
+                                    "price": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 3199,
+                                        "nullable": true
+                                    },
+                                    "currency": {
+                                        "type": "string",
+                                        "example": "EUR",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TicketResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Tickets"
+                ],
+                "summary": "Delete a ticket",
+                "description": "Deletes a ticket of the currently authenticated user. Associated statuses will have their ticket reference removed.",
+                "operationId": "deleteTicket",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Ticket UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/tickets/{id}/statistics": {
+            "get": {
+                "tags": [
+                    "Tickets"
+                ],
+                "summary": "Get statistics for a ticket",
+                "description": "Returns usage statistics for a single ticket of the currently authenticated user.",
+                "operationId": "getTicketStatistics",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Ticket UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TicketStatisticsResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "read-statistics"
                         ]
                     },
                     {
@@ -6392,6 +6846,20 @@
                 },
                 "type": "object"
             },
+            "StatusAssignTicketBody": {
+                "title": "StatusAssignTicketBody",
+                "description": "Assign or remove a ticket from a status",
+                "properties": {
+                    "ticketId": {
+                        "description": "UUID of the ticket to assign, or null to remove the assignment",
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "00000000-0000-0000-0000-000000000000",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
             "Polyline": {
                 "title": "Polyline",
                 "description": "Polyline of a single status as GeoJSON Feature",
@@ -7757,6 +8225,15 @@
                             "$ref": "#/components/schemas/StatusTagResource"
                         }
                     },
+                    "ticket": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/TicketResource"
+                            }
+                        ],
+                        "nullable": true,
+                        "description": "The ticket assigned to this status. Only present for the status owner."
+                    },
                     "createdAt": {
                         "description": "creation date of this status",
                         "type": "string",
@@ -7922,6 +8399,210 @@
                         "description": "is this stopover cancelled?",
                         "type": "boolean",
                         "example": false
+                    }
+                },
+                "type": "object"
+            },
+            "TicketResource": {
+                "title": "TicketResource",
+                "description": "A transit ticket / Fahrkarte",
+                "required": [
+                    "id",
+                    "name",
+                    "validFrom",
+                    "validUntil",
+                    "price",
+                    "currency",
+                    "createdAt"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "UUID of the ticket",
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "00000000-0000-0000-0000-000000000000"
+                    },
+                    "name": {
+                        "description": "User-defined name of the ticket",
+                        "type": "string",
+                        "example": "My BahnCard 100"
+                    },
+                    "validFrom": {
+                        "description": "Start of validity period (ISO 8601 date)",
+                        "type": "string",
+                        "format": "date",
+                        "example": "2026-01-01",
+                        "nullable": true
+                    },
+                    "validUntil": {
+                        "description": "End of validity period (ISO 8601 date)",
+                        "type": "string",
+                        "format": "date",
+                        "example": "2026-12-31",
+                        "nullable": true
+                    },
+                    "price": {
+                        "description": "Price of the ticket",
+                        "type": "number",
+                        "format": "float",
+                        "example": 3199,
+                        "nullable": true
+                    },
+                    "currency": {
+                        "description": "Currency of the price (free-form, e.g. EUR, CHF)",
+                        "type": "string",
+                        "example": "EUR",
+                        "nullable": true
+                    },
+                    "createdAt": {
+                        "description": "ISO 8601 timestamp of creation",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-03-01T00:00:00Z"
+                    },
+                    "tripCount": {
+                        "description": "Number of trips assigned to this ticket",
+                        "type": "integer",
+                        "example": 42
+                    },
+                    "totalDistance": {
+                        "description": "Total distance of all trips assigned to this ticket in meters",
+                        "type": "integer",
+                        "example": 12340
+                    },
+                    "totalDuration": {
+                        "description": "Total duration of all trips assigned to this ticket in minutes",
+                        "type": "integer",
+                        "example": 1020
+                    }
+                },
+                "type": "object"
+            },
+            "TicketStatisticsResource": {
+                "title": "TicketStatisticsResource",
+                "description": "Usage statistics for a single ticket",
+                "properties": {
+                    "tripCount": {
+                        "description": "Total number of trips assigned to this ticket",
+                        "type": "integer",
+                        "example": 42
+                    },
+                    "distance": {
+                        "description": "Total distance of all assigned trips in meters",
+                        "type": "integer",
+                        "example": 123400
+                    },
+                    "duration": {
+                        "description": "Total duration of all assigned trips in minutes",
+                        "type": "integer",
+                        "example": 1020
+                    },
+                    "firstUsed": {
+                        "description": "Date of the first trip using this ticket (YYYY-MM-DD)",
+                        "type": "string",
+                        "format": "date",
+                        "example": "2026-01-03",
+                        "nullable": true
+                    },
+                    "lastUsed": {
+                        "description": "Date of the most recent trip using this ticket (YYYY-MM-DD)",
+                        "type": "string",
+                        "format": "date",
+                        "example": "2026-03-14",
+                        "nullable": true
+                    },
+                    "costPerTrip": {
+                        "description": "Ticket price divided by number of trips. Null if no price set.",
+                        "type": "number",
+                        "format": "float",
+                        "example": 76.17,
+                        "nullable": true
+                    },
+                    "costPerKm": {
+                        "description": "Ticket price per kilometer. Null if no price set or total distance is zero.",
+                        "type": "number",
+                        "format": "float",
+                        "example": 0.26,
+                        "nullable": true
+                    },
+                    "costPerHour": {
+                        "description": "Ticket price per hour of travel. Null if no price set or total duration is zero.",
+                        "type": "number",
+                        "format": "float",
+                        "example": 4.48,
+                        "nullable": true
+                    },
+                    "purposes": {
+                        "description": "Trip counts and distances grouped by travel purpose",
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "reason": {
+                                    "description": "Business value (0=private, 1=business, 2=commute)",
+                                    "type": "string",
+                                    "example": "2",
+                                    "nullable": true
+                                },
+                                "count": {
+                                    "type": "integer",
+                                    "example": 30
+                                },
+                                "distance": {
+                                    "description": "Total distance for this purpose in meters",
+                                    "type": "integer",
+                                    "example": 9000
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "categories": {
+                        "description": "Trip counts and distances grouped by transport category",
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "name": {
+                                    "description": "Transport category (e.g. nationalExpress, tram, bus)",
+                                    "type": "string",
+                                    "example": "nationalExpress",
+                                    "nullable": true
+                                },
+                                "count": {
+                                    "type": "integer",
+                                    "example": 28
+                                },
+                                "distance": {
+                                    "description": "Total distance for this category in meters",
+                                    "type": "integer",
+                                    "example": 102000
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "operators": {
+                        "description": "Distance grouped by operator, top 10 by distance",
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "name": {
+                                    "description": "Operator name",
+                                    "type": "string",
+                                    "example": "DB Fernverkehr",
+                                    "nullable": true
+                                },
+                                "count": {
+                                    "type": "integer",
+                                    "example": 28
+                                },
+                                "distance": {
+                                    "description": "Total distance for this operator in meters",
+                                    "type": "integer",
+                                    "example": 102000
+                                }
+                            },
+                            "type": "object"
+                        }
                     }
                 },
                 "type": "object"
@@ -8772,6 +9453,10 @@
         {
             "name": "Security",
             "description": "Security"
+        },
+        {
+            "name": "Tickets",
+            "description": "Tickets"
         },
         {
             "name": "Trips",

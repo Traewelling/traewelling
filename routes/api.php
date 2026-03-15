@@ -32,6 +32,7 @@ use App\Http\Controllers\API\v1\StationController;
 use App\Http\Controllers\API\v1\StatisticsController;
 use App\Http\Controllers\API\v1\StatusController;
 use App\Http\Controllers\API\v1\StatusTagController;
+use App\Http\Controllers\API\v1\TicketController;
 use App\Http\Controllers\API\v1\TokenController;
 use App\Http\Controllers\API\v1\TransportController;
 use App\Http\Controllers\API\v1\TripController;
@@ -70,6 +71,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::group(['middleware' => ['scope:write-statuses']], static function () {
             Route::delete('status/{id}', [StatusController::class, 'destroy'])->whereNumber('id');
             Route::put('status/{id}', [StatusController::class, 'update']);
+            Route::put('statuses/{id}/tickets', [StatusController::class, 'assignTicket'])->whereNumber('id');
             Route::post('status/{statusId}/tags', [StatusTagController::class, 'store']);
             Route::put('status/{statusId}/tags/{tagKey}', [StatusTagController::class, 'update']);
             Route::delete('status/{statusId}/tags/{tagKey}', [StatusTagController::class, 'destroy']);
@@ -202,6 +204,9 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
 
         Route::apiResource('route-segments', RouteSegmentController::class)->only(['index', 'show', 'store', 'destroy']);
         Route::post('route-segments/{id}/assign-stopovers', [RouteSegmentController::class, 'assignStopovers']);
+
+        Route::apiResource('tickets', TicketController::class);
+        Route::get('tickets/{id}/statistics', [TicketController::class, 'statistics'])->middleware(['scope:read-statistics']);
 
         Route::prefix('community')->group(static function () {
             Route::get('profile', [CommunityController::class, 'getMyProfile']);

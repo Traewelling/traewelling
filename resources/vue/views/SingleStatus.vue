@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
 import { DateTime } from 'luxon';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { Api, StatusResource, StopoverResource, UserAuthResource, UserResource } from '../../types/Api.gen';
 import CheckinSuccessHelper from '../components/CheckinSuccessHelper.vue';
 import Error403 from '../components/Errors/403.vue';
 import Error404 from '../components/Errors/404.vue';
 import LoadingSkeletonRows from '../components/Loader/LoadingSkeletonRows.vue';
 import CoPassengers from '../components/Status/CoPassengers.vue';
+import StatusTicket from '../components/Status/Partials/StatusTicket.vue';
 import StatusCard from '../components/Status/StatusCard.vue';
 import TagHelper from '../components/TagHelper.vue';
 import { getDepartureForStatus } from '../helpers/DateTimeHelper';
@@ -21,6 +22,9 @@ const user = useUserStore();
 const pageError = ref<'403' | '404' | null>(null);
 const stopovers = ref<StopoverResource[]>([]);
 const hasCoPassengers = ref(false);
+const hasRightColumn = computed(
+    () => hasCoPassengers.value || (!!user.user && status.value?.userDetails.id === user.user.id && user.isClosedBeta),
+);
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 
@@ -120,17 +124,17 @@ fetchLikes();
 
     <template v-else-if="status">
         <div class="row justify-content-center">
-            <div :class="hasCoPassengers ? 'col-md-8 col-lg-7' : 'col-md-8'">
+            <div :class="hasRightColumn ? 'col-md-8 col-lg-7' : 'col-md-8'">
                 <CheckinSuccessHelper v-if="user.user && status.userDetails.id === user.user.id" />
                 <h2 class="fs-5">
                     {{ getDepartureForStatus(status).toLocaleString(DateTime.DATE_HUGE) }}
                 </h2>
             </div>
-            <div v-if="hasCoPassengers" class="d-none d-lg-block col-lg-5"></div>
+            <div v-if="hasRightColumn" class="d-none d-lg-block col-lg-5"></div>
         </div>
 
         <div class="row justify-content-center">
-            <div :class="hasCoPassengers ? 'col-md-8 col-lg-7' : 'col-md-8'">
+            <div :class="hasRightColumn ? 'col-md-8 col-lg-7' : 'col-md-8'">
                 <StatusCard
                     :status
                     :show-map="true"
@@ -138,6 +142,7 @@ fetchLikes();
                     :stopovers
                     @status-liked="addSelfToLikes()"
                     @status-unliked="removeSelfFromLikes()"
+                    @status-updated="status = $event"
                 />
                 <TagHelper
                     :status-id="status.id"
@@ -173,6 +178,15 @@ fetchLikes();
             </div>
 
             <div class="col-md-8 col-lg-5 mt-3 mt-lg-0">
+                <StatusTicket
+                    v-if="user.user?.id === status.userDetails.id && user.isClosedBeta"
+                    :status-id="status.id"
+                    :ticket="status.ticket ?? null"
+                    :departure-planned="status.checkin.origin.departurePlanned"
+                    :trip-distance="status.checkin.distance"
+                    :trip-duration="status.checkin.duration"
+                    @ticket-changed="status.ticket = $event"
+                />
                 <CoPassengers
                     :trip-id="status.checkin.trip"
                     :current-status-id="status.id"

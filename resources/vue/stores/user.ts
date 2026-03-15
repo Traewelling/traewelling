@@ -62,6 +62,9 @@ export const useUserStore = defineStore('user', {
         isEventModerator(): boolean {
             return this.user?.roles?.includes('event-moderator') ?? false;
         },
+        isClosedBeta(): boolean {
+            return this.user?.roles?.includes('closed-beta') ?? false;
+        },
         isAuthenticated(): boolean {
             return this.authenticated === true;
         },

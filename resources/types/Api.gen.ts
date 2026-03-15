@@ -527,6 +527,19 @@ export interface StatusUpdateBody {
 }
 
 /**
+ * StatusAssignTicketBody
+ * Assign or remove a ticket from a status
+ */
+export interface StatusAssignTicketBody {
+  /**
+   * UUID of the ticket to assign, or null to remove the assignment
+   * @format uuid
+   * @example "00000000-0000-0000-0000-000000000000"
+   */
+  ticketId?: string | null;
+}
+
+/**
  * Polyline
  * Polyline of a single status as GeoJSON Feature
  */
@@ -1370,6 +1383,8 @@ export interface StatusResource {
   /** User who created this check-in on behalf of the status owner (null if self-checkin) */
   createdBy: LightUserResource | null;
   tags: StatusTagResource[];
+  /** The ticket assigned to this status. Only present for the status owner. */
+  ticket?: TicketResource | null;
   /**
    * creation date of this status
    * @format datetime
@@ -1484,6 +1499,165 @@ export interface StopoverResource {
    * @example false
    */
   cancelled: boolean;
+}
+
+/**
+ * TicketResource
+ * A transit ticket / Fahrkarte
+ */
+export interface TicketResource {
+  /**
+   * UUID of the ticket
+   * @format uuid
+   * @example "00000000-0000-0000-0000-000000000000"
+   */
+  id: string;
+  /**
+   * User-defined name of the ticket
+   * @example "My BahnCard 100"
+   */
+  name: string;
+  /**
+   * Start of validity period (ISO 8601 date)
+   * @format date
+   * @example "2026-01-01"
+   */
+  validFrom: string | null;
+  /**
+   * End of validity period (ISO 8601 date)
+   * @format date
+   * @example "2026-12-31"
+   */
+  validUntil: string | null;
+  /**
+   * Price of the ticket
+   * @format float
+   * @example 3199
+   */
+  price: number | null;
+  /**
+   * Currency of the price (free-form, e.g. EUR, CHF)
+   * @example "EUR"
+   */
+  currency: string | null;
+  /**
+   * ISO 8601 timestamp of creation
+   * @format date-time
+   * @example "2026-03-01T00:00:00Z"
+   */
+  createdAt: string;
+  /**
+   * Number of trips assigned to this ticket
+   * @example 42
+   */
+  tripCount?: number;
+  /**
+   * Total distance of all trips assigned to this ticket in meters
+   * @example 12340
+   */
+  totalDistance?: number;
+  /**
+   * Total duration of all trips assigned to this ticket in minutes
+   * @example 1020
+   */
+  totalDuration?: number;
+}
+
+/**
+ * TicketStatisticsResource
+ * Usage statistics for a single ticket
+ */
+export interface TicketStatisticsResource {
+  /**
+   * Total number of trips assigned to this ticket
+   * @example 42
+   */
+  tripCount?: number;
+  /**
+   * Total distance of all assigned trips in meters
+   * @example 123400
+   */
+  distance?: number;
+  /**
+   * Total duration of all assigned trips in minutes
+   * @example 1020
+   */
+  duration?: number;
+  /**
+   * Date of the first trip using this ticket (YYYY-MM-DD)
+   * @format date
+   * @example "2026-01-03"
+   */
+  firstUsed?: string | null;
+  /**
+   * Date of the most recent trip using this ticket (YYYY-MM-DD)
+   * @format date
+   * @example "2026-03-14"
+   */
+  lastUsed?: string | null;
+  /**
+   * Ticket price divided by number of trips. Null if no price set.
+   * @format float
+   * @example 76.17
+   */
+  costPerTrip?: number | null;
+  /**
+   * Ticket price per kilometer. Null if no price set or total distance is zero.
+   * @format float
+   * @example 0.26
+   */
+  costPerKm?: number | null;
+  /**
+   * Ticket price per hour of travel. Null if no price set or total duration is zero.
+   * @format float
+   * @example 4.48
+   */
+  costPerHour?: number | null;
+  /** Trip counts and distances grouped by travel purpose */
+  purposes?: {
+    /**
+     * Business value (0=private, 1=business, 2=commute)
+     * @example "2"
+     */
+    reason?: string | null;
+    /** @example 30 */
+    count?: number;
+    /**
+     * Total distance for this purpose in meters
+     * @example 9000
+     */
+    distance?: number;
+  }[];
+  /** Trip counts and distances grouped by transport category */
+  categories?: {
+    /**
+     * Transport category (e.g. nationalExpress, tram, bus)
+     * @example "nationalExpress"
+     */
+    name?: string | null;
+    /** @example 28 */
+    count?: number;
+    /**
+     * Total distance for this category in meters
+     * @example 102000
+     */
+    distance?: number;
+  }[];
+  /** Distance grouped by operator, top 10 by distance */
+  operators?: {
+    /**
+     * Operator name
+     * @example "DB Fernverkehr"
+     */
+    name?: string | null;
+    /** @example 28 */
+    count?: number;
+    /**
+     * Total distance for this operator in meters
+     * @example 102000
+     */
+    distance?: number;
+  }[];
 }
 
 export interface TokenResource {
@@ -4594,6 +4768,35 @@ export class Api<
       }),
 
     /**
+     * @description Assign or remove a ticket from a status. Only the status owner can perform this action.
+     *
+     * @tags Tickets
+     * @name AssignTicketToStatus
+     * @summary Assign or remove a ticket from a status
+     * @request PUT:/statuses/{id}/tickets
+     * @secure
+     */
+    assignTicketToStatus: (
+      data: StatusAssignTicketBody,
+      id?: number,
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data?: StatusResource;
+        },
+        void
+      >({
+        path: `/statuses/${id}/tickets`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * @description Returns a collection of all visible tags for the given statuses, if user is authorized
      *
      * @tags Status
@@ -4718,6 +4921,205 @@ export class Api<
         void
       >({
         path: `/stopovers/${ids}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+  };
+  tickets = {
+    /**
+     * @description Returns all tickets of the currently authenticated user. Only available to users with the closed-beta role. Optionally filter by validity date using the `validOn` parameter.
+     *
+     * @tags Tickets
+     * @name GetTickets
+     * @summary List all tickets of the current user
+     * @request GET:/tickets
+     * @secure
+     */
+    getTickets: (
+      query?: {
+        /**
+         * Only return tickets valid on this date (YYYY-MM-DD). A ticket is valid if its valid_from is on or before this date (or null) and its valid_until is on or after this date (or null).
+         * @format date
+         * @example "2026-01-15"
+         */
+        validOn?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data: TicketResource[];
+        },
+        void
+      >({
+        path: `/tickets`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Creates a new ticket for the currently authenticated user. Only available to users with the closed-beta role.
+     *
+     * @tags Tickets
+     * @name CreateTicket
+     * @summary Create a ticket
+     * @request POST:/tickets
+     * @secure
+     */
+    createTicket: (
+      data: {
+        /** @example "My BahnCard 100" */
+        name: string;
+        /**
+         * @format date
+         * @example "2026-01-01"
+         */
+        valid_from?: string | null;
+        /**
+         * @format date
+         * @example "2026-12-31"
+         */
+        valid_until?: string | null;
+        /**
+         * @format float
+         * @example 3199
+         */
+        price?: number | null;
+        /** @example "EUR" */
+        currency?: string | null;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          /** A transit ticket / Fahrkarte */
+          data?: TicketResource;
+        },
+        void
+      >({
+        path: `/tickets`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Returns a single ticket of the currently authenticated user.
+     *
+     * @tags Tickets
+     * @name GetTicket
+     * @summary Get a ticket
+     * @request GET:/tickets/{id}
+     * @secure
+     */
+    getTicket: (id: string, params: RequestParams = {}) =>
+      this.request<
+        {
+          /** A transit ticket / Fahrkarte */
+          data?: TicketResource;
+        },
+        void
+      >({
+        path: `/tickets/${id}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Updates a ticket of the currently authenticated user.
+     *
+     * @tags Tickets
+     * @name UpdateTicket
+     * @summary Update a ticket
+     * @request PUT:/tickets/{id}
+     * @secure
+     */
+    updateTicket: (
+      id: string,
+      data: {
+        /** @example "My BahnCard 100" */
+        name?: string;
+        /**
+         * @format date
+         * @example "2026-01-01"
+         */
+        valid_from?: string | null;
+        /**
+         * @format date
+         * @example "2026-12-31"
+         */
+        valid_until?: string | null;
+        /**
+         * @format float
+         * @example 3199
+         */
+        price?: number | null;
+        /** @example "EUR" */
+        currency?: string | null;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          /** A transit ticket / Fahrkarte */
+          data?: TicketResource;
+        },
+        void
+      >({
+        path: `/tickets/${id}`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Deletes a ticket of the currently authenticated user. Associated statuses will have their ticket reference removed.
+     *
+     * @tags Tickets
+     * @name DeleteTicket
+     * @summary Delete a ticket
+     * @request DELETE:/tickets/{id}
+     * @secure
+     */
+    deleteTicket: (id: string, params: RequestParams = {}) =>
+      this.request<void, void>({
+        path: `/tickets/${id}`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Returns usage statistics for a single ticket of the currently authenticated user.
+     *
+     * @tags Tickets
+     * @name GetTicketStatistics
+     * @summary Get statistics for a ticket
+     * @request GET:/tickets/{id}/statistics
+     * @secure
+     */
+    getTicketStatistics: (id: string, params: RequestParams = {}) =>
+      this.request<
+        {
+          /** Usage statistics for a single ticket */
+          data?: TicketStatisticsResource;
+        },
+        void
+      >({
+        path: `/tickets/${id}/statistics`,
         method: "GET",
         secure: true,
         format: "json",
