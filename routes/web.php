@@ -202,6 +202,9 @@ Route::middleware(['auth', 'privacy'])->group(function () {
 
     Route::view('/export', 'export')->name('export');
 
+    Route::view('/tickets', 'vue.tickets')->name('tickets');
+    Route::view('/tickets/{id}', 'vue.ticket-detail')->name('tickets.detail');
+
     Route::post('/createfollow', [FrontendUserController::class, 'CreateFollow'])
         ->name('follow.create'); // TODO: Replace with API Endpoint
 

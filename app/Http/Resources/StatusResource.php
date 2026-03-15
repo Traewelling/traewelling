@@ -87,6 +87,12 @@ use OpenApi\Attributes as OA;
             items: new OA\Items(ref: '#/components/schemas/StatusTagResource'),
         ),
         new OA\Property(
+            property: 'ticket',
+            ref: '#/components/schemas/TicketResource',
+            description: 'The ticket assigned to this status. Only present for the status owner.',
+            nullable: true,
+        ),
+        new OA\Property(
             property: 'createdAt',
             description: 'creation date of this status',
             type: 'string',
@@ -117,6 +123,11 @@ class StatusResource extends JsonResource
             'user' => new LightUserResource($this->user),
             'createdBy' => $this->createdByUser ? new LightUserResource($this->createdByUser) : null,
             'tags' => StatusTagResource::collection($this->tags->filter(fn (StatusTag $tag) => Gate::allows('view', $tag))),
+            'ticket' => $this->when(
+                auth()->id() === $this->user_id && $this->ticket !== null,
+                fn () => new TicketResource($this->ticket),
+                null,
+            ),
             'createdAt' => $this->created_at->toIso8601String(),
 
             'train' => new TransportResource($this->checkin), // TODO: delete after 2026-07 (replaced by 'checkin')

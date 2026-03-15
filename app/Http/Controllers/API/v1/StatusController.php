@@ -16,6 +16,7 @@ use App\Http\Resources\StatusResource;
 use App\Http\Resources\StopoverResource;
 use App\Models\Status;
 use App\Models\Stopover;
+use App\Models\Ticket;
 use App\Models\Trip;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -45,6 +46,14 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'manualArrival', description: 'Manual arrival time set by the user', type: 'string', format: 'date', example: '2020-01-01 13:00:00', nullable: true),
         new OA\Property(property: 'destinationId', description: 'Destination station id', type: 'string', example: '1', nullable: true),
         new OA\Property(property: 'destinationArrivalPlanned', description: 'Destination arrival time', type: 'string', format: 'date', example: '2020-01-01 13:00:00', nullable: true),
+    ],
+)]
+#[OA\Schema(
+    schema: 'StatusAssignTicketBody',
+    title: 'StatusAssignTicketBody',
+    description: 'Assign or remove a ticket from a status',
+    properties: [
+        new OA\Property(property: 'ticketId', description: 'UUID of the ticket to assign, or null to remove the assignment', type: 'string', format: 'uuid', example: '00000000-0000-0000-0000-000000000000', nullable: true),
     ],
 )]
 #[OA\Schema(
@@ -564,6 +573,7 @@ class StatusController extends Controller
             if (array_key_exists('eventId', $validated)) { // don't use isset here as it would return false if eventId is null
                 $updatePayload['event_id'] = $validated['eventId'];
             }
+
             $status->update($updatePayload);
 
             if (array_key_exists('manualDeparture', $validated)) {
@@ -614,6 +624,67 @@ class StatusController extends Controller
 
             return $this->sendError('Invalid Arguments', 400);
         }
+    }
+
+    #[OA\Put(
+        path: '/statuses/{id}/tickets',
+        operationId: 'assignTicketToStatus',
+        description: 'Assign or remove a ticket from a status. Only the status owner can perform this action.',
+        summary: 'Assign or remove a ticket from a status',
+        security: [['passport' => ['write-statuses']], ['token' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(ref: '#/components/schemas/StatusAssignTicketBody'),
+        ),
+        tags: ['Tickets'],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                description: 'Status-ID',
+                in: 'path',
+                schema: new OA\Schema(type: 'integer'),
+                example: 1337,
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [new OA\Property(property: 'data', ref: '#/components/schemas/StatusResource')],
+                ),
+            ),
+            new OA\Response(response: 404, description: 'Status or ticket not found'),
+        ],
+    )]
+    public function assignTicket(Request $request, int $id): JsonResponse
+    {
+        $status = Status::find($id);
+        if ($status === null || $status->user_id !== auth()->id()) {
+            return $this->sendError('Status not found.', 404);
+        }
+
+        $validated = Validator::make($request->all(), [
+            'ticketId' => ['present', 'nullable', 'uuid'],
+        ])->validate();
+
+        if ($validated['ticketId'] !== null) {
+            $ticket = Ticket::where('id', $validated['ticketId'])
+                ->where('user_id', auth()->id())
+                ->first();
+
+            if ($ticket === null) {
+                return $this->sendError('Ticket not found.', 404);
+            }
+
+            $status->ticket_id = $ticket->id;
+        } else {
+            $status->ticket_id = null;
+        }
+
+        $status->save();
+
+        return $this->sendResponse(new StatusResource($status->fresh()));
     }
 
     /**

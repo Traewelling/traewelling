@@ -118,6 +118,7 @@ function deleteSelf() {
 function statusUpdated(status: StatusResource) {
     statusObject.value = status;
     updateProgress();
+    emit('status-updated', status);
 }
 </script>
 

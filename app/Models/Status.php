@@ -28,6 +28,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int|null $event_id
+ * @property string|null $ticket_id
  * @property StatusVisibility $visibility
  * @property string|null $mastodon_post_id
  * @property int|null $client_id
@@ -37,6 +38,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property-read Collection<int, Activity> $activities
  * @property-read int|null $activities_count
  * @property-read Checkin|null $checkin
+ * @property-read Ticket|null $ticket
  * @property-read OAuthClient|null $client
  * @property-read User|null $createdByUser
  * @property-read Event|null $event
@@ -77,7 +79,7 @@ class Status extends Model
     use HasFactory, LogsActivity;
 
     protected $fillable = [
-        'user_id', 'created_by_user_id', 'body', 'business', 'visibility', 'event_id', 'mastodon_post_id', 'client_id',
+        'user_id', 'created_by_user_id', 'body', 'business', 'visibility', 'event_id', 'ticket_id', 'mastodon_post_id', 'client_id',
         'moderation_notes', 'lock_visibility', 'hide_body',
     ];
 
@@ -93,6 +95,7 @@ class Status extends Model
         'business' => Business::class,
         'visibility' => StatusVisibility::class,
         'event_id' => 'integer',
+        'ticket_id' => 'string',
         'mastodon_post_id' => 'string',
         'client_id' => 'integer',
         'moderation_notes' => 'string',
@@ -138,6 +141,11 @@ class Status extends Model
     public function event(): HasOne
     {
         return $this->hasOne(Event::class, 'id', 'event_id');
+    }
+
+    public function ticket(): BelongsTo
+    {
+        return $this->belongsTo(Ticket::class);
     }
 
     public function tags(): HasMany

@@ -35,6 +35,17 @@ Check back here regularly to stay ahead of removals.
 
 ---
 
+# 2026-03-15 (Ticket management – closed beta)
+
+Added new `GET|POST|PUT|DELETE /api/v1/tickets` endpoints for managing transit tickets.
+Only available to users with the `closed-beta` role.
+
+Added `ticket` field to `StatusResource`: only present when the authenticated user is the status owner and a ticket is assigned.
+
+Added `PUT /api/v1/statuses/{id}/tickets` endpoint for assigning or removing a ticket from a status (`ticketId`: UUID or `null`).
+
+---
+
 # 2026-03-14 (Freight train category)
 
 Added new transport category `freightTrain` to `HafasTravelType`. Users can now create manual trips with the freight train type.
