@@ -23,6 +23,7 @@ class SendEmailChangedMail implements ShouldQueue
     {
         $this->user = $user;
         $this->change = $mailChange;
+        $this->onQueue('important');
     }
 
     public function handle(): void

@@ -13,6 +13,7 @@ use App\Exceptions\DataProviderException;
 use App\Models\Checkin;
 use App\Models\Trip;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -20,13 +21,21 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use PDOException;
 
-class RefreshTrip implements ShouldQueue
+class RefreshTrip implements ShouldBeUnique, ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public int $tries = 1;
 
-    public function __construct(private readonly Trip $trip) {}
+    public function __construct(private readonly Trip $trip)
+    {
+        $this->onQueue('realtime');
+    }
+
+    public function uniqueId(): string
+    {
+        return $this->trip->trip_id;
+    }
 
     private function getDataProvider(): DataProviderInterface
     {

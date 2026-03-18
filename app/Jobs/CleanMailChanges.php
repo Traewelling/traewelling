@@ -13,6 +13,11 @@ class CleanMailChanges implements ShouldQueue
 {
     use Queueable;
 
+    public function __construct()
+    {
+        $this->onQueue('background');
+    }
+
     public function handle(): void
     {
         Log::info('Starting to clean up old mail changes.');

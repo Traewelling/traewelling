@@ -44,7 +44,11 @@ else
     elif [ "$role" = "queue" ]; then
 
         echo "Running the queue..."
-        exec runuser -u www-data -- php artisan queue:work --queue=default,webhook,export
+        # NOTE: Running all queues in a single worker is only suitable for small/development setups.
+        # For production or larger installations, each queue (especially 'realtime' and 'important')
+        # should be run as a separate worker process — with an appropriate number of workers per queue.
+        # Example: queue:work --queue=realtime (multiple workers), queue:work --queue=background (one worker)
+        exec runuser -u www-data -- php artisan queue:work --queue=realtime,important,normal,low,background
 
     elif [ "$role" = "scheduler" ]; then
 

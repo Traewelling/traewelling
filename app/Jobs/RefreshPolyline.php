@@ -33,6 +33,7 @@ class RefreshPolyline implements ShouldQueue
     {
         $this->trip = $trip;
         $this->reRoutingController = $reRoutingController ?? app(ReRoutingController::class);
+        $this->onQueue('normal');
     }
 
     public static function dispatch(Trip $trip, ?ReRoutingController $reRoutingController = null): PendingDispatch

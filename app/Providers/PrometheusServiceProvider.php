@@ -217,7 +217,7 @@ class PrometheusServiceProvider extends ServiceProvider
         Prometheus::addGauge('queue_size')
             ->helpText('How many items are currently in the job queue?')
             ->labels(['queue'])
-            ->value(fn () => collect(['default', 'webhook', 'export'])->map(function ($queue) {
+            ->value(fn () => collect(['realtime', 'important', 'normal', 'low', 'background'])->map(function ($queue) {
                 $size = $this->queueFactoryManager->connection(config('queue.default'))->size($queue);
 
                 return [$size, [$queue]];

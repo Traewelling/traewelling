@@ -18,6 +18,7 @@ class MonitoredPersonalDataExportJob extends CreatePersonalDataExportJob
     {
         $this->timeout = config('trwl.gdpr_export.timeout', 30 * 60);
         $this->tries = config('trwl.gdpr_export.tries', 3);
+        $this->onQueue('low');
         parent::__construct($user);
     }
 
