@@ -60,7 +60,7 @@ return [
         ],
     ],
     'refresh' => [
-        'max_trips_per_minute' => env('REFRESH_TRIPS_PER_MINUTE', 1),
+        'min_trip_interval_minutes' => env('REFRESH_MIN_TRIP_INTERVAL_MINUTES', 2),
     ],
     'cache' => [
         'global-statistics-retention-seconds' => env('GLOBAL_STATISTICS_CACHE_RETENTION_SECONDS', 60 * 60),

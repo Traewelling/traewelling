@@ -68,7 +68,7 @@ class TripRepository
                     ->orWhere('origin_stopover.departure_real', '<=', now()->addMinutes(20));
             })
             ->where(function ($query) {
-                $query->where('hafas_trips.last_refreshed', '<', now()->subMinutes(5))
+                $query->where('hafas_trips.last_refreshed', '<', now()->subMinutes(config('trwl.refresh.min_trip_interval_minutes', 2)))
                     ->orWhereNull('hafas_trips.last_refreshed');
             })
             ->where('hafas_trips.source', $source->value)
