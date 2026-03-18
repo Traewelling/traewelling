@@ -14,9 +14,12 @@ class FetchManualTransitousLicenses implements ShouldQueue
 {
     use Queueable;
 
-    public $queue = 'background';
-
     private const string LICENSE_URL = 'https://raw.githubusercontent.com/Traewelling/transitous-licenses/refs/heads/main/licenses.json';
+
+    public function __construct()
+    {
+        $this->onQueue('background');
+    }
 
     public function handle(): void
     {

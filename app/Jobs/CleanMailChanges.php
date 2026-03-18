@@ -13,7 +13,10 @@ class CleanMailChanges implements ShouldQueue
 {
     use Queueable;
 
-    public $queue = 'background';
+    public function __construct()
+    {
+        $this->onQueue('background');
+    }
 
     public function handle(): void
     {

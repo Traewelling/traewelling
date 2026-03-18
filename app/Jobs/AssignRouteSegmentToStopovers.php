@@ -26,9 +26,10 @@ class AssignRouteSegmentToStopovers implements ShouldQueue
 
     public int $timeout = 600;
 
-    public $queue = 'low';
-
-    public function __construct(private readonly RouteSegment $segment) {}
+    public function __construct(private readonly RouteSegment $segment)
+    {
+        $this->onQueue('low');
+    }
 
     public function handle(TripRepository $tripRepository): void
     {

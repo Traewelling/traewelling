@@ -14,13 +14,12 @@ class RecalculateStatusesDistanceForTrip implements ShouldQueue
 {
     use Queueable;
 
-    public $queue = 'normal';
-
     private string $tripId;
 
     public function __construct(string $tripId)
     {
         $this->tripId = $tripId;
+        $this->onQueue('normal');
     }
 
     public function handle(): void

@@ -15,8 +15,6 @@ class SendEmailChangedMail implements ShouldQueue
 {
     use Queueable;
 
-    public $queue = 'important';
-
     private User $user;
 
     private MailChange $change;
@@ -25,6 +23,7 @@ class SendEmailChangedMail implements ShouldQueue
     {
         $this->user = $user;
         $this->change = $mailChange;
+        $this->onQueue('important');
     }
 
     public function handle(): void

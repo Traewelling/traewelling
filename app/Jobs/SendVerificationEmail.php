@@ -21,8 +21,6 @@ class SendVerificationEmail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, IsMonitored, Queueable, SerializesModels;
 
-    public $queue = 'important';
-
     protected User $user;
 
     /**
@@ -33,6 +31,7 @@ class SendVerificationEmail implements ShouldQueue
     public function __construct(User $user)
     {
         $this->user = $user;
+        $this->onQueue('important');
     }
 
     /**
