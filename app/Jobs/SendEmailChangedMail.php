@@ -15,6 +15,8 @@ class SendEmailChangedMail implements ShouldQueue
 {
     use Queueable;
 
+    public $queue = 'important';
+
     private User $user;
 
     private MailChange $change;

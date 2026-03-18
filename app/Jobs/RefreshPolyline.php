@@ -29,6 +29,8 @@ class RefreshPolyline implements ShouldQueue
 
     public int $backoff = 60;
 
+    public $queue = 'normal';
+
     public function __construct(Trip $trip, ?ReRoutingController $reRoutingController = null)
     {
         $this->trip = $trip;

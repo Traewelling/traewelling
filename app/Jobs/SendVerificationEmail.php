@@ -21,6 +21,8 @@ class SendVerificationEmail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, IsMonitored, Queueable, SerializesModels;
 
+    public $queue = 'important';
+
     protected User $user;
 
     /**

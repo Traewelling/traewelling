@@ -88,4 +88,6 @@ class PostStatusOnMastodon implements ShouldQueue
      * Maximum number of attempts
      */
     public $tries = 5; // count(backoff()) + 1 from the first attempt
+
+    public $queue = 'important';
 }

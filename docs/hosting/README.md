@@ -14,12 +14,19 @@ relational database (MariaDB, MySQL, or SQLite).
 
 To ensure background jobs and scheduled tasks run correctly, you need to set up the following:
 
-- **Queue worker:**  
+- **Queue worker:**
   Laravel’s queue handles background processing such as sending emails, processing exports, and webhooks.
   Make sure a process is continuously running:
   ```bash
-  php artisan queue:work --queue=default,webhook,export
+  php artisan queue:work --queue=realtime,important,normal,low,background
   ```
+  > [!NOTE]
+  > Running all queues in a single worker is only suitable for small or development setups.
+  > For production or larger installations, each queue should be run as a separate worker process
+  > with an appropriate number of workers. Time-critical queues like `realtime` and `important`
+  > benefit most from multiple parallel workers.
+  > Example: run several workers for `realtime`, and fewer (or just one) for `background`.
+
 - **Scheduler:**
   Laravel’s task scheduler should run every minute (e.g., via cron or systemd timer):
   ```bash

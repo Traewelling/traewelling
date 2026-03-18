@@ -26,6 +26,8 @@ class RefreshTrip implements ShouldQueue
 
     public int $tries = 1;
 
+    public $queue = 'realtime';
+
     public function __construct(private readonly Trip $trip) {}
 
     private function getDataProvider(): DataProviderInterface
