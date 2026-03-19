@@ -27,6 +27,9 @@ To ensure background jobs and scheduled tasks run correctly, you need to set up 
   > benefit most from multiple parallel workers.
   > Example: run several workers for `realtime`, and fewer (or just one) for `background`.
 
+  For production use with [Supervisor](http://supervisord.org/), an example configuration is available at
+  [`docs/hosting/supervisor/trwl-workers.conf`](./supervisor/trwl-workers.conf).
+
 - **Scheduler:**
   Laravel’s task scheduler should run every minute (e.g., via cron or systemd timer):
   ```bash
