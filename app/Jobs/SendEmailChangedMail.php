@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
+use App\Enum\Queue;
 use App\Mail\EmailChanged;
 use App\Models\MailChange;
 use App\Models\User;
@@ -23,7 +24,7 @@ class SendEmailChangedMail implements ShouldQueue
     {
         $this->user = $user;
         $this->change = $mailChange;
-        $this->onQueue('important');
+        $this->onQueue(Queue::REALTIME);
     }
 
     public function handle(): void

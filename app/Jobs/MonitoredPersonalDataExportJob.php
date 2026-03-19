@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Enum\Queue;
 use romanzipp\QueueMonitor\Traits\IsMonitored;
 use Spatie\PersonalDataExport\ExportsPersonalData;
 use Spatie\PersonalDataExport\Jobs\CreatePersonalDataExportJob;
@@ -18,7 +19,7 @@ class MonitoredPersonalDataExportJob extends CreatePersonalDataExportJob
     {
         $this->timeout = config('trwl.gdpr_export.timeout', 30 * 60);
         $this->tries = config('trwl.gdpr_export.tries', 3);
-        $this->onQueue('low');
+        $this->onQueue(Queue::LOW);
         parent::__construct($user);
     }
 

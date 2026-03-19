@@ -9,6 +9,7 @@ use App\DataProviders\DataProviderInterface;
 use App\DataProviders\Hydrators\MotisHydrator;
 use App\DataProviders\Motis;
 use App\Enum\DataProvider;
+use App\Enum\Queue;
 use App\Exceptions\DataProviderException;
 use App\Models\Checkin;
 use App\Models\Trip;
@@ -29,7 +30,7 @@ class RefreshTrip implements ShouldBeUnique, ShouldQueue
 
     public function __construct(private readonly Trip $trip)
     {
-        $this->onQueue('realtime');
+        $this->onQueue(Queue::IMPORTANT);
     }
 
     public function uniqueId(): string

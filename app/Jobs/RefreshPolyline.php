@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Enum\Queue;
 use App\Helpers\CacheKey;
 use App\Http\Controllers\ReRoutingController;
 use App\Models\Trip;
@@ -33,7 +34,7 @@ class RefreshPolyline implements ShouldQueue
     {
         $this->trip = $trip;
         $this->reRoutingController = $reRoutingController ?? app(ReRoutingController::class);
-        $this->onQueue('normal');
+        $this->onQueue(Queue::NORMAL);
     }
 
     public static function dispatch(Trip $trip, ?ReRoutingController $reRoutingController = null): PendingDispatch

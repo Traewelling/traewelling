@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Enum\Queue;
 use App\Models\License;
 use App\Models\MotisSourceLicense;
 use Exception;
@@ -18,7 +19,7 @@ class FetchManualTransitousLicenses implements ShouldQueue
 
     public function __construct()
     {
-        $this->onQueue('background');
+        $this->onQueue(Queue::BACKGROUND);
     }
 
     public function handle(): void

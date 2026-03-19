@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
+use App\Enum\Queue;
 use App\Models\RouteSegment;
 use App\Models\Stopover;
 use App\Repositories\TripRepository;
@@ -28,7 +29,7 @@ class DeleteRouteSegment implements ShouldQueue
 
     public function __construct(private readonly RouteSegment $segment)
     {
-        $this->onQueue('low');
+        $this->onQueue(Queue::LOW);
     }
 
     public function handle(TripRepository $tripRepository): void

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
+use App\Enum\Queue;
 use App\Models\MailChange;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -15,7 +16,7 @@ class CleanMailChanges implements ShouldQueue
 
     public function __construct()
     {
-        $this->onQueue('background');
+        $this->onQueue(Queue::BACKGROUND);
     }
 
     public function handle(): void

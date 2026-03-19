@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Enum\Queue;
 use App\Models\User;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Bus\Queueable;
@@ -31,7 +32,7 @@ class SendVerificationEmail implements ShouldQueue
     public function __construct(User $user)
     {
         $this->user = $user;
-        $this->onQueue('important');
+        $this->onQueue(Queue::REALTIME);
     }
 
     /**

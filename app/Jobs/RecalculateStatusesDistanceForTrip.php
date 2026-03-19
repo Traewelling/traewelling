@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Enum\Queue;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Models\Checkin;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -19,7 +20,7 @@ class RecalculateStatusesDistanceForTrip implements ShouldQueue
     public function __construct(string $tripId)
     {
         $this->tripId = $tripId;
-        $this->onQueue('normal');
+        $this->onQueue(Queue::LOW);
     }
 
     public function handle(): void

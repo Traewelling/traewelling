@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Enum\Queue;
 use App\Http\Controllers\Backend\Social\MastodonController;
 use App\Models\Status;
 use Exception;
@@ -29,7 +30,7 @@ class PostStatusOnMastodon implements ShouldQueue
     {
         $this->status = $status;
         $this->shouldChain = $shouldChain;
-        $this->onQueue('important');
+        $this->onQueue(Queue::REALTIME);
     }
 
     /**
