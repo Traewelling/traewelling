@@ -295,7 +295,7 @@
     "maintenance.try-later": "Zkuste to prosím brzy znovu.",
     "map-providers.cargo": "Karta",
     "map-providers.open-railway-map": "Open Railway Map",
-    "menu.abort": "Ztráta",
+    "menu.abort": "Zpět",
     "menu.about": "Nejčastější dotazy",
     "menu.active": "Na cestě",
     "menu.admin": "Administrační-Panel",
@@ -982,5 +982,15 @@
     "tag.value.trwl:social_status.open": "👋 Otevřeny k chatu",
     "validation.size.numeric": "Atribut :attribute musí být :size.",
     "validation.size.file": "Atribut :attribute musí být :size kilobajtů.",
-    "validation.size.array": "Atribut :attribute musí obsahovat položky s rozměrem :size."
+    "validation.size.array": "Atribut :attribute musí obsahovat položky s rozměrem :size.",
+    "tag.value.trwl:social_status.open_find_me": "🕵️ Pojď si mě najít",
+    "tag.value.trwl:social_status.open_lets_hang": "🚶 Pojďme se sejít",
+    "tickets.add": "Přidat lístek",
+    "tickets.info-title": "Jaké jsou to lístky?",
+    "tickets.info-text": "Uložte si své jízdenky v Träwellingu a přiřaďte je k jednotlivým cestám. Takto budete vždy vědět, jakou jízdenku jste použili, a ve statistikách uvidíte, kolik vás jednotlivé cesty stály. Vaše jízdenky uvidíte pouze vy.",
+    "tickets.assign": "Přiřadit",
+    "tickets.assign-ticket": "Přiřadit jízdenku",
+    "tickets.create": "Přidat novou jízdenku",
+    "tickets.created": "Jízdenka vytvořena",
+    "tickets.currency": "Měna"
 }
