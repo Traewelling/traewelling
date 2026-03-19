@@ -30,7 +30,7 @@ class PostStatusOnMastodon implements ShouldQueue
     {
         $this->status = $status;
         $this->shouldChain = $shouldChain;
-        $this->onQueue(Queue::REALTIME);
+        $this->onQueue(Queue::REALTIME->value);
     }
 
     /**

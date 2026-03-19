@@ -29,7 +29,7 @@ class DeleteRouteSegment implements ShouldQueue
 
     public function __construct(private readonly RouteSegment $segment)
     {
-        $this->onQueue(Queue::LOW);
+        $this->onQueue(Queue::LOW->value);
     }
 
     public function handle(TripRepository $tripRepository): void

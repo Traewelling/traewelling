@@ -20,9 +20,4 @@ enum Queue: string
 
     /** Maintenance and housekeeping tasks */
     case BACKGROUND = 'background';
-
-    public function __toString(): string
-    {
-        return $this->value;
-    }
 }

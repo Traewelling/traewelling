@@ -30,7 +30,7 @@ class RefreshTrip implements ShouldBeUnique, ShouldQueue
 
     public function __construct(private readonly Trip $trip)
     {
-        $this->onQueue(Queue::IMPORTANT);
+        $this->onQueue(Queue::IMPORTANT->value);
     }
 
     public function uniqueId(): string

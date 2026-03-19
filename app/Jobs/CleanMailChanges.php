@@ -16,7 +16,7 @@ class CleanMailChanges implements ShouldQueue
 
     public function __construct()
     {
-        $this->onQueue(Queue::BACKGROUND);
+        $this->onQueue(Queue::BACKGROUND->value);
     }
 
     public function handle(): void

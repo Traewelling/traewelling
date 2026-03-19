@@ -29,7 +29,7 @@ class AssignRouteSegmentToStopovers implements ShouldQueue
 
     public function __construct(private readonly RouteSegment $segment)
     {
-        $this->onQueue(Queue::BACKGROUND);
+        $this->onQueue(Queue::BACKGROUND->value);
     }
 
     public function handle(TripRepository $tripRepository): void

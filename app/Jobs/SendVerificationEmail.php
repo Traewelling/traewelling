@@ -32,7 +32,7 @@ class SendVerificationEmail implements ShouldQueue
     public function __construct(User $user)
     {
         $this->user = $user;
-        $this->onQueue(Queue::REALTIME);
+        $this->onQueue(Queue::REALTIME->value);
     }
 
     /**

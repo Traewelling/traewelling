@@ -20,7 +20,7 @@ class RecalculateStatusesDistanceForTrip implements ShouldQueue
     public function __construct(string $tripId)
     {
         $this->tripId = $tripId;
-        $this->onQueue(Queue::LOW);
+        $this->onQueue(Queue::LOW->value);
     }
 
     public function handle(): void

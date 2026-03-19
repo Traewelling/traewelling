@@ -24,7 +24,7 @@ class SendEmailChangedMail implements ShouldQueue
     {
         $this->user = $user;
         $this->change = $mailChange;
-        $this->onQueue(Queue::REALTIME);
+        $this->onQueue(Queue::REALTIME->value);
     }
 
     public function handle(): void
