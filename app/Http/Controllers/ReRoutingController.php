@@ -173,8 +173,8 @@ class ReRoutingController extends Controller
             $distance = $route->distanceInMeters;
             [$lowerLimit, $upperLimit, $percentage] = $this->getDeviationThreshold($oldDistance);
 
-            if ($distance === 0 || ($oldDistance !== 0 && ($distance > $upperLimit || $distance < $lowerLimit))) {
-                Log::warning(
+            if (($oldDistance !== 0 && ($distance > $upperLimit || $distance < $lowerLimit))) {
+                Log::debug(
                     sprintf('Distance deviation is greater than %d percent.', $percentage * 100),
                     [
                         'from' => $start->station->name,

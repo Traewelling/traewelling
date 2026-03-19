@@ -56,7 +56,7 @@ class RefreshPolyline implements ShouldQueue
         }
 
         if (!$this->trip->category->onRails()) {
-            Log::info('RefreshPolyline Job skipped: Trip is not on rails', ['trip_id' => $this->trip->id, 'category' => $this->trip->category]);
+            Log::debug('RefreshPolyline Job skipped: Trip is not on rails', ['trip_id' => $this->trip->id, 'category' => $this->trip->category]);
 
             return;
         }
