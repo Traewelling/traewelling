@@ -83,23 +83,23 @@ class EventServiceProvider extends ServiceProvider
         // Dispatch Jobs from Events
         Event::listen(fn (UserCheckedIn $event) => PostStatusOnMastodon::dispatchIf($event->shouldPostOnMastodon, $event->status, $event->shouldChain));
         Event::listen(function (WebhookCallFailedEvent $event) {
-            // remove payload from log message to avoid logging useless data
-            if (!app()->hasDebugModeEnabled()) {
-                // payload could be json so try to decode it
-                if (is_string($event->payload)) {
-                    $payload = json_decode($event->payload, true);
-                    if (json_last_error() === JSON_ERROR_NONE) {
-                        $event->payload = $payload;
-                    }
+            $payload = $event->payload;
+            if (is_string($payload)) {
+                $decoded = json_decode($payload, true);
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    $payload = $decoded;
                 }
-
-                $payload = is_array($event->payload) ? $payload['payload'] ?? null : $event->payload;
-                $event->payload = [
-                    'event' => $payload,
-                ];
             }
 
-            Log::warning('Webhook call failed', ['event' => $event]);
+            Log::warning('Webhook call failed', [
+                'webhook_id' => $event->headers['X-Trwl-Webhook-Id'] ?? null,
+                'user_id' => $event->headers['X-Trwl-User-Id'] ?? null,
+                'webhook_url' => $event->webhookUrl,
+                'event_type' => is_array($payload) ? ($payload['event'] ?? null) : null,
+                'attempt' => $event->attempt,
+                'error_type' => $event->errorType,
+                'error_message' => $event->errorMessage,
+            ]);
         });
     }
 }
