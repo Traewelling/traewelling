@@ -6,10 +6,8 @@ use App\Enum\WebhookEvent;
 use App\Helpers\CacheKey;
 use App\Http\Controllers\Backend\Support\MentionHelper;
 use App\Http\Controllers\Backend\WebhookController;
+use App\Jobs\DeleteStatusNotifications;
 use App\Models\Status;
-use App\Notifications\StatusLiked;
-use App\Notifications\UserJoinedConnection;
-use Illuminate\Notifications\DatabaseNotification;
 
 class StatusObserver
 {
@@ -33,14 +31,6 @@ class StatusObserver
             event: WebhookEvent::CHECKIN_DELETE
         );
 
-        // Delete all UserJoinedConnection-Notifications for this Status
-        DatabaseNotification::where('type', UserJoinedConnection::class)
-            ->where('data->status->id', $status->id)
-            ->delete();
-
-        // Delete all StatusLiked-Notifications for this Status
-        DatabaseNotification::where('type', StatusLiked::class)
-            ->where('data->status->id', $status->id)
-            ->delete();
+        DeleteStatusNotifications::dispatch($status->id);
     }
 }

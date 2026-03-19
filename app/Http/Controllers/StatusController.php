@@ -47,16 +47,20 @@ class StatusController extends Controller
     {
         return Status::where('id', $statusId)
             ->with([
-                'event',
+                'event.station',
                 'likes',
+                'mentions',
+                'client',
                 'user.blockedByUsers',
                 'user.blockedUsers',
                 'createdByUser',
                 'checkin',
+                'checkin.statusTags',
                 'tags',
                 'checkin.originStopover.station',
                 'checkin.destinationStopover.station',
                 'checkin.trip.stopovers.station',
+                'checkin.trip.operator',
                 'checkin.trip.motisSourceLicense',
             ])
             ->firstOrFail();
