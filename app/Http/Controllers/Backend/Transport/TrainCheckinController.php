@@ -10,7 +10,6 @@ use App\Events\UserCheckedIn;
 use App\Exceptions\Checkin\AlreadyCheckedInException;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\CheckinException;
-use App\Exceptions\DistanceDeviationException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\Support\LocationController;
 use App\Http\Controllers\Controller;
@@ -228,39 +227,28 @@ abstract class TrainCheckinController extends Controller
         return $pointsResource->reason;
     }
 
-    /**
-     * @throws DistanceDeviationException
-     */
     public static function refreshDistanceAndPoints(Status $status, bool $resetPolyline = false): void
     {
         $checkin = $status->checkin;
+        if ($checkin === null || $checkin->trip === null
+            || $checkin->originStopover === null || $checkin->destinationStopover === null) {
+            Log::warning('refreshDistanceAndPoints: skipping status with missing relations', ['status_id' => $status->id]);
+
+            return;
+        }
+
         if ($resetPolyline) {
             $checkin->trip->update(['polyline_id' => null]);
         }
         $firstStop = $checkin->originStopover;
         $lastStop = $checkin->destinationStopover;
-        $distance = (new LocationController(
+        $distance = new LocationController(
             trip: $checkin->trip,
             origin: $firstStop,
             destination: $lastStop
-        ))->calculateDistance();
+        )->calculateDistance();
         $oldPoints = $checkin->points;
-        $oldDistance = $checkin->distance;
-
-        $percentage = config('trwl.distance_deviation_threshold_percent', 15) / 100;
-        $upperLimit = $oldDistance * (1 + $percentage);
-        $lowerLimit = $oldDistance * (1 - $percentage);
-
-        if ($distance === 0 || ($oldDistance !== 0 && ($distance > $upperLimit || $distance < $lowerLimit))) {
-            Log::debug(sprintf(
-                'Distance deviation for status #%d is greater than %d percent. Original: %d, new: %d',
-                $status->id,
-                $percentage * 100,
-                $oldDistance,
-                $distance
-            ));
-            throw new DistanceDeviationException();
-        }
+        $oldDistance = $checkin->distance ?? 0;
 
         $pointsResource = PointsCalculationController::calculatePoints(
             distanceInMeter: $distance,
