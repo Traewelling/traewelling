@@ -157,6 +157,9 @@ finish_application() {
   echo -e "${YELLOW}Seeding constants to database...${RESET}"
   php artisan db:seed --class=Database\\Seeders\\Constants\\PermissionSeeder --force
 
+  echo -e "${YELLOW}Restarting queue workers...${RESET}"
+  php artisan queue:restart
+
   echo -e "${YELLOW}Disabling maintenance mode...${RESET}"
   php artisan up
 }
