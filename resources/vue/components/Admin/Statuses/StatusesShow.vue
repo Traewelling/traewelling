@@ -180,9 +180,9 @@ onMounted(() => fetchStatus());
                             </div>
                             <div v-if="status.checkin?.trip_id" class="flex justify-between">
                                 <span class="text-base-content/60">Trip ID</span>
-                                <router-link :to="`/admin/trips/${status.checkin.trip_id}`" class="link link-primary">
+                                <a :href="`/admin/trips/${status.checkin.trip_id}`" class="link link-primary">
                                     #{{ status.checkin.trip_id }}
-                                </router-link>
+                                </a>
                             </div>
                         </div>
                     </div>

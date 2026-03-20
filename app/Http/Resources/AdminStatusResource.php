@@ -92,7 +92,7 @@ class AdminStatusResource extends JsonResource
                 'arrival' => $this->checkin->arrival?->toIso8601String(),
                 'distance' => (int) $this->checkin->distance,
                 'points' => (int) $this->checkin->points,
-                'trip_id' => (int) $this->checkin->trip_id,
+                'trip_id' => $this->checkin->trip?->id,
                 'linename' => $this->checkin->trip?->linename,
             ] : null,
             'stopovers' => $this->when(
