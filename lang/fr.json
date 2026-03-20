@@ -881,6 +881,7 @@
     "trip_creation.form.origin": "Point d'arrêt de départ",
     "trip_creation.form.save": "Sauvegarder",
     "trip_creation.form.stopover": "Arrêt intermédiaire",
+    "trip_creation.form.operator_search": "Rechercher un opérateur...",
     "trip_creation.form.travel_type": "Type de trajet",
     "trip_creation.form.trip_data": "Informations sur le trajet",
     "trip_creation.limitations": "Limitations actuelles",

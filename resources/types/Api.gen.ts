@@ -3740,11 +3740,17 @@ export class Api<
      * No description
      *
      * @tags Checkin
-     * @name Bcfcf8686980Cf0Fcdc751B2E13Fa4F7
-     * @summary Get a list of all operators.
+     * @name GetOperators
+     * @summary Get a list of operators, optionally filtered by name.
      * @request GET:/operators
      */
-    bcfcf8686980Cf0Fcdc751B2E13Fa4F7: (params: RequestParams = {}) =>
+    getOperators: (
+      query?: {
+        /** Filter operators by name (minimum 2 characters) */
+        query?: string;
+      },
+      params: RequestParams = {},
+    ) =>
       this.request<
         {
           data?: OperatorResource[];
@@ -3753,6 +3759,7 @@ export class Api<
       >({
         path: `/operators`,
         method: "GET",
+        query: query,
         format: "json",
         ...params,
       }),
@@ -5388,6 +5395,71 @@ export class Api<
         path: `/trips/${id}/statuses`,
         method: "GET",
         secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Trips
+     * @name CreateTrip
+     * @summary Create a manual trip.
+     * @request POST:/trips
+     * @secure
+     */
+    createTrip: (
+      data: {
+        /** @example "regional" */
+        category: string;
+        /** @example "RE 1" */
+        lineName: string;
+        /** @example 12345 */
+        journeyNumber?: number | null;
+        /** @example 1 */
+        operatorId?: number | null;
+        /** @example 8000105 */
+        originId: number;
+        /**
+         * @format date-time
+         * @example "2025-01-01T10:00:00Z"
+         */
+        originDeparturePlanned: string;
+        /** @example 8000261 */
+        destinationId: number;
+        /**
+         * @format date-time
+         * @example "2025-01-01T12:00:00Z"
+         */
+        destinationArrivalPlanned: string;
+        stopovers?: {
+          /** @example 8000240 */
+          stationId?: number;
+          /**
+           * @format date-time
+           * @example "2025-01-01T11:00:00Z"
+           */
+          arrival?: string | null;
+          /**
+           * @format date-time
+           * @example "2025-01-01T11:02:00Z"
+           */
+          departure?: string | null;
+        }[];
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data?: TripResource;
+        },
+        void
+      >({
+        path: `/trips`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),

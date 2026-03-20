@@ -7,6 +7,7 @@ use App\Models\Operator;
 use App\Services\OperatorService;
 use Exception;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use OpenApi\Attributes as OA;
 
@@ -14,8 +15,18 @@ class OperatorController extends Controller
 {
     #[OA\Get(
         path: '/operators',
-        summary: 'Get a list of all operators.',
+        operationId: 'getOperators',
+        summary: 'Get a list of operators, optionally filtered by name.',
         tags: ['Checkin'],
+        parameters: [
+            new OA\Parameter(
+                name: 'query',
+                description: 'Filter operators by name (minimum 2 characters)',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'string'),
+            ),
+        ],
         responses: [
             new OA\Response(
                 response: 200,
@@ -35,9 +46,17 @@ class OperatorController extends Controller
             new OA\Response(response: 500, description: 'Internal Server Error'),
         ],
     )]
-    public function index(): AnonymousResourceCollection
+    public function index(Request $request): AnonymousResourceCollection
     {
-        return OperatorResource::collection(Operator::orderBy('name')->cursorPaginate(250));
+        $query = $request->string('query')->trim();
+
+        $builder = Operator::orderBy('name');
+
+        if ($query->isNotEmpty() && $query->length() >= 2) {
+            $builder->where('name', 'like', '%' . $query . '%');
+        }
+
+        return OperatorResource::collection($builder->cursorPaginate(25));
     }
 
     public function merge(int $oldOperatorId, int $newOperatorId): JsonResponse

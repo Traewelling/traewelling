@@ -35,20 +35,32 @@ Check back here regularly to stay ahead of removals.
 
 ---
 
+# 2026-03-20
+
+Added `?query` parameter to `GET /api/v1/operators`: filters operators by name (minimum 2 characters, case-insensitive).
+Without the parameter, the endpoint behaves as before.
+
+Added new `POST /api/v1/trips` endpoint for creating manual trips.
+
+---
+
 # 2026-03-15 (Ticket management – closed beta)
 
 Added new `GET|POST|PUT|DELETE /api/v1/tickets` endpoints for managing transit tickets.
 Only available to users with the `closed-beta` role.
 
-Added `ticket` field to `StatusResource`: only present when the authenticated user is the status owner and a ticket is assigned.
+Added `ticket` field to `StatusResource`: only present when the authenticated user is the status owner and a ticket is
+assigned.
 
-Added `PUT /api/v1/statuses/{id}/tickets` endpoint for assigning or removing a ticket from a status (`ticketId`: UUID or `null`).
+Added `PUT /api/v1/statuses/{id}/tickets` endpoint for assigning or removing a ticket from a status (`ticketId`: UUID or
+`null`).
 
 ---
 
 # 2026-03-14 (Freight train category)
 
-Added new transport category `freightTrain` to `HafasTravelType`. Users can now create manual trips with the freight train type.
+Added new transport category `freightTrain` to `HafasTravelType`. Users can now create manual trips with the freight
+train type.
 
 ---
 

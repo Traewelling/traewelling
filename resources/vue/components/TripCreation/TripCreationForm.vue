@@ -1,9 +1,13 @@
 <script>
 import { trans } from 'laravel-vue-i18n';
+import _ from 'lodash';
 import { DateTime } from 'luxon';
+import { Api } from '../../../types/Api.gen';
 import StationInput from './StationInput.vue';
 import StopoversCsvImporter from './StopoversCsvImporter.vue';
 import TripCreationMap from './TripCreationMap.vue';
+
+const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 
 export default {
     name: 'TripCreationForm',
@@ -33,6 +37,10 @@ export default {
             trainTypeInput: '',
             selectedCategory: {},
             selectedOperator: null,
+            operatorQuery: '',
+            operatorResults: [],
+            operatorLoading: false,
+            operatorDropdownVisible: false,
             categories: [
                 { value: 'nationalExpress', text: 'nationalExpress', emoji: '🚄' },
                 { value: 'national', text: 'national', emoji: '🚅' },
@@ -47,7 +55,6 @@ export default {
                 { value: 'plane', text: 'plane', emoji: '✈️' },
                 { value: 'freightTrain', text: 'freightTrain', emoji: '🚂' },
             ],
-            operators: [],
             disallowed: ['fahrrad', 'auto', 'fuss', 'fuß', 'foot', 'car', 'bike'],
             showDisallowed: false,
             validation: {
@@ -57,7 +64,6 @@ export default {
     },
     mounted() {
         this.initForm();
-        this.loadOperators();
         this.getOriginFromQuery();
     },
     methods: {
@@ -268,35 +274,28 @@ export default {
             this.form.category = this.selectedCategory.value;
             this.form.operatorId = this.selectedOperator ? this.selectedOperator.id : null;
 
-            fetch('/api/v1/trains/trip', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(this.form),
-            }).then((data) => {
-                if (data.ok) {
-                    data.json().then((result) => {
-                        result = result.data;
-                        const query = {
-                            tripId: result.id,
-                            lineName: result.lineName,
-                            start: result.origin.id,
-                            departure: this.form.originDeparturePlanned,
-                            idType: 'trwl',
-                            category: result.category,
-                        };
+            api.trips
+                .createTrip(this.form)
+                .then((response) => {
+                    const result = response.data?.data;
+                    const query = {
+                        tripId: result.id,
+                        lineName: result.lineName,
+                        start: result.origin.id,
+                        departure: this.form.originDeparturePlanned,
+                        idType: 'trwl',
+                        category: result.category,
+                    };
 
-                        window.location.href = `/stationboard?${new URLSearchParams(query).toString()}`;
-                    });
-                } else if (data.status === 403 || data.status === 422 || data.status === 400) {
-                    data.json().then((result) => {
-                        notyf.error(result.message);
-                    });
-                } else {
-                    notyf.error(trans('messages.exception.general-values'));
-                }
-            });
+                    window.location.href = `/stationboard?${new URLSearchParams(query).toString()}`;
+                })
+                .catch((error) => {
+                    if (error?.status === 403 || error?.status === 422 || error?.status === 400) {
+                        notyf.error(error.error?.message ?? trans('messages.exception.general-values'));
+                    } else {
+                        notyf.error(trans('messages.exception.general-values'));
+                    }
+                });
         },
         setStopoverStation(item, key) {
             this.$refs.map.addMarker(item, key, this.stopovers.length);
@@ -322,24 +321,13 @@ export default {
             // e.g.: if line starts with ICE or TGV, set category to nationalExpress
         },
         getOriginFromQuery() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const stationId = urlParams.get('from');
+            const stationId = new URLSearchParams(window.location.search).get('from');
 
             if (stationId) {
-                fetch(`/api/v1/stations/${stationId}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                })
-                    .then((response) => {
-                        if (!response.ok) {
-                            throw new Error(response.statusText);
-                        }
-                        return response.json();
-                    })
+                api.stations
+                    .showStation(stationId)
                     .then((result) => {
-                        this.$refs.originInput.setStation(result.data);
+                        this.$refs.originInput.setStation(result.data?.data);
                     })
                     .catch((error) => {
                         console.error(error);
@@ -350,29 +338,46 @@ export default {
             this.checkDisallowed();
             this.guessModeOfTransport();
         },
-        loadOperators(cursor = null) {
-            fetch('/api/v1/operators?cursor=' + cursor, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error(response.statusText);
-                    }
-                    return response.json();
-                })
+        onOperatorInput: _.debounce(function () {
+            this.searchOperators();
+        }, 300),
+        searchOperators() {
+            const query = this.operatorQuery.trim();
+            if (query.length < 2) {
+                this.operatorResults = [];
+                this.operatorDropdownVisible = false;
+                return;
+            }
+            this.operatorLoading = true;
+            api.operators
+                .getOperators({ query })
                 .then((result) => {
-                    this.operators.push(...result.data);
-
-                    if (result.meta.next_cursor) {
-                        this.loadOperators(result.meta.next_cursor);
-                    }
+                    this.operatorResults = result.data?.data ?? [];
+                    this.operatorDropdownVisible = true;
                 })
                 .catch((error) => {
                     console.error(error);
+                })
+                .finally(() => {
+                    this.operatorLoading = false;
                 });
+        },
+        selectOperator(operator) {
+            this.selectedOperator = operator;
+            this.operatorQuery = operator.name;
+            this.operatorDropdownVisible = false;
+            this.operatorResults = [];
+        },
+        clearOperator() {
+            this.selectedOperator = null;
+            this.operatorQuery = '';
+            this.operatorResults = [];
+            this.operatorDropdownVisible = false;
+        },
+        hideOperatorDropdown() {
+            setTimeout(() => {
+                this.operatorDropdownVisible = false;
+            }, 150);
         },
         initForm() {
             this.selectedCategory = this.categories[0];
@@ -535,13 +540,46 @@ export default {
                         data-bs-parent="#accordionTripOperator"
                     >
                         <div class="accordion-body">
-                            <!-- todo: make searchable -->
-                            <select v-model="selectedOperator" class="form-select">
-                                <option selected>-/-</option>
-                                <option v-for="(operator, key) in operators" :key="key" :value="operator">
-                                    {{ operator.name }}
-                                </option>
-                            </select>
+                            <div class="position-relative">
+                                <div class="input-group">
+                                    <input
+                                        v-model="operatorQuery"
+                                        type="text"
+                                        class="form-control"
+                                        :placeholder="trans('trip_creation.form.operator_search')"
+                                        :aria-label="trans('trip_creation.form.operator_search')"
+                                        @input="onOperatorInput"
+                                        @blur="hideOperatorDropdown"
+                                        @focus="operatorQuery.length >= 2 && (operatorDropdownVisible = true)"
+                                    />
+                                    <button
+                                        v-if="selectedOperator"
+                                        class="btn btn-outline-secondary"
+                                        type="button"
+                                        @click="clearOperator"
+                                    >
+                                        <i class="fa-solid fa-xmark" />
+                                    </button>
+                                    <span v-else-if="operatorLoading" class="input-group-text">
+                                        <i class="fa-solid fa-spinner fa-spin" />
+                                    </span>
+                                </div>
+                                <ul
+                                    v-if="operatorDropdownVisible && operatorResults.length > 0"
+                                    class="list-group position-absolute w-100 shadow-sm"
+                                    style="z-index: 1000; max-height: 240px; overflow-y: auto"
+                                >
+                                    <li
+                                        v-for="operator in operatorResults"
+                                        :key="operator.id"
+                                        class="list-group-item list-group-item-action"
+                                        style="cursor: pointer"
+                                        @mousedown.prevent="selectOperator(operator)"
+                                    >
+                                        {{ operator.name }}
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
