@@ -29,7 +29,7 @@
 "laravel/framework": "^12.0",
     "laravel/passport": "^13.0",
     "laravel/socialite": "^5.0",
-    "laravel/tinker": "^2.0",
+    "laravel/tinker": "^3.0",
     "laravel/ui": "^4.0",
     "predis/predis": "^3.0",
     "revolution/laravel-mastodon-api": "^3.0",
