@@ -20,7 +20,6 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use OpenApi\Attributes as OA;
-use Throwable;
 
 class TripController extends Controller
 {
@@ -128,56 +127,47 @@ class TripController extends Controller
     {
         $validated = $request->validated();
 
-        DB::beginTransaction();
-
         try {
-            $creator = new ManualTripCreator();
-            $creator->setCategory(HafasTravelType::from($validated['category']))
-                ->setLine($validated['lineName'], $validated['journeyNumber'] ?? null)
-                ->setOrigin(
-                    Station::findOrFail($validated['originId']),
-                    Carbon::parse($validated['originDeparturePlanned']),
-                    isset($validated['originDepartureReal']) ? Carbon::parse($validated['originDepartureReal']) : null
-                )
-                ->setDestination(
-                    Station::findOrFail($validated['destinationId']),
-                    Carbon::parse($validated['destinationArrivalPlanned']),
-                    isset($validated['destinationArrivalReal']) ? Carbon::parse($validated['destinationArrivalReal']) : null
-                );
+            $trip = DB::transaction(function () use ($validated) {
+                $creator = new ManualTripCreator();
+                $creator->setCategory(HafasTravelType::from($validated['category']))
+                    ->setLine($validated['lineName'], $validated['journeyNumber'] ?? null)
+                    ->setOrigin(
+                        Station::findOrFail($validated['originId']),
+                        Carbon::parse($validated['originDeparturePlanned']),
+                        isset($validated['originDepartureReal']) ? Carbon::parse($validated['originDepartureReal']) : null
+                    )
+                    ->setDestination(
+                        Station::findOrFail($validated['destinationId']),
+                        Carbon::parse($validated['destinationArrivalPlanned']),
+                        isset($validated['destinationArrivalReal']) ? Carbon::parse($validated['destinationArrivalReal']) : null
+                    );
 
-            if (isset($validated['operatorId'])) {
-                $operator = Operator::findOrFail($validated['operatorId']);
-                $creator->setOperator($operator);
-            }
+                if (isset($validated['operatorId'])) {
+                    $creator->setOperator(Operator::findOrFail($validated['operatorId']));
+                }
 
-            foreach ($validated['stopovers'] ?? [] as $stopover) {
-                $creator->addStopover(
-                    Station::findOrFail($stopover['stationId']),
-                    isset($stopover['departure']) ? Carbon::parse($stopover['departure']) : null,
-                    isset($stopover['arrival']) ? Carbon::parse($stopover['arrival']) : null,
-                    isset($stopover['departureReal']) ? Carbon::parse($stopover['departureReal']) : null,
-                    isset($stopover['arrivalReal']) ? Carbon::parse($stopover['arrivalReal']) : null
-                );
-            }
+                foreach ($validated['stopovers'] ?? [] as $stopover) {
+                    $creator->addStopover(
+                        Station::findOrFail($stopover['stationId']),
+                        isset($stopover['departure']) ? Carbon::parse($stopover['departure']) : null,
+                        isset($stopover['arrival']) ? Carbon::parse($stopover['arrival']) : null,
+                        isset($stopover['departureReal']) ? Carbon::parse($stopover['departureReal']) : null,
+                        isset($stopover['arrivalReal']) ? Carbon::parse($stopover['arrivalReal']) : null
+                    );
+                }
 
-            $trip = $creator->createFullTrip();
-            $durationInHours = $trip->departure->diffInHours($trip->arrival);
-            if ($durationInHours > config('trwl.max_journey_hours')) {
-                throw new ManualTripValidationException(sprintf('Trip duration exceeds maximum allowed duration of %d hours', config('trwl.max_journey_hours')));
-            }
+                $trip = $creator->createFullTrip();
+                $durationInHours = $trip->departure->diffInHours($trip->arrival);
+                if ($durationInHours > config('trwl.max_journey_hours')) {
+                    throw new ManualTripValidationException(sprintf('Trip duration exceeds maximum allowed duration of %d hours', config('trwl.max_journey_hours')));
+                }
 
+                return $trip;
+            });
         } catch (ManualTripValidationException $e) {
-            DB::rollBack();
-
             return response()->json(['message' => $e->getMessage()], 400);
-        } catch (Throwable $e) {
-            DB::rollBack();
-            report($e);
-
-            return response()->json(['message' => 'An error occurred while creating the trip'], 500);
         }
-
-        DB::commit();
 
         return new TripResource($trip);
     }
