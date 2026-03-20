@@ -1467,6 +1467,12 @@ export interface StatusResource {
   tags: StatusTagResource[];
   /** The ticket assigned to this status. Only present for the status owner. */
   ticket?: TicketResource | null;
+  /** A note left by the moderation team, e.g. a warning or hint explaining why this status was moderated. Only present for the status owner. */
+  moderation_notes?: string | null;
+  /** Whether the visibility is locked by an admin and cannot be changed by the owner. Only present for the status owner. */
+  lock_visibility?: boolean | null;
+  /** Whether the status body is hidden from other users by an admin. Only present for the status owner. */
+  hide_body?: boolean | null;
   /**
    * creation date of this status
    * @format datetime

@@ -147,6 +147,27 @@ function statusUpdated(status: StatusResource) {
                     <ul class="timeline">
                         <OriginRow :status="statusObject" />
                         <StatusBody v-if="statusObject.body" :status="statusObject" class="mt-1" />
+                        <li
+                            v-if="
+                                statusObject.moderation_notes || statusObject.lock_visibility || statusObject.hide_body
+                            "
+                            class="timeline-item mt-1"
+                        >
+                            <div class="alert alert-danger py-1 px-2 text-xs d-flex flex-column gap-1">
+                                <div v-if="statusObject.moderation_notes">
+                                    <i class="fas fa-triangle-exclamation me-1" aria-hidden="true" />
+                                    {{ statusObject.moderation_notes }}
+                                </div>
+                                <div v-if="statusObject.lock_visibility">
+                                    <i class="fas fa-lock me-1" aria-hidden="true" />
+                                    {{ $t('status.locked-visibility') }}
+                                </div>
+                                <div v-if="statusObject.hide_body">
+                                    <i class="fas fa-eye-slash me-1" aria-hidden="true" />
+                                    {{ $t('status.hidden-body') }}
+                                </div>
+                            </div>
+                        </li>
                         <NextStop :stopovers="stopovers" :in-progress="progress > 0 && progress < 100" />
                         <DestinationRow :status="statusObject" />
                     </ul>

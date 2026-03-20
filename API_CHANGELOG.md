@@ -38,6 +38,11 @@ Check back here regularly to stay ahead of removals.
 
 # 2026-03-20
 
+Added `moderation_notes` (string, nullable), `lock_visibility` (boolean, nullable) and `hide_body` (boolean, nullable)
+to `StatusResource`. All three fields are only present for the status owner. `moderation_notes` contains a note left by
+the moderation team explaining why the status was moderated. `lock_visibility` indicates that the visibility cannot be
+changed by the owner. `hide_body` indicates that the status text is hidden from other users.
+
 Added fields to `StationResource`: `time_offset` (integer, nullable) and `created_at` (ISO 8601 string, nullable).
 
 Added fields to `StationIdentifierResource`: `name` (string, nullable) and `origin` (string, nullable).
