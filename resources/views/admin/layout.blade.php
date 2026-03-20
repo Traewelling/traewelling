@@ -19,7 +19,7 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark" id="navbar-top">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{{route('admin.welcome')}}">
+        <a class="navbar-brand" href="/admin">
             <img src="{{ asset('images/icons/touch-icon-vector.svg') }}" alt="{{ config('app.name') }} Logo"
                  class="brand-image me-3" style="width: 30px; opacity: 0.8">
             TRWL Backend
@@ -66,7 +66,7 @@
                         <i class="fa-solid fa-hammer"></i>
                         Activity
                     </a>
-                    <a class="nav-link" href="{{ route('admin.reports') }}">
+                    <a class="nav-link" href="/admin/reports">
                         <i class="fa-solid fa-flag"></i>
                         Reports
                     </a>

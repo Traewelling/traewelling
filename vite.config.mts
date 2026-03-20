@@ -17,6 +17,7 @@ export default defineConfig({
                 'resources/css/welcome.css',
                 'resources/js/year-in-review.js',
                 'resources/tailwind-app/app.ts',
+                'resources/tailwind-app/admin.ts',
                 'resources/css/trwl-theme.css',
                 'resources/css/tailwind-app.css',
             ],

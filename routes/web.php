@@ -113,9 +113,6 @@ Route::middleware(['auth', 'privacy'])->group(function () {
     Route::view('/trip/create', 'beta.trip-creation')
         ->name('trip.create');
 
-    Route::view('/report', 'report')
-        ->name('report');
-
     Route::post('/ics/createPersonalAccessToken', [IcsController::class, 'createIcsToken'])
         ->name('ics.createPersonalAccessToken'); // TODO: Replace with API Endpoint
     Route::post('/ics/revokeToken', [IcsController::class, 'revokeIcsToken'])

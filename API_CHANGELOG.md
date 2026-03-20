@@ -32,10 +32,15 @@ Check back here regularly to stay ahead of removals.
 | 2026-01-20 | `StatusResource.train` is deprecated → use `checkin` instead                                                                                                                                                      | 2026-07-31 | [#4313](https://github.com/Traewelling/traewelling/pull/4313) |
 | 2026-01-20 | `StatusResource.userDetails` is deprecated → use `user` instead                                                                                                                                                   | 2026-07-31 | [#4313](https://github.com/Traewelling/traewelling/pull/4313) |
 | 2026-01-20 | `LightUserResource.mastodonUrl` is always `null` → use `mastodon.server` instead                                                                                                                                  | 2026-07-31 | [#4313](https://github.com/Traewelling/traewelling/pull/4313) |
+| 2026-03-20 | `POST /api/v1/report` is deprecated → use `POST /api/v1/reports` instead                                                                                                                                          | 2026-09-30 | [#4602](https://github.com/Traewelling/traewelling/pull/4602) |
 
 ---
 
 # 2026-03-20
+
+`POST /api/v1/report`: `description` is now required (minimum 10 characters). Previously it was optional/nullable.
+
+Added `POST /api/v1/reports` as correctly named replacement for the deprecated `POST /api/v1/report` endpoint.
 
 Added `?query` parameter to `GET /api/v1/operators`: filters operators by name (minimum 2 characters, case-insensitive).
 Without the parameter, the endpoint behaves as before.

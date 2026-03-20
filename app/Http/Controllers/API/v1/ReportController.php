@@ -5,26 +5,96 @@ namespace App\Http\Controllers\API\v1;
 use App\Enum\Report\ReportableSubject;
 use App\Enum\Report\ReportReason;
 use App\Enum\Report\ReportStatus;
+use App\Http\Resources\ReportResource;
 use App\Models\Report;
 use App\Repositories\ReportRepository;
-use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rules\Enum;
 use OpenApi\Attributes as OA;
 
 class ReportController extends Controller
 {
+    #[OA\Get(
+        path: '/reports',
+        operationId: 'listReports',
+        summary: 'List all reports. Admin only.',
+        security: [['passport' => []], ['token' => []]],
+        tags: ['Report'],
+        parameters: [
+            new OA\Parameter(name: 'cursor', in: 'query', required: false, schema: new OA\Schema(type: 'string')),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Paginated list of reports.',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/ReportResource'),
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 401, description: 'Unauthenticated.'),
+            new OA\Response(response: 403, description: 'Forbidden.'),
+        ],
+    )]
+    public function index(Request $request): AnonymousResourceCollection
+    {
+        $this->authorize('viewAny', Report::class);
+
+        $reports = Report::with('reporter')
+            ->orderByDesc('created_at')
+            ->cursorPaginate(15);
+
+        return ReportResource::collection($reports);
+    }
+
+    #[OA\Get(
+        path: '/reports/{id}',
+        operationId: 'getReport',
+        summary: 'Get a single report with activity log. Admin only.',
+        security: [['passport' => []], ['token' => []]],
+        tags: ['Report'],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid')),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Report details including activity log.',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'data', ref: '#/components/schemas/ReportResource'),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 401, description: 'Unauthenticated.'),
+            new OA\Response(response: 403, description: 'Forbidden.'),
+            new OA\Response(response: 404, description: 'Not found.'),
+        ],
+    )]
+    public function show(string $reportId): ReportResource
+    {
+        $report = Report::with(['reporter', 'activities.causer'])->findOrFail($reportId);
+        $this->authorize('view', $report);
+
+        return new ReportResource($report);
+    }
+
     #[OA\Post(
-        path: '/report',
-        operationId: 'report',
+        path: '/reports',
+        operationId: 'createReport',
         summary: 'Report a Status, Event or User to the admins.',
         security: [['passport' => []], ['token' => []]],
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
-                required: ['subjectType', 'subjectId', 'reason'],
+                required: ['subjectType', 'subjectId', 'reason', 'description'],
                 properties: [
                     new OA\Property(
                         property: 'subjectType',
@@ -43,7 +113,6 @@ class ReportController extends Controller
                         property: 'description',
                         type: 'string',
                         example: 'The status is inappropriate because...',
-                        nullable: true,
                     ),
                 ],
             ),
@@ -61,7 +130,7 @@ class ReportController extends Controller
             'subjectType' => ['required_without:subject_type', new Enum(ReportableSubject::class)],
             'subjectId' => ['required_without:subject_id', 'integer', 'min:1'],
             'reason' => ['required', new Enum(ReportReason::class)],
-            'description' => ['nullable', 'string', 'min:10'],
+            'description' => ['required', 'string', 'min:10'],
         ]);
 
         new ReportRepository()->createReport(
@@ -75,13 +144,32 @@ class ReportController extends Controller
         return response()->noContent(201, ['Content-Type' => 'application/json']);
     }
 
-    /**
-     * Admin only - no public documentation.
-     *
-     *
-     * @throws AuthorizationException
-     */
-    public function update(Request $request, int $reportId): JsonResponse
+    #[OA\Put(
+        path: '/reports/{id}',
+        operationId: 'updateReport',
+        summary: 'Update a report status. Admin only.',
+        security: [['passport' => []], ['token' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['status'],
+                properties: [
+                    new OA\Property(property: 'status', type: 'string', enum: ['open', 'waiting', 'closed']),
+                    new OA\Property(property: 'description', type: 'string', nullable: true),
+                ],
+            ),
+        ),
+        tags: ['Report'],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid')),
+        ],
+        responses: [
+            new OA\Response(response: 204, description: 'Report updated.'),
+            new OA\Response(response: 403, description: 'Forbidden.'),
+            new OA\Response(response: 404, description: 'Not found.'),
+        ],
+    )]
+    public function update(Request $request, string $reportId): Response
     {
         $report = Report::findOrFail($reportId);
         $this->authorize('update', $report);
@@ -107,8 +195,6 @@ class ReportController extends Controller
 
         $report->update(['status' => $validated['status']]);
 
-        return $this->sendResponse(
-            data: 'Report updated.'
-        );
+        return response()->noContent();
     }
 }

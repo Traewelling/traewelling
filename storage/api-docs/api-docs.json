@@ -1677,13 +1677,64 @@
                 ]
             }
         },
-        "/report": {
+        "/reports": {
+            "get": {
+                "tags": [
+                    "Report"
+                ],
+                "summary": "List all reports. Admin only.",
+                "operationId": "listReports",
+                "parameters": [
+                    {
+                        "name": "cursor",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated list of reports.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ReportResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            },
             "post": {
                 "tags": [
                     "Report"
                 ],
                 "summary": "Report a Status, Event or User to the admins.",
-                "operationId": "report",
+                "operationId": "createReport",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1692,7 +1743,8 @@
                                 "required": [
                                     "subjectType",
                                     "subjectId",
-                                    "reason"
+                                    "reason",
+                                    "description"
                                 ],
                                 "properties": {
                                     "subjectType": {
@@ -1721,8 +1773,7 @@
                                     },
                                     "description": {
                                         "type": "string",
-                                        "example": "The status is inappropriate because...",
-                                        "nullable": true
+                                        "example": "The status is inappropriate because..."
                                     }
                                 },
                                 "type": "object"
@@ -1739,6 +1790,124 @@
                     },
                     "422": {
                         "description": "The given data was invalid."
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/reports/{id}": {
+            "get": {
+                "tags": [
+                    "Report"
+                ],
+                "summary": "Get a single report with activity log. Admin only.",
+                "operationId": "getReport",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Report details including activity log.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ReportResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "404": {
+                        "description": "Not found."
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Report"
+                ],
+                "summary": "Update a report status. Admin only.",
+                "operationId": "updateReport",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "status"
+                                ],
+                                "properties": {
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "open",
+                                            "waiting",
+                                            "closed"
+                                        ]
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "Report updated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "404": {
+                        "description": "Not found."
                     }
                 },
                 "security": [
@@ -8049,6 +8218,101 @@
                     "url": {
                         "type": "string",
                         "example": "https://traewelling.de"
+                    }
+                },
+                "type": "object"
+            },
+            "ReportResource": {
+                "required": [
+                    "id",
+                    "status",
+                    "subject_type",
+                    "subject_id",
+                    "reason",
+                    "description",
+                    "reporter",
+                    "created_at"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "123e4567-e89b-12d3-a456-426614174000"
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "open",
+                        "enum": [
+                            "open",
+                            "waiting",
+                            "closed"
+                        ]
+                    },
+                    "subject_type": {
+                        "type": "string",
+                        "example": "Status"
+                    },
+                    "subject_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "reason": {
+                        "type": "string",
+                        "nullable": true,
+                        "enum": [
+                            "inappropriate",
+                            "implausible",
+                            "spam",
+                            "illegal",
+                            "other"
+                        ]
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "reporter": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/LightUserResource"
+                            }
+                        ],
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "activities": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                },
+                                "description": {
+                                    "type": "string"
+                                },
+                                "causer": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/LightUserResource"
+                                        }
+                                    ],
+                                    "nullable": true
+                                },
+                                "properties": {
+                                    "type": "object",
+                                    "nullable": true
+                                },
+                                "created_at": {
+                                    "type": "string",
+                                    "format": "date-time"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "nullable": true
                     }
                 },
                 "type": "object"

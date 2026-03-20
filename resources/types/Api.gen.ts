@@ -1223,6 +1223,33 @@ export interface ProfileLinkResource {
   url: string;
 }
 
+export interface ReportResource {
+  /**
+   * @format uuid
+   * @example "123e4567-e89b-12d3-a456-426614174000"
+   */
+  id: string;
+  /** @example "open" */
+  status: "open" | "waiting" | "closed";
+  /** @example "Status" */
+  subject_type: string;
+  /** @example 1 */
+  subject_id: number;
+  reason: "inappropriate" | "implausible" | "spam" | "illegal" | "other" | null;
+  description: string | null;
+  reporter: LightUserResource | null;
+  /** @format date-time */
+  created_at: string;
+  activities?: {
+    id?: number;
+    description?: string;
+    causer?: LightUserResource | null;
+    properties?: object | null;
+    /** @format date-time */
+    created_at?: string;
+  }[];
+}
+
 /** RouteSegmentResource */
 export interface RouteSegmentResource {
   /**
@@ -4006,17 +4033,46 @@ export class Api<
         ...params,
       }),
   };
-  report = {
+  reports = {
     /**
      * No description
      *
      * @tags Report
-     * @name Report
-     * @summary Report a Status, Event or User to the admins.
-     * @request POST:/report
+     * @name ListReports
+     * @summary List all reports. Admin only.
+     * @request GET:/reports
      * @secure
      */
-    report: (
+    listReports: (
+      query?: {
+        cursor?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data?: ReportResource[];
+        },
+        void
+      >({
+        path: `/reports`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Report
+     * @name CreateReport
+     * @summary Report a Status, Event or User to the admins.
+     * @request POST:/reports
+     * @secure
+     */
+    createReport: (
       data: {
         /** @example "Status" */
         subjectType: "Event" | "Status" | "User";
@@ -4025,13 +4081,62 @@ export class Api<
         /** @example "inappropriate" */
         reason: "inappropriate" | "implausible" | "spam" | "illegal" | "other";
         /** @example "The status is inappropriate because..." */
+        description: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, void>({
+        path: `/reports`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Report
+     * @name GetReport
+     * @summary Get a single report with activity log. Admin only.
+     * @request GET:/reports/{id}
+     * @secure
+     */
+    getReport: (id: string, params: RequestParams = {}) =>
+      this.request<
+        {
+          data?: ReportResource;
+        },
+        void
+      >({
+        path: `/reports/${id}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Report
+     * @name UpdateReport
+     * @summary Update a report status. Admin only.
+     * @request PUT:/reports/{id}
+     * @secure
+     */
+    updateReport: (
+      id: string,
+      data: {
+        status: "open" | "waiting" | "closed";
         description?: string | null;
       },
       params: RequestParams = {},
     ) =>
       this.request<void, void>({
-        path: `/report`,
-        method: "POST",
+        path: `/reports/${id}`,
+        method: "PUT",
         body: data,
         secure: true,
         type: ContentType.Json,
