@@ -74,7 +74,7 @@
                         <i class="fa-solid fa-section"></i>
                         Licenses
                     </a>
-                    <a class="nav-link" href="{{ route('admin.alerts') }}">
+                    <a class="nav-link" href="/admin/alerts">
                         <i class="fa-solid fa-bullhorn"></i>
                         Alerts
                     </a>

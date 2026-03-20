@@ -5,7 +5,7 @@ import { AlertResource, AlertTranslationResource, Api } from '../../types/Api.ge
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 const alerts = ref([] as AlertResource[]);
-api.alerts.getActiveAlerts().then((data) => {
+api.alerts.getAlerts().then((data) => {
     data.json().then((data) => {
         alerts.value = data.data;
     });

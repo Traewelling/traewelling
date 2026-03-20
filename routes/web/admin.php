@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Backend\Admin\AlertController;
 use App\Http\Controllers\Frontend\Admin\ActivityController;
 use App\Http\Controllers\Frontend\Admin\EventController as AdminEventController;
 use App\Http\Controllers\Frontend\Admin\LicensesController;
@@ -22,20 +21,6 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function () {
             Route::post('/', [MotisSourceController::class, 'show'])->name('admin.sources.show');
             Route::post('/mass-assign', [MotisSourceController::class, 'massAssign'])
                 ->name('admin.sources.mass-assign');
-        });
-        Route::prefix('alerts')->group(function () {
-            Route::get('/', [AlertController::class, 'index'])
-                ->name('admin.alerts');
-            Route::post('/delete', [AlertController::class, 'destroy'])
-                ->name('admin.alerts.destroy');
-            Route::get('/create', [AlertController::class, 'create'])
-                ->name('admin.alerts.store');
-            Route::post('/create', [AlertController::class, 'store'])
-                ->name('admin.alerts.create');
-            Route::get('/{id}/edit', [AlertController::class, 'edit'])
-                ->name('admin.alerts.edit');
-            Route::post('/{id}/edit', [AlertController::class, 'update'])
-                ->name('admin.alerts.update');
         });
         Route::resource('licenses', LicensesController::class)
             ->only(['create', 'store', 'index']);
