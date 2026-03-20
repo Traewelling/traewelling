@@ -124,4 +124,14 @@ class StatusPolicy
     {
         return $user->id === $status->user_id;
     }
+
+    public function adminViewAny(User $user): bool
+    {
+        return $user->hasRole('admin');
+    }
+
+    public function adminUpdate(User $user, Status $status): bool
+    {
+        return $user->hasRole('admin');
+    }
 }

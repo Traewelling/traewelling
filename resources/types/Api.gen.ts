@@ -676,6 +676,53 @@ export interface UpdateProfileInformationRequest {
   timezone?: string;
 }
 
+/** AdminStatusResource */
+export interface AdminStatusResource {
+  /** @example 12345 */
+  id?: number;
+  body?: string | null;
+  /** @example 0 */
+  visibility?: number;
+  /** @example 0 */
+  business?: number;
+  moderation_notes?: string | null;
+  lock_visibility?: boolean;
+  hide_body?: boolean;
+  event_id?: number | null;
+  user?: {
+    id?: number;
+    name?: string;
+    username?: string;
+  };
+  checkin?: {
+    id?: number;
+    origin_station_id?: number | null;
+    origin_station_name?: string | null;
+    destination_station_id?: number | null;
+    destination_station_name?: string | null;
+    /** @format date-time */
+    departure?: string | null;
+    /** @format date-time */
+    arrival?: string | null;
+    distance?: number;
+    points?: number;
+    trip_id?: number;
+    linename?: string | null;
+  };
+  stopovers?: {
+    station_id?: number;
+    station_name?: string;
+    /** @format date-time */
+    arrival_planned?: string | null;
+    /** @format date-time */
+    departure_planned?: string | null;
+  }[];
+  /** @format date-time */
+  created_at?: string;
+  /** @format date-time */
+  updated_at?: string;
+}
+
 export interface AlertResource {
   /** @example "123e4567-e89b-12d3-a456-426614174000" */
   id: string;
@@ -1325,6 +1372,10 @@ export interface StationIdentifierResource {
   type?: string;
   /** @example "RK" */
   identifier?: string;
+  /** @example "Karlsruhe Hbf" */
+  name?: string | null;
+  /** @example "db" */
+  origin?: string | null;
 }
 
 /** Station */
@@ -1351,6 +1402,10 @@ export interface StationResource {
   rilIdentifier: string | null;
   areas: AreaResource[];
   identifiers?: StationIdentifierResource[];
+  /** @example "60" */
+  time_offset?: number | null;
+  /** @format date-time */
+  created_at?: string | null;
 }
 
 /** StatisticsGlobalData */
@@ -2371,6 +2426,105 @@ export class HttpClient<SecurityDataType = unknown> {
 export class Api<
   SecurityDataType extends unknown,
 > extends HttpClient<SecurityDataType> {
+  admin = {
+    /**
+     * No description
+     *
+     * @tags Admin
+     * @name GetAdminStatuses
+     * @summary List statuses for admin moderation. Admin only.
+     * @request GET:/admin/statuses
+     * @secure
+     */
+    getAdminStatuses: (
+      query?: {
+        /** Filter by user name or username */
+        userQuery?: string;
+        cursor?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data?: AdminStatusResource[];
+        },
+        void
+      >({
+        path: `/admin/statuses`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Admin
+     * @name GetAdminStatus
+     * @summary Get a single status with all admin details. Admin only.
+     * @request GET:/admin/statuses/{id}
+     * @secure
+     */
+    getAdminStatus: (id: number, params: RequestParams = {}) =>
+      this.request<
+        {
+          data?: AdminStatusResource;
+        },
+        void
+      >({
+        path: `/admin/statuses/${id}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Admin
+     * @name UpdateAdminStatus
+     * @summary Update a status including moderation fields. Admin only.
+     * @request PUT:/admin/statuses/{id}
+     * @secure
+     */
+    updateAdminStatus: (
+      id: number,
+      data: {
+        /** Origin station ID */
+        origin: number;
+        /** Destination station ID */
+        destination: number;
+        /** @maxLength 280 */
+        body?: string | null;
+        visibility: number;
+        business?: number | null;
+        event_id?: number | null;
+        points?: number | null;
+        /** @maxLength 255 */
+        moderation_notes?: string | null;
+        lock_visibility?: boolean | null;
+        hide_body?: boolean | null;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data?: AdminStatusResource;
+        },
+        void
+      >({
+        path: `/admin/statuses/${id}`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+  };
   alerts = {
     /**
      * No description

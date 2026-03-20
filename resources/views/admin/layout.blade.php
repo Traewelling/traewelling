@@ -50,11 +50,11 @@
                 @endif
 
                 @if(auth()->user()->hasRole('admin'))
-                    <a class="nav-link" href="{{ route('admin.statuses') }}">
+                    <a class="nav-link" href="/admin/statuses">
                         <i class="fa-solid fa-broadcast-tower"></i>
                         Status
                     </a>
-                    <a class="nav-link" href="{{ route('admin.stations') }}">
+                    <a class="nav-link" href="/admin/stations">
                         <i class="fa-solid fa-map-marker"></i>
                         Stations
                     </a>

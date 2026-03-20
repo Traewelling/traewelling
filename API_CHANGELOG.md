@@ -38,6 +38,10 @@ Check back here regularly to stay ahead of removals.
 
 # 2026-03-20
 
+Added fields to `StationResource`: `time_offset` (integer, nullable) and `created_at` (ISO 8601 string, nullable).
+
+Added fields to `StationIdentifierResource`: `name` (string, nullable) and `origin` (string, nullable).
+
 `POST /api/v1/report`: `description` is now required (minimum 10 characters). Previously it was optional/nullable.
 
 Added `POST /api/v1/reports` as correctly named replacement for the deprecated `POST /api/v1/report` endpoint.

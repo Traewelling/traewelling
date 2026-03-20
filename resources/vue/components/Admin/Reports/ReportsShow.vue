@@ -60,7 +60,7 @@ function statusBadgeClass(status: string): string {
 function subjectAdminUrl(r: ReportResource): string | null {
     switch (r.subject_type) {
         case 'Status':
-            return `/admin/statuses/${r.subject_id}/edit`;
+            return `/admin/statuses/${r.subject_id}`;
         case 'User':
             return `/admin/users/${r.subject_id}`;
         case 'Event':

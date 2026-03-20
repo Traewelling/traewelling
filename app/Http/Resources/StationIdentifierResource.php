@@ -11,6 +11,8 @@ use OpenApi\Attributes as OA;
     properties: [
         new OA\Property(property: 'type', type: 'string', example: 'de_db_ril100'),
         new OA\Property(property: 'identifier', type: 'string', example: 'RK'),
+        new OA\Property(property: 'name', type: 'string', example: 'Karlsruhe Hbf', nullable: true),
+        new OA\Property(property: 'origin', type: 'string', example: 'db', nullable: true),
     ],
 )]
 class StationIdentifierResource extends JsonResource
@@ -21,6 +23,8 @@ class StationIdentifierResource extends JsonResource
         return [
             'type' => $this->type,
             'identifier' => $this->identifier,
+            'name' => $this->name,
+            'origin' => $this->origin,
         ];
     }
 }

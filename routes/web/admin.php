@@ -7,7 +7,6 @@ use App\Http\Controllers\Frontend\Admin\MotisSourceController;
 use App\Http\Controllers\Frontend\Admin\OperatorController;
 use App\Http\Controllers\Frontend\Admin\RouteSegmentController;
 use App\Http\Controllers\Frontend\Admin\StationController;
-use App\Http\Controllers\Frontend\Admin\StatusEditController;
 use App\Http\Controllers\Frontend\Admin\TripController;
 use App\Http\Controllers\Frontend\Admin\UserController;
 use Illuminate\Support\Facades\Route;
@@ -36,17 +35,6 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function () {
                 ->name('admin.users.update-mail');
         });
 
-        Route::prefix('statuses')->group(function () {
-            Route::get('/', [StatusEditController::class, 'index'])
-                ->name('admin.statuses');
-            Route::get('/find', [StatusEditController::class, 'find'])
-                ->name('admin.statuses.find');
-            Route::get('/{statusId}/edit', [StatusEditController::class, 'renderEdit'])
-                ->name('admin.statuses.edit');
-            Route::post('/{statusId}/edit', [StatusEditController::class, 'edit']);
-
-        });
-
         Route::prefix('trips')->group(function () {
             Route::get('/', [TripController::class, 'index'])
                 ->name('admin.trips');
@@ -70,12 +58,6 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function () {
         });
 
         Route::prefix('stations')->group(function () {
-            Route::get('/', [StationController::class, 'index'])
-                ->name('admin.stations');
-
-            Route::get('/{id}', [StationController::class, 'show'])
-                ->name('admin.station');
-
             Route::post('/wikidata/import', [StationController::class, 'importWikidata'])->name('backend.status.import.wikidata'); // TODO: Make this an API endpoint when it is accessible for users too
             Route::post('/{id}/wikidata', [StationController::class, 'fetchWikidata']);
         });
