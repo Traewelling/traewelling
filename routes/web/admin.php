@@ -102,11 +102,6 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function () {
 
         Route::get('activity', [ActivityController::class, 'render'])
             ->name('admin.activity');
-
-        // Catch-all for admin-only SPA pages. Vue Router handles routing within the app.
-        // Add new admin-only pages to admin-routes.ts.
-        Route::get('{any}', fn () => view('admin.app'))
-            ->where('any', '.+');
     });
 
     // Welcome page: accessible to all backend users (admins + event-moderators (legacy until contributing system))
@@ -148,4 +143,10 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function () {
             Route::post('/edit/{id}', [AdminEventController::class, 'edit'])
                 ->middleware('permission:update-events');
         });
+
+    // Catch-all for admin-only SPA pages. must be last so specific routes take precedence.
+    // Vue Router handles routing within the app; add new pages to admin-routes.ts.
+    Route::middleware('role:admin')
+        ->get('{any}', fn () => view('admin.app'))
+        ->where('any', '.+');
 });
