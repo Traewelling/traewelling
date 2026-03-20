@@ -220,7 +220,7 @@
                             @foreach($user->statuses()->orderByDesc('created_at')->limit(15)->get() as $status)
                                 <tr>
                                     <td>
-                                        <a href="{{route('admin.statuses.edit', ['statusId' => $status->id])}}">
+                                        <a href="/admin/statuses/{{ $status->id }}">
                                             {{ $status->id }}
                                         </a>
                                     </td>

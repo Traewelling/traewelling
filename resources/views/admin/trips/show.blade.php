@@ -103,7 +103,7 @@
                                             <small><a
                                                     href="{{route('admin.users.show', ['id' => $checkin->user->id])}}">{{'@'.$checkin->user->username}}</a></small>
                                             <br/>
-                                            <a href="{{route('admin.statuses.edit', ['statusId' => $checkin->status->id])}}">
+                                            <a href="/admin/statuses/{{ $checkin->status->id }}">
                                                 #{{ $checkin->status->id }}
                                             </a>
                                         </td>

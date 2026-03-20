@@ -40,6 +40,8 @@ use OpenApi\Attributes as OA;
             type: 'array',
             items: new OA\Items(ref: '#/components/schemas/StationIdentifierResource'),
         ),
+        new OA\Property(property: 'time_offset', type: 'integer', example: '60', nullable: true),
+        new OA\Property(property: 'created_at', type: 'string', format: 'date-time', nullable: true),
     ],
 )]
 class StationResource extends JsonResource
@@ -54,8 +56,10 @@ class StationResource extends JsonResource
             'longitude' => $this->longitude,
             'ibnr' => null, // @deprecated - remove after 2026-09-30
             'rilIdentifier' => null, // @deprecated - remove after 2026-09-30
+            'time_offset' => $this->time_offset,
             'areas' => AreaResource::collection($this->whenLoaded('areas')),
             'identifiers' => StationIdentifierResource::collection($this->whenLoaded('stationIdentifiers')),
+            'created_at' => $this->created_at?->toIso8601String(),
         ];
     }
 }

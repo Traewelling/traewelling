@@ -1,0 +1,111 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Resources;
+
+use App\Models\Status;
+use Illuminate\Http\Resources\Json\JsonResource;
+use OpenApi\Attributes as OA;
+
+#[OA\Schema(
+    title: 'AdminStatusResource',
+    properties: [
+        new OA\Property(property: 'id', type: 'integer', example: 12345),
+        new OA\Property(property: 'body', type: 'string', nullable: true),
+        new OA\Property(property: 'visibility', type: 'integer', example: 0),
+        new OA\Property(property: 'business', type: 'integer', example: 0),
+        new OA\Property(property: 'moderation_notes', type: 'string', nullable: true),
+        new OA\Property(property: 'lock_visibility', type: 'boolean'),
+        new OA\Property(property: 'hide_body', type: 'boolean'),
+        new OA\Property(property: 'event_id', type: 'integer', nullable: true),
+        new OA\Property(
+            property: 'user',
+            properties: [
+                new OA\Property(property: 'id', type: 'integer'),
+                new OA\Property(property: 'name', type: 'string'),
+                new OA\Property(property: 'username', type: 'string'),
+            ],
+            type: 'object',
+        ),
+        new OA\Property(
+            property: 'checkin',
+            properties: [
+                new OA\Property(property: 'id', type: 'integer'),
+                new OA\Property(property: 'origin_station_id', type: 'integer', nullable: true),
+                new OA\Property(property: 'origin_station_name', type: 'string', nullable: true),
+                new OA\Property(property: 'destination_station_id', type: 'integer', nullable: true),
+                new OA\Property(property: 'destination_station_name', type: 'string', nullable: true),
+                new OA\Property(property: 'departure', type: 'string', format: 'date-time', nullable: true),
+                new OA\Property(property: 'arrival', type: 'string', format: 'date-time', nullable: true),
+                new OA\Property(property: 'distance', type: 'integer'),
+                new OA\Property(property: 'points', type: 'integer'),
+                new OA\Property(property: 'trip_id', type: 'integer'),
+                new OA\Property(property: 'linename', type: 'string', nullable: true),
+            ],
+            type: 'object',
+            nullable: true,
+        ),
+        new OA\Property(
+            property: 'stopovers',
+            type: 'array',
+            items: new OA\Items(
+                properties: [
+                    new OA\Property(property: 'station_id', type: 'integer'),
+                    new OA\Property(property: 'station_name', type: 'string'),
+                    new OA\Property(property: 'arrival_planned', type: 'string', format: 'date-time', nullable: true),
+                    new OA\Property(property: 'departure_planned', type: 'string', format: 'date-time', nullable: true),
+                ],
+            ),
+            nullable: true,
+        ),
+        new OA\Property(property: 'created_at', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'updated_at', type: 'string', format: 'date-time'),
+    ],
+)]
+class AdminStatusResource extends JsonResource
+{
+    public function toArray($request): array
+    {
+        /** @var Status $this */
+        return [
+            'id' => (int) $this->id,
+            'body' => $this->body,
+            'visibility' => (int) $this->visibility->value,
+            'business' => (int) $this->business->value,
+            'moderation_notes' => $this->moderation_notes,
+            'lock_visibility' => (bool) $this->lock_visibility,
+            'hide_body' => (bool) $this->hide_body,
+            'event_id' => $this->event_id,
+            'user' => [
+                'id' => $this->user->id,
+                'name' => $this->user->name,
+                'username' => $this->user->username,
+            ],
+            'checkin' => $this->checkin ? [
+                'id' => $this->checkin->id,
+                'origin_station_id' => $this->checkin->originStopover?->train_station_id,
+                'origin_station_name' => $this->checkin->originStopover?->station?->name,
+                'destination_station_id' => $this->checkin->destinationStopover?->train_station_id,
+                'destination_station_name' => $this->checkin->destinationStopover?->station?->name,
+                'departure' => $this->checkin->departure?->toIso8601String(),
+                'arrival' => $this->checkin->arrival?->toIso8601String(),
+                'distance' => (int) $this->checkin->distance,
+                'points' => (int) $this->checkin->points,
+                'trip_id' => (int) $this->checkin->trip_id,
+                'linename' => $this->checkin->trip?->linename,
+            ] : null,
+            'stopovers' => $this->when(
+                $this->checkin?->trip?->relationLoaded('stopovers') ?? false,
+                fn () => $this->checkin->trip->stopovers->map(fn ($s) => [
+                    'station_id' => (int) $s->train_station_id,
+                    'station_name' => $s->station?->name,
+                    'arrival_planned' => $s->arrival_planned?->toIso8601String(),
+                    'departure_planned' => $s->departure_planned?->toIso8601String(),
+                ])->values(),
+            ),
+            'created_at' => $this->created_at?->toIso8601String(),
+            'updated_at' => $this->updated_at?->toIso8601String(),
+        ];
+    }
+}

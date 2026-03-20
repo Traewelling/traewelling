@@ -11,6 +11,7 @@
 |
 */
 
+use App\Http\Controllers\API\v1\AdminStatusController;
 use App\Http\Controllers\API\v1\AlertController;
 use App\Http\Controllers\API\v1\AuthController as v1Auth;
 use App\Http\Controllers\API\v1\CommunityController;
@@ -211,6 +212,12 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::prefix('community')->group(static function () {
             Route::get('profile', [CommunityController::class, 'getMyProfile']);
             Route::get('history', [CommunityController::class, 'getHistory']);
+        });
+
+        Route::prefix('admin')->group(static function () {
+            Route::get('statuses', [AdminStatusController::class, 'index']);
+            Route::get('statuses/{id}', [AdminStatusController::class, 'show'])->whereNumber('id');
+            Route::put('statuses/{id}', [AdminStatusController::class, 'update'])->whereNumber('id');
         });
     });
 

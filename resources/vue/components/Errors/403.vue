@@ -18,7 +18,7 @@ function goHome() {
 
 function adminPanel() {
     if (props.statusId) {
-        window.location.href = `/admin/statuses/${props.statusId || ''}/edit`;
+        window.location.href = `/admin/statuses/${props.statusId || ''}`;
     }
 }
 </script>
