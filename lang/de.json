@@ -917,6 +917,7 @@
     "trip_creation.form.origin": "Abfahrtsbahnhof",
     "trip_creation.form.save": "Speichern",
     "trip_creation.form.stopover": "Zwischenhalt",
+    "trip_creation.form.operator_search": "Betreiber suchen...",
     "trip_creation.form.travel_type": "Kategorie",
     "trip_creation.form.trip_data": "Fahrtinformationen",
     "trip_creation.limitations": "Aktuelle Einschränkungen",

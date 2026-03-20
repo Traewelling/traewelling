@@ -1566,8 +1566,19 @@
                 "tags": [
                     "Checkin"
                 ],
-                "summary": "Get a list of all operators.",
-                "operationId": "bcfcf8686980cf0fcdc751b2e13fa4f7",
+                "summary": "Get a list of operators, optionally filtered by name.",
+                "operationId": "getOperators",
+                "parameters": [
+                    {
+                        "name": "query",
+                        "in": "query",
+                        "description": "Filter operators by name (minimum 2 characters)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "successful operation",
@@ -5239,6 +5250,124 @@
                     },
                     {
                         "token": []
+                    }
+                ]
+            }
+        },
+        "/trips": {
+            "post": {
+                "tags": [
+                    "Trips"
+                ],
+                "summary": "Create a manual trip.",
+                "operationId": "createTrip",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "category",
+                                    "lineName",
+                                    "originId",
+                                    "originDeparturePlanned",
+                                    "destinationId",
+                                    "destinationArrivalPlanned"
+                                ],
+                                "properties": {
+                                    "category": {
+                                        "type": "string",
+                                        "example": "regional"
+                                    },
+                                    "lineName": {
+                                        "type": "string",
+                                        "example": "RE 1"
+                                    },
+                                    "journeyNumber": {
+                                        "type": "integer",
+                                        "example": 12345,
+                                        "nullable": true
+                                    },
+                                    "operatorId": {
+                                        "type": "integer",
+                                        "example": 1,
+                                        "nullable": true
+                                    },
+                                    "originId": {
+                                        "type": "integer",
+                                        "example": 8000105
+                                    },
+                                    "originDeparturePlanned": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2025-01-01T10:00:00Z"
+                                    },
+                                    "destinationId": {
+                                        "type": "integer",
+                                        "example": 8000261
+                                    },
+                                    "destinationArrivalPlanned": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2025-01-01T12:00:00Z"
+                                    },
+                                    "stopovers": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "stationId": {
+                                                    "type": "integer",
+                                                    "example": 8000240
+                                                },
+                                                "arrival": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-01-01T11:00:00Z",
+                                                    "nullable": true
+                                                },
+                                                "departure": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-01-01T11:02:00Z",
+                                                    "nullable": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Trip created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TripResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
                     }
                 ]
             }

@@ -917,6 +917,7 @@
     "trip_creation.form.origin": "Departure station",
     "trip_creation.form.save": "Save",
     "trip_creation.form.stopover": "Stopover",
+    "trip_creation.form.operator_search": "Search operator...",
     "trip_creation.form.travel_type": "Travel type",
     "trip_creation.form.trip_data": "Journey information",
     "trip_creation.limitations": "Current limitations",

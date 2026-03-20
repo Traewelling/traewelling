@@ -20,7 +20,6 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use OpenApi\Attributes as OA;
-use Throwable;
 
 class TripController extends Controller
 {
@@ -76,63 +75,99 @@ class TripController extends Controller
         return StatusResource::collection($statuses);
     }
 
-    /**
-     * @todo add docs when endpoint is stable
-     */
+    #[OA\Post(
+        path: '/trips',
+        operationId: 'createTrip',
+        summary: 'Create a manual trip.',
+        security: [['passport' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['category', 'lineName', 'originId', 'originDeparturePlanned', 'destinationId', 'destinationArrivalPlanned'],
+                properties: [
+                    new OA\Property(property: 'category', type: 'string', example: 'regional'),
+                    new OA\Property(property: 'lineName', type: 'string', example: 'RE 1'),
+                    new OA\Property(property: 'journeyNumber', type: 'integer', example: 12345, nullable: true),
+                    new OA\Property(property: 'operatorId', type: 'integer', example: 1, nullable: true),
+                    new OA\Property(property: 'originId', type: 'integer', example: 8000105),
+                    new OA\Property(property: 'originDeparturePlanned', type: 'string', format: 'date-time', example: '2025-01-01T10:00:00Z'),
+                    new OA\Property(property: 'destinationId', type: 'integer', example: 8000261),
+                    new OA\Property(property: 'destinationArrivalPlanned', type: 'string', format: 'date-time', example: '2025-01-01T12:00:00Z'),
+                    new OA\Property(
+                        property: 'stopovers',
+                        type: 'array',
+                        items: new OA\Items(
+                            properties: [
+                                new OA\Property(property: 'stationId', type: 'integer', example: 8000240),
+                                new OA\Property(property: 'arrival', type: 'string', format: 'date-time', example: '2025-01-01T11:00:00Z', nullable: true),
+                                new OA\Property(property: 'departure', type: 'string', format: 'date-time', example: '2025-01-01T11:02:00Z', nullable: true),
+                            ],
+                        ),
+                        nullable: true,
+                    ),
+                ],
+            ),
+        ),
+        tags: ['Trips'],
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: 'Trip created successfully',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'data', ref: '#/components/schemas/TripResource'),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Validation error'),
+            new OA\Response(response: 403, description: 'Unauthorized'),
+        ],
+    )]
     public function createTrip(ManualTripCreationRequest $request): TripResource|JsonResponse
     {
         $validated = $request->validated();
 
-        DB::beginTransaction();
-
         try {
-            $creator = new ManualTripCreator();
-            $creator->setCategory(HafasTravelType::from($validated['category']))
-                ->setLine($validated['lineName'], $validated['journeyNumber'])
-                ->setOrigin(
-                    Station::findOrFail($validated['originId']),
-                    Carbon::parse($validated['originDeparturePlanned']),
-                    isset($validated['originDepartureReal']) ? Carbon::parse($validated['originDepartureReal']) : null
-                )
-                ->setDestination(
-                    Station::findOrFail($validated['destinationId']),
-                    Carbon::parse($validated['destinationArrivalPlanned']),
-                    isset($validated['destinationArrivalReal']) ? Carbon::parse($validated['destinationArrivalReal']) : null
-                );
+            $trip = DB::transaction(function () use ($validated) {
+                $creator = new ManualTripCreator();
+                $creator->setCategory(HafasTravelType::from($validated['category']))
+                    ->setLine($validated['lineName'], $validated['journeyNumber'] ?? null)
+                    ->setOrigin(
+                        Station::findOrFail($validated['originId']),
+                        Carbon::parse($validated['originDeparturePlanned']),
+                        isset($validated['originDepartureReal']) ? Carbon::parse($validated['originDepartureReal']) : null
+                    )
+                    ->setDestination(
+                        Station::findOrFail($validated['destinationId']),
+                        Carbon::parse($validated['destinationArrivalPlanned']),
+                        isset($validated['destinationArrivalReal']) ? Carbon::parse($validated['destinationArrivalReal']) : null
+                    );
 
-            if (isset($validated['operatorId'])) {
-                $operator = Operator::findOrFail($validated['operatorId']);
-                $creator->setOperator($operator);
-            }
+                if (isset($validated['operatorId'])) {
+                    $creator->setOperator(Operator::findOrFail($validated['operatorId']));
+                }
 
-            foreach ($validated['stopovers'] ?? [] as $stopover) {
-                $creator->addStopover(
-                    Station::findOrFail($stopover['stationId']),
-                    isset($stopover['departure']) ? Carbon::parse($stopover['departure']) : null,
-                    isset($stopover['arrival']) ? Carbon::parse($stopover['arrival']) : null,
-                    isset($stopover['departureReal']) ? Carbon::parse($stopover['departureReal']) : null,
-                    isset($stopover['arrivalReal']) ? Carbon::parse($stopover['arrivalReal']) : null
-                );
-            }
+                foreach ($validated['stopovers'] ?? [] as $stopover) {
+                    $creator->addStopover(
+                        Station::findOrFail($stopover['stationId']),
+                        isset($stopover['departure']) ? Carbon::parse($stopover['departure']) : null,
+                        isset($stopover['arrival']) ? Carbon::parse($stopover['arrival']) : null,
+                        isset($stopover['departureReal']) ? Carbon::parse($stopover['departureReal']) : null,
+                        isset($stopover['arrivalReal']) ? Carbon::parse($stopover['arrivalReal']) : null
+                    );
+                }
 
-            $trip = $creator->createFullTrip();
-            $durationInHours = $trip->departure->diffInHours($trip->arrival);
-            if ($durationInHours > config('trwl.max_journey_hours')) {
-                throw new ManualTripValidationException(sprintf('Trip duration exceeds maximum allowed duration of %d hours', config('trwl.max_journey_hours')));
-            }
+                $trip = $creator->createFullTrip();
+                $durationInHours = $trip->departure->diffInHours($trip->arrival);
+                if ($durationInHours > config('trwl.max_journey_hours')) {
+                    throw new ManualTripValidationException(sprintf('Trip duration exceeds maximum allowed duration of %d hours', config('trwl.max_journey_hours')));
+                }
 
+                return $trip;
+            });
         } catch (ManualTripValidationException $e) {
-            DB::rollBack();
-
             return response()->json(['message' => $e->getMessage()], 400);
-        } catch (Throwable $e) {
-            DB::rollBack();
-            report($e);
-
-            return response()->json(['message' => 'An error occurred while creating the trip'], 500);
         }
-
-        DB::commit();
 
         return new TripResource($trip);
     }
