@@ -897,6 +897,7 @@
     "user.already-unblocked": "L'utilisateur·rice :username n'est pas bloqué·e.",
     "user.already-unmuted": "L’utilisateur·rice :username n‘est pas masqué·e.",
     "user.block-tooltip": "Bloquer l'utilisateur·rice",
+    "user.report": "Signaler l'utilisateur·rice",
     "user.blocked": "Tu as bloqué l'utilisateur·rice :@username.",
     "user.blocked.heading": "Utilisateur·rice bloqué·e",
     "user.blocked.heading2": "Utilisateur·rice·s bloqué·e·s",

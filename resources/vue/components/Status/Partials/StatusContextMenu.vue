@@ -8,6 +8,7 @@ import { StatusHelper } from '../../../helpers/StatusHelper';
 import { useUserStore } from '../../../stores/user';
 import ConfirmModal from '../../ConfirmModal.vue';
 import UpdateModal from '../../UpdateModal/UpdateModal.vue';
+import ReportModal from './ReportModal.vue';
 
 const props = defineProps({
     status: {
@@ -61,6 +62,7 @@ function rideAlongUrl() {
 
 const delModal = useTemplateRef('delModal');
 const updateModal = useTemplateRef('updateModal');
+const reportModal = useTemplateRef('reportModal');
 
 function showModal() {
     delModal.value?.show();
@@ -227,12 +229,12 @@ async function handleBlock() {
                         <hr class="dropdown-divider" />
                     </li>
                     <li>
-                        <a :href="`/report?subjectType=Status&subjectId=${status.id}`" class="dropdown-item">
+                        <button class="dropdown-item" type="button" @click="reportModal?.show()">
                             <div class="dropdown-icon-suspense">
                                 <i class="fas fa-flag" aria-hidden="true" />
                             </div>
                             {{ trans('status.report') }}
-                        </a>
+                        </button>
                     </li>
 
                     <li v-if="canModerateTarget">
@@ -276,4 +278,5 @@ async function handleBlock() {
     </div>
     <ConfirmModal ref="delModal" title="modals.deleteStatus-title" @confirm="emit('confirm-delete')" />
     <UpdateModal ref="updateModal" :status="status" @status-updated="emit('status-updated', $event)" />
+    <ReportModal ref="reportModal" subject-type="Status" :subject-id="status.id" />
 </template>

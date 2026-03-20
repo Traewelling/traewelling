@@ -27,4 +27,35 @@ class ReportTest extends ApiTestCase
         $response->assertStatus(201);
         $response->assertHeader('Content-Type', 'application/json');
     }
+
+    public function test_report_status_without_description_fails(): void
+    {
+        $user = User::factory()->create();
+        $this->actAsApiUserWithAllScopes($user);
+
+        $status = Status::factory()->create();
+
+        $response = $this->actingAs($user)->postJson('/api/v1/report', [
+            'subjectType' => 'Status',
+            'subjectId' => $status->id,
+            'reason' => 'inappropriate',
+        ]);
+        $response->assertStatus(422);
+    }
+
+    public function test_report_status_with_short_description_fails(): void
+    {
+        $user = User::factory()->create();
+        $this->actAsApiUserWithAllScopes($user);
+
+        $status = Status::factory()->create();
+
+        $response = $this->actingAs($user)->postJson('/api/v1/report', [
+            'subjectType' => 'Status',
+            'subjectId' => $status->id,
+            'reason' => 'inappropriate',
+            'description' => 'too short',
+        ]);
+        $response->assertStatus(422);
+    }
 }

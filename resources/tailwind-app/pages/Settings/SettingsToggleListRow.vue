@@ -33,7 +33,7 @@ watch(value, (newValue) => {
                 <svg class="hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path d="M0 0h24v24H0z" fill="none" />
                 </svg>
-                <Check class="size-4 font-bold" strokeWidth="4" />
+                <Check class="size-4 font-bold" stroke-width="4" />
             </label>
         </div>
     </li>

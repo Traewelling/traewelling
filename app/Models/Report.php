@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enum\Report\ReportReason;
 use App\Enum\Report\ReportStatus;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
@@ -13,7 +14,7 @@ use Spatie\Activitylog\Models\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
- * @property int $id
+ * @property string $id
  * @property ReportStatus $status
  * @property string $subject_type
  * @property int $subject_id
@@ -45,7 +46,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  */
 class Report extends Model
 {
-    use LogsActivity;
+    use HasUuids, LogsActivity;
 
     protected $fillable = [
         'status', 'subject_type', 'subject_id', 'reason',

@@ -6,7 +6,6 @@ use App\Http\Controllers\Frontend\Admin\EventController as AdminEventController;
 use App\Http\Controllers\Frontend\Admin\LicensesController;
 use App\Http\Controllers\Frontend\Admin\MotisSourceController;
 use App\Http\Controllers\Frontend\Admin\OperatorController;
-use App\Http\Controllers\Frontend\Admin\ReportController;
 use App\Http\Controllers\Frontend\Admin\RouteSegmentController;
 use App\Http\Controllers\Frontend\Admin\StationController;
 use App\Http\Controllers\Frontend\Admin\StatusEditController;
@@ -15,9 +14,6 @@ use App\Http\Controllers\Frontend\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'permission:view-backend'])->group(function () {
-    Route::view('/', 'admin.welcome') // attention: route accessible for admins and event-moderators!
-        ->name('admin.welcome');
-
     Route::middleware('role:admin')->group(function () {
         // these routes are only accessible for admins
         Route::prefix('sources')->group(function () {
@@ -43,13 +39,6 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function () {
         });
         Route::resource('licenses', LicensesController::class)
             ->only(['create', 'store', 'index']);
-
-        Route::prefix('reports')->group(function () {
-            Route::get('/', [ReportController::class, 'index'])
-                ->name('admin.reports');
-            Route::get('/{id}', [ReportController::class, 'showReport'])
-                ->name('admin.reports.show');
-        });
 
         Route::prefix('users')->group(function () {
             Route::get('/', [UserController::class, 'renderIndex'])
@@ -115,6 +104,9 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function () {
             ->name('admin.activity');
     });
 
+    // Welcome page: accessible to all backend users (admins + event-moderators (legacy until contributing system))
+    Route::get('/', fn () => view('admin.app'));
+
     Route::prefix('events')
         ->middleware(['permission:view-events|accept-events|deny-events|update-events|delete-events'])
         ->group(function () {
@@ -151,4 +143,10 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function () {
             Route::post('/edit/{id}', [AdminEventController::class, 'edit'])
                 ->middleware('permission:update-events');
         });
+
+    // Catch-all for admin-only SPA pages. must be last so specific routes take precedence.
+    // Vue Router handles routing within the app; add new pages to admin-routes.ts.
+    Route::middleware('role:admin')
+        ->get('{any}', fn () => view('admin.app'))
+        ->where('any', '.+');
 });

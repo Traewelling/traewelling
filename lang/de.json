@@ -933,6 +933,7 @@
     "user.already-unblocked": "Der Benutzer :username ist nicht blockiert.",
     "user.already-unmuted": "Der Benutzer :username ist nicht stummgeschaltet.",
     "user.block-tooltip": "Benutzer blockieren",
+    "user.report": "Benutzer melden",
     "user.blocked": "Du hast den Benutzer :username blockiert.",
     "user.blocked.heading": "Benutzer blockiert",
     "user.blocked.heading2": "Blockierte Benutzer",

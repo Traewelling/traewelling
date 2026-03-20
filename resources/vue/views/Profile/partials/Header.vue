@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
+import { useTemplateRef } from 'vue';
 import { UserResource, ViewUserForbiddenReason } from '../../../../types/Api.gen';
 import BlockButton from '../../../components/BlockButton.vue';
 import FollowButton from '../../../components/FollowButton.vue';
 import MuteButton from '../../../components/MuteButton.vue';
+import ReportModal from '../../../components/Status/Partials/ReportModal.vue';
 import { useUserStore } from '../../../stores/user';
 
 const authUser = useUserStore();
+const reportModal = useTemplateRef('reportModal');
 
 defineProps<{
     userData: UserResource;
@@ -47,6 +50,15 @@ defineProps<{
                     <template v-if="userData.id !== authUser.getId">
                         <MuteButton :user-data="userData" />
                         <BlockButton :user-data="userData" />
+                        <button
+                            class="btn btn-sm btn-outline-light"
+                            data-bs-toggle="tooltip"
+                            :title="trans('status.report')"
+                            @click="reportModal?.show()"
+                        >
+                            <i class="fas fa-flag" aria-hidden="true"></i>
+                            <span class="visually-hidden">{{ trans('status.report') }}</span>
+                        </button>
                     </template>
                     <a
                         v-if="authUser?.isAdmin"
@@ -59,4 +71,5 @@ defineProps<{
             </div>
         </div>
     </div>
+    <ReportModal ref="reportModal" subject-type="User" :subject-id="userData.id" />
 </template>
