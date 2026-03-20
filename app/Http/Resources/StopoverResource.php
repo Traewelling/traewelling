@@ -161,6 +161,10 @@ class StopoverResource extends JsonResource
             'name' => $this->station->name,
             'rilIdentifier' => null, // @deprecated - remove after 2026-09-30
             'evaIdentifier' => null, // @deprecated - remove after 2026-09-30
+            'identifiers' => $this->when(
+                $this->relationLoaded('station') && $this->station->relationLoaded('stationIdentifiers'),
+                fn () => StationIdentifierResource::collection($this->station->stationIdentifiers),
+            ),
             'arrival' => $this->arrival?->toIso8601String(), // @deprecated - remove after 2026-09-30
             'arrivalPlanned' => $this->arrival_planned?->toIso8601String(),
             'arrivalReal' => $this->arrival_real?->toIso8601String(),
