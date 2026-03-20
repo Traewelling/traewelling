@@ -7,21 +7,27 @@ use App\Http\Resources\AlertResource;
 use App\Models\Alert;
 use App\Models\AlertTranslation;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use OpenApi\Attributes as OA;
 
 class AlertController extends Controller
 {
     #[OA\Get(
         path: '/alerts',
-        operationId: 'getActiveAlerts',
-        summary: 'Get all active alerts',
+        operationId: 'getAlerts',
+        summary: 'Get alerts. Without ?all returns only currently active alerts. With ?all=true (admin only) returns all alerts with cursor pagination.',
         tags: ['Notifications'],
+        parameters: [
+            new OA\Parameter(name: 'all', description: 'Admin only: return all alerts regardless of active dates.', in: 'query', required: false, schema: new OA\Schema(type: 'boolean')),
+            new OA\Parameter(name: 'cursor', in: 'query', required: false, schema: new OA\Schema(type: 'string')),
+        ],
         responses: [
             new OA\Response(
                 response: 200,
-                description: 'List of active alerts',
+                description: 'List of alerts',
                 content: new OA\JsonContent(
                     properties: [
                         new OA\Property(
@@ -34,9 +40,19 @@ class AlertController extends Controller
             ),
         ],
     )]
-    public function index(): AnonymousResourceCollection
+    public function index(Request $request): AnonymousResourceCollection
     {
         $this->authorize('viewAny', Alert::class);
+
+        // Admin-only: return all alerts regardless of active dates, with cursor pagination
+        if ($request->boolean('all') && Gate::allows('create', Alert::class)) {
+            return AlertResource::collection(
+                Alert::with('translations')
+                    ->orderByDesc('active_from')
+                    ->cursorPaginate(25)
+            );
+        }
+
         $now = now()->startOfDay();
 
         $alerts = Alert::with('translations')
@@ -70,9 +86,58 @@ class AlertController extends Controller
         return AlertResource::collection($alerts);
     }
 
-    /**
-     * No documentation, as this is not a public endpoint.
-     */
+    #[OA\Get(
+        path: '/alerts/{id}',
+        operationId: 'getAlert',
+        summary: 'Get a single alert. Admin only.',
+        security: [['passport' => []], ['token' => []]],
+        tags: ['Notifications'],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid')),
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Alert details.', content: new OA\JsonContent(properties: [new OA\Property(property: 'data', ref: '#/components/schemas/AlertResource')])),
+            new OA\Response(response: 403, description: 'Forbidden.'),
+            new OA\Response(response: 404, description: 'Not found.'),
+        ],
+    )]
+    public function show(Alert $alert): AlertResource
+    {
+        $this->authorize('update', $alert);
+
+        return new AlertResource($alert->load('translations'));
+    }
+
+    #[OA\Post(
+        path: '/alerts',
+        operationId: 'createAlert',
+        summary: 'Create a new alert. Admin only.',
+        security: [['passport' => []], ['token' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['type', 'active_from', 'title_de', 'content_de', 'title_en', 'content_en'],
+                properties: [
+                    new OA\Property(property: 'type', type: 'string', enum: ['info', 'warning', 'danger', 'success']),
+                    new OA\Property(property: 'active_from', type: 'string', format: 'date'),
+                    new OA\Property(property: 'active_until', type: 'string', format: 'date', nullable: true),
+                    new OA\Property(property: 'title_de', type: 'string'),
+                    new OA\Property(property: 'content_de', type: 'string'),
+                    new OA\Property(property: 'title_en', type: 'string'),
+                    new OA\Property(property: 'content_en', type: 'string'),
+                    new OA\Property(property: 'url_de', type: 'string', nullable: true),
+                    new OA\Property(property: 'url_en', type: 'string', nullable: true),
+                    new OA\Property(property: 'url', type: 'string', nullable: true),
+                ],
+            ),
+        ),
+        tags: ['Notifications'],
+        responses: [
+            new OA\Response(response: 201, description: 'Alert created.', content: new OA\JsonContent(properties: [new OA\Property(property: 'data', ref: '#/components/schemas/AlertResource')])),
+            new OA\Response(response: 403, description: 'Forbidden.'),
+            new OA\Response(response: 422, description: 'Validation error.'),
+        ],
+    )]
     public function store(StoreAlertRequest $request): AlertResource
     {
         $this->authorize('create', Alert::class);
@@ -82,9 +147,40 @@ class AlertController extends Controller
         return new AlertResource($alert);
     }
 
-    /**
-     * No documentation, as this is not a public endpoint.
-     */
+    #[OA\Put(
+        path: '/alerts/{id}',
+        operationId: 'updateAlert',
+        summary: 'Update an alert. Admin only.',
+        security: [['passport' => []], ['token' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['type', 'active_from', 'title_de', 'content_de', 'title_en', 'content_en'],
+                properties: [
+                    new OA\Property(property: 'type', type: 'string', enum: ['info', 'warning', 'danger', 'success']),
+                    new OA\Property(property: 'active_from', type: 'string', format: 'date'),
+                    new OA\Property(property: 'active_until', type: 'string', format: 'date', nullable: true),
+                    new OA\Property(property: 'title_de', type: 'string'),
+                    new OA\Property(property: 'content_de', type: 'string'),
+                    new OA\Property(property: 'title_en', type: 'string'),
+                    new OA\Property(property: 'content_en', type: 'string'),
+                    new OA\Property(property: 'url_de', type: 'string', nullable: true),
+                    new OA\Property(property: 'url_en', type: 'string', nullable: true),
+                    new OA\Property(property: 'url', type: 'string', nullable: true),
+                ],
+            ),
+        ),
+        tags: ['Notifications'],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid')),
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Alert updated.', content: new OA\JsonContent(properties: [new OA\Property(property: 'data', ref: '#/components/schemas/AlertResource')])),
+            new OA\Response(response: 403, description: 'Forbidden.'),
+            new OA\Response(response: 404, description: 'Not found.'),
+            new OA\Response(response: 422, description: 'Validation error.'),
+        ],
+    )]
     public function update(StoreAlertRequest $request, string $id): AlertResource
     {
         $alert = Alert::findOrFail($id);
@@ -94,9 +190,21 @@ class AlertController extends Controller
         return new AlertResource($alert);
     }
 
-    /**
-     * No documentation, as this is not a public endpoint.
-     */
+    #[OA\Delete(
+        path: '/alerts/{id}',
+        operationId: 'deleteAlert',
+        summary: 'Delete an alert. Admin only.',
+        security: [['passport' => []], ['token' => []]],
+        tags: ['Notifications'],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid')),
+        ],
+        responses: [
+            new OA\Response(response: 204, description: 'Alert deleted.'),
+            new OA\Response(response: 403, description: 'Forbidden.'),
+            new OA\Response(response: 404, description: 'Not found.'),
+        ],
+    )]
     public function destroy(Alert $alert): JsonResponse
     {
         $this->authorize('delete', $alert);

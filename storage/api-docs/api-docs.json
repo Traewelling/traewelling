@@ -28,11 +28,30 @@
                 "tags": [
                     "Notifications"
                 ],
-                "summary": "Get all active alerts",
-                "operationId": "getActiveAlerts",
+                "summary": "Get alerts. Without ?all returns only currently active alerts. With ?all=true (admin only) returns all alerts with cursor pagination.",
+                "operationId": "getAlerts",
+                "parameters": [
+                    {
+                        "name": "all",
+                        "in": "query",
+                        "description": "Admin only: return all alerts regardless of active dates.",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "cursor",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "List of active alerts",
+                        "description": "List of alerts",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -50,6 +69,308 @@
                         }
                     }
                 }
+            },
+            "post": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Create a new alert. Admin only.",
+                "operationId": "createAlert",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "type",
+                                    "active_from",
+                                    "title_de",
+                                    "content_de",
+                                    "title_en",
+                                    "content_en"
+                                ],
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "info",
+                                            "warning",
+                                            "danger",
+                                            "success"
+                                        ]
+                                    },
+                                    "active_from": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "active_until": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "nullable": true
+                                    },
+                                    "title_de": {
+                                        "type": "string"
+                                    },
+                                    "content_de": {
+                                        "type": "string"
+                                    },
+                                    "title_en": {
+                                        "type": "string"
+                                    },
+                                    "content_en": {
+                                        "type": "string"
+                                    },
+                                    "url_de": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "url_en": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "url": {
+                                        "type": "string",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Alert created.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/AlertResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "422": {
+                        "description": "Validation error."
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/alerts/{id}": {
+            "get": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Get a single alert. Admin only.",
+                "operationId": "getAlert",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Alert details.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/AlertResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "404": {
+                        "description": "Not found."
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Update an alert. Admin only.",
+                "operationId": "updateAlert",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "type",
+                                    "active_from",
+                                    "title_de",
+                                    "content_de",
+                                    "title_en",
+                                    "content_en"
+                                ],
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "info",
+                                            "warning",
+                                            "danger",
+                                            "success"
+                                        ]
+                                    },
+                                    "active_from": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "active_until": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "nullable": true
+                                    },
+                                    "title_de": {
+                                        "type": "string"
+                                    },
+                                    "content_de": {
+                                        "type": "string"
+                                    },
+                                    "title_en": {
+                                        "type": "string"
+                                    },
+                                    "content_en": {
+                                        "type": "string"
+                                    },
+                                    "url_de": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "url_en": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "url": {
+                                        "type": "string",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Alert updated.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/AlertResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "404": {
+                        "description": "Not found."
+                    },
+                    "422": {
+                        "description": "Validation error."
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Delete an alert. Admin only.",
+                "operationId": "deleteAlert",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Alert deleted."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "404": {
+                        "description": "Not found."
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
             }
         },
         "/auth/logout": {

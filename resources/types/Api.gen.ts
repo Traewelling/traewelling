@@ -2376,11 +2376,18 @@ export class Api<
      * No description
      *
      * @tags Notifications
-     * @name GetActiveAlerts
-     * @summary Get all active alerts
+     * @name GetAlerts
+     * @summary Get alerts. Without ?all returns only currently active alerts. With ?all=true (admin only) returns all alerts with cursor pagination.
      * @request GET:/alerts
      */
-    getActiveAlerts: (params: RequestParams = {}) =>
+    getAlerts: (
+      query?: {
+        /** Admin only: return all alerts regardless of active dates. */
+        all?: boolean;
+        cursor?: string;
+      },
+      params: RequestParams = {},
+    ) =>
       this.request<
         {
           data?: AlertResource[];
@@ -2389,7 +2396,131 @@ export class Api<
       >({
         path: `/alerts`,
         method: "GET",
+        query: query,
         format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Notifications
+     * @name CreateAlert
+     * @summary Create a new alert. Admin only.
+     * @request POST:/alerts
+     * @secure
+     */
+    createAlert: (
+      data: {
+        type: "info" | "warning" | "danger" | "success";
+        /** @format date */
+        active_from: string;
+        /** @format date */
+        active_until?: string | null;
+        title_de: string;
+        content_de: string;
+        title_en: string;
+        content_en: string;
+        url_de?: string | null;
+        url_en?: string | null;
+        url?: string | null;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data?: AlertResource;
+        },
+        void
+      >({
+        path: `/alerts`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Notifications
+     * @name GetAlert
+     * @summary Get a single alert. Admin only.
+     * @request GET:/alerts/{id}
+     * @secure
+     */
+    getAlert: (id: string, params: RequestParams = {}) =>
+      this.request<
+        {
+          data?: AlertResource;
+        },
+        void
+      >({
+        path: `/alerts/${id}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Notifications
+     * @name UpdateAlert
+     * @summary Update an alert. Admin only.
+     * @request PUT:/alerts/{id}
+     * @secure
+     */
+    updateAlert: (
+      id: string,
+      data: {
+        type: "info" | "warning" | "danger" | "success";
+        /** @format date */
+        active_from: string;
+        /** @format date */
+        active_until?: string | null;
+        title_de: string;
+        content_de: string;
+        title_en: string;
+        content_en: string;
+        url_de?: string | null;
+        url_en?: string | null;
+        url?: string | null;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data?: AlertResource;
+        },
+        void
+      >({
+        path: `/alerts/${id}`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Notifications
+     * @name DeleteAlert
+     * @summary Delete an alert. Admin only.
+     * @request DELETE:/alerts/{id}
+     * @secure
+     */
+    deleteAlert: (id: string, params: RequestParams = {}) =>
+      this.request<void, void>({
+        path: `/alerts/${id}`,
+        method: "DELETE",
+        secure: true,
         ...params,
       }),
   };
