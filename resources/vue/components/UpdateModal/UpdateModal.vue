@@ -240,7 +240,11 @@ defineExpose({ show });
 
             <div class="py-2 gap-2">
                 <BusinessDropdown v-model="updateStatus.business" class="btn btn-outline-primary me-2" />
-                <VisibilityDropdown v-model="updateStatus.visibility" class="btn btn-outline-primary me-2" />
+                <VisibilityDropdown
+                    v-if="!status.lock_visibility"
+                    v-model="updateStatus.visibility"
+                    class="btn btn-outline-primary me-2"
+                />
                 <EventDropdown
                     ref="eventsDropdown"
                     :prefetch-events="false"

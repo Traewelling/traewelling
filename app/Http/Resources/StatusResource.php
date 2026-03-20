@@ -9,9 +9,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Gate;
 use OpenApi\Attributes as OA;
 
-/**
- * @todo: add moderation_notes, lock_visibility and hide_body
- */
 #[OA\Schema(
     title: 'Status',
     required: [
@@ -93,6 +90,24 @@ use OpenApi\Attributes as OA;
             nullable: true,
         ),
         new OA\Property(
+            property: 'moderation_notes',
+            description: 'A note left by the moderation team, e.g. a warning or hint explaining why this status was moderated. Only present for the status owner.',
+            type: 'string',
+            nullable: true,
+        ),
+        new OA\Property(
+            property: 'lock_visibility',
+            description: 'Whether the visibility is locked by an admin and cannot be changed by the owner. Only present for the status owner.',
+            type: 'boolean',
+            nullable: true,
+        ),
+        new OA\Property(
+            property: 'hide_body',
+            description: 'Whether the status body is hidden from other users by an admin. Only present for the status owner.',
+            type: 'boolean',
+            nullable: true,
+        ),
+        new OA\Property(
             property: 'createdAt',
             description: 'creation date of this status',
             type: 'string',
@@ -127,6 +142,18 @@ class StatusResource extends JsonResource
                 auth()->id() === $this->user_id && $this->ticket !== null,
                 fn () => new TicketResource($this->ticket),
                 null,
+            ),
+            'moderation_notes' => $this->when(
+                auth()->id() === $this->user_id,
+                fn () => $this->moderation_notes,
+            ),
+            'lock_visibility' => $this->when(
+                auth()->id() === $this->user_id,
+                fn () => (bool) $this->lock_visibility,
+            ),
+            'hide_body' => $this->when(
+                auth()->id() === $this->user_id,
+                fn () => (bool) $this->hide_body,
             ),
             'createdAt' => $this->created_at->toIso8601String(),
 
