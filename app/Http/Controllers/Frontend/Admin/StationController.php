@@ -7,56 +7,15 @@ use App\Exceptions\Wikidata\FetchException;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\StationResource;
 use App\Models\Station;
-use App\Services\StationService;
 use App\Services\Wikidata\WikidataImportService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\View\View;
 
 class StationController extends Controller
 {
-    public function index(Request $request): View|RedirectResponse
-    {
-        $this->authorize('viewAny', Station::class);
-        $stations = Station::orderByDesc('created_at');
-        if ($request->has('query')) {
-            $query = strip_tags($request->get('query'));
-
-            if (is_numeric($query)) {
-                $stations->where('id', $query);
-                if ($stations->exists()) {
-                    return redirect()->route('admin.station', ['id' => $query]);
-                }
-            }
-
-            $stations->where('name', 'LIKE', '%' . $query . '%');
-
-            if ($stations->count() === 1) {
-                return redirect()->route('admin.station', ['id' => $stations->first()->id]);
-            }
-        }
-
-        return view('admin.stations.index', [
-            'stations' => $stations->paginate(20),
-        ]);
-    }
-
-    public function show(int $id): View
-    {
-        $this->authorize('viewAny', Station::class);
-
-        $station = Station::findOrFail($id);
-
-        return view('admin.stations.show', [
-            'station' => $station,
-            'nearbyStations' => StationService::getNearbyStations($station),
-            'latestCheckins' => StationService::getLatestCheckins($station),
-        ]);
-    }
-
     /**
      * !!!! Experimental Backend Function !!!!
      * Fetches the Wikidata information for a station.

@@ -46,12 +46,12 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <a href="{{ route('admin.station', ['id' => $trip->origin_id]) }}">
+                                        <a href="/admin/stations/{{$trip->origin_id}}">
                                             {{$trip->originStation?->name}}
                                         </a>
                                     </td>
                                     <td>
-                                        <a href="{{ route('admin.station', ['id' => $trip->destination_id]) }}">
+                                        <a href="/admin/stations/{{$trip->destination_id}}">
                                             {{$trip->destinationStation->name}}
                                         </a>
                                     </td>

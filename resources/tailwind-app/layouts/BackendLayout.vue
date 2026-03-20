@@ -15,7 +15,7 @@ import {
 import { type FunctionalComponent } from 'vue';
 
 const navLinks: { label: string; icon: FunctionalComponent; href: string }[] = [
-    { label: 'Trips', icon: Train, href: '/admin' },
+    { label: 'Trips', icon: Train, href: '/admin/trips' },
     { label: 'Users', icon: Users, href: '/admin/users' },
     { label: 'Events', icon: CalendarDays, href: '/admin/events' },
     { label: 'Status', icon: Radio, href: '/admin/statuses' },

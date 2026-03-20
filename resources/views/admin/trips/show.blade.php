@@ -149,7 +149,7 @@
                             @foreach($trip->stopovers as $stopover)
                                 <tr>
                                     <td>
-                                        <a href="{{route('admin.station', $stopover->station->id)}}">
+                                        <a href="/admin/stations/{{$stopover->station->id}}">
                                             {{$stopover->station->name}}
                                         </a>
                                     </td>
