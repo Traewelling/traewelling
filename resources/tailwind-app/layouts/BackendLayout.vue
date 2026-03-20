@@ -1,5 +1,17 @@
 <script setup lang="ts">
-import { Flag, Activity, Bell, BriefcaseBusiness, CalendarDays, House, MapPin, Radio, Scale, Train, Users } from 'lucide-vue-next';
+import {
+    Activity,
+    Bell,
+    BriefcaseBusiness,
+    CalendarDays,
+    Flag,
+    House,
+    MapPin,
+    Radio,
+    Scale,
+    Train,
+    Users,
+} from 'lucide-vue-next';
 import { type FunctionalComponent } from 'vue';
 
 const navLinks: { label: string; icon: FunctionalComponent; href: string }[] = [
@@ -59,8 +71,19 @@ function isActive(href: string): boolean {
                         Back to Träwelling
                     </a>
                     <label for="backend-drawer" class="btn btn-ghost btn-sm xl:hidden">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-5 w-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16"
+                            />
                         </svg>
                     </label>
                 </div>

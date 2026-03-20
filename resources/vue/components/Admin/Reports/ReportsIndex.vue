@@ -133,9 +133,11 @@ onMounted(() => fetchReports(undefined));
                                     <span class="font-mono text-base-content/60">#{{ report.subject_id }}</span>
                                 </td>
                                 <td>
-                                    <span class="badge badge-sm" :class="reasonBadgeClass(report.reason, report.status)">{{
-                                        report.reason
-                                    }}</span>
+                                    <span
+                                        class="badge badge-sm"
+                                        :class="reasonBadgeClass(report.reason, report.status)"
+                                        >{{ report.reason }}</span
+                                    >
                                 </td>
                                 <td class="max-w-48 truncate text-sm text-base-content/70">
                                     {{ report.description }}
