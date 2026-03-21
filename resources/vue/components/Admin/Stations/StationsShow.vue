@@ -51,7 +51,7 @@ async function fetchStation(): Promise<void> {
             max_lat: lat + delta,
             min_lon: lon - delta,
             max_lon: lon + delta,
-            limit: 16,
+            limit: 51,
         });
         nearbyStations.value = (nearby.data.data ?? [])
             .filter((s) => s.id !== stationId)
@@ -60,7 +60,7 @@ async function fetchStation(): Promise<void> {
                     haversineMeters(lat, lon, a.latitude!, a.longitude!) -
                     haversineMeters(lat, lon, b.latitude!, b.longitude!),
             )
-            .slice(0, 15);
+            .slice(0, 50);
     } catch (e) {
         error.value = e instanceof Error ? e.message : 'Unknown error';
     } finally {
