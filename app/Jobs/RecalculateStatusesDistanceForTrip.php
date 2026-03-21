@@ -5,13 +5,14 @@ namespace App\Jobs;
 use App\Enum\Queue;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Models\Checkin;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
-class RecalculateStatusesDistanceForTrip implements ShouldQueue
+class RecalculateStatusesDistanceForTrip implements ShouldBeUnique, ShouldQueue
 {
     use Queueable;
 
@@ -21,6 +22,11 @@ class RecalculateStatusesDistanceForTrip implements ShouldQueue
     {
         $this->tripId = $tripId;
         $this->onQueue(Queue::LOW->value);
+    }
+
+    public function uniqueId(): string
+    {
+        return $this->tripId;
     }
 
     public function handle(): void
