@@ -74,7 +74,7 @@ class BackendAccessTest extends FeatureTestCase
     {
         $user = User::factory()->create();
         $this->actingAs($user)
-            ->get(route('admin.events.suggestions'))
+            ->get('/admin/event-suggestions')
             ->assertForbidden();
     }
 
@@ -83,7 +83,7 @@ class BackendAccessTest extends FeatureTestCase
         $user = User::factory()->create();
         $user->assignRole('admin');
         $this->actingAs($user)
-            ->get(route('admin.events.suggestions'))
+            ->get('/admin/event-suggestions')
             ->assertStatus(200);
     }
 
@@ -92,7 +92,7 @@ class BackendAccessTest extends FeatureTestCase
         $user = User::factory()->create();
         $user->assignRole('event-moderator');
         $this->actingAs($user)
-            ->get(route('admin.events.suggestions'))
+            ->get('/admin/event-suggestions')
             ->assertStatus(200);
     }
 }

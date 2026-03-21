@@ -403,6 +403,27 @@ export interface Station {
   rilIdentifier?: string | null;
 }
 
+/** AdminEventRequest */
+export interface AdminEventRequest {
+  /** @maxLength 255 */
+  name: string;
+  /** @maxLength 30 */
+  hashtag?: string | null;
+  /** @maxLength 255 */
+  host?: string | null;
+  /** @maxLength 255 */
+  url?: string | null;
+  station_id?: number | null;
+  /** @format date */
+  checkin_start: string;
+  /** @format date */
+  checkin_end: string;
+  /** @format date */
+  event_start?: string | null;
+  /** @format date */
+  event_end?: string | null;
+}
+
 /** BearerTokenResponse */
 export interface BearerTokenResponse {
   /**
@@ -1060,6 +1081,41 @@ export interface DepartureResource {
   station: StationResource;
 }
 
+/**
+ * EventAdminResource
+ * Full event data for admin management
+ */
+export interface EventAdminResource {
+  /** @example 1 */
+  id?: number;
+  /** @example "Berlin Bahnhofsfest" */
+  name?: string;
+  /** @example "berlin_bahnhofsfest" */
+  slug?: string;
+  /** @example "BahnhofsFest" */
+  hashtag?: string | null;
+  /** @example "DB AG" */
+  host?: string | null;
+  /** @example "https://example.com" */
+  url?: string | null;
+  /**
+   * @format date
+   * @example "2025-06-01"
+   */
+  checkin_start?: string;
+  /**
+   * @format date
+   * @example "2025-06-30"
+   */
+  checkin_end?: string;
+  /** @format date */
+  event_start?: string | null;
+  /** @format date */
+  event_end?: string | null;
+  status?: "future" | "current" | "past";
+  station?: Station | null;
+}
+
 /** EventDetails */
 export interface EventDetailsResource {
   /** @example 39 */
@@ -1117,6 +1173,41 @@ export interface EventResource {
   /** train station model */
   station: Station;
   isPride: StationResource;
+}
+
+/**
+ * EventSuggestionResource
+ * Event suggestion submitted by a user
+ */
+export interface EventSuggestionResource {
+  /** @example 1 */
+  id?: number;
+  /** @example "Berliner Fahrradfest" */
+  name?: string;
+  host?: string | null;
+  url?: string | null;
+  hashtag?: string | null;
+  /**
+   * @format date
+   * @example "2025-07-01"
+   */
+  begin?: string;
+  /**
+   * @format date
+   * @example "2025-07-03"
+   */
+  end?: string;
+  station?: {
+    id?: number;
+    name?: string;
+  } | null;
+  user?: {
+    id?: number;
+    username?: string;
+  } | null;
+  processed?: boolean;
+  /** @format date-time */
+  created_at?: string;
 }
 
 export interface IcsEntryResource {
@@ -2433,6 +2524,260 @@ export class Api<
   SecurityDataType extends unknown,
 > extends HttpClient<SecurityDataType> {
   admin = {
+    /**
+     * No description
+     *
+     * @tags Admin
+     * @name GetAdminEvents
+     * @summary List events for admin management.
+     * @request GET:/admin/events
+     * @secure
+     */
+    getAdminEvents: (
+      query?: {
+        search?: string;
+        status?: "future" | "current" | "past";
+        cursor?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data?: EventAdminResource[];
+        },
+        void
+      >({
+        path: `/admin/events`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Admin
+     * @name CreateAdminEvent
+     * @summary Create a new event.
+     * @request POST:/admin/events
+     * @secure
+     */
+    createAdminEvent: (data: AdminEventRequest, params: RequestParams = {}) =>
+      this.request<
+        {
+          /** Full event data for admin management */
+          data?: EventAdminResource;
+        },
+        void
+      >({
+        path: `/admin/events`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Admin
+     * @name GetAdminEvent
+     * @summary Get a single event for editing.
+     * @request GET:/admin/events/{id}
+     * @secure
+     */
+    getAdminEvent: (id: number, params: RequestParams = {}) =>
+      this.request<
+        {
+          /** Full event data for admin management */
+          data?: EventAdminResource;
+        },
+        void
+      >({
+        path: `/admin/events/${id}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Admin
+     * @name UpdateAdminEvent
+     * @summary Update an existing event.
+     * @request PUT:/admin/events/{id}
+     * @secure
+     */
+    updateAdminEvent: (
+      id: number,
+      data: AdminEventRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          /** Full event data for admin management */
+          data?: EventAdminResource;
+        },
+        void
+      >({
+        path: `/admin/events/${id}`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Admin
+     * @name DeleteAdminEvent
+     * @summary Delete an event.
+     * @request DELETE:/admin/events/{id}
+     * @secure
+     */
+    deleteAdminEvent: (id: number, params: RequestParams = {}) =>
+      this.request<void, void>({
+        path: `/admin/events/${id}`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Admin
+     * @name GetAdminEventSuggestions
+     * @summary List unprocessed event suggestions.
+     * @request GET:/admin/event-suggestions
+     * @secure
+     */
+    getAdminEventSuggestions: (
+      query?: {
+        cursor?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data?: EventSuggestionResource[];
+        },
+        void
+      >({
+        path: `/admin/event-suggestions`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Admin
+     * @name GetAdminEventSuggestion
+     * @summary Get a single suggestion with parallel events for the accept view.
+     * @request GET:/admin/event-suggestions/{id}
+     * @secure
+     */
+    getAdminEventSuggestion: (id: number, params: RequestParams = {}) =>
+      this.request<
+        {
+          data?: {
+            /** Event suggestion submitted by a user */
+            suggestion?: EventSuggestionResource;
+            parallelEvents?: {
+              id?: number;
+              name?: string;
+              slug?: string;
+              /** @format date */
+              checkin_start?: string;
+              /** @format date */
+              checkin_end?: string;
+              /** @format float */
+              similarity?: number;
+            }[];
+          };
+        },
+        void
+      >({
+        path: `/admin/event-suggestions/${id}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Admin
+     * @name AcceptAdminEventSuggestion
+     * @summary Accept an event suggestion and create the event.
+     * @request POST:/admin/event-suggestions/{id}/accept
+     * @secure
+     */
+    acceptAdminEventSuggestion: (
+      id: number,
+      data: AdminEventRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          /** Full event data for admin management */
+          data?: EventAdminResource;
+        },
+        void
+      >({
+        path: `/admin/event-suggestions/${id}/accept`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Admin
+     * @name DenyAdminEventSuggestion
+     * @summary Deny an event suggestion.
+     * @request POST:/admin/event-suggestions/{id}/deny
+     * @secure
+     */
+    denyAdminEventSuggestion: (
+      id: number,
+      data: {
+        reason:
+          | "denied"
+          | "too-late"
+          | "duplicate"
+          | "not-applicable"
+          | "missing-information";
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, void>({
+        path: `/admin/event-suggestions/${id}/deny`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
     /**
      * No description
      *

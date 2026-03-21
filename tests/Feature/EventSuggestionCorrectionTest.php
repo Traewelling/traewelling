@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Http\Controllers\Backend\EventController;
 use App\Models\User;
+use App\Services\Event\EventService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\FeatureTestCase;
@@ -16,7 +16,7 @@ class EventSuggestionCorrectionTest extends FeatureTestCase
     {
         $user = User::factory()->create();
 
-        $suggestion = EventController::suggestEvent(
+        $suggestion = new EventService()->suggestEvent(
             user: $user,
             name: $this->faker->name,
             begin: now(),
@@ -31,7 +31,7 @@ class EventSuggestionCorrectionTest extends FeatureTestCase
     {
         $user = User::factory()->create();
 
-        $suggestion = EventController::suggestEvent(
+        $suggestion = new EventService()->suggestEvent(
             user: $user,
             name: $this->faker->name,
             begin: now(),

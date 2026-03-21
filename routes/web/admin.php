@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Frontend\Admin\ActivityController;
-use App\Http\Controllers\Frontend\Admin\EventController as AdminEventController;
 use App\Http\Controllers\Frontend\Admin\LicensesController;
 use App\Http\Controllers\Frontend\Admin\MotisSourceController;
 use App\Http\Controllers\Frontend\Admin\OperatorController;
@@ -74,41 +73,10 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function () {
     // Welcome page: accessible to all backend users (admins + event-moderators (legacy until contributing system))
     Route::get('/', fn () => view('admin.app'));
 
-    Route::prefix('events')
-        ->middleware(['permission:view-events|accept-events|deny-events|update-events|delete-events'])
+    Route::middleware('permission:view-events|accept-events|deny-events|create-events|update-events|delete-events')
         ->group(function () {
-            // these routes are also accessible for event-moderators - attention here - don't expose too much!
-
-            Route::get('/', [AdminEventController::class, 'index'])
-                ->name('admin.events');
-            Route::post('/delete', [AdminEventController::class, 'deleteEvent'])
-                ->middleware('permission:delete-events')
-                ->name('admin.events.delete');
-
-            Route::get('/suggestions', [AdminEventController::class, 'renderSuggestions'])
-                ->middleware('permission:accept-events|deny-events')
-                ->name('admin.events.suggestions');
-            Route::get('/suggestions/accept/{id}', [AdminEventController::class, 'renderSuggestionCreation'])
-                ->middleware('permission:accept-events')
-                ->name('admin.events.suggestions.accept');
-            Route::post('/suggestions/deny', [AdminEventController::class, 'denySuggestion'])
-                // ->middleware('can:deny-events') - TODO: working in the browser, but not in the tests
-                ->name('admin.events.suggestions.deny');
-            Route::post('/suggestions/accept', [AdminEventController::class, 'acceptSuggestion'])
-                // ->middleware(['can:accept-events']) - TODO: working in the browser, but not in the tests
-                ->name('admin.events.suggestions.accept.do');
-
-            Route::view('/create', 'admin.events.form')
-                ->middleware('permission:create-events')
-                ->name('admin.events.create');
-            Route::post('/create', [AdminEventController::class, 'create'])
-                ->middleware('permission:create-events');
-
-            Route::get('/edit/{id}', [AdminEventController::class, 'renderEdit'])
-                ->middleware('permission:update-events')
-                ->name('admin.events.edit');
-            Route::post('/edit/{id}', [AdminEventController::class, 'edit'])
-                ->middleware('permission:update-events');
+            Route::get('events/{any?}', fn () => view('admin.app'))->where('any', '.*');
+            Route::get('event-suggestions/{any?}', fn () => view('admin.app'))->where('any', '.*');
         });
 
     // Catch-all for admin-only SPA pages. must be last so specific routes take precedence.

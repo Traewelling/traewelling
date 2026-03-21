@@ -43,7 +43,7 @@
                 @endif
 
                 @if(auth()->user()->can('view-events') || auth()->user()->hasRole('admin'))
-                    <a class="nav-link" href="{{ route('admin.events') }}">
+                    <a class="nav-link" href="/admin/events">
                         <i class="fa-solid fa-calendar"></i>
                         Events
                     </a>

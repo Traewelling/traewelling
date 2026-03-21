@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Http\Controllers\Backend\Auth\AccessTokenController;
 use App\Http\Controllers\Backend\Auth\ApproveAuthorizationController;
 use App\Http\Controllers\Backend\Auth\AuthorizationController;
+use App\Models\Event;
+use App\Models\EventSuggestion;
 use App\Models\Follow;
 use App\Models\Like;
 use App\Models\OAuthClient;
@@ -12,6 +14,7 @@ use App\Models\Status;
 use App\Models\StatusTag;
 use App\Models\User;
 use App\Models\Webhook;
+use App\Policies\EventPolicy;
 use App\Policies\FollowPolicy;
 use App\Policies\LikePolicy;
 use App\Policies\StatusPolicy;
@@ -32,6 +35,8 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
+        Event::class => EventPolicy::class,
+        EventSuggestion::class => EventPolicy::class,
         Status::class => StatusPolicy::class,
         User::class => UserPolicy::class,
         Follow::class => FollowPolicy::class,

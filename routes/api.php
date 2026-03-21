@@ -11,6 +11,8 @@
 |
 */
 
+use App\Http\Controllers\API\v1\AdminEventController;
+use App\Http\Controllers\API\v1\AdminEventSuggestionController;
 use App\Http\Controllers\API\v1\AdminStatusController;
 use App\Http\Controllers\API\v1\AlertController;
 use App\Http\Controllers\API\v1\AuthController as v1Auth;
@@ -218,6 +220,15 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::get('statuses', [AdminStatusController::class, 'index']);
             Route::get('statuses/{id}', [AdminStatusController::class, 'show'])->whereNumber('id');
             Route::put('statuses/{id}', [AdminStatusController::class, 'update'])->whereNumber('id');
+
+            Route::apiResource('events', AdminEventController::class)->whereNumber('events');
+
+            Route::prefix('event-suggestions')->group(static function () {
+                Route::get('/', [AdminEventSuggestionController::class, 'index']);
+                Route::get('/{id}', [AdminEventSuggestionController::class, 'show'])->whereNumber('id');
+                Route::post('/{id}/accept', [AdminEventSuggestionController::class, 'accept'])->whereNumber('id');
+                Route::post('/{id}/deny', [AdminEventSuggestionController::class, 'deny'])->whereNumber('id');
+            });
         });
     });
 

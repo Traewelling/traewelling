@@ -280,29 +280,23 @@ class NotificationsTest extends ApiTestCase
 
     public function test_accepting_event_suggestion_spawn_a_notification(): void
     {
-        // Create users
-        $alice = User::factory()->create()
-            ->assignRole('admin'); // additionally make alice an admin, so she can self-accept
+        // Create users: alice suggests, bob accepts
+        $alice = User::factory()->create();
+        $bob = User::factory()->create()->assignRole('admin');
 
         // suggest an event
         $eventSuggestion = EventSuggestion::factory(['user_id' => $alice->id])->create();
 
-        // accept event suggestion
-        $response = $this->actingAs($alice)
-            ->post(
-                uri: '/admin/events/suggestions/accept',
-                data: [
-                    'suggestionId' => $eventSuggestion->id,
-                    'name' => $eventSuggestion->name,
-                    'hashtag' => $eventSuggestion->name,
-                    'host' => $eventSuggestion->host,
-                    'begin' => $eventSuggestion->begin,
-                    'event_start' => $eventSuggestion->begin,
-                    'end' => $eventSuggestion->end,
-                    'event_end' => $eventSuggestion->end,
-                ]
-            );
-        $response->assertRedirectToRoute('admin.events.suggestions');
+        // accept event suggestion via API as bob
+        Passport::actingAs($bob, ['*']);
+        $this->postJson(
+            "/api/v1/admin/event-suggestions/{$eventSuggestion->id}/accept",
+            [
+                'name' => $eventSuggestion->name,
+                'checkin_start' => $eventSuggestion->begin->toDateString(),
+                'checkin_end' => $eventSuggestion->end->toDateString(),
+            ]
+        )->assertCreated();
 
         // save event for later
         $event = Event::first();
@@ -334,20 +328,19 @@ class NotificationsTest extends ApiTestCase
 
     public function test_denying_event_suggestion_spawn_a_notification(): void
     {
-        // Create users
+        // Create users: alice suggests, bob denies
         $alice = User::factory()->create();
-        $alice->assignRole('admin'); // additionally make alice an admin, so she can self-accept
+        $bob = User::factory()->create()->assignRole('admin');
 
         // suggest an event
         $eventSuggestion = EventSuggestion::factory(['user_id' => $alice->id])->create();
 
-        // accept event suggestion
-        $response = $this->actingAs($alice)
-            ->post(
-                uri: '/admin/events/suggestions/deny',
-                data: ['id' => $eventSuggestion->id, 'rejectionReason' => 'denied']
-            );
-        $response->assertRedirectToRoute('admin.events.suggestions');
+        // deny event suggestion via API as bob
+        Passport::actingAs($bob, ['*']);
+        $this->postJson(
+            "/api/v1/admin/event-suggestions/{$eventSuggestion->id}/deny",
+            ['reason' => 'denied']
+        )->assertNoContent();
 
         // let alice request her notifications
         Passport::actingAs($alice, ['*']);
