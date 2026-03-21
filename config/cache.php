@@ -111,6 +111,6 @@ return [
     |
     */
 
-    'serializable_classes' => false,
+    'serializable_classes' => true, // TODO: required since update to Laravel 13 but should be false in future
 
 ];
