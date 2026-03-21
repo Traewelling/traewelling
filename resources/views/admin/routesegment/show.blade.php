@@ -43,8 +43,7 @@
             <!-- BRouter preview info -->
             <div id="brouter-info" class="alert alert-info d-none">
                 <strong>BRouter Preview:</strong>
-                Distance: <span id="preview-distance">-</span> km &nbsp;|&nbsp;
-                Duration: <span id="preview-duration">-</span>
+                Distance: <span id="preview-distance">-</span> km
             </div>
 
             <!-- links to all trips in use -->
@@ -331,7 +330,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function showPreviewInfo(data) {
         document.getElementById('preview-distance').textContent = (data.distance / 1000).toFixed(2);
-        document.getElementById('preview-duration').textContent = new Date(data.duration * 1000).toISOString().substring(11, 19);
         document.getElementById('brouter-info').classList.remove('d-none');
     }
 
