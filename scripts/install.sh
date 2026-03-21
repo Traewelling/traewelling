@@ -174,9 +174,21 @@ run_installation() {
   check_dependencies | sed "s/^/[DependencyCheck] /"
   activate_maintenance_mode | sed "s/^/[PreInstall] /"
   pull_latest_changes | sed "s/^/[git] /"
+
+  { install_npm_dependencies 2>&1 | sed "s/^/[npm] /"; } &
+  NPM_PID=$!
+  trap 'kill "$NPM_PID" 2>/dev/null; exit 1' ERR
+
   install_composer_dependencies | sed "s/^/[composer] /"
-  install_npm_dependencies | sed "s/^/[npm] /"
   run_migrations | sed "s/^/[Migration] /"
+
+  echo -e "${YELLOW}Waiting for npm build to finish...${RESET}"
+  if ! wait "$NPM_PID"; then
+    echo -e "${RED}npm build failed!${RESET}"
+    exit 1
+  fi
+  trap - ERR
+
   finish_application | sed "s/^/[PostInstall] /"
 
   echo -e "\n\n${GREEN}Application updated successfully at $(date --iso-8601=seconds)!${RESET}"
