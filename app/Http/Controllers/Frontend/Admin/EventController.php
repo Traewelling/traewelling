@@ -1,19 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Frontend\Admin;
 
 use App\DataProviders\DataProviderBuilder;
 use App\DataProviders\DataProviderInterface;
-use App\Enum\ContributionActionType;
 use App\Enum\EventRejectionReason;
-use App\Exceptions\DataProviderException;
-use App\Http\Controllers\Backend\Admin\EventController as AdminEventBackend;
 use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\EventSuggestion;
-use App\Notifications\EventSuggestionProcessed;
-use App\Services\Contribution\ContributionXPService;
-use App\Services\TelegramService;
+use App\Repositories\EventRepository;
+use App\Services\Event\EventService;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -24,9 +22,15 @@ class EventController extends Controller
 {
     private DataProviderInterface $dataProvider;
 
+    private EventService $eventService;
+
+    private EventRepository $eventRepository;
+
     public function __construct()
     {
-        $this->dataProvider = (new DataProviderBuilder())->build();
+        $this->dataProvider = new DataProviderBuilder()->build();
+        $this->eventService = new EventService();
+        $this->eventRepository = new EventRepository();
     }
 
     private const VALIDATOR_RULES = [
@@ -43,26 +47,12 @@ class EventController extends Controller
 
     public function index(Request $request): View
     {
-        $queryBase = Event::query();
-        if ($request->has('query')) {
-            $queryBase->where('name', 'LIKE', '%' . strip_tags($request->get('query')) . '%');
-        }
-
-        $today = today()->toDateString();
+        $paginated = $this->eventRepository->paginateForAdmin($request->get('query'));
 
         return view('admin.events.index', [
-            'events_future' => $queryBase->clone()
-                ->orderBy('checkin_start')
-                ->where('checkin_start', '>', $today)
-                ->paginate(10, pageName: 'future'),
-            'events_current' => $queryBase->clone()
-                ->orderBy('checkin_start')
-                ->where('checkin_start', '<=', $today)
-                ->where('checkin_end', '>=', $today)
-                ->paginate(10, pageName: 'current'),
-            'events_past' => $queryBase->clone()
-                ->where('checkin_end', '<', $today)
-                ->paginate(10, pageName: 'past'),
+            'events_future' => $paginated['future'],
+            'events_current' => $paginated['current'],
+            'events_past' => $paginated['past'],
         ]);
     }
 
@@ -79,34 +69,10 @@ class EventController extends Controller
     public function renderSuggestionCreation(int $id): View
     {
         $suggestion = EventSuggestion::findOrFail($id);
-        $parallelEvents = Event::where([
-            ['checkin_start', '>=', $suggestion->begin->toDateString()],
-            ['checkin_end', '<=', $suggestion->end->toDateString()],
-        ])
-            ->orWhere(function ($query) use ($suggestion): void {
-                $query->where([
-                    ['checkin_start', '<=', $suggestion->begin->toDateString()],
-                    ['checkin_end', '>=', $suggestion->begin->toDateString()],
-                ]);
-            })
-            ->orWhere(function ($query) use ($suggestion): void {
-                $query->where([
-                    ['checkin_start', '<=', $suggestion->end->toDateString()],
-                    ['checkin_end', '>=', $suggestion->end->toDateString()],
-                ]);
-            })
-            ->get();
-
-        $parallelEvents->map(function ($event) use ($suggestion) {
-            similar_text($event->name, $suggestion->name, $perc);
-            $event->similarity = $perc;
-
-            return $event;
-        });
 
         return view('admin.events.suggestion-create', [
             'eventSuggestion' => $suggestion,
-            'parallelEvents' => $parallelEvents->sortByDesc('similarity'),
+            'parallelEvents' => $this->eventRepository->findParallelEventsWithSimilarity($suggestion),
         ]);
     }
 
@@ -119,44 +85,17 @@ class EventController extends Controller
     {
         $validated = $request->validate([
             'id' => ['required', 'exists:event_suggestions,id'],
-            'rejectionReason' => [
-                'required', new Enum(EventRejectionReason::class),
-            ],
+            'rejectionReason' => ['required', new Enum(EventRejectionReason::class)],
         ]);
-        $eventSuggestion = EventSuggestion::find($validated['id']);
-        $eventSuggestion->update(['processed' => true]);
 
-        if ($eventSuggestion->admin_notification_id !== null) {
-            TelegramService::admin()->deleteMessage($eventSuggestion->admin_notification_id);
-        }
-
-        $rejectionReason = EventRejectionReason::from($validated['rejectionReason']);
-
-        $eventSuggestion->user->notify(
-            new EventSuggestionProcessed(
-                $eventSuggestion,
-                null,
-                $rejectionReason,
-            )
+        $this->eventService->denySuggestion(
+            suggestion: EventSuggestion::findOrFail($validated['id']),
+            reason: EventRejectionReason::from($validated['rejectionReason']),
         );
-
-        if ($eventSuggestion->user !== null && $rejectionReason->getXPChange() !== 0) {
-            ContributionXPService::grantXP(
-                user: $eventSuggestion->user,
-                xpChange: $rejectionReason->getXPChange(),
-                action: ContributionActionType::EVENT_SUGGESTED,
-                entityType: 'event_suggestion',
-                entityId: $eventSuggestion->id,
-                note: 'Event denied: ' . $rejectionReason->value,
-            );
-        }
 
         return redirect()->route('admin.events.suggestions')->with('alert-success', 'Event denied.');
     }
 
-    /**
-     * @throws DataProviderException
-     */
     public function acceptSuggestion(Request $request): RedirectResponse
     {
         $validated = $request->validate([
@@ -172,60 +111,37 @@ class EventController extends Controller
             'event_end' => ['nullable', 'date', 'before_or_equal:end'],
         ]);
 
-        $eventSuggestion = EventSuggestion::find($validated['suggestionId']);
-        $station = null;
+        $suggestion = EventSuggestion::findOrFail($validated['suggestionId']);
 
-        if ($eventSuggestion->user_id === auth()->user()->id && !auth()->user()?->hasRole('admin')) {
+        if ($suggestion->user_id === auth()->id() && !auth()->user()?->hasRole('admin')) {
             return back()->with('alert-danger', 'You can\'t accept your own suggestion.');
         }
 
+        $station = null;
         if (isset($validated['nearest_station_name'])) {
             $station = $this->dataProvider->getStations($validated['nearest_station_name'], 1)->first();
-
             if ($station === null) {
                 return back()->with('alert-danger', 'Die Station konnte nicht gefunden werden.');
             }
         }
 
-        $event = Event::create([
-            'name' => $validated['name'],
-            'slug' => AdminEventBackend::createSlugFromName($validated['name']),
-            'hashtag' => $validated['hashtag'],
-            'host' => $validated['host'],
-            'station_id' => $station?->id,
-            'checkin_start' => Carbon::parse($validated['begin'])->toDateString(),
-            'checkin_end' => Carbon::parse($validated['end'])->toDateString(),
-            'event_start' => isset($validated['event_start']) ? Carbon::parse($validated['event_start'])->toDateString() : null,
-            'event_end' => isset($validated['event_end']) ? Carbon::parse($validated['event_end'])->toDateString() : null,
-            'url' => $validated['url'] ?? null,
-            'accepted_by' => auth()->user()->id,
-        ]);
-
-        $eventSuggestion->update(['processed' => true]);
-
-        if ($eventSuggestion->admin_notification_id !== null) {
-            TelegramService::admin()->deleteMessage($eventSuggestion->admin_notification_id);
-        }
-
-        $eventSuggestion->user->notify(new EventSuggestionProcessed($eventSuggestion, $event));
-
-        if ($eventSuggestion->user !== null) {
-            ContributionXPService::grantXP(
-                user: $eventSuggestion->user,
-                xpChange: ContributionXPService::getXPForEventApproval(),
-                action: ContributionActionType::EVENT_SUGGESTED,
-                entityType: 'event_suggestion',
-                entityId: $eventSuggestion->id,
-                note: 'Event approved: ' . $event->name,
-            );
-        }
+        $this->eventService->acceptSuggestion(
+            suggestion: $suggestion,
+            station: $station,
+            acceptedBy: auth()->user(),
+            name: $validated['name'],
+            hashtag: $validated['hashtag'] ?? null,
+            host: $validated['host'] ?? null,
+            checkinStart: Carbon::parse($validated['begin']),
+            checkinEnd: Carbon::parse($validated['end']),
+            eventStart: isset($validated['event_start']) ? Carbon::parse($validated['event_start']) : null,
+            eventEnd: isset($validated['event_end']) ? Carbon::parse($validated['event_end']) : null,
+            url: $validated['url'] ?? null,
+        );
 
         return redirect()->route('admin.events.suggestions')->with('alert-success', 'Das Event wurde akzeptiert!');
     }
 
-    /**
-     * @throws DataProviderException
-     */
     public function create(Request $request): RedirectResponse
     {
         $validated = $request->validate(self::VALIDATOR_RULES);
@@ -233,25 +149,23 @@ class EventController extends Controller
         $station = null;
         if (isset($validated['nearest_station_name'])) {
             $station = $this->dataProvider->getStations($validated['nearest_station_name'], 1)->first();
-
             if ($station === null) {
                 return back()->with('alert-danger', 'Die Station konnte nicht gefunden werden.');
             }
         }
 
-        $validated['slug'] = AdminEventBackend::createSlugFromName($validated['name']);
-        $validated['station_id'] = $station?->id;
-        $validated['checkin_start'] = Carbon::parse($validated['checkin_start'])->toDateString();
-        $validated['checkin_end'] = Carbon::parse($validated['checkin_end'])->toDateString();
-        if (isset($validated['event_start'])) {
-            $validated['event_start'] = Carbon::parse($validated['event_start'])->toDateString();
-        }
-        if (isset($validated['event_end'])) {
-            $validated['event_end'] = Carbon::parse($validated['event_end'])->toDateString();
-        }
-        $validated['accepted_by'] = auth()->user()->id;
-
-        Event::create($validated);
+        $this->eventService->createEvent(
+            name: $validated['name'],
+            hashtag: $validated['hashtag'] ?? null,
+            host: $validated['host'] ?? null,
+            station: $station,
+            checkinStart: Carbon::parse($validated['checkin_start']),
+            checkinEnd: Carbon::parse($validated['checkin_end']),
+            eventStart: isset($validated['event_start']) ? Carbon::parse($validated['event_start']) : null,
+            eventEnd: isset($validated['event_end']) ? Carbon::parse($validated['event_end']) : null,
+            url: $validated['url'] ?? null,
+            acceptedBy: auth()->user(),
+        );
 
         return redirect()->route('admin.events')->with('alert-success', 'The event was created!');
     }
@@ -259,21 +173,31 @@ class EventController extends Controller
     public function edit(int $id, Request $request): RedirectResponse
     {
         $validated = $request->validate(self::VALIDATOR_RULES);
-
         $event = Event::findOrFail($id);
 
-        if (strlen($validated['nearest_station_name'] ?? '') === 0) {
-            $validated['station_id'] = null;
-        } elseif ($validated['nearest_station_name'] && $validated['nearest_station_name'] !== $event->station->name) {
+        if (($validated['nearest_station_name'] ?? '') === '') {
+            $station = null;
+        } elseif ($validated['nearest_station_name'] !== $event->station?->name) {
             $station = $this->dataProvider->getStations($validated['nearest_station_name'], 1)->first();
-
             if ($station === null) {
                 return back()->with('alert-danger', 'Die Station konnte nicht gefunden werden.');
             }
-            $validated['station_id'] = $station->id;
+        } else {
+            $station = $event->station;
         }
 
-        $event->update($validated);
+        $this->eventService->updateEvent(
+            event: $event,
+            name: $validated['name'],
+            hashtag: $validated['hashtag'] ?? null,
+            host: $validated['host'] ?? null,
+            station: $station,
+            checkinStart: Carbon::parse($validated['checkin_start']),
+            checkinEnd: Carbon::parse($validated['checkin_end']),
+            eventStart: isset($validated['event_start']) ? Carbon::parse($validated['event_start']) : null,
+            eventEnd: isset($validated['event_end']) ? Carbon::parse($validated['event_end']) : null,
+            url: $validated['url'] ?? null,
+        );
 
         return redirect()->route('admin.events')->with('alert-success', 'Das Event wurde bearbeitet!');
     }
@@ -281,8 +205,7 @@ class EventController extends Controller
     public function deleteEvent(Request $request): RedirectResponse
     {
         $validated = $request->validate(['id' => ['required', 'exists:events,id']]);
-        $event = Event::find($validated['id']);
-        $event->delete();
+        Event::findOrFail($validated['id'])->delete();
 
         return redirect()->route('admin.events')->with('alert-success', 'Das Event wurde gelöscht!');
     }

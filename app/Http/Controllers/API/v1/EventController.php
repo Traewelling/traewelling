@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Http\Controllers\Backend\EventController as EventBackend;
 use App\Http\Controllers\StatusController;
 use App\Http\Resources\EventDetailsResource;
 use App\Http\Resources\EventResource;
 use App\Http\Resources\StatusResource;
 use App\Models\Event;
 use App\Models\Station;
+use App\Services\Event\EventService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -260,7 +260,7 @@ class EventController extends Controller
             }
             $nearestStation = $stations->first();
         }
-        $eventSuggestion = EventBackend::suggestEvent(
+        $eventSuggestion = (new EventService())->suggestEvent(
             user: auth()->user(),
             name: $validated['name'],
             begin: Carbon::parse($validated['begin']),

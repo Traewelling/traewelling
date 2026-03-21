@@ -8,10 +8,9 @@ use App\Models\ContributionHistory;
 use App\Models\EventSuggestion;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Http;
-use Tests\FeatureTestCase;
+use Tests\ApiTestCase;
 
-class EventSuggestionXPTest extends FeatureTestCase
+class EventSuggestionXPTest extends ApiTestCase
 {
     use RefreshDatabase;
 
@@ -29,25 +28,21 @@ class EventSuggestionXPTest extends FeatureTestCase
         $this->eventSuggestion = EventSuggestion::factory(['user_id' => $this->user->id])->create();
     }
 
+    private function acceptPayload(): array
+    {
+        return [
+            'name'          => $this->eventSuggestion->name,
+            'checkin_start' => $this->eventSuggestion->begin->toDateString(),
+            'checkin_end'   => $this->eventSuggestion->end->toDateString(),
+        ];
+    }
+
     public function test_accept_suggestion_grants_five_xp(): void
     {
-        $this->actingAs($this->admin);
+        $this->actAsApiUserWithAllScopes($this->admin);
 
-        Http::fake(['/locations*' => Http::response([self::HANNOVER_HBF])]);
-
-        $this->followingRedirects()
-            ->post('/admin/events/suggestions/accept', [
-                'suggestionId' => $this->eventSuggestion->id,
-                'name' => $this->eventSuggestion->name,
-                'hashtag' => 'test',
-                'host' => $this->eventSuggestion->host,
-                'url' => 'https://example.com',
-                'nearest_station_name' => 'Hannover Hbf',
-                'begin' => $this->eventSuggestion->begin,
-                'event_start' => $this->eventSuggestion->begin,
-                'end' => $this->eventSuggestion->end,
-                'event_end' => $this->eventSuggestion->end,
-            ]);
+        $this->postJson("/api/v1/admin/event-suggestions/{$this->eventSuggestion->id}/accept", $this->acceptPayload())
+            ->assertCreated();
 
         $this->user->refresh();
         $this->assertEquals(5, $this->user->contribution_xp);
@@ -60,13 +55,11 @@ class EventSuggestionXPTest extends FeatureTestCase
 
     public function test_deny_with_duplicate_grants_zero_xp(): void
     {
-        $this->actingAs($this->admin);
+        $this->actAsApiUserWithAllScopes($this->admin);
 
-        $this->followingRedirects()
-            ->post('/admin/events/suggestions/deny', [
-                'id' => $this->eventSuggestion->id,
-                'rejectionReason' => 'duplicate',
-            ]);
+        $this->postJson("/api/v1/admin/event-suggestions/{$this->eventSuggestion->id}/deny", [
+            'reason' => 'duplicate',
+        ])->assertNoContent();
 
         $this->user->refresh();
         $this->assertEquals(0, $this->user->contribution_xp);
@@ -75,13 +68,11 @@ class EventSuggestionXPTest extends FeatureTestCase
 
     public function test_deny_with_late_grants_zero_xp(): void
     {
-        $this->actingAs($this->admin);
+        $this->actAsApiUserWithAllScopes($this->admin);
 
-        $this->followingRedirects()
-            ->post('/admin/events/suggestions/deny', [
-                'id' => $this->eventSuggestion->id,
-                'rejectionReason' => 'too-late',
-            ]);
+        $this->postJson("/api/v1/admin/event-suggestions/{$this->eventSuggestion->id}/deny", [
+            'reason' => 'too-late',
+        ])->assertNoContent();
 
         $this->user->refresh();
         $this->assertEquals(0, $this->user->contribution_xp);
@@ -90,13 +81,11 @@ class EventSuggestionXPTest extends FeatureTestCase
 
     public function test_deny_with_default_grants_zero_xp(): void
     {
-        $this->actingAs($this->admin);
+        $this->actAsApiUserWithAllScopes($this->admin);
 
-        $this->followingRedirects()
-            ->post('/admin/events/suggestions/deny', [
-                'id' => $this->eventSuggestion->id,
-                'rejectionReason' => 'denied',
-            ]);
+        $this->postJson("/api/v1/admin/event-suggestions/{$this->eventSuggestion->id}/deny", [
+            'reason' => 'denied',
+        ])->assertNoContent();
 
         $this->user->refresh();
         $this->assertEquals(0, $this->user->contribution_xp);
@@ -105,13 +94,11 @@ class EventSuggestionXPTest extends FeatureTestCase
 
     public function test_deny_with_not_applicable_subtracts_one_xp(): void
     {
-        $this->actingAs($this->admin);
+        $this->actAsApiUserWithAllScopes($this->admin);
 
-        $this->followingRedirects()
-            ->post('/admin/events/suggestions/deny', [
-                'id' => $this->eventSuggestion->id,
-                'rejectionReason' => 'not-applicable',
-            ]);
+        $this->postJson("/api/v1/admin/event-suggestions/{$this->eventSuggestion->id}/deny", [
+            'reason' => 'not-applicable',
+        ])->assertNoContent();
 
         $this->user->refresh();
         $this->assertEquals(-1, $this->user->contribution_xp);
@@ -123,13 +110,11 @@ class EventSuggestionXPTest extends FeatureTestCase
 
     public function test_deny_with_missing_information_subtracts_five_xp(): void
     {
-        $this->actingAs($this->admin);
+        $this->actAsApiUserWithAllScopes($this->admin);
 
-        $this->followingRedirects()
-            ->post('/admin/events/suggestions/deny', [
-                'id' => $this->eventSuggestion->id,
-                'rejectionReason' => 'missing-information',
-            ]);
+        $this->postJson("/api/v1/admin/event-suggestions/{$this->eventSuggestion->id}/deny", [
+            'reason' => 'missing-information',
+        ])->assertNoContent();
 
         $this->user->refresh();
         $this->assertEquals(-5, $this->user->contribution_xp);
@@ -142,23 +127,10 @@ class EventSuggestionXPTest extends FeatureTestCase
     public function test_level_up_triggered_on_approval(): void
     {
         $this->user->update(['contribution_xp' => 48, 'contribution_level' => 0]);
-        $this->actingAs($this->admin);
+        $this->actAsApiUserWithAllScopes($this->admin);
 
-        Http::fake(['/locations*' => Http::response([self::HANNOVER_HBF])]);
-
-        $this->followingRedirects()
-            ->post('/admin/events/suggestions/accept', [
-                'suggestionId' => $this->eventSuggestion->id,
-                'name' => $this->eventSuggestion->name,
-                'hashtag' => 'test',
-                'host' => $this->eventSuggestion->host,
-                'url' => 'https://example.com',
-                'nearest_station_name' => 'Hannover Hbf',
-                'begin' => $this->eventSuggestion->begin,
-                'event_start' => $this->eventSuggestion->begin,
-                'end' => $this->eventSuggestion->end,
-                'event_end' => $this->eventSuggestion->end,
-            ]);
+        $this->postJson("/api/v1/admin/event-suggestions/{$this->eventSuggestion->id}/accept", $this->acceptPayload())
+            ->assertCreated();
 
         $this->user->refresh();
         $this->assertEquals(53, $this->user->contribution_xp);

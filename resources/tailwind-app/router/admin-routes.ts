@@ -1,6 +1,10 @@
 import { RouteRecordRaw } from 'vue-router';
 import AlertsForm from '../../vue/components/Admin/Alerts/AlertsForm.vue';
 import AlertsIndex from '../../vue/components/Admin/Alerts/AlertsIndex.vue';
+import EventsForm from '../../vue/components/Admin/Events/EventsForm.vue';
+import EventsIndex from '../../vue/components/Admin/Events/EventsIndex.vue';
+import SuggestionAccept from '../../vue/components/Admin/Events/SuggestionAccept.vue';
+import SuggestionsIndex from '../../vue/components/Admin/Events/SuggestionsIndex.vue';
 import ReportsIndex from '../../vue/components/Admin/Reports/ReportsIndex.vue';
 import ReportsShow from '../../vue/components/Admin/Reports/ReportsShow.vue';
 import StationsIndex from '../../vue/components/Admin/Stations/StationsIndex.vue';
@@ -25,6 +29,26 @@ const adminRoutes: Array<RouteRecordRaw> = [
     {
         path: '/admin/alerts/:id/edit',
         component: AlertsForm,
+    },
+    {
+        path: '/admin/events',
+        component: EventsIndex,
+    },
+    {
+        path: '/admin/events/create',
+        component: EventsForm,
+    },
+    {
+        path: '/admin/events/:id/edit',
+        component: EventsForm,
+    },
+    {
+        path: '/admin/event-suggestions',
+        component: SuggestionsIndex,
+    },
+    {
+        path: '/admin/event-suggestions/:id/accept',
+        component: SuggestionAccept,
     },
     {
         path: '/admin/reports',
