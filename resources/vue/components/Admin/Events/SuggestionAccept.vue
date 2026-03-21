@@ -170,7 +170,10 @@ onMounted(() => fetchSuggestion());
                 <!-- Original suggestion info -->
                 <div v-if="suggestion" class="card bg-base-200">
                     <div class="card-body py-3">
-                        <p v-if="suggestion.user" class="text-xs text-base-content/60 font-semibold uppercase tracking-wide">
+                        <p
+                            v-if="suggestion.user"
+                            class="text-xs text-base-content/60 font-semibold uppercase tracking-wide"
+                        >
                             Original suggestion by {{ suggestion.user.username }}
                         </p>
                         <p class="text-sm">
