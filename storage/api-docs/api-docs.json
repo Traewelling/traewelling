@@ -4149,6 +4149,16 @@
                             "type": "integer"
                         },
                         "example": 1337
+                    },
+                    {
+                        "name": "withIdentifiers",
+                        "in": "query",
+                        "description": "Include station identifiers in origin and destination stopovers",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "example": true
                     }
                 ],
                 "responses": {

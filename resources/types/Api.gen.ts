@@ -3759,7 +3759,17 @@ export class Api<
      * @request GET:/status/{id}
      * @secure
      */
-    getSingleStatus: (id?: number, params: RequestParams = {}) =>
+    getSingleStatus: (
+      id?: number,
+      query?: {
+        /**
+         * Include station identifiers in origin and destination stopovers
+         * @example true
+         */
+        withIdentifiers?: boolean;
+      },
+      params: RequestParams = {},
+    ) =>
       this.request<
         {
           data?: StatusResource;
@@ -3768,6 +3778,7 @@ export class Api<
       >({
         path: `/status/${id}`,
         method: "GET",
+        query: query,
         secure: true,
         format: "json",
         ...params,
