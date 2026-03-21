@@ -22,30 +22,14 @@ return new class() extends Migration
         $geo = new GeoService();
         $transcoder = new PolylineTranscoder();
 
-        $total = RouteSegment::count();
-        $checked = 0;
-        $deleted = 0;
-
-        echo "Checking {$total} route segments (tolerance: {$tolerance}m)..." . PHP_EOL;
-
         RouteSegment::with(['fromStation', 'toStation', 'fromIdentifier', 'toIdentifier'])
-            ->chunkById(200, function (iterable $segments) use ($tolerance, $geo, $transcoder, $total, &$checked, &$deleted): void {
+            ->chunkById(200, function (iterable $segments) use ($tolerance, $geo, $transcoder): void {
                 foreach ($segments as $segment) {
-                    $checked++;
-
                     if ($this->shouldDelete($segment, $tolerance, $geo, $transcoder)) {
-                        $from = $segment->fromStation?->name ?? $segment->from_station_id;
-                        $to = $segment->toStation?->name ?? $segment->to_station_id;
-                        echo "  Deleting [{$segment->id}] {$from} -> {$to}" . PHP_EOL;
                         $segment->delete();
-                        $deleted++;
                     }
                 }
-
-                echo "  {$checked}/{$total} checked, {$deleted} deleted so far..." . PHP_EOL;
             });
-
-        echo "Done. Deleted {$deleted} of {$total} route segments." . PHP_EOL;
     }
 
     private function shouldDelete(
