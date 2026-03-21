@@ -398,6 +398,14 @@ class StatusController extends Controller
                 schema: new OA\Schema(type: 'integer'),
                 example: 1337,
             ),
+            new OA\Parameter(
+                name: 'withIdentifiers',
+                description: 'Include station identifiers in origin and destination stopovers',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'boolean'),
+                example: true,
+            ),
         ],
         responses: [
             new OA\Response(
@@ -412,13 +420,18 @@ class StatusController extends Controller
             new OA\Response(response: 403, description: 'User not authorized to access this status'),
         ],
     )]
-    public function show(int $id): StatusResource|JsonResponse
+    public function show(Request $request, int $id): StatusResource|JsonResponse
     {
         $status = StatusBackend::getStatus($id);
         try {
             $this->authorize('view', $status);
         } catch (AuthorizationException) {
             return response()->json(['message' => 'Status invisible to you.'], 403);
+        }
+
+        if ($request->boolean('withIdentifiers')) {
+            $status->checkin->originStopover->station->load('stationIdentifiers');
+            $status->checkin->destinationStopover->station->load('stationIdentifiers');
         }
 
         return new StatusResource($status);

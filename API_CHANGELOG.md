@@ -36,6 +36,10 @@ Check back here regularly to stay ahead of removals.
 
 ---
 
+# 2026-03-21
+
+- `GET /api/v1/status/{id}`: New optional query parameter `withIdentifiers`. When `true`, includes `identifiers` in origin and destination stopovers (`StopoverResource`)
+
 # 2026-03-20
 
 Added `moderation_notes` (string, nullable), `lock_visibility` (boolean, nullable) and `hide_body` (boolean, nullable)
