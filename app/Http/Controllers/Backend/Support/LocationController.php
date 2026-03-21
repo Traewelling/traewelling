@@ -253,8 +253,14 @@ class LocationController
             report($exception);
 
             return [
-                [$this->origin->station->longitude, $this->origin->station->latitude],
-                [$this->destination->station->longitude, $this->destination->station->latitude],
+                [
+                    $this->origin->stationIdentifier?->longitude ?? $this->origin->station->longitude,
+                    $this->origin->stationIdentifier?->latitude ?? $this->origin->station->latitude,
+                ],
+                [
+                    $this->destination->stationIdentifier?->longitude ?? $this->destination->station->longitude,
+                    $this->destination->stationIdentifier?->latitude ?? $this->destination->station->latitude,
+                ],
             ];
         }
     }
@@ -282,8 +288,8 @@ class LocationController
             // Also add the station coordinate if we've reached the destination
             if ($stopover->routeSegment === null || $stopover->is($this->destination)) {
                 $coordinates[] = new Coordinate(
-                    $stopover->station->latitude,
-                    $stopover->station->longitude
+                    $stopover->stationIdentifier?->latitude ?? $stopover->station->latitude,
+                    $stopover->stationIdentifier?->longitude ?? $stopover->station->longitude,
                 );
                 // If we reached the destination, break the loop
                 if ($stopover->is($this->destination)) {
@@ -316,7 +322,10 @@ class LocationController
         foreach ($this->trip->stopovers as $stopover) {
             if ($firstStop !== null || $stopover->is($this->origin)) {
                 $firstStop = $stopover;
-                $coordinate = new Coordinate($stopover->station->latitude, $stopover->station->longitude);
+                $coordinate = new Coordinate(
+                    $stopover->stationIdentifier?->latitude ?? $stopover->station->latitude,
+                    $stopover->stationIdentifier?->longitude ?? $stopover->station->longitude,
+                );
                 $feature = Feature::fromCoordinate($coordinate);
                 $feature->setStationId($stopover->station->id);
                 $feature->setDeparturePlanned($stopover->departure_planned?->toIso8601ZuluString());

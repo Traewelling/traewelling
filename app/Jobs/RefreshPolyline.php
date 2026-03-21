@@ -24,27 +24,24 @@ class RefreshPolyline implements ShouldQueue
 
     private Trip $trip;
 
-    private ReRoutingController $reRoutingController;
-
     public int $tries = 3;
 
     public int $backoff = 60;
 
-    public function __construct(Trip $trip, ?ReRoutingController $reRoutingController = null)
+    public function __construct(Trip $trip)
     {
         $this->trip = $trip;
-        $this->reRoutingController = $reRoutingController ?? app(ReRoutingController::class);
         $this->onQueue(Queue::NORMAL->value);
     }
 
-    public static function dispatch(Trip $trip, ?ReRoutingController $reRoutingController = null): PendingDispatch
+    public static function dispatch(Trip $trip): PendingDispatch
     {
         Cache::set(CacheKey::getReroutePolylineJobKey($trip->id), true, now()->addMinutes(5));
 
-        return static::newPendingDispatch(new static($trip, $reRoutingController));
+        return static::newPendingDispatch(new static($trip));
     }
 
-    public function handle(): void
+    public function handle(ReRoutingController $reRoutingController): void
     {
         if (app()->environment('testing')) {
             Log::info('RefreshPolyline Job skipped: Testing environment', ['trip_id' => $this->trip->id]);
@@ -62,7 +59,7 @@ class RefreshPolyline implements ShouldQueue
             return;
         }
         Log::debug('RefreshPolyline Job started', ['trip_id' => $this->trip->id]);
-        $percentage = $this->reRoutingController->rerouteStops($this->trip);
+        $percentage = $reRoutingController->rerouteStops($this->trip);
 
         if ($percentage > config('trwl.distance_deviation.cooldown_error_percent')) {
             Log::warning('Too many route segments failed to refresh, activating cooldown', [

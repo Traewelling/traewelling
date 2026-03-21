@@ -36,7 +36,7 @@ return [
 
     'brouter' => [
         'url' => env('BROUTER_URL', 'https://brouter.de/brouter'),
-        'profile' => env('BROUTER_RAIL_PROFILE', 'rail'),
         'timeout' => env('BROUTER_TIMEOUT_SECONDS', 30),
+        'endpoint_tolerance_meters' => env('BROUTER_ENDPOINT_TOLERANCE_METERS', 200),
     ],
 ];

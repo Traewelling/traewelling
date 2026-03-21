@@ -90,7 +90,7 @@ class DeleteRouteSegment implements ShouldQueue
                     }
 
                     $duration = (int) round($startTime->diffInSeconds($endTime));
-                    $pathType = $fromStop->trip?->category?->getORRProfile();
+                    $pathType = $fromStop->trip?->category?->getBrouterProfile();
 
                     $replacement = $tripRepository->getRouteSegmentBetweenStops(
                         start: $fromStop,

@@ -132,15 +132,18 @@ class Stopover extends Model
         return $this->hasOne(StationIdentifier::class, 'id', 'station_identifier_id');
     }
 
-    // These two methods are a ticking time bomb and I hope we'll never see it explode. 💣
     public function getArrivalAttribute(): ?Carbon
     {
-        return ($this->arrival_real ?? $this->arrival_planned) ?? $this?->departure;
+        // Fallback to departure timestamps directly to avoid mutual recursion with getDepartureAttribute.
+        return $this->arrival_real ?? $this->arrival_planned
+            ?? $this->departure_real ?? $this->departure_planned;
     }
 
     public function getDepartureAttribute(): ?Carbon
     {
-        return ($this->departure_real ?? $this->departure_planned) ?? $this?->arrival;
+        // Fallback to arrival timestamps directly to avoid mutual recursion with getArrivalAttribute.
+        return $this->departure_real ?? $this->departure_planned
+            ?? $this->arrival_real ?? $this->arrival_planned;
     }
 
     public function getPlatformAttribute(): ?string

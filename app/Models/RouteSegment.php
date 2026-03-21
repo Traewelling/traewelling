@@ -16,7 +16,9 @@ use Traewelling\GooglePolyline\PolylineTranscoder;
 /**
  * @property string $id
  * @property int $from_station_id
+ * @property string|null $from_identifier_id
  * @property int $to_station_id
+ * @property string|null $to_identifier_id
  * @property int $distance
  * @property int $duration
  * @property string|null $path_type
@@ -25,9 +27,11 @@ use Traewelling\GooglePolyline\PolylineTranscoder;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Station $fromStation
+ * @property-read StationIdentifier|null $fromIdentifier
+ * @property-read Station $toStation
+ * @property-read StationIdentifier|null $toIdentifier
  * @property-read Collection<int, Stopover> $stopOvers
  * @property-read int|null $stop_overs_count
- * @property-read Station $toStation
  * @property-read Collection<int, Trip> $trips
  * @property-read int|null $trips_count
  *
@@ -72,9 +76,19 @@ class RouteSegment extends Model
         return $this->belongsTo(Station::class, 'from_station_id');
     }
 
+    public function fromIdentifier(): BelongsTo
+    {
+        return $this->belongsTo(StationIdentifier::class, 'from_identifier_id');
+    }
+
     public function toStation(): BelongsTo
     {
         return $this->belongsTo(Station::class, 'to_station_id');
+    }
+
+    public function toIdentifier(): BelongsTo
+    {
+        return $this->belongsTo(StationIdentifier::class, 'to_identifier_id');
     }
 
     public function stopOvers(): HasMany

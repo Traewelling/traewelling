@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Frontend\Admin;
 
 use App\Dto\Coordinate;
+use App\Exceptions\BRouterException;
 use App\Models\RouteSegment;
 use App\Services\BRouterService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use RuntimeException;
 use Traewelling\GooglePolyline\PolylineTranscoder;
 
 class RouteSegmentController
@@ -46,17 +46,16 @@ class RouteSegmentController
 
         try {
             $route = $brouter->getRoute($waypoints);
-        } catch (RuntimeException $e) {
+        } catch (BRouterException $e) {
             return response()->json(['error' => $e->getMessage()], 422);
         }
 
         return response()->json([
             'coordinates' => array_map(
                 static fn (Coordinate $c) => ['lat' => $c->latitude, 'lng' => $c->longitude],
-                $route['coordinates'],
+                $route->coordinates,
             ),
-            'distance' => $route['distance'],
-            'duration' => $route['duration'],
+            'distance' => $route->distanceInMeters,
         ]);
     }
 
@@ -81,7 +80,7 @@ class RouteSegmentController
 
         try {
             $route = $brouter->getRoute($waypointDtos);
-        } catch (RuntimeException $e) {
+        } catch (BRouterException $e) {
             return back()->with('alert-danger', 'BRouter error: ' . $e->getMessage());
         }
 
@@ -89,7 +88,7 @@ class RouteSegmentController
         // encodePolyline expects [[lon, lat], ...]
         $transcoder = new PolylineTranscoder();
         $encodedPolyline = $transcoder->encodePolyline(
-            array_map(static fn (Coordinate $c) => [$c->longitude, $c->latitude], $route['coordinates']),
+            array_map(static fn (Coordinate $c) => [$c->longitude, $c->latitude], $route->coordinates),
             5,
         );
 
@@ -102,7 +101,7 @@ class RouteSegmentController
         $segment->update([
             'polyline' => $encodedPolyline,
             'polyline_precision' => 5,
-            'distance' => $route['distance'],
+            'distance' => $route->distanceInMeters,
             // duration is intentionally not updated — it reflects the scheduled timetable, not the routed distance
             'custom_waypoints' => $customWaypoints,
         ]);
