@@ -54,7 +54,7 @@ enum HafasTravelType: string
         };
     }
 
-    public function getBRouterProfile(): ?BRouterProfile
+    public function getSegmentPathType(): ?SegmentPathType
     {
         return match ($this) {
             HafasTravelType::NATIONAL_EXPRESS,
@@ -64,8 +64,9 @@ enum HafasTravelType: string
             HafasTravelType::SUBURBAN,
             HafasTravelType::FREIGHT_TRAIN,
             HafasTravelType::TRAM,
-            HafasTravelType::SUBWAY => BRouterProfile::RAIL,
-            HafasTravelType::BUS => BRouterProfile::ROAD,
+            HafasTravelType::SUBWAY => SegmentPathType::RAIL,
+            HafasTravelType::BUS => SegmentPathType::ROAD,
+            HafasTravelType::PLANE => SegmentPathType::GREAT_CIRCLE,
             default => null,
         };
     }

@@ -96,6 +96,7 @@ enum MotisCategory: string
             self::FERRY => HafasTravelType::FERRY,
             self::SUBWAY => HafasTravelType::SUBWAY,
             self::TRAM, self::CABLE_CAR, self::FUNICULAR, self::AERIAL_LIFT, self::AERAL_LIFT => HafasTravelType::TRAM,
+            self::AIRPLANE => HafasTravelType::PLANE,
             default => HafasTravelType::REGIONAL,
         };
     }

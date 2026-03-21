@@ -8,7 +8,6 @@ use App\Dto\BRouter\RouteDto;
 use App\Dto\Coordinate;
 use App\Enum\HafasTravelType;
 use App\Exceptions\BRouterException;
-use App\Http\Controllers\ReRoutingController;
 use App\Jobs\RecalculateStatusesDistanceForTrip;
 use App\Models\RouteSegment;
 use App\Models\Station;
@@ -17,6 +16,8 @@ use App\Models\Stopover;
 use App\Models\Trip;
 use App\Repositories\TripRepository;
 use App\Services\BRouterService;
+use App\Services\GeodesicService;
+use App\Services\ReRoutingService;
 use Carbon\Carbon;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Request as GuzzleRequest;
@@ -26,7 +27,7 @@ use Illuminate\Support\Facades\Queue;
 use Mockery;
 use Tests\Unit\UnitTestCase;
 
-class ReRoutingControllerTest extends UnitTestCase
+class ReRoutingServiceTest extends UnitTestCase
 {
     // Hannover Hbf
     private const float LAT_A = 52.3766;
@@ -42,7 +43,9 @@ class ReRoutingControllerTest extends UnitTestCase
 
     private BRouterService $brouter;
 
-    private ReRoutingController $controller;
+    private GeodesicService $geodesic;
+
+    private ReRoutingService $service;
 
     protected function setUp(): void
     {
@@ -50,7 +53,8 @@ class ReRoutingControllerTest extends UnitTestCase
 
         $this->repository = Mockery::mock(TripRepository::class);
         $this->brouter = Mockery::mock(BRouterService::class);
-        $this->controller = new ReRoutingController($this->repository, $this->brouter);
+        $this->geodesic = Mockery::mock(GeodesicService::class);
+        $this->service = new ReRoutingService($this->repository, $this->brouter, $this->geodesic);
 
         Queue::fake();
     }
@@ -133,7 +137,7 @@ class ReRoutingControllerTest extends UnitTestCase
         $this->repository->shouldReceive('createRouteSegment')->once()->andReturn($newSegment);
         $this->repository->shouldReceive('setRouteSegmentForStop')->once();
 
-        $result = $this->controller->rerouteStops($trip);
+        $result = $this->service->rerouteStops($trip);
 
         $this->assertSame(0, $result);
         Queue::assertPushed(RecalculateStatusesDistanceForTrip::class);
@@ -150,7 +154,7 @@ class ReRoutingControllerTest extends UnitTestCase
         $this->repository->shouldNotReceive('getRouteSegmentBetweenStops');
 
         // 0 errors out of 1 stopover = 0% error rate → job still dispatched
-        $result = $this->controller->rerouteStops($trip);
+        $result = $this->service->rerouteStops($trip);
 
         $this->assertSame(0, $result);
         Queue::assertPushed(RecalculateStatusesDistanceForTrip::class);
@@ -169,24 +173,24 @@ class ReRoutingControllerTest extends UnitTestCase
 
         // stopovers starts at 2, decremented to 1 for the stop with an existing segment.
         // 0 errors / 1 counted stopover = 0% → job dispatched.
-        $result = $this->controller->rerouteStops($trip);
+        $result = $this->service->rerouteStops($trip);
 
         $this->assertSame(0, $result);
         Queue::assertPushed(RecalculateStatusesDistanceForTrip::class);
     }
 
-    public function test_skips_category_without_brouter_profile(): void
+    public function test_skips_category_without_segment_path_type(): void
     {
         $station = $this->makeStation(self::LAT_A, self::LON_A);
         $stopA = $this->makeStopover($station);
-        $stopB = $this->makeStopover($station); // FERRY has no BRouter profile
+        $stopB = $this->makeStopover($station); // FERRY has no SegmentPathType
 
         $trip = $this->makeTrip([$stopA, $stopB], HafasTravelType::FERRY);
 
         $this->brouter->shouldNotReceive('getRoute');
         $this->repository->shouldNotReceive('createRouteSegment');
 
-        $this->controller->rerouteStops($trip);
+        $this->service->rerouteStops($trip);
     }
 
     public function test_dispatches_recalculate_job_when_error_rate_is_below_threshold(): void
@@ -204,7 +208,7 @@ class ReRoutingControllerTest extends UnitTestCase
         $this->repository->shouldReceive('createRouteSegment')->andReturn($segment);
         $this->repository->shouldReceive('setRouteSegmentForStop');
 
-        $result = $this->controller->rerouteStops($trip);
+        $result = $this->service->rerouteStops($trip);
 
         $this->assertLessThan(10, $result);
         Queue::assertPushed(RecalculateStatusesDistanceForTrip::class);
@@ -221,7 +225,7 @@ class ReRoutingControllerTest extends UnitTestCase
         $this->repository->shouldReceive('getRouteSegmentBetweenStops')->andReturn(null);
         $this->brouter->shouldReceive('getRoute')->andThrow(new BRouterException('network error'));
 
-        $result = $this->controller->rerouteStops($trip);
+        $result = $this->service->rerouteStops($trip);
 
         $this->assertGreaterThanOrEqual(10, $result);
         Queue::assertNotPushed(RecalculateStatusesDistanceForTrip::class);
@@ -239,7 +243,7 @@ class ReRoutingControllerTest extends UnitTestCase
         $this->repository->shouldReceive('getRouteSegmentBetweenStops')->andReturn(null);
         $this->brouter->shouldReceive('getRoute')->andThrow(new BRouterException('timeout'));
 
-        $result = $this->controller->rerouteStops($trip);
+        $result = $this->service->rerouteStops($trip);
 
         // stopovers=2, queryExceptions=1 → 1/2*100 = 50%
         $this->assertSame(50, $result);
@@ -259,7 +263,7 @@ class ReRoutingControllerTest extends UnitTestCase
         $this->repository->shouldReceive('getRouteSegmentBetweenStops')->andReturn(null);
         $this->brouter->shouldReceive('getRoute')->andThrow($exception);
 
-        $result = $this->controller->rerouteStops($trip);
+        $result = $this->service->rerouteStops($trip);
 
         // ClientException is caught and returned early without incrementing queryExceptions
         $this->assertSame(0, $result);
@@ -277,7 +281,7 @@ class ReRoutingControllerTest extends UnitTestCase
         $this->repository->shouldReceive('getRouteSegmentBetweenStops')->andReturn(null);
         $this->brouter->shouldReceive('getRoute')->andThrow(new BRouterException('cURL error 28: connection timed out'));
 
-        $result = $this->controller->rerouteStops($trip);
+        $result = $this->service->rerouteStops($trip);
 
         // cURL 28 still increments queryExceptions, just skips report(). stopovers=2 → 50%.
         $this->assertSame(50, $result);
@@ -285,11 +289,6 @@ class ReRoutingControllerTest extends UnitTestCase
 
     public function test_skips_when_station_has_no_location(): void
     {
-        $stationA = new Station(); // no latitude/longitude set, location will be null
-        $stationA->name = 'No Location Station';
-        $stationB = new Station();
-        $stationB->name = 'No Location Station B';
-
         $stopA = new Stopover();
         $stopA->setRelation('station', null);
         $stopA->setRelation('stationIdentifier', null);
@@ -304,7 +303,7 @@ class ReRoutingControllerTest extends UnitTestCase
 
         $this->brouter->shouldNotReceive('getRoute');
 
-        $this->controller->rerouteStops($trip);
+        $this->service->rerouteStops($trip);
     }
 
     public function test_uses_existing_segment_instead_of_calling_brouter(): void
@@ -321,7 +320,7 @@ class ReRoutingControllerTest extends UnitTestCase
         $this->repository->shouldReceive('setRouteSegmentForStop')->once()->with($stopA, $existingSegment);
         $this->brouter->shouldNotReceive('getRoute');
 
-        $result = $this->controller->rerouteStops($trip);
+        $result = $this->service->rerouteStops($trip);
 
         $this->assertSame(0, $result);
     }
@@ -344,7 +343,7 @@ class ReRoutingControllerTest extends UnitTestCase
         ));
         $this->repository->shouldNotReceive('createRouteSegment');
 
-        $result = $this->controller->rerouteStops($trip);
+        $result = $this->service->rerouteStops($trip);
 
         $this->assertSame(0, $result);
         Queue::assertPushed(RecalculateStatusesDistanceForTrip::class);
@@ -368,7 +367,7 @@ class ReRoutingControllerTest extends UnitTestCase
         ));
         $this->repository->shouldNotReceive('createRouteSegment');
 
-        $this->controller->rerouteStops($trip);
+        $this->service->rerouteStops($trip);
     }
 
     public function test_skips_when_distance_deviation_exceeds_threshold(): void
@@ -390,7 +389,7 @@ class ReRoutingControllerTest extends UnitTestCase
         ));
         $this->repository->shouldNotReceive('createRouteSegment');
 
-        $result = $this->controller->rerouteStops($trip);
+        $result = $this->service->rerouteStops($trip);
 
         $this->assertSame(0, $result);
     }
@@ -409,7 +408,7 @@ class ReRoutingControllerTest extends UnitTestCase
 
         // Generic exceptions don't increment queryExceptions but are reported.
         // The return value is still 0% (queryExceptions = 0).
-        $result = $this->controller->rerouteStops($trip);
+        $result = $this->service->rerouteStops($trip);
 
         $this->assertSame(0, $result);
     }
@@ -443,7 +442,7 @@ class ReRoutingControllerTest extends UnitTestCase
             ->andReturn($segment);
         $this->repository->shouldReceive('setRouteSegmentForStop');
 
-        $result = $this->controller->rerouteStops($trip);
+        $result = $this->service->rerouteStops($trip);
 
         $this->assertSame(0, $result);
     }
@@ -453,7 +452,7 @@ class ReRoutingControllerTest extends UnitTestCase
         // Empty collection → stopovers = 0 → errorPercentage = queryExceptions (raw, not divided)
         $trip = $this->makeTrip([]);
 
-        $result = $this->controller->rerouteStops($trip);
+        $result = $this->service->rerouteStops($trip);
 
         $this->assertSame(0, $result);
         Queue::assertPushed(RecalculateStatusesDistanceForTrip::class);
@@ -461,7 +460,7 @@ class ReRoutingControllerTest extends UnitTestCase
 
     public function test_short_distance_threshold_is_applied_for_distances_between_400_and_2000m(): void
     {
-        // Stations ~1 km apart (short_distance range: 400 m – 2000 m → 30% threshold).
+        // Stations ~1 km apart (short_distance range: 400 m - 2000 m → 30% threshold).
         // BRouter returns 25% above oldDistance: passes 30% but would fail the standard 20% threshold.
         $stationA = $this->makeStation(52.3766, 9.7413, 'Hannover Hbf');
         $stationB = $this->makeStation(52.3856, 9.7413, 'Point ~1 km north'); // ~1001 m from A
@@ -481,14 +480,14 @@ class ReRoutingControllerTest extends UnitTestCase
         $this->repository->shouldReceive('createRouteSegment')->once()->andReturn($segment);
         $this->repository->shouldReceive('setRouteSegmentForStop')->once();
 
-        $result = $this->controller->rerouteStops($trip);
+        $result = $this->service->rerouteStops($trip);
 
         $this->assertSame(0, $result);
     }
 
     public function test_medium_distance_threshold_is_applied_for_distances_between_2000_and_15000m(): void
     {
-        // Stations ~5 km apart (medium_distance range: 2000 m – 15 000 m → 25% threshold).
+        // Stations ~5 km apart (medium_distance range: 2000 m - 15 000 m → 25% threshold).
         // BRouter returns 22% above oldDistance: passes 25% but would fail the standard 20% threshold.
         $stationA = $this->makeStation(52.3766, 9.7413, 'Hannover Hbf');
         $stationB = $this->makeStation(52.4216, 9.7413, 'Point ~5 km north'); // ~5006 m from A
@@ -508,7 +507,62 @@ class ReRoutingControllerTest extends UnitTestCase
         $this->repository->shouldReceive('createRouteSegment')->once()->andReturn($segment);
         $this->repository->shouldReceive('setRouteSegmentForStop')->once();
 
-        $result = $this->controller->rerouteStops($trip);
+        $result = $this->service->rerouteStops($trip);
+
+        $this->assertSame(0, $result);
+    }
+
+    public function test_plane_trip_creates_great_circle_segment_without_brouter(): void
+    {
+        $stationA = $this->makeStation(52.3116, 9.6946, 'Hannover Airport');   // HAJ
+        $stationB = $this->makeStation(48.3538, 11.7861, 'Munich Airport');    // MUC
+
+        $stopA = $this->makeStopover($stationA, departure: Carbon::parse('2025-06-01 10:00:00'));
+        $stopB = $this->makeStopover($stationB, arrival: Carbon::parse('2025-06-01 11:10:00'));
+
+        $trip = $this->makeTrip([$stopA, $stopB], HafasTravelType::PLANE);
+        $newSegment = $this->makeSegment();
+
+        $this->repository->shouldReceive('getRouteSegmentBetweenStops')->once()->andReturn(null);
+        $this->brouter->shouldNotReceive('getRoute');
+
+        $this->geodesic->shouldReceive('interpolate')
+            ->once()
+            ->andReturn([
+                new Coordinate(52.3116, 9.6946),
+                new Coordinate(50.0, 10.5),
+                new Coordinate(48.3538, 11.7861),
+            ]);
+        $this->geodesic->shouldReceive('haversineDistance')
+            ->once()
+            ->andReturn(480_000); // ~480 km HAJ to MUC
+
+        $this->repository->shouldReceive('createRouteSegment')->once()->andReturn($newSegment);
+        $this->repository->shouldReceive('setRouteSegmentForStop')->once();
+
+        $result = $this->service->rerouteStops($trip);
+
+        $this->assertSame(0, $result);
+        Queue::assertPushed(RecalculateStatusesDistanceForTrip::class);
+    }
+
+    public function test_plane_trip_reuses_existing_great_circle_segment(): void
+    {
+        $stationA = $this->makeStation(52.3116, 9.6946, 'Hannover Airport');
+        $stationB = $this->makeStation(48.3538, 11.7861, 'Munich Airport');
+
+        $stopA = $this->makeStopover($stationA, departure: Carbon::parse('2025-06-01 10:00:00'));
+        $stopB = $this->makeStopover($stationB, arrival: Carbon::parse('2025-06-01 11:10:00'));
+
+        $trip = $this->makeTrip([$stopA, $stopB], HafasTravelType::PLANE);
+        $existingSegment = $this->makeSegment();
+
+        $this->repository->shouldReceive('getRouteSegmentBetweenStops')->once()->andReturn($existingSegment);
+        $this->repository->shouldReceive('setRouteSegmentForStop')->once()->with($stopA, $existingSegment);
+        $this->brouter->shouldNotReceive('getRoute');
+        $this->geodesic->shouldNotReceive('interpolate');
+
+        $result = $this->service->rerouteStops($trip);
 
         $this->assertSame(0, $result);
     }

@@ -96,7 +96,7 @@ class AssignRouteSegmentToStopovers implements ShouldQueue
                 // If the segment has a path_type, only assign to trips with a matching transport mode.
                 // A null path_type on the segment means it is universal and matches any trip.
                 if ($segment->path_type !== null) {
-                    $tripPathType = $fromStop->trip?->category?->getBrouterProfile();
+                    $tripPathType = $fromStop->trip?->category?->getSegmentPathType();
                     if ($tripPathType === null || $tripPathType->value !== $segment->path_type) {
                         $skippedPathType++;
 
