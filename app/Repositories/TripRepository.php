@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Enum\BRouterProfile;
+use App\Enum\SegmentPathType;
 use App\Models\RouteSegment;
 use App\Models\Station;
 use App\Models\StationIdentifier;
@@ -22,7 +22,7 @@ class TripRepository
         Stopover $start,
         Stopover $end,
         int $duration,
-        ?BRouterProfile $pathType = null,
+        ?SegmentPathType $pathType = null,
         ?string $excludeId = null,
     ): ?RouteSegment {
         // Use ±10% tolerance, but at least ±5 minutes for short-distance segments
@@ -63,7 +63,7 @@ class TripRepository
         string $encodedPolyline,
         int $polylinePrecision = 5,
         ?int $duration = null,
-        ?BRouterProfile $pathType = null,
+        ?SegmentPathType $pathType = null,
         ?int $distanceInMeters = null,
         ?StationIdentifier $fromIdentifier = null,
         ?StationIdentifier $toIdentifier = null,

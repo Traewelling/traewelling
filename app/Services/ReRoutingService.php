@@ -1,15 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+declare(strict_types=1);
+
+namespace App\Services;
 
 use App\Dto\Coordinate;
-use App\Enum\BRouterProfile;
+use App\Enum\SegmentPathType;
 use App\Exceptions\BRouterException;
 use App\Jobs\RecalculateStatusesDistanceForTrip;
 use App\Models\Stopover;
 use App\Models\Trip;
 use App\Repositories\TripRepository;
-use App\Services\BRouterService;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Database\Eloquent\Collection;
@@ -17,23 +18,17 @@ use Illuminate\Support\Facades\Log;
 use phpGPX\Helpers\DistanceCalculator;
 use Traewelling\GooglePolyline\PolylineTranscoder;
 
-class ReRoutingController extends Controller
+class ReRoutingService
 {
-    private TripRepository $tripRepository;
-
-    private BRouterService $brouterService;
-
     private int $stopovers = 1;
 
     private int $queryExceptions = 0;
 
     public function __construct(
-        TripRepository $tripRepository,
-        BRouterService $brouterService
-    ) {
-        $this->tripRepository = $tripRepository;
-        $this->brouterService = $brouterService;
-    }
+        private readonly TripRepository $tripRepository,
+        private readonly BRouterService $brouterService,
+        private readonly GeodesicService $geodesicService,
+    ) {}
 
     public function rerouteStops(Trip $trip): int
     {
@@ -58,14 +53,19 @@ class ReRoutingController extends Controller
 
             $mode = $trip->category;
 
-            $pathType = $mode->getBRouterProfile();
+            $pathType = $mode->getSegmentPathType();
             if (!$pathType) {
                 Log::warning('RerouteStops: Unsupported transport mode, skipping', ['mode' => $mode]);
 
                 continue;
             }
             Log::debug('RerouteStops: Transport mode', ['mode' => $mode, 'pathType' => $pathType]);
-            $this->rerouteBetween($previousStop, $stop, $pathType);
+
+            if ($pathType === SegmentPathType::GREAT_CIRCLE) {
+                $this->rerouteAsGreatCircle($previousStop, $stop);
+            } else {
+                $this->rerouteBetween($previousStop, $stop, $pathType);
+            }
         }
 
         if ($count === 0) {
@@ -82,13 +82,13 @@ class ReRoutingController extends Controller
             RecalculateStatusesDistanceForTrip::dispatch($trip->trip_id);
         }
 
-        return $errorPercentage;
+        return (int) $errorPercentage;
     }
 
-    private function getDeviationThreshold(int $oldDistance): array
+    private function getDeviationThreshold(int|float $oldDistance): array
     {
         $percentage = config('trwl.distance_deviation.threshold_percent') / 100;
-        if ($oldDistance === 0) {
+        if ($oldDistance == 0) {
             return [0, PHP_INT_MAX, 1.0];
         } elseif ($oldDistance < config('trwl.distance_deviation.shortest_distance')) {
             // for distances < 400 m, allow the highest deviation
@@ -107,7 +107,66 @@ class ReRoutingController extends Controller
         return [$lowerLimit, $upperLimit, $percentage];
     }
 
-    private function rerouteBetween(Stopover $start, Stopover $end, BRouterProfile $pathType): void
+    private function rerouteAsGreatCircle(Stopover $start, Stopover $end): void
+    {
+        $startTime = $start->departure_planned ?? $start->arrival_planned;
+        $endTime = $end->arrival_planned ?? $end->departure_planned;
+        $startLocation = $start->stationIdentifier?->location ?? $start->station?->location;
+        $endLocation = $end->stationIdentifier?->location ?? $end->station?->location;
+
+        if (!$startLocation || !$endLocation) {
+            Log::warning('RerouteStops: Missing station location, cannot create great-circle arc', [
+                'from_station_id' => $start->station?->id,
+                'to_station_id' => $end->station?->id,
+            ]);
+
+            return;
+        }
+
+        $duration = -1;
+        if ($startTime?->isValid() && $endTime?->isValid()) {
+            $duration = (int) round($startTime->diffInSeconds($endTime));
+        }
+
+        $segment = $this->tripRepository->getRouteSegmentBetweenStops($start, $end, $duration, SegmentPathType::GREAT_CIRCLE);
+        if ($segment) {
+            Log::debug('RerouteStops: Great-circle segment already exists, reusing', ['segment' => $segment->id]);
+            $this->tripRepository->setRouteSegmentForStop($start, $segment);
+
+            return;
+        }
+
+        $startCoord = new Coordinate($startLocation->latitude, $startLocation->longitude);
+        $endCoord = new Coordinate($endLocation->latitude, $endLocation->longitude);
+
+        $coordinates = $this->geodesicService->interpolate($startCoord, $endCoord);
+        $distanceInMeters = $this->geodesicService->haversineDistance($startCoord, $endCoord);
+
+        $encodedPolyline = new PolylineTranscoder()->encodePolyline(
+            array_map(static fn (Coordinate $c) => [$c->longitude, $c->latitude], $coordinates),
+        );
+
+        $segment = $this->tripRepository->createRouteSegment(
+            fromStation: $start->station,
+            toStation: $end->station,
+            encodedPolyline: $encodedPolyline,
+            duration: $duration,
+            pathType: SegmentPathType::GREAT_CIRCLE,
+            distanceInMeters: $distanceInMeters,
+            fromIdentifier: $start->stationIdentifier,
+            toIdentifier: $end->stationIdentifier,
+        );
+        $this->tripRepository->setRouteSegmentForStop($start, $segment);
+
+        Log::debug('RerouteStops: Great-circle arc created', [
+            'segment_id' => $segment->id,
+            'distance_m' => $distanceInMeters,
+            'from' => $start->station?->name,
+            'to' => $end->station?->name,
+        ]);
+    }
+
+    private function rerouteBetween(Stopover $start, Stopover $end, SegmentPathType $pathType): void
     {
         Log::debug('RerouteStops', [$start, $end, $pathType]);
 
@@ -148,7 +207,8 @@ class ReRoutingController extends Controller
         try {
             $startCoord = new Coordinate($startLocation->latitude, $startLocation->longitude);
             $endCoord = new Coordinate($endLocation->latitude, $endLocation->longitude);
-            $route = $this->brouterService->getRoute([$startCoord, $endCoord], $pathType);
+            $brouterProfile = $pathType->getBRouterProfile();
+            $route = $this->brouterService->getRoute([$startCoord, $endCoord], $brouterProfile);
 
             $encodedPolyline = new PolylineTranscoder()->encodePolyline(
                 array_map(static fn (Coordinate $c) => [$c->longitude, $c->latitude], $route->coordinates),
@@ -179,7 +239,7 @@ class ReRoutingController extends Controller
             $distance = $route->distanceInMeters;
             [$lowerLimit, $upperLimit, $percentage] = $this->getDeviationThreshold($oldDistance);
 
-            if (($oldDistance !== 0 && ($distance > $upperLimit || $distance < $lowerLimit))) {
+            if (($oldDistance != 0 && ($distance > $upperLimit || $distance < $lowerLimit))) {
                 Log::debug(
                     sprintf('Distance deviation is greater than %d percent.', $percentage * 100),
                     [

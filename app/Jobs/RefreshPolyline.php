@@ -4,8 +4,8 @@ namespace App\Jobs;
 
 use App\Enum\Queue;
 use App\Helpers\CacheKey;
-use App\Http\Controllers\ReRoutingController;
 use App\Models\Trip;
+use App\Services\ReRoutingService;
 use Cache;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -41,7 +41,7 @@ class RefreshPolyline implements ShouldQueue
         return static::newPendingDispatch(new static($trip));
     }
 
-    public function handle(ReRoutingController $reRoutingController): void
+    public function handle(ReRoutingService $reRoutingService): void
     {
         if (app()->environment('testing')) {
             Log::info('RefreshPolyline Job skipped: Testing environment', ['trip_id' => $this->trip->id]);
@@ -59,7 +59,7 @@ class RefreshPolyline implements ShouldQueue
             return;
         }
         Log::debug('RefreshPolyline Job started', ['trip_id' => $this->trip->id]);
-        $percentage = $reRoutingController->rerouteStops($this->trip);
+        $percentage = $reRoutingService->rerouteStops($this->trip);
 
         if ($percentage > config('trwl.distance_deviation.cooldown_error_percent')) {
             Log::warning('Too many route segments failed to refresh, activating cooldown', [
