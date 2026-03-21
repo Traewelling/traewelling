@@ -17,7 +17,12 @@ const resetting = ref(false);
 const resetSuccess = ref(false);
 
 function transitousLink(identifier: string): string {
-    return `https://api.transitous.org/api/v1/stoptimes?stopId=${encodeURIComponent(identifier)}`;
+    const params = new URLSearchParams({
+        stopId: identifier,
+        n: '50',
+        time: new Date().toISOString(),
+    });
+    return `https://api.transitous.org/api/v1/stoptimes?${params}`;
 }
 
 function haversineMeters(lat1: number, lon1: number, lat2: number, lon2: number): number {
