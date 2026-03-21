@@ -282,7 +282,7 @@ class NotificationsTest extends ApiTestCase
     {
         // Create users: alice suggests, bob accepts
         $alice = User::factory()->create();
-        $bob   = User::factory()->create()->assignRole('admin');
+        $bob = User::factory()->create()->assignRole('admin');
 
         // suggest an event
         $eventSuggestion = EventSuggestion::factory(['user_id' => $alice->id])->create();
@@ -292,9 +292,9 @@ class NotificationsTest extends ApiTestCase
         $this->postJson(
             "/api/v1/admin/event-suggestions/{$eventSuggestion->id}/accept",
             [
-                'name'          => $eventSuggestion->name,
+                'name' => $eventSuggestion->name,
                 'checkin_start' => $eventSuggestion->begin->toDateString(),
-                'checkin_end'   => $eventSuggestion->end->toDateString(),
+                'checkin_end' => $eventSuggestion->end->toDateString(),
             ]
         )->assertCreated();
 
@@ -330,7 +330,7 @@ class NotificationsTest extends ApiTestCase
     {
         // Create users: alice suggests, bob denies
         $alice = User::factory()->create();
-        $bob   = User::factory()->create()->assignRole('admin');
+        $bob = User::factory()->create()->assignRole('admin');
 
         // suggest an event
         $eventSuggestion = EventSuggestion::factory(['user_id' => $alice->id])->create();

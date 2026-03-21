@@ -31,9 +31,9 @@ class EventSuggestionXPTest extends ApiTestCase
     private function acceptPayload(): array
     {
         return [
-            'name'          => $this->eventSuggestion->name,
+            'name' => $this->eventSuggestion->name,
             'checkin_start' => $this->eventSuggestion->begin->toDateString(),
-            'checkin_end'   => $this->eventSuggestion->end->toDateString(),
+            'checkin_end' => $this->eventSuggestion->end->toDateString(),
         ];
     }
 
