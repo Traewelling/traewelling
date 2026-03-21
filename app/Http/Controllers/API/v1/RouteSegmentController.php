@@ -251,7 +251,7 @@ class RouteSegmentController extends Controller
         $segment = RouteSegment::findOrFail($id);
         $this->authorize('assignStopovers', $segment);
 
-        AssignRouteSegmentToStopovers::dispatch($segment);
+        AssignRouteSegmentToStopovers::dispatch($segment->id);
 
         return response()->json([], 202);
     }

@@ -13,7 +13,7 @@ class RouteSegmentObserver
 {
     public function created(RouteSegment $routeSegment): void
     {
-        AssignRouteSegmentToStopovers::dispatch($routeSegment);
+        AssignRouteSegmentToStopovers::dispatch($routeSegment->id);
     }
 
     public function updated(RouteSegment $routeSegment): void

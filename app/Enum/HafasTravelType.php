@@ -54,12 +54,18 @@ enum HafasTravelType: string
         };
     }
 
-    public function getORRProfile(): ?OpenRailRoutingProfile
+    public function getBRouterProfile(): ?BRouterProfile
     {
         return match ($this) {
-            HafasTravelType::NATIONAL_EXPRESS, HafasTravelType::NATIONAL => OpenRailRoutingProfile::TGV_ALL,
-            HafasTravelType::TRAM, HafasTravelType::SUBWAY => OpenRailRoutingProfile::TRAM_TRAIN,
-            HafasTravelType::REGIONAL_EXP, HafasTravelType::REGIONAL, HafasTravelType::SUBURBAN, HafasTravelType::FREIGHT_TRAIN => OpenRailRoutingProfile::ALL_TRACKS,
+            HafasTravelType::NATIONAL_EXPRESS,
+            HafasTravelType::NATIONAL,
+            HafasTravelType::REGIONAL_EXP,
+            HafasTravelType::REGIONAL,
+            HafasTravelType::SUBURBAN,
+            HafasTravelType::FREIGHT_TRAIN,
+            HafasTravelType::TRAM,
+            HafasTravelType::SUBWAY => BRouterProfile::RAIL,
+            HafasTravelType::BUS => BRouterProfile::ROAD,
             default => null,
         };
     }

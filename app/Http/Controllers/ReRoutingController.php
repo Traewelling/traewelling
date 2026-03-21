@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Enum\OpenRailRoutingProfile;
-use App\Exceptions\OpenRailRoutingResponseFailed;
+use App\Dto\Coordinate;
+use App\Enum\BRouterProfile;
+use App\Exceptions\BRouterException;
 use App\Jobs\RecalculateStatusesDistanceForTrip;
 use App\Models\Stopover;
 use App\Models\Trip;
 use App\Repositories\TripRepository;
-use App\Services\OpenRailRoutingService;
+use App\Services\BRouterService;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Database\Eloquent\Collection;
@@ -20,7 +21,7 @@ class ReRoutingController extends Controller
 {
     private TripRepository $tripRepository;
 
-    private OpenRailRoutingService $openRailRoutingService;
+    private BRouterService $brouterService;
 
     private int $stopovers = 1;
 
@@ -28,10 +29,10 @@ class ReRoutingController extends Controller
 
     public function __construct(
         TripRepository $tripRepository,
-        OpenRailRoutingService $openRailRoutingService
+        BRouterService $brouterService
     ) {
         $this->tripRepository = $tripRepository;
-        $this->openRailRoutingService = $openRailRoutingService;
+        $this->brouterService = $brouterService;
     }
 
     public function rerouteStops(Trip $trip): int
@@ -57,7 +58,7 @@ class ReRoutingController extends Controller
 
             $mode = $trip->category;
 
-            $pathType = $mode->getORRProfile();
+            $pathType = $mode->getBRouterProfile();
             if (!$pathType) {
                 Log::warning('RerouteStops: Unsupported transport mode, skipping', ['mode' => $mode]);
 
@@ -106,7 +107,7 @@ class ReRoutingController extends Controller
         return [$lowerLimit, $upperLimit, $percentage];
     }
 
-    private function rerouteBetween(Stopover $start, Stopover $end, OpenRailRoutingProfile $pathType): void
+    private function rerouteBetween(Stopover $start, Stopover $end, BRouterProfile $pathType): void
     {
         Log::debug('RerouteStops', [$start, $end, $pathType]);
 
@@ -138,15 +139,20 @@ class ReRoutingController extends Controller
 
             return; // already rerouted
         }
-        Log::debug('Getting new route from OpenRailwayRouting', [
+        Log::debug('Getting new route from BRouter', [
             'from' => $start->station,
             'to' => $end->station,
             'type' => $pathType,
         ]);
 
         try {
-            $route = $this->openRailRoutingService->getRoute([$startLocation, $endLocation], $pathType);
-            $encodedPolyline = (new PolylineTranscoder())->encodePolyline($route->feature->getCoordinateArray());
+            $startCoord = new Coordinate($startLocation->latitude, $startLocation->longitude);
+            $endCoord = new Coordinate($endLocation->latitude, $endLocation->longitude);
+            $route = $this->brouterService->getRoute([$startCoord, $endCoord], $pathType);
+
+            $encodedPolyline = new PolylineTranscoder()->encodePolyline(
+                array_map(static fn (Coordinate $c) => [$c->longitude, $c->latitude], $route->coordinates),
+            );
 
             // if speed is > 300 km/h, we assume the route is invalid
             if ($duration > 0) {
@@ -189,20 +195,18 @@ class ReRoutingController extends Controller
                 return;
             }
 
-            // TODO: path_type is temporarily set to null because the existing OpenRailRoutingProfile
-            //       values (e.g. tgv_all, all_tracks) are not meaningful for our use.
-            //       Introduce a proper categorisation (e.g. rail, street, water, air) and
-            //       re-enable path_type assignment here once that is in place.
             $segment = $this->tripRepository->createRouteSegment(
                 fromStation: $start->station,
                 toStation: $end->station,
                 encodedPolyline: $encodedPolyline,
                 duration: $duration,
-                pathType: null,
-                distanceInMeters: $route->distanceInMeters
+                pathType: $pathType,
+                distanceInMeters: $route->distanceInMeters,
+                fromIdentifier: $start->stationIdentifier,
+                toIdentifier: $end->stationIdentifier,
             );
             $this->tripRepository->setRouteSegmentForStop($start, $segment);
-        } catch (OpenRailRoutingResponseFailed|GuzzleException $e) {
+        } catch (BRouterException|GuzzleException $e) {
             Log::error('RerouteStops: Failed to create route segment', ['error' => $e->getMessage()]);
             if ($e instanceof ClientException) {
                 Log::warning('RerouteStops: ClientException details', [
@@ -221,6 +225,5 @@ class ReRoutingController extends Controller
             Log::error('RerouteStops: Failed to create route segment', ['error' => $e->getMessage()]);
             report($e);
         }
-
     }
 }
