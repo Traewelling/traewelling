@@ -1032,5 +1032,18 @@
     "validation-inline.array": "Toto pole musí být to pole.",
     "validation-inline.attached": "Toto pole je již připojeno.",
     "validation-inline.before": "Toto musí být datum předcházející :date.",
-    "validation-inline.before_or_equal": "Toto musí být datum předcházející nebo rovno :date."
+    "validation-inline.before_or_equal": "Toto musí být datum předcházející nebo rovno :date.",
+    "user.report": "Nahlásit uživatele",
+    "trip_creation.form.operator_search": "Vyhledat dopravce…",
+    "validation-inline.between.array": "Tento obsah musí mít mezi :min a :max položkami.",
+    "validation-inline.between.file": "Velikost tohoto souboru musí být mezi :min a :max kilobajty.",
+    "validation-inline.between.numeric": "Tato hodnota musí být mezi :min a :max.",
+    "validation-inline.between.string": "Tento řetězec musí mít délku mezi :min a :max znaky.",
+    "validation-inline.boolean": "Toto pole musí být Ano nebo Ne.",
+    "validation-inline.confirmed": "Potvrzení se neshoduje.",
+    "validation-inline.current_password": "Heslo je nesprávné.",
+    "validation-inline.date": "Toto není platné datum.",
+    "validation-inline.date_equals": "Toto musí být datum rovno :date.",
+    "validation-inline.date_format": "Toto neodpovídá formátu :format.",
+    "validation-inline.different": "Tato hodnota se musí lišit od :other."
 }
