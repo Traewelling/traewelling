@@ -57,7 +57,7 @@ export default {
                     this.loading = false;
                     if (!response.ok) {
                         this.error = true;
-                        this.errorMessage = trans('messages.exception.hafas.502');
+                        this.errorMessage = trans('messages.exception.motis.502');
                     }
                     response.json().then((result) => {
                         this.lineRun = result.data;
@@ -91,7 +91,7 @@ export default {
                 })
                 .catch(() => {
                     this.error = true;
-                    this.errorMessage = trans('messages.exception.hafas.502');
+                    this.errorMessage = trans('messages.exception.motis.502');
                 });
         },
         fastCheckin() {

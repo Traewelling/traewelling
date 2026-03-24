@@ -192,7 +192,7 @@ export default {
                         });
                     } else {
                         if (response.status === 502) {
-                            window.notyf.error(trans('messages.exception.hafas.502'));
+                            window.notyf.error(trans('messages.exception.motis.502'));
                         }
                     }
                 },
