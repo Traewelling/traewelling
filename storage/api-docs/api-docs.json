@@ -2818,6 +2818,7 @@
                                         "enum": [
                                             "Event",
                                             "Status",
+                                            "Trip",
                                             "User"
                                         ]
                                     },

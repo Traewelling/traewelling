@@ -46,7 +46,7 @@ async function submit() {
 
     loading.value = true;
     try {
-        await api.report.report({
+        await api.reports.createReport({
             subjectType: props.subjectType,
             subjectId: props.subjectId,
             reason: reason.value,
