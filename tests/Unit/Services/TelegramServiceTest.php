@@ -62,26 +62,43 @@ class TelegramServiceTest extends UnitTestCase
         $this->assertFalse($this->service->deleteMessage(99));
     }
 
-    public function test_is_admin_active_reflects_config(): void
+    public function test_admin_for_events_returns_null_when_token_missing(): void
     {
-        config(['services.telegram.admin.active' => true]);
-        $this->assertTrue(TelegramService::isAdminActive());
+        config(['services.telegram.admin.token' => null, 'services.telegram.admin.events_chat_id' => '123']);
 
-        config(['services.telegram.admin.active' => false]);
-        $this->assertFalse(TelegramService::isAdminActive());
+        $this->assertNull(TelegramService::adminForEvents());
     }
 
-    public function test_admin_factory_returns_configured_instance(): void
+    public function test_admin_for_events_returns_null_when_chat_id_missing(): void
+    {
+        config(['services.telegram.admin.token' => 'token', 'services.telegram.admin.events_chat_id' => null]);
+
+        $this->assertNull(TelegramService::adminForEvents());
+    }
+
+    public function test_admin_for_events_returns_instance_when_configured(): void
     {
         config([
-            'services.telegram.admin.active' => true,
-            'services.telegram.admin.chat_id' => '999',
             'services.telegram.admin.token' => 'admin-token',
+            'services.telegram.admin.events_chat_id' => '999',
         ]);
 
-        $admin = TelegramService::admin();
+        $service = TelegramService::adminForEvents();
 
-        $this->assertInstanceOf(TelegramService::class, $admin);
-        $this->assertSame('999', $admin->chatId);
+        $this->assertInstanceOf(TelegramService::class, $service);
+        $this->assertSame('999', $service->chatId);
+    }
+
+    public function test_admin_for_reports_returns_instance_when_configured(): void
+    {
+        config([
+            'services.telegram.admin.token' => 'admin-token',
+            'services.telegram.admin.reports_chat_id' => '777',
+        ]);
+
+        $service = TelegramService::adminForReports();
+
+        $this->assertInstanceOf(TelegramService::class, $service);
+        $this->assertSame('777', $service->chatId);
     }
 }

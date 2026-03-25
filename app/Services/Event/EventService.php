@@ -6,14 +6,12 @@ namespace App\Services\Event;
 
 use App\Enum\ContributionActionType;
 use App\Enum\EventRejectionReason;
-use App\Exceptions\TelegramException;
 use App\Models\Event;
 use App\Models\EventSuggestion;
 use App\Models\Station;
 use App\Models\User;
 use App\Notifications\EventSuggestionProcessed;
 use App\Services\Contribution\ContributionXPService;
-use App\Services\TelegramService;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 
@@ -43,27 +41,6 @@ class EventService
             'host' => $host,
             'hashtag' => $hashtag,
         ]);
-
-        try {
-            if (TelegramService::isAdminActive()) {
-                $messageId = TelegramService::admin()->sendMessage(
-                    strtr('<b>New event suggestion:</b>' . PHP_EOL .
-                          'Title: :name' . PHP_EOL .
-                          'Begin: :begin' . PHP_EOL .
-                          'End: :end' . PHP_EOL .
-                          'Suggested by user: :username', [
-                              ':name' => $eventSuggestion->name,
-                              ':host' => $eventSuggestion->host,
-                              ':begin' => $eventSuggestion->begin->format('d.m.Y'),
-                              ':end' => $eventSuggestion->end->format('d.m.Y'),
-                              ':username' => $eventSuggestion->user->username,
-                          ])
-                );
-                $eventSuggestion->update(['admin_notification_id' => $messageId]);
-            }
-        } catch (TelegramException $exception) {
-            report($exception);
-        }
 
         return $eventSuggestion;
     }
@@ -160,10 +137,6 @@ class EventService
 
         $suggestion->update(['processed' => true]);
 
-        if ($suggestion->admin_notification_id !== null) {
-            TelegramService::admin()->deleteMessage($suggestion->admin_notification_id);
-        }
-
         $suggestion->user->notify(new EventSuggestionProcessed($suggestion, $event));
 
         if ($suggestion->user !== null) {
@@ -183,10 +156,6 @@ class EventService
     public function denySuggestion(EventSuggestion $suggestion, EventRejectionReason $reason): void
     {
         $suggestion->update(['processed' => true]);
-
-        if ($suggestion->admin_notification_id !== null) {
-            TelegramService::admin()->deleteMessage($suggestion->admin_notification_id);
-        }
 
         $suggestion->user->notify(new EventSuggestionProcessed($suggestion, null, $reason));
 

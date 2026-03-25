@@ -25,9 +25,18 @@ return [
 
     'telegram' => [
         'admin' => [
-            'active' => env('TELEGRAM_ADMIN_ACTIVE', false),
-            'chat_id' => env('TELEGRAM_ADMIN_CHAT_ID'),
             'token' => env('TELEGRAM_ADMIN_TOKEN'),
+            'events_chat_id' => env('TELEGRAM_ADMIN_EVENTS_CHAT_ID'),
+            'reports_chat_id' => env('TELEGRAM_ADMIN_REPORTS_CHAT_ID'),
+        ],
+    ],
+
+    'matrix' => [
+        'admin' => [
+            'homeserver' => env('MATRIX_ADMIN_HOMESERVER'),
+            'token' => env('MATRIX_ADMIN_TOKEN'),
+            'events_room_id' => env('MATRIX_ADMIN_EVENTS_ROOM_ID'),
+            'reports_room_id' => env('MATRIX_ADMIN_REPORTS_ROOM_ID'),
         ],
     ],
 

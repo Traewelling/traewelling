@@ -45,14 +45,29 @@ class TelegramServiceTest extends FeatureTestCase
         $this->assertTrue($telegramService->deleteMessage(123));
     }
 
-    public function test_admin_chat_selector(): void
+    public function test_admin_for_events_returns_configured_instance(): void
     {
-        config(['services.telegram.admin.active' => true]);
-        $this->assertTrue(TelegramService::isAdminActive());
+        config([
+            'services.telegram.admin.token' => self::TOKEN,
+            'services.telegram.admin.events_chat_id' => self::CHAT_ID,
+        ]);
 
-        config(['services.telegram.admin.chat_id' => self::CHAT_ID]);
-        config(['services.telegram.admin.token' => self::TOKEN]);
-        $telegramService = TelegramService::admin();
+        $telegramService = TelegramService::adminForEvents();
+
+        $this->assertNotNull($telegramService);
+        $this->assertEquals(self::CHAT_ID, $telegramService->chatId);
+    }
+
+    public function test_admin_for_reports_returns_configured_instance(): void
+    {
+        config([
+            'services.telegram.admin.token' => self::TOKEN,
+            'services.telegram.admin.reports_chat_id' => self::CHAT_ID,
+        ]);
+
+        $telegramService = TelegramService::adminForReports();
+
+        $this->assertNotNull($telegramService);
         $this->assertEquals(self::CHAT_ID, $telegramService->chatId);
     }
 }

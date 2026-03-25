@@ -21,14 +21,26 @@ class TelegramService
         $this->token = $token;
     }
 
-    public static function isAdminActive(): bool
+    public static function adminForEvents(): ?self
     {
-        return config('services.telegram.admin.active');
+        $token = config('services.telegram.admin.token');
+        $chatId = config('services.telegram.admin.events_chat_id');
+        if (!filled($token) || !filled($chatId)) {
+            return null;
+        }
+
+        return new self($chatId, $token);
     }
 
-    public static function admin(): self
+    public static function adminForReports(): ?self
     {
-        return new self(config('services.telegram.admin.chat_id'), config('services.telegram.admin.token'));
+        $token = config('services.telegram.admin.token');
+        $chatId = config('services.telegram.admin.reports_chat_id');
+        if (!filled($token) || !filled($chatId)) {
+            return null;
+        }
+
+        return new self($chatId, $token);
     }
 
     /**

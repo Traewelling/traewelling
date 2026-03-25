@@ -20,7 +20,8 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property string|null $hashtag
- * @property int|null $admin_notification_id
+ * @property int|null $telegram_notification_id
+ * @property string|null $matrix_notification_id
  * @property-read Station|null $station
  * @property-read User|null $user
  *
@@ -50,7 +51,7 @@ class EventSuggestion extends Model
 
     protected $fillable = [
         'user_id', 'name', 'host', 'url', 'station_id', 'begin', 'end', 'hashtag',
-        'admin_notification_id', 'processed',
+        'telegram_notification_id', 'matrix_notification_id', 'processed',
     ];
 
     protected $casts = [
@@ -60,7 +61,8 @@ class EventSuggestion extends Model
         'begin' => 'date',
         'end' => 'date',
         'hashtag' => 'string',
-        'admin_notification_id' => 'integer',
+        'telegram_notification_id' => 'integer',
+        'matrix_notification_id' => 'string',
         'processed' => 'boolean',
     ];
 

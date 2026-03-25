@@ -280,7 +280,6 @@ class AdminEventTest extends ApiTestCase
     public function test_accept_suggestion_creates_event_and_marks_processed(): void
     {
         Notification::fake();
-        config(['services.telegram.admin.active' => false]);
 
         $suggestion = EventSuggestion::factory()->create(['processed' => false]);
 
@@ -328,7 +327,6 @@ class AdminEventTest extends ApiTestCase
     public function test_deny_suggestion_marks_processed_and_notifies_user(): void
     {
         Notification::fake();
-        config(['services.telegram.admin.active' => false]);
 
         $suggestion = EventSuggestion::factory()->create(['processed' => false]);
 
