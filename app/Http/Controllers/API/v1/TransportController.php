@@ -226,8 +226,8 @@ class TransportController extends Controller
                     ],
                 ]
             );
-        } catch (DataProviderException) {
-            return $this->sendError(__('messages.exception.generalHafas', [], 'en'), 502);
+        } catch (DataProviderException $exception) {
+            return $this->sendError($exception->getMessage(), 502);
         } catch (ModelNotFoundException) {
             return $this->sendError(__('controller.transport.no-station-found', [], 'en'));
         } catch (Exception $exception) {
@@ -301,7 +301,7 @@ class TransportController extends Controller
         } catch (DataProviderException $exception) {
             report($exception);
 
-            return $this->sendError(__('messages.exception.hafas.502', [], 'en'), 503);
+            return $this->sendError(__('messages.exception.motis.502', [], 'en'), 503);
         }
     }
 

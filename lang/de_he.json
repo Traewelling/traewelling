@@ -181,7 +181,7 @@
     "messages.cookie-notice-button": "Okay",
     "messages.cookie-notice-learn": "Mej erfahrn",
     "messages.exception.general": "'s issn Fehler uffgetrete. Bidde brobier 's erneut.",
-    "messages.exception.generalHafas": "'s gab e Problem mid der Schniddstell zu de Fahrplandate. Bidde brobier 's erneut.",
+    "messages.exception.motis.general": "'s gab e Problem mid der Schniddstell zu de Fahrplandate. Bidde brobier 's erneut.",
     "minutes": "Minute",
     "modals.delete-confirm": "Lösche",
     "modals.deleteEvent-body": "Bischde sischer, dassde des Event <em>:name</em> lesche willschd? Scheck-ins uffem Weg dohie fahrn doann noach <code>NULL</code>.",

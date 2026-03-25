@@ -233,7 +233,7 @@
     "messages.cookie-notice-learn": "Läs mer",
     "messages.exception.already-checkedin": "Det finns redan en incheckning i denna förbindelse.",
     "messages.exception.general": "Det har blivit ett fel. Var god försök igen.",
-    "messages.exception.generalHafas": "Det uppstod ett problem med gränssnittet till tidtabelldata. Var god försök igen.",
+    "messages.exception.motis.general": "Det uppstod ett problem med gränssnittet till tidtabelldata. Var god försök igen.",
     "messages.exception.maybe-too-fast": "Kanske har du skickat din förfrågan av misstag flera gånger?",
     "modals.delete-confirm": "Radera",
     "modals.deleteEvent-body": "Är du säker på att du vill ta bort evenemang <em>:name</em>? Incheckningar på vägen går sedan till <code>NULL</code>.",

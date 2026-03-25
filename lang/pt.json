@@ -130,7 +130,7 @@
     "messages.cookie-notice-learn": "Aprender mais",
     "messages.exception.general": "Deu-se um erro desconhecido. Por favor, tenta de novo.",
     "messages.exception.general-values": "Deu-se um erro desconhecido. Por favor, tenta de novo com valores diferentes.",
-    "messages.exception.hafas.502": "O horário não pode ser carregado. Tenta novamente num momento.",
+    "messages.exception.motis.502": "O horário não pode ser carregado. Tenta novamente num momento.",
     "messages.exception.maybe-too-fast": "Talvez tenhas submetido o pedido várias vezes por engano?",
     "messages.exception.reference": "Referência do erro: :reference",
     "modals.delete-confirm": "Apagar",

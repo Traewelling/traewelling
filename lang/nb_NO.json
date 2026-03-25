@@ -227,7 +227,7 @@
     "messages.cookie-notice-learn": "Lær mer",
     "messages.exception.already-checkedin": "Det finnes allerede en innsjekking i denne forbindelse.",
     "messages.exception.general": "En ukjent feil inntraff. Prøv igjen.",
-    "messages.exception.generalHafas": "Det var et problem med grensesnittet til timeplandataene. Vær så snill, prøv på nytt.",
+    "messages.exception.motis.general": "Det var et problem med grensesnittet til timeplandataene. Vær så snill, prøv på nytt.",
     "messages.exception.maybe-too-fast": "Kanskje du ved et uhell sendte forespørselen flere ganger?",
     "modals.delete-confirm": "Slett",
     "modals.deleteEvent-body": "Er du sikker på at du vil slette hendelsen <em>:name</em>? Innsjekkinger underveis går deretter til <code>NULL</code>.",
