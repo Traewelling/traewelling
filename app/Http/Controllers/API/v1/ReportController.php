@@ -100,7 +100,7 @@ class ReportController extends Controller
                         property: 'subjectType',
                         type: 'string',
                         example: 'Status',
-                        enum: ['Event', 'Status', 'User'],
+                        enum: ['Event', 'Status', 'Trip', 'User'],
                     ),
                     new OA\Property(property: 'subjectId', type: 'integer', example: 1),
                     new OA\Property(

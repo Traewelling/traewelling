@@ -4722,7 +4722,7 @@ export class Api<
     createReport: (
       data: {
         /** @example "Status" */
-        subjectType: "Event" | "Status" | "User";
+        subjectType: "Event" | "Status" | "Trip" | "User";
         /** @example 1 */
         subjectId: number;
         /** @example "inappropriate" */
