@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
+use App\Http\Resources\EventResource;
 use App\Models\Event;
 use App\Models\EventSuggestion;
+use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\CursorPaginator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
@@ -81,5 +85,44 @@ class EventRepository
         });
 
         return $events->sortByDesc('similarity');
+    }
+
+    private function forTimestampQuery(Carbon $timestamp, bool $showUpcoming = false): Builder
+    {
+        $date = $timestamp->toDateString();
+        $query = Event::with(['station'])->where('checkin_end', '>=', $date)->orderBy('checkin_start', 'asc');
+        if (!$showUpcoming) {
+            $query->where('checkin_start', '<=', $date);
+        }
+
+        return $query;
+    }
+
+    /**
+     * @deprecated remove, once frontend is removed. Combine paginateForTimestamp with forTimestampQuery
+     */
+    public function paginateForFrontend(Carbon $timestamp): LengthAwarePaginator
+    {
+        return $this->forTimestampQuery($timestamp, true)->paginate(15);
+    }
+
+    public function paginateForTimestamp(Carbon $timestamp, bool $showUpcoming = false): AnonymousResourceCollection
+    {
+        return EventResource::collection($this->forTimestampQuery($timestamp, $showUpcoming)->with(['station'])->paginate(100));
+    }
+
+    public function paginateForPeriod(Carbon $start, Carbon $end): AnonymousResourceCollection
+    {
+        $query = Event::with(['station'])
+            ->where('checkin_start', '>=', $start)
+            ->where('checkin_start', '<=', $end)
+            ->orderBy('event_start', 'asc');
+
+        return EventResource::collection($query->simplePaginate(perPage: 100));
+    }
+
+    public function getBySlug(string $slug): Event
+    {
+        return Event::where('slug', '=', $slug)->firstOrFail();
     }
 }

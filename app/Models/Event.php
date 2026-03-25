@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -146,32 +145,5 @@ class Event extends Model
         return LogOptions::defaults()
             ->logOnlyDirty()
             ->logFillable();
-    }
-
-    /**
-     * @param  string  $slug  the slug of the event
-     * @return Event|null returns the event with the given slug or null if it does not exist
-     */
-    public static function getBySlug(string $slug): ?Event
-    {
-        return self::where('slug', '=', $slug)->firstOrFail();
-    }
-
-    /**
-     * Returns a query for events that are active (or upcoming) at the given timestamp.
-     *
-     *
-     * @return Builder query for events that are active (or upcoming) at the given timestamp
-     */
-    public static function forTimestamp(Carbon $timestamp, bool $showUpcoming = false): Builder
-    {
-        $date = $timestamp->toDateString();
-        $query = self::where('checkin_end', '>=', $date)
-            ->orderBy('checkin_start', 'asc');
-        if (!$showUpcoming) {
-            $query->where('checkin_start', '<=', $date);
-        }
-
-        return $query;
     }
 }

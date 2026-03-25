@@ -1155,11 +1155,11 @@ export interface EventResource {
   /** @example "9_euro_ticket" */
   slug: string;
   /** @example "NeunEuroTicket" */
-  hashtag: string;
+  hashtag: string | null;
   /** @example "9-Euro-Ticket GmbH" */
-  host: string;
+  host: string | null;
   /** @example "https://9-euro-ticket.de" */
-  url: string;
+  url: string | null;
   /**
    * @format date
    * @example "2022-01-01"
@@ -1170,9 +1170,9 @@ export interface EventResource {
    * @example "2022-01-02"
    */
   end: string;
-  /** train station model */
-  station: Station;
-  isPride: StationResource;
+  /** @example true */
+  isPride: boolean;
+  station: StationResource | null;
 }
 
 /**
@@ -3297,14 +3297,30 @@ export class Api<
          * @example "2022-08-01T12:00:00+02:00"
          */
         timestamp?: string;
-        /** Show only upcoming events */
+        /** Show only upcoming events (only applicable, if from & to are not used) */
         upcoming?: boolean;
+        /**
+         * From date – returns all events in date range (required with "until")
+         * @format date
+         */
+        from?: string;
+        /**
+         * Until date – returns all events in date range (required with "from")
+         * @format date
+         */
+        until?: string;
+        /** Page of pagination */
+        page?: number;
       },
       params: RequestParams = {},
     ) =>
       this.request<
         {
           data?: EventResource[];
+          /** Pagination links */
+          links?: Links;
+          /** Pagination meta data */
+          meta?: PaginationMeta;
         },
         void
       >({

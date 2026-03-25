@@ -2,6 +2,7 @@ import { RouteRecordRaw } from 'vue-router';
 import Index from '../pages/Contribute/Index.vue';
 import Profile from '../pages/Contribute/Profile.vue';
 import SuggestEvent from '../pages/Contribute/SuggestEvent.vue';
+import EventList from '../pages/Events/EventList.vue';
 import Account from '../pages/Settings/Account/Account.vue';
 import Followers from '../pages/Settings/Followers/Followers.vue';
 import Followings from '../pages/Settings/Followers/Followings.vue';
@@ -70,6 +71,12 @@ const routes: Array<RouteRecordRaw> = [
         name: 'settings-privacy',
         component: Privacy,
         meta: { title: 'menu.privacy' },
+    },
+    {
+        path: '/events',
+        name: 'event-list',
+        component: EventList,
+        meta: { title: 'events' },
     },
 ];
 

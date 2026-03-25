@@ -6,8 +6,8 @@ use App\Http\Controllers\StatusController;
 use App\Http\Resources\EventDetailsResource;
 use App\Http\Resources\EventResource;
 use App\Http\Resources\StatusResource;
-use App\Models\Event;
 use App\Models\Station;
+use App\Repositories\EventRepository;
 use App\Services\Event\EventService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -32,6 +32,14 @@ use OpenApi\Attributes as OA;
 )]
 class EventController extends Controller
 {
+    private EventRepository $eventRepository;
+
+    public function __construct(EventRepository $eventRepository)
+    {
+        parent::__construct();
+        $this->eventRepository = $eventRepository;
+    }
+
     #[OA\Get(
         path: '/event/{slug}',
         operationId: 'getEvent',
@@ -68,7 +76,7 @@ class EventController extends Controller
     )]
     public function show(string $slug): EventResource
     {
-        return new EventResource(Event::getBySlug($slug));
+        return new EventResource($this->eventRepository->getBySlug($slug));
     }
 
     #[OA\Get(
@@ -107,7 +115,7 @@ class EventController extends Controller
     )]
     public function showDetails(string $slug): EventDetailsResource
     {
-        return new EventDetailsResource(Event::getBySlug($slug));
+        return new EventDetailsResource($this->eventRepository->getBySlug($slug));
     }
 
     #[OA\Get(
@@ -156,9 +164,9 @@ class EventController extends Controller
             new OA\Response(response: 404, description: 'No Event found for this id'),
         ],
     )]
-    public static function statuses(string $slug): AnonymousResourceCollection
+    public function statuses(string $slug): AnonymousResourceCollection
     {
-        $event = Event::where('slug', $slug)->firstOrFail();
+        $event = $this->eventRepository->getBySlug($slug);
         $statuses = StatusController::getStatusesByEvent($event);
 
         return StatusResource::collection($statuses['statuses']->paginate());
@@ -182,10 +190,31 @@ class EventController extends Controller
             ),
             new OA\Parameter(
                 name: 'upcoming',
-                description: 'Show only upcoming events',
+                description: 'Show only upcoming events (only applicable, if from & to are not used)',
                 in: 'query',
                 required: false,
                 schema: new OA\Schema(type: 'boolean'),
+            ),
+            new OA\Parameter(
+                name: 'from',
+                description: 'From date – returns all events in date range (required with "until")',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'date'),
+            ),
+            new OA\Parameter(
+                name: 'until',
+                description: 'Until date – returns all events in date range (required with "from")',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'date'),
+            ),
+            new OA\Parameter(
+                name: 'page',
+                description: 'Page of pagination',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'integer'),
             ),
         ],
         responses: [
@@ -199,6 +228,11 @@ class EventController extends Controller
                             type: 'array',
                             items: new OA\Items(ref: '#/components/schemas/EventResource'),
                         ),
+                        new OA\Property(property: 'links', ref: '#/components/schemas/Links'),
+                        new OA\Property(
+                            property: 'meta',
+                            ref: '#/components/schemas/PaginationMeta',
+                        ),
                     ],
                 ),
             ),
@@ -209,15 +243,19 @@ class EventController extends Controller
     {
         $validated = $request->validate([
             'timestamp' => ['nullable', 'date'],
+            'from' => ['nullable', 'date', 'required_with:until'],
+            'until' => ['nullable', 'date', 'after:from', 'required_with:until'],
             'upcoming' => ['nullable'],
         ]);
+
+        if (isset($validated['from']) && isset($validated['until'])) {
+            return $this->eventRepository->paginateForPeriod(Carbon::parse($validated['from']), Carbon::parse($validated['until']));
+        }
 
         $validated['timestamp'] = isset($validated['timestamp']) ? Carbon::parse($validated['timestamp']) : now(); // default is now
         $showUpcoming = isset($validated['upcoming']) && $validated['upcoming'] === 'true';
 
-        $events = Event::forTimestamp($validated['timestamp'], $showUpcoming);
-
-        return EventResource::collection($events->simplePaginate());
+        return $this->eventRepository->paginateForTimestamp($validated['timestamp'], $showUpcoming);
     }
 
     #[OA\Post(
