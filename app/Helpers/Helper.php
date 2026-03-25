@@ -3,8 +3,10 @@
 use App\Exceptions\Referencable;
 use App\Models\User;
 use Carbon\CarbonTimeZone;
+use ElGigi\CommonMarkEmoji\EmojiExtension;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use League\CommonMark\Extension\ExternalLink\ExternalLinkExtension;
 
 /**
  * BEFORE ADDING NEW FUNCTIONS TO THIS FILE, PLEASE CONSIDER CREATING A NEW SERVICE CLASS.
@@ -102,4 +104,23 @@ function errorMessage(Exception|Error $exception, ?string $text = null): array|n
     }
 
     return $text . ' ' . __('messages.exception.reference', ['reference' => $exception->reference]);
+}
+
+function markdown(string $string): string
+{
+
+    $config = [
+        'external_link' => [
+            'internal_hosts' => config('app.url', 'https://traewelling.de'),
+            'open_in_new_window' => true,
+            'html_class' => 'external-link',
+            'nofollow' => '',
+            'noopener' => 'external',
+            'noreferrer' => 'external',
+        ],
+        'html_input' => 'strip',
+        'allow_unsafe_links' => false,
+    ];
+
+    return Str::markdown($string, $config, [new EmojiExtension(), new ExternalLinkExtension()]);
 }

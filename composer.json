@@ -24,6 +24,7 @@
     "barryvdh/laravel-dompdf": "^3.0",
     "darkaonline/l5-swagger": "^11.0",
     "easyrdf/easyrdf": "^1.1",
+    "elgigi/commonmark-emoji": "^2.0",
     "guzzlehttp/guzzle": "^7.1",
     "intervention/image": "^3.5",
     "laravel/framework": "^13.0",

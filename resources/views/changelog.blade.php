@@ -1,3 +1,6 @@
+@props([
+'$changelog' => []
+])
 @extends('layouts.app')
 
 @section('title', __('changelog'))
@@ -16,11 +19,15 @@
                     </div>
                 @endif
 
-                @foreach($changelog['entry'] ?? [] as $changelogEntry)
+                @foreach($changelog as $changelogEntry)
                     <hr/>
-                    <h2 class="mb-0">{{$changelogEntry['title'] ?? ''}}</h2>
-                    <small>released on {{$changelogEntry['updated']->isoFormat(__('date-format'))}}</small>
-                    {!! $changelogEntry['content'] ?? '' !!}
+                    <a target="_blank" rel="noopener noreferrer" href="https://github.com/Traewelling/traewelling/releases/tag/{{$changelogEntry->tag}}">
+                        <h1 class="mb-0">
+                        {{$changelogEntry->title}}
+                        </h1>
+                    </a>
+                    <small>released on {{$changelogEntry->created->isoFormat(__('date-format'))}}</small>
+                    {!! markdown($changelogEntry->description) !!}
                 @endforeach
             </div>
         </div>
