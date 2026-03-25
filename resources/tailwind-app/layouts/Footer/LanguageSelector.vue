@@ -35,6 +35,4 @@ const selectLanguageUrl = (langCode: string): string => {
             </li>
         </ul>
     </div>
-    <input type="checkbox" class="hidden theme-controller" value="dark" :checked="selectedMode === 'dark'" />
-    <input type="checkbox" class="hidden theme-controller" value="light" :checked="selectedMode === 'light'" />
 </template>

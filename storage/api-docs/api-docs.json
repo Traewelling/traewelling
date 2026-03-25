@@ -1551,10 +1551,39 @@
                     {
                         "name": "upcoming",
                         "in": "query",
-                        "description": "Show only upcoming events",
+                        "description": "Show only upcoming events (only applicable, if from & to are not used)",
                         "required": false,
                         "schema": {
                             "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "description": "From date – returns all events in date range (required with \"until\")",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "until",
+                        "in": "query",
+                        "description": "Until date – returns all events in date range (required with \"from\")",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page of pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
                         }
                     }
                 ],
@@ -1570,6 +1599,12 @@
                                             "items": {
                                                 "$ref": "#/components/schemas/EventResource"
                                             }
+                                        },
+                                        "links": {
+                                            "$ref": "#/components/schemas/Links"
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/PaginationMeta"
                                         }
                                     },
                                     "type": "object"
@@ -9291,15 +9326,18 @@
                     },
                     "hashtag": {
                         "type": "string",
-                        "example": "NeunEuroTicket"
+                        "example": "NeunEuroTicket",
+                        "nullable": true
                     },
                     "host": {
                         "type": "string",
-                        "example": "9-Euro-Ticket GmbH"
+                        "example": "9-Euro-Ticket GmbH",
+                        "nullable": true
                     },
                     "url": {
                         "type": "string",
-                        "example": "https://9-euro-ticket.de"
+                        "example": "https://9-euro-ticket.de",
+                        "nullable": true
                     },
                     "begin": {
                         "type": "string",
@@ -9311,11 +9349,17 @@
                         "format": "date",
                         "example": "2022-01-02"
                     },
-                    "station": {
-                        "$ref": "#/components/schemas/Station"
-                    },
                     "isPride": {
-                        "$ref": "#/components/schemas/StationResource"
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "station": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/StationResource"
+                            }
+                        ],
+                        "nullable": true
                     }
                 },
                 "type": "object"
