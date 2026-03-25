@@ -4,30 +4,23 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Jobs\AdminNotification\DeleteAdminNotification;
+use App\Jobs\AdminNotification\SendAdminNotification;
+use App\Models\EventSuggestion;
 use App\Models\User;
 use App\Services\Event\EventService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Queue;
 use Tests\FeatureTestCase;
 
 class EventSuggestionTelegramTest extends FeatureTestCase
 {
     use RefreshDatabase, WithFaker;
 
-    public function test_suggestion_sends_telegram_notification_and_stores_message_id(): void
+    public function test_suggestion_dispatches_admin_notification_job(): void
     {
-        config([
-            'services.telegram.admin.active' => true,
-            'services.telegram.admin.chat_id' => '123456',
-            'services.telegram.admin.token' => 'test-token',
-        ]);
-        Http::fake([
-            'https://api.telegram.org/*' => Http::response(
-                ['ok' => true, 'result' => ['message_id' => 42]],
-                200,
-            ),
-        ]);
+        Queue::fake();
 
         $suggestion = new EventService()->suggestEvent(
             user: User::factory()->create(),
@@ -36,29 +29,17 @@ class EventSuggestionTelegramTest extends FeatureTestCase
             end: now()->addDay(),
         );
 
-        $this->assertSame(42, $suggestion->fresh()->admin_notification_id);
-        Http::assertSentCount(1);
+        Queue::assertPushed(SendAdminNotification::class);
+        $this->assertDatabaseHas('event_suggestions', ['id' => $suggestion->id]);
     }
 
-    public function test_suggestion_is_persisted_even_when_telegram_api_fails(): void
+    public function test_processing_suggestion_dispatches_delete_notification_job(): void
     {
-        config([
-            'services.telegram.admin.active' => true,
-            'services.telegram.admin.chat_id' => '123456',
-            'services.telegram.admin.token' => 'test-token',
-        ]);
-        Http::fake([
-            'https://api.telegram.org/*' => Http::response('Bad Request', 400),
-        ]);
+        Queue::fake();
 
-        $suggestion = new EventService()->suggestEvent(
-            user: User::factory()->create(),
-            name: $this->faker->name,
-            begin: now(),
-            end: now()->addDay(),
-        );
+        $suggestion = EventSuggestion::factory()->create(['processed' => false]);
+        $suggestion->update(['processed' => true]);
 
-        $this->assertDatabaseHas('event_suggestions', ['id' => $suggestion->id]);
-        $this->assertNull($suggestion->fresh()->admin_notification_id);
+        Queue::assertPushed(DeleteAdminNotification::class);
     }
 }

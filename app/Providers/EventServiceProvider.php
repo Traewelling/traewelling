@@ -12,6 +12,7 @@ use App\Listeners\StatusCreateCheckPolylineListener;
 use App\Listeners\StatusCreateWebhookListener;
 use App\Listeners\StatusUpdateWebhookListener;
 use App\Models\Checkin;
+use App\Models\EventSuggestion;
 use App\Models\Follow;
 use App\Models\Like;
 use App\Models\Report;
@@ -20,6 +21,7 @@ use App\Models\Status;
 use App\Models\Trip;
 use App\Models\User;
 use App\Observers\CheckinObserver;
+use App\Observers\EventSuggestionObserver;
 use App\Observers\FollowObserver;
 use App\Observers\LikeObserver;
 use App\Observers\ReportObserver;
@@ -64,6 +66,7 @@ class EventServiceProvider extends ServiceProvider
 
     protected $observers = [
         Checkin::class => [CheckinObserver::class],
+        EventSuggestion::class => [EventSuggestionObserver::class],
         Follow::class => [FollowObserver::class],
         Like::class => [LikeObserver::class],
         Report::class => [ReportObserver::class],

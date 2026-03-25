@@ -23,7 +23,8 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property int|null $reporter_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property int|null $admin_notification_id
+ * @property int|null $telegram_notification_id
+ * @property string|null $matrix_notification_id
  * @property-read Collection<int, Activity> $activities
  * @property-read int|null $activities_count
  * @property-read User|null $reporter
@@ -50,7 +51,7 @@ class Report extends Model
 
     protected $fillable = [
         'status', 'subject_type', 'subject_id', 'reason',
-        'description', 'reporter_id', 'admin_notification_id',
+        'description', 'reporter_id', 'telegram_notification_id', 'matrix_notification_id',
     ];
 
     protected $casts = [
@@ -60,7 +61,8 @@ class Report extends Model
         'reason' => ReportReason::class,
         'description' => 'string',
         'reporter_id' => 'integer',
-        'admin_notification_id' => 'integer', // telegram message id
+        'telegram_notification_id' => 'integer',
+        'matrix_notification_id' => 'string',
     ];
 
     public function reporter(): BelongsTo
