@@ -1120,5 +1120,6 @@
     "validation-inline.uploaded": "Nahrávání se nepodařilo.",
     "validation-inline.url": "Toto musí být platná URL adresa.",
     "validation-inline.uuid": "Musí se jednat o platný UUID.",
-    "validation.accepted": "Atribut :attribute musí být akceptován."
+    "validation.accepted": "Atribut :attribute musí být akceptován.",
+    "dates.Today": "Dnes"
 }
