@@ -95,7 +95,7 @@ class CheckinRequestHydrator
             return $this->stationRepository->getByIdentifier((string) $this->request->start, StationIdentifierType::DE_DB_IBNR);
         }
         if ($this->request->start && !$this->request->ibnr) {
-            return $this->stationRepository->getById($this->request->start);
+            return $this->stationRepository->getById((int) $this->request->start);
         }
         if (!empty($this->request->startIdentifier) && !empty($this->request->startIdentifierType)) {
             return $this->stationRepository->getByIdentifier($this->request->startIdentifier, StationIdentifierType::from($this->request->startIdentifierType));
@@ -110,7 +110,7 @@ class CheckinRequestHydrator
             return $this->stationRepository->getByIdentifier((string) $this->request->destination, StationIdentifierType::DE_DB_IBNR);
         }
         if ($this->request->destination && !$this->request->ibnr) {
-            return $this->stationRepository->getById($this->request->destination);
+            return $this->stationRepository->getById((int) $this->request->destination);
         }
         if (!empty($this->request->destinationIdentifier) && !empty($this->request->destinationIdentifierType)) {
             return $this->stationRepository->getByIdentifier($this->request->destinationIdentifier, StationIdentifierType::from($this->request->destinationIdentifierType));

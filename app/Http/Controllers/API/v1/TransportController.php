@@ -400,9 +400,9 @@ class TransportController extends Controller
             $dto = new CheckinRequestHydrator($request)->hydrateFromApi();
             $checkinResponse = $this->trainCheckinController->checkin($dto);
 
-            $response = $this->sendResponse(new CheckinSuccessResource($checkinResponse), 201);
+            return $this->sendResponse(new CheckinSuccessResource($checkinResponse), 201);
         } catch (NotAllowedToCheckinOtherUserException $exception) {
-            $response = $this->sendError(
+            return $this->sendError(
                 error: 'You are not allowed to check in the following users: ' . implode(',', $exception->users),
                 code: 403,
                 additional: [
@@ -410,22 +410,20 @@ class TransportController extends Controller
                 ]
             );
         } catch (CheckInCollisionException $exception) {
-            $response = $this->sendError([
+            return $this->sendError([
                 'status_id' => $exception->checkin->status_id,
                 'lineName' => $exception->checkin->trip->linename,
             ], 409);
         } catch (StationNotOnTripException) {
-            $response = $this->sendError('Given stations are not on the trip/have wrong departure/arrival.', 400);
+            return $this->sendError('Given stations are not on the trip/have wrong departure/arrival.', 400);
         } catch (DataProviderException|CheckinException $exception) {
-            $response = $this->sendError($exception->getMessage(), 400);
+            return $this->sendError($exception->getMessage(), 400);
         } catch (AlreadyCheckedInException) {
-            $response = $this->sendError(__('messages.exception.already-checkedin', [], 'en'), 400);
+            return $this->sendError(__('messages.exception.already-checkedin', [], 'en'), 400);
         } catch (Exception $exception) {
             report($exception);
 
-            $response = $this->sendError('An unknown error occurred.', 500, null, $exception);
-        } finally {
-            return $response;
+            return $this->sendError('An unknown error occurred.', 500, null, $exception);
         }
     }
 
