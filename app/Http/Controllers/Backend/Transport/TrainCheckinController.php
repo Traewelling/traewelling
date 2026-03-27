@@ -81,7 +81,11 @@ class TrainCheckinController extends Controller
 
             DB::commit();
 
-            $this->checkinOtherUsers($users, $dto, $checkinResponse);
+            if ($checkedInBy === null) {
+                // prevent loop checkin -> checkinOtherUsers -> checkin -> ...
+                // TODO: this is a quick fix! Please refactor this AND WRITE A TEST FOR THIS.
+                $this->checkinOtherUsers($users, $dto, $checkinResponse);
+            }
 
             return $checkinResponse;
         } catch (PDOException $exception) {
