@@ -36,7 +36,7 @@ function getFollowings() {
 
 function removeUser(follower: UserResource) {
     api.user
-        .removeFollower(follower.id)
+        .destroyFollow(follower.id)
         .then(() => {
             followers.value = followers.value.filter((f) => f.id !== follower.id);
         })
@@ -60,16 +60,20 @@ getFollowings();
                 <div class="flex items-center gap-3">
                     <div class="avatar">
                         <div class="rounded-full w-12 h-12">
-                            <img :src="follower.profilePicture" :alt="follower.displayName" />
+                            <a :href="`/@${follower.username}`">
+                                <img :src="follower.profilePicture" :alt="follower.displayName" />
+                            </a>
                         </div>
                     </div>
                 </div>
 
                 <div class="list-col-grow">
-                    <h6 class="mb-0">
-                        {{ follower.displayName }}
-                    </h6>
-                    <p class="mb-0 opacity-75">@{{ follower.username }}</p>
+                    <a :href="`/@${follower.username}`">
+                        <h6 class="mb-0">
+                            {{ follower.displayName }}
+                        </h6>
+                        <p class="mb-0 opacity-75">@{{ follower.username }}</p>
+                    </a>
                 </div>
                 <button role="button" class="btn btn-sm btn-error" @click="removeUser(follower)">
                     <UserMinus class="w-4 h-4" />
