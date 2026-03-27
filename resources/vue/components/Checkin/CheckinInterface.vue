@@ -215,7 +215,7 @@ export default {
             <EventDropdown @select-event="selectEvent" />
             <FriendDropdown @select-user="selectFriends" />
         </div>
-        <button class="col-auto float-end ms-auto btn btn-sm btn-outline-primary" @click="checkIn">
+        <button class="col-auto float-end ms-auto btn btn-sm btn-outline-primary" :disabled="loading" @click="checkIn">
             <span v-if="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" />
             <span v-if="loading" class="visually-hidden">Loading...</span>
             {{ trans('stationboard.btn-checkin') }}
