@@ -6213,7 +6213,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/Station"
+                                                "$ref": "App\\Models\\Station"
                                             }
                                         }
                                     },
@@ -6349,7 +6349,7 @@
                                 "schema": {
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/Station"
+                                            "$ref": "App\\Models\\Station"
                                         }
                                     },
                                     "type": "object"
@@ -6454,7 +6454,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/Station"
+                                                "$ref": "App\\Models\\Station"
                                             }
                                         }
                                     },
@@ -8063,6 +8063,19 @@
                     5
                 ]
             },
+            "StationIdentifierType": {
+                "title": "StationIdentifierType",
+                "description": "The type of the station identifier to look up. Not all types are available for every station. Subject to unannounced change.\n    * motis – all transitous.org/motis supplied identifiers\n    * wikidata_id – ID of wikidata.org\n    * de_db_ril100 – Germany: Deutsche Bahn Richtlinie 100 identifier (e.g. RK for Karlsruhe Hbf)\n    * de_db_ibnr – Germany: internal train station ID of Deutsche Bahn (e.g. 8000191 for Karlsruhe Hbf)\n    ",
+                "type": "integer",
+                "example": 0,
+                "enum": [
+                    "MOTIS",
+                    "WIKIDATA_ID",
+                    "IFOPT",
+                    "DE_DB_RIL100",
+                    "DE_DB_IBNR"
+                ]
+            },
             "StatusVisibility": {
                 "title": "visibility",
                 "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the user specify?",
@@ -8394,7 +8407,8 @@
                         "description": "If true, `start` and `destination` can be supplied as IBNR. Otherwise Träwelling-ID. Default: false.",
                         "type": "boolean",
                         "example": true,
-                        "nullable": true
+                        "nullable": true,
+                        "deprecated": true
                     },
                     "tripId": {
                         "description": "The tripId for the trip to check into",
@@ -8409,14 +8423,30 @@
                         "nullable": true
                     },
                     "start": {
-                        "description": "Station-ID of the starting point (see `ibnr`)",
+                        "description": "Träwelling-Station-ID of the starting point, required without startIdentifier",
                         "type": "integer",
                         "example": 8000191
                     },
+                    "startIdentifier": {
+                        "description": "(EXPERIMENTAL: this is not guaranteed to work. It might lead to inconsistent behaviour) External station identifier of the starting point, required without startIdentifier, requires startIdentifierType",
+                        "type": "string",
+                        "example": "de-0815-1234:56:78"
+                    },
+                    "startIdentifierType": {
+                        "$ref": "#/components/schemas/StationIdentifierType"
+                    },
                     "destination": {
-                        "description": "Station-ID of the destination (see `ibnr`)",
+                        "description": "Träwelling-Station-ID of the destination, required without destinationIdentifier",
                         "type": "integer",
                         "example": 8000192
+                    },
+                    "destinationIdentifier": {
+                        "description": "(EXPERIMENTAL: this is not guaranteed to work. It might lead to inconsistent behaviour) External station identifier of the destination, required without destinationIdentifier, requires destinationIdentifierType",
+                        "type": "string",
+                        "example": "de-0815-1234:56:78"
+                    },
+                    "destinationIdentifierType": {
+                        "$ref": "#/components/schemas/StationIdentifierType"
                     },
                     "departure": {
                         "description": "Timestamp of the departure",

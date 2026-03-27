@@ -82,7 +82,7 @@ class ManualTripCreatorTest extends FeatureTestCase
             ->setDeparture($departure)
             ->setDestination($destinationStation)
             ->setArrival($arrival);
-        $checkin = TrainCheckinController::checkin($dto);
+        $checkin = new TrainCheckinController()->checkin($dto);
 
         $this->assertDatabaseHas('train_checkins', [
             'trip_id' => $trip->trip_id,

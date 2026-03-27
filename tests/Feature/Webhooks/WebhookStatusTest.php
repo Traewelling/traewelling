@@ -399,7 +399,7 @@ class WebhookStatusTest extends ApiTestCase
             ->setTravelReason(Business::PRIVATE)
             ->setStatusVisibility(StatusVisibility::PUBLIC)
             ->setBody(self::EXAMPLE_BODY);
-        $checkin = TrainCheckinController::checkin($dto);
+        $checkin = new TrainCheckinController()->checkin($dto);
 
         return $checkin->status;
     }

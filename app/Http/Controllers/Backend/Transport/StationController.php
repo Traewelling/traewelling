@@ -6,6 +6,7 @@ use App\DataProviders\DataProviderBuilder;
 use App\DataProviders\DataProviderInterface;
 use App\Http\Controllers\Controller;
 use App\Models\Station;
+use App\Models\User;
 use App\Repositories\StationRepository;
 use Illuminate\Support\Collection;
 
@@ -17,7 +18,7 @@ class StationController extends Controller
 
     public function __construct(?StationRepository $stationRepository = null)
     {
-        $this->dataProvider = (new DataProviderBuilder())->build();
+        $this->dataProvider = new DataProviderBuilder()->build();
         $this->stationRepository = $stationRepository ?? new StationRepository();
     }
 
@@ -46,5 +47,10 @@ class StationController extends Controller
         }
 
         return $stations;
+    }
+
+    public function getLatestArrivalsForUser(User $user, int $limit): Collection
+    {
+        return $this->stationRepository->getLatestArrivalsForUser(user: $user, maxCount: $limit);
     }
 }

@@ -10,6 +10,7 @@ use App\Events\UserCheckedIn;
 use App\Exceptions\Checkin\AlreadyCheckedInException;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\CheckinException;
+use App\Exceptions\NotAllowedToCheckinOtherUserException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\Support\LocationController;
 use App\Http\Controllers\Controller;
@@ -22,27 +23,33 @@ use App\Models\Stopover;
 use App\Models\Trip;
 use App\Models\User;
 use App\Notifications\UserJoinedConnection;
+use App\Notifications\YouHaveBeenCheckedIn;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 use PDOException;
+use Throwable;
 
-abstract class TrainCheckinController extends Controller
+class TrainCheckinController extends Controller
 {
     /**
      * @throws StationNotOnTripException
      * @throws CheckInCollisionException
      * @throws AlreadyCheckedInException
      * @throws CheckinException
+     * @throws NotAllowedToCheckinOtherUserException
      */
-    public static function checkin(CheckInRequestDto $dto, ?User $checkedInBy = null): CheckinSuccessDto
+    public function checkin(CheckInRequestDto $dto, ?User $checkedInBy = null): CheckinSuccessDto
     {
         if ($dto->departure->isAfter($dto->arrival)) {
             throw new CheckinException('Departure time must be before arrival time');
         }
+        $users = $this->precheckUserCheckin($dto);
 
         try {
             DB::beginTransaction();
@@ -55,7 +62,7 @@ abstract class TrainCheckinController extends Controller
                 createdByUser: $checkedInBy
             );
 
-            $checkinResponse = self::createCheckin(
+            $checkinResponse = $this->createCheckin(
                 status: $status,
                 trip: $dto->trip,
                 origin: $dto->origin,
@@ -74,6 +81,8 @@ abstract class TrainCheckinController extends Controller
 
             DB::commit();
 
+            $this->checkinOtherUsers($users, $dto, $checkinResponse);
+
             return $checkinResponse;
         } catch (PDOException $exception) {
             DB::rollBack();
@@ -88,12 +97,55 @@ abstract class TrainCheckinController extends Controller
     }
 
     /**
+     * @throws NotAllowedToCheckinOtherUserException
+     *
+     * @returns Collection|User[]
+     */
+    private function precheckUserCheckin(CheckInRequestDto $dto): Collection
+    {
+        $withUsers = [];
+        if (isset($dto->userIds)) {
+            $withUsers = User::whereIn('id', $dto->userIds)->get();
+            $forbiddenUsers = collect();
+            foreach ($withUsers as $user) {
+                if (!Auth::user()?->can('checkin', $user)) {
+                    $forbiddenUsers->push($user);
+                }
+            }
+            if ($forbiddenUsers->isNotEmpty()) {
+                $forbiddenUserIds = $forbiddenUsers->pluck('id')->toArray();
+                throw new NotAllowedToCheckinOtherUserException($forbiddenUserIds);
+            }
+        }
+
+        return $withUsers;
+    }
+
+    public function checkinOtherUsers(?Collection $withUsers, CheckInRequestDto $dto, CheckinSuccessDto $checkinResponse): void
+    {
+        $by = $dto->user;
+        foreach ($withUsers ?? [] as $user) {
+            $dto->setUser($user);
+            $dto->setBody(null);
+            $dto->setStatusVisibility($user->default_status_visibility);
+            $dto->setPostOnMastodonFlag(false);
+            try {
+                $checkin = $this->checkin($dto, $by);
+            } catch (Throwable) {
+                continue;
+            }
+            $user->notify(new YouHaveBeenCheckedIn($checkin->status, auth()->user()));
+            $checkinResponse->alsoOnThisConnection->push($checkin->status);
+        }
+    }
+
+    /**
      * @throws StationNotOnTripException
      * @throws CheckInCollisionException
      * @throws ModelNotFoundException
      * @throws AlreadyCheckedInException
      */
-    private static function createCheckin(
+    private function createCheckin(
         Status $status,
         Trip $trip,
         Station $origin,

@@ -125,4 +125,9 @@ class EventRepository
     {
         return Event::where('slug', '=', $slug)->firstOrFail();
     }
+
+    public function getById(int $id): Event
+    {
+        return Event::find($id);
+    }
 }
