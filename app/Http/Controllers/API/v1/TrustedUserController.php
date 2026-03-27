@@ -124,7 +124,7 @@ class TrustedUserController extends Controller
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
-                required: ['user_id'],
+                required: ['userId'],
                 properties: [
                     new OA\Property(property: 'userId', type: 'string', description: 'User-ID or UUID', example: '00000000-0000-0000-0000-000000000000'),
                     new OA\Property(
@@ -190,17 +190,25 @@ class TrustedUserController extends Controller
         parameters: [
             new OA\Parameter(
                 name: 'user',
-                description: 'ID or UUID of the user (or string \'self\' for current user)',
+                description: 'User-ID or UUID',
                 in: 'path',
                 required: true,
-                schema: new OA\Schema(type: 'string'),
+                schema: new OA\Schema(oneOf: [
+                    new OA\Schema(type: 'string', format: 'uuid'),
+                    new OA\Schema(type: 'integer'),
+                ]),
+                example: '00000000-0000-0000-0000-000000000000',
             ),
             new OA\Parameter(
                 name: 'trusted',
                 description: 'ID or UUID of the trusted user',
                 in: 'path',
                 required: true,
-                schema: new OA\Schema(type: 'string'),
+                schema: new OA\Schema(oneOf: [
+                    new OA\Schema(type: 'string', format: 'uuid'),
+                    new OA\Schema(type: 'integer'),
+                ]),
+                example: '00000000-0000-0000-0000-000000000000',
             ),
         ],
         responses: [

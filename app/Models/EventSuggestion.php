@@ -42,6 +42,8 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventSuggestion whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventSuggestion whereUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventSuggestion whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EventSuggestion whereMatrixNotificationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EventSuggestion whereTelegramNotificationId($value)
  *
  * @mixin \Eloquent
  */

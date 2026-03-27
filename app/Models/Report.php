@@ -42,6 +42,8 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereSubjectId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereSubjectType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereMatrixNotificationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereTelegramNotificationId($value)
  *
  * @mixin \Eloquent
  */

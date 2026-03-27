@@ -50,6 +50,14 @@ use Traewelling\GooglePolyline\PolylineTranscoder;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment whereToStationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment whereUpdatedAt($value)
  *
+ * @property array<array-key, mixed>|null $custom_waypoints
+ * @property string|null $polyline_hash
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment whereCustomWaypoints($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment whereFromIdentifierId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment wherePolylineHash($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment whereToIdentifierId($value)
+ *
  * @mixin \Eloquent
  */
 class RouteSegment extends Model

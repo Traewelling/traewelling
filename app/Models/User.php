@@ -172,6 +172,10 @@ use Spatie\PersonalDataExport\PersonalDataSelection;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereContributionLevel($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereContributionXp($value)
  *
+ * @property string $uuid
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUuid($value)
+ *
  * @mixin \Eloquent
  */
 class User extends Authenticatable implements ExportsPersonalData, OAuthenticatable

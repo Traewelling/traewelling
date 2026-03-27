@@ -60,29 +60,93 @@ class FollowTest extends ApiTestCase
 
     public function test_destroy_follow(): void
     {
-        $user1 = User::factory()->create();
-        $user2 = User::factory()->create();
-        FollowController::createOrRequestFollow($user1, $user2);
+        $follower = User::factory()->create();
+        $user = User::factory()->create();
+        FollowController::createOrRequestFollow($follower, $user);
+        FollowController::createOrRequestFollow($user, $follower);
 
         // Without this, $user1->follows won't contain the newly created follow...
-        $user1->load('follows');
+        $follower->load('follows');
 
         // Authenticate with Passport
-        Passport::actingAs($user1, ['*']);
+        Passport::actingAs($follower, ['*']);
 
         $response = $this->deleteJson(
-            uri: strtr('/api/v1/user/:userId/follow', [':userId' => $user2->id])
+            uri: strtr('/api/v1/user/:userId/follow', [':userId' => $user->id])
         );
         $response->assertOk();
 
         $this->assertDatabaseMissing('follows', [
-            'user_id' => $user1->id,
-            'follow_id' => $user2->id,
+            'user_id' => $follower->id,
+            'follow_id' => $user->id,
+        ]);
+
+        $this->assertDatabaseHas('follows', [
+            'user_id' => $user->id,
+            'follow_id' => $follower->id,
         ]);
 
         $response = $this->deleteJson(
-            uri: strtr('/api/v1/user/:userId/follow', [':userId' => $user2->id])
+            uri: strtr('/api/v1/user/:userId/follow', [':userId' => $user->id])
         );
         $response->assertStatus(409);
+    }
+
+    public function test_remove_follower(): void
+    {
+        $follower = User::factory()->create();
+        $user = User::factory()->create();
+        FollowController::createOrRequestFollow($follower, $user);
+        FollowController::createOrRequestFollow($user, $follower);
+
+        $user->load('followers');
+
+        $this->assertCount(1, $user->followers);
+
+        Passport::actingAs($user, ['*']);
+
+        $response = $this->deleteJson(
+            uri: strtr('/api/v1/user/self/followers/:userId', [':userId' => $follower->id])
+        );
+        $response->assertOk();
+
+        $this->assertDatabaseMissing('follows', [
+            'user_id' => $follower->id,
+            'follow_id' => $user->id,
+        ]);
+
+        $this->assertDatabaseHas('follows', [
+            'user_id' => $user->id,
+            'follow_id' => $follower->id,
+        ]);
+    }
+
+    public function test_remove_follower_with_uuid(): void
+    {
+        $follower = User::factory()->create();
+        $user = User::factory()->create();
+        FollowController::createOrRequestFollow($follower, $user);
+        FollowController::createOrRequestFollow($user, $follower);
+
+        $user->load('followers');
+
+        $this->assertCount(1, $user->followers);
+
+        Passport::actingAs($user, ['*']);
+
+        $response = $this->deleteJson(
+            uri: strtr('/api/v1/user/self/followers/:userId', [':userId' => $follower->uuid])
+        );
+        $response->assertOk();
+
+        $this->assertDatabaseMissing('follows', [
+            'user_id' => $follower->id,
+            'follow_id' => $user->id,
+        ]);
+
+        $this->assertDatabaseHas('follows', [
+            'user_id' => $user->id,
+            'follow_id' => $follower->id,
+        ]);
     }
 }
