@@ -7,6 +7,7 @@ use App\Exceptions\Wikidata\FetchException;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\StationResource;
 use App\Models\Station;
+use App\Services\StationService;
 use App\Services\Wikidata\WikidataImportService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
@@ -16,6 +17,10 @@ use Illuminate\Support\Facades\Log;
 
 class StationController extends Controller
 {
+    public function __construct(
+        private StationService $stationService
+    ) {}
+
     /**
      * !!!! Experimental Backend Function !!!!
      * Fetches the Wikidata information for a station.
@@ -62,8 +67,7 @@ class StationController extends Controller
     public function TrainAutocomplete(string $station): JsonResponse
     {
         try {
-            $provider = new \App\Http\Controllers\Backend\Transport\StationController();
-            $trainAutocompleteResponse = $provider->search($station);
+            $trainAutocompleteResponse = $this->stationService->search($station);
 
             return response()->json(StationResource::collection($trainAutocompleteResponse));
         } catch (DataProviderException $e) {

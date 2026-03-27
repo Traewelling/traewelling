@@ -27,7 +27,6 @@ use App\Http\Controllers\Frontend\User\ProfilePictureController;
 use App\Http\Controllers\Frontend\VueFrontendController;
 use App\Http\Controllers\Frontend\WebFingerController;
 use App\Http\Controllers\FrontendStatusController;
-use App\Http\Controllers\FrontendTransportController;
 use App\Http\Controllers\FrontendUserController;
 use App\Http\Controllers\PrivacyAgreementController;
 use App\Http\Controllers\SitemapController;
@@ -210,9 +209,6 @@ Route::middleware(['auth', 'privacy'])->group(function () {
 
     Route::post('/destroyfollow', [FrontendUserController::class, 'destroyFollow'])
         ->name('follow.destroy'); // TODO: Replace with API Endpoint
-
-    Route::get('/transport/train/autocomplete/{station}', [FrontendTransportController::class, 'TrainAutocomplete'])
-        ->name('transport.train.autocomplete');
 
     Route::get('/stationboard', [VueFrontendController::class, 'stationBoard'])->name('stationboard');
 

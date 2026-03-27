@@ -14,8 +14,6 @@ use App\Exceptions\CheckinException;
 use App\Exceptions\DataProviderException;
 use App\Exceptions\NotAllowedToCheckinOtherUserException;
 use App\Exceptions\StationNotOnTripException;
-use App\Http\Controllers\Backend\Transport\StationController;
-use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Requests\CheckinRequest;
 use App\Http\Resources\CheckinSuccessResource;
 use App\Http\Resources\DepartureResource;
@@ -25,6 +23,8 @@ use App\Hydrators\CheckinRequestHydrator;
 use App\Models\Station;
 use App\Models\Status;
 use App\Repositories\TripRepository;
+use App\Services\Checkin\CheckinService;
+use App\Services\Checkin\StationService;
 use App\Services\GeoService;
 use Carbon\Carbon;
 use Exception;
@@ -37,15 +37,11 @@ use OpenApi\Attributes as OA;
 
 class TransportController extends Controller
 {
-    private TrainCheckinController $trainCheckinController;
-
-    private StationController $stationController;
-
-    public function __construct(TrainCheckinController $trainCheckinController, StationController $stationController)
-    {
+    public function __construct(
+        private CheckinService $checkinService,
+        private StationService $stationService
+    ) {
         parent::__construct();
-        $this->trainCheckinController = $trainCheckinController;
-        $this->stationController = $stationController;
     }
 
     /**
@@ -398,7 +394,7 @@ class TransportController extends Controller
 
         try {
             $dto = new CheckinRequestHydrator($request)->hydrateFromApi();
-            $checkinResponse = $this->trainCheckinController->checkin($dto);
+            $checkinResponse = $this->checkinService->checkin($dto);
 
             return $this->sendResponse(new CheckinSuccessResource($checkinResponse), 201);
         } catch (NotAllowedToCheckinOtherUserException $exception) {
@@ -517,7 +513,7 @@ class TransportController extends Controller
     public function getTrainStationAutocomplete(string $query): JsonResponse
     {
         try {
-            $trainAutocompleteResponse = (new StationController())->search($query);
+            $trainAutocompleteResponse = $this->stationService->search($query);
 
             return $this->sendResponse(StationResource::collection($trainAutocompleteResponse));
         } catch (DataProviderException $e) {
@@ -558,7 +554,7 @@ class TransportController extends Controller
     public function getTrainStationHistory(): AnonymousResourceCollection
     {
         return StationResource::collection(
-            $this->stationController->getLatestArrivalsForUser(\auth()->user(), 10)
+            $this->stationService->getLatestArrivalsForUser(\auth()->user(), 10)
         );
     }
 }

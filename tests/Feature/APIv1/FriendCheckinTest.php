@@ -5,6 +5,7 @@ namespace Tests\Feature\APIv1;
 use App\Enum\User\FriendCheckinSetting;
 use App\Http\Controllers\Backend\User\FollowController;
 use App\Models\Follow;
+use App\Models\Status;
 use App\Models\Trip;
 use App\Models\User;
 use App\Notifications\YouHaveBeenCheckedIn;
@@ -66,8 +67,19 @@ class FriendCheckinTest extends ApiTestCase
         );
         $response->assertCreated();
 
+        $original = Status::whereUserId($user->id);
+        $this->assertEquals(1, $original->count());
+        $original = $original->first();
+        $this->assertNull($original->created_by_user_id);
+
+        $created = Status::whereUserId($userToCheckin->id)->get();
+        $this->assertEquals(1, $created->count());
+        $created = $created->first();
+        $this->assertEquals($user->id, $created->created_by_user_id);
+
         $this->assertDatabaseHas('train_checkins', ['user_id' => $user->id, 'trip_id' => $trip->trip_id]);
         $this->assertDatabaseHas('train_checkins', ['user_id' => $userToCheckin->id, 'trip_id' => $trip->trip_id]);
+        $this->assertDatabaseCount('statuses', 2);
 
         $notification = $userToCheckin->refresh()->notifications->where('type', YouHaveBeenCheckedIn::class)->last();
         $this->assertStringContainsString($user->username, YouHaveBeenCheckedIn::getLead($notification->data));
