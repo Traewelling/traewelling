@@ -11,7 +11,7 @@ use App\Http\Controllers\StatusController;
 use App\Jobs\MonitoredCallWebhookJob;
 use App\Models\Station;
 use App\Models\User;
-use App\Repositories\CheckinHydratorRepository;
+use App\Repositories\TripRepository;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
@@ -102,7 +102,7 @@ class WebhookStatusTest extends ApiTestCase
         $this->createWebhook($user, $client, [WebhookEvent::CHECKIN_UPDATE]);
         $status = $this->createStatus($user);
         $checkin = $status->checkin()->first();
-        $trip = app(CheckinHydratorRepository::class)->getHafasTrip(
+        $trip = app(TripRepository::class)->getByIdentifier(
             tripID: self::TRIP_ID,
             lineName: self::ICE802['line']['name']
         );
@@ -384,7 +384,7 @@ class WebhookStatusTest extends ApiTestCase
             '/trips/' . urlencode(self::TRIP_ID) . '*' => Http::response(self::TRIP_INFO),
         ]);
 
-        $trip = app(CheckinHydratorRepository::class)->getHafasTrip(
+        $trip = app(TripRepository::class)->getByIdentifier(
             tripID: self::TRIP_ID,
             lineName: self::ICE802['line']['name']
         );
@@ -399,7 +399,7 @@ class WebhookStatusTest extends ApiTestCase
             ->setTravelReason(Business::PRIVATE)
             ->setStatusVisibility(StatusVisibility::PUBLIC)
             ->setBody(self::EXAMPLE_BODY);
-        $checkin = TrainCheckinController::checkin($dto);
+        $checkin = new TrainCheckinController()->checkin($dto);
 
         return $checkin->status;
     }

@@ -63,6 +63,24 @@ export enum StatusVisibility {
 }
 
 /**
+ * StationIdentifierType
+ * The type of the station identifier to look up. Not all types are available for every station. Subject to unannounced change.
+ *     * motis – all transitous.org/motis supplied identifiers
+ *     * wikidata_id – ID of wikidata.org
+ *     * de_db_ril100 – Germany: Deutsche Bahn Richtlinie 100 identifier (e.g. RK for Karlsruhe Hbf)
+ *     * de_db_ibnr – Germany: internal train station ID of Deutsche Bahn (e.g. 8000191 for Karlsruhe Hbf)
+ *
+ * @example 0
+ */
+export enum StationIdentifierType {
+  MOTIS = "MOTIS",
+  WIKIDATA_ID = "WIKIDATA_ID",
+  IFOPT = "IFOPT",
+  DE_DB_RIL100 = "DE_DB_RIL100",
+  DE_DB_IBNR = "DE_DB_IBNR",
+}
+
+/**
  * PointsReason
  * What is the reason for the points calculation factor? (0=in time => 100%, 1=good enough => 25%, 2=not sufficient (1 point), 3=forced => no points, 4=manual trip => no points, 5=points disabled)
  * @example 1
@@ -609,6 +627,7 @@ export interface CheckinRequestBody {
   chainPost?: boolean | null;
   /**
    * If true, `start` and `destination` can be supplied as IBNR. Otherwise Träwelling-ID. Default: false.
+   * @deprecated
    * @example true
    */
   ibnr?: boolean | null;
@@ -623,15 +642,43 @@ export interface CheckinRequestBody {
    */
   lineName?: string | null;
   /**
-   * Station-ID of the starting point (see `ibnr`)
+   * Träwelling-Station-ID of the starting point, required without startIdentifier
    * @example 8000191
    */
   start?: number;
   /**
-   * Station-ID of the destination (see `ibnr`)
+   * (EXPERIMENTAL: this is not guaranteed to work. It might lead to inconsistent behaviour) External station identifier of the starting point, required without startIdentifier, requires startIdentifierType
+   * @example "de-0815-1234:56:78"
+   */
+  startIdentifier?: string;
+  /**
+   * The type of the station identifier to look up. Not all types are available for every station. Subject to unannounced change.
+   *     * motis – all transitous.org/motis supplied identifiers
+   *     * wikidata_id – ID of wikidata.org
+   *     * de_db_ril100 – Germany: Deutsche Bahn Richtlinie 100 identifier (e.g. RK for Karlsruhe Hbf)
+   *     * de_db_ibnr – Germany: internal train station ID of Deutsche Bahn (e.g. 8000191 for Karlsruhe Hbf)
+   *
+   */
+  startIdentifierType?: StationIdentifierType;
+  /**
+   * Träwelling-Station-ID of the destination, required without destinationIdentifier
    * @example 8000192
    */
   destination?: number;
+  /**
+   * (EXPERIMENTAL: this is not guaranteed to work. It might lead to inconsistent behaviour) External station identifier of the destination, required without destinationIdentifier, requires destinationIdentifierType
+   * @example "de-0815-1234:56:78"
+   */
+  destinationIdentifier?: string;
+  /**
+   * The type of the station identifier to look up. Not all types are available for every station. Subject to unannounced change.
+   *     * motis – all transitous.org/motis supplied identifiers
+   *     * wikidata_id – ID of wikidata.org
+   *     * de_db_ril100 – Germany: Deutsche Bahn Richtlinie 100 identifier (e.g. RK for Karlsruhe Hbf)
+   *     * de_db_ibnr – Germany: internal train station ID of Deutsche Bahn (e.g. 8000191 for Karlsruhe Hbf)
+   *
+   */
+  destinationIdentifierType?: StationIdentifierType;
   /**
    * Timestamp of the departure
    * @format date-time
@@ -5979,8 +6026,7 @@ export class Api<
     setHomeStation: (id: any, params: RequestParams = {}) =>
       this.request<
         {
-          /** train station model */
-          data?: Station;
+          data?: any;
         },
         void
       >({
@@ -6056,7 +6102,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: Station[];
+          data?: any[];
         },
         void
       >({
@@ -6132,7 +6178,7 @@ export class Api<
     trainStationHistory: (params: RequestParams = {}) =>
       this.request<
         {
-          data?: Station[];
+          data?: any[];
         },
         void
       >({

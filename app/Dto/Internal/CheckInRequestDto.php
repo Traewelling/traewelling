@@ -40,6 +40,8 @@ class CheckInRequestDto
 
     public bool $chainFlag;
 
+    public array $userIds = [];
+
     public function __construct()
     {
         $this->travelReason = Business::PRIVATE;
@@ -138,6 +140,13 @@ class CheckInRequestDto
     public function setChainFlag(bool $chainFlag): CheckInRequestDto
     {
         $this->chainFlag = $chainFlag;
+
+        return $this;
+    }
+
+    public function setUserIds(array $userIds): CheckInRequestDto
+    {
+        $this->userIds = $userIds;
 
         return $this;
     }

@@ -2,11 +2,16 @@
 
 namespace App\Repositories;
 
+use App\DataProviders\DataProviderBuilder;
 use App\Enum\SegmentPathType;
+use App\Exceptions\DataProviderException;
 use App\Models\RouteSegment;
 use App\Models\Station;
 use App\Models\StationIdentifier;
 use App\Models\Stopover;
+use App\Models\Trip;
+use Illuminate\Support\Facades\Auth;
+use JsonException;
 
 class TripRepository
 {
@@ -82,5 +87,22 @@ class TripRepository
         $segment->save();
 
         return $segment;
+    }
+
+    /**
+     * @throws DataProviderException
+     * @throws JsonException
+     */
+    public function getByIdentifier(string $tripID, string $lineName): Trip
+    {
+        // todo: create trip IDs with a prefix, to distinguish between different data providers
+        $dataProvider = new DataProviderBuilder()->build(null, Auth::user());
+        if (is_numeric($tripID)) {
+            $trip = Trip::where('id', $tripID)->where('linename', $lineName)->first();
+        } else {
+            $trip = Trip::where('trip_id', $tripID)->where('linename', $lineName)->first();
+        }
+
+        return $trip ?? $dataProvider->fetchHafasTrip($tripID, $lineName);
     }
 }

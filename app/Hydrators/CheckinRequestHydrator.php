@@ -6,9 +6,14 @@ namespace App\Hydrators;
 
 use App\Dto\Internal\CheckInRequestDto;
 use App\Enum\Business;
+use App\Enum\StationIdentifierType;
 use App\Enum\StatusVisibility;
 use App\Exceptions\DataProviderException;
-use App\Repositories\CheckinHydratorRepository;
+use App\Http\Requests\CheckinRequest;
+use App\Models\Station;
+use App\Repositories\EventRepository;
+use App\Repositories\StationRepository;
+use App\Repositories\TripRepository;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Auth;
@@ -18,28 +23,35 @@ class CheckinRequestHydrator
 {
     private CheckInRequestDto $dto;
 
-    private array $validated;
-
-    private string $searchKey;
+    private CheckinRequest $request;
 
     private Authenticatable $user;
 
-    private CheckinHydratorRepository $repository;
+    private StationRepository $stationRepository;
+
+    private EventRepository $eventRepository;
+
+    private TripRepository $tripRepository;
 
     public function __construct(
-        array $validated,
+        CheckinRequest $validated,
         ?Authenticatable $user = null,
         ?CheckInRequestDto $dto = null,
-        ?CheckinHydratorRepository $repository = null
+        ?StationRepository $stationRepository = null,
+        ?EventRepository $eventRepository = null,
+        ?TripRepository $tripRepository = null
     ) {
-        $this->validated = $validated;
+        $this->request = $validated;
         $this->dto = $dto ?? new CheckInRequestDto();
         $this->user = $user ?? Auth::user();
-        $this->repository = $repository ?? new CheckinHydratorRepository();
+        $this->stationRepository = $stationRepository ?? new StationRepository();
+        $this->eventRepository = $eventRepository ?? new EventRepository();
+        $this->tripRepository = $tripRepository ?? new TripRepository();
     }
 
     /**
      * @throws DataProviderException
+     * @throws JsonException
      */
     public function hydrateFromApi(): CheckInRequestDto
     {
@@ -52,65 +64,58 @@ class CheckinRequestHydrator
      * @throws DataProviderException
      * @throws JsonException
      */
-    public function hydrateFromAdmin(): CheckInRequestDto
-    {
-        $this->parseAdminFields();
-
-        return $this->dto;
-    }
-
-    /**
-     * @throws DataProviderException
-     * @throws JsonException
-     */
-    private function parseAdminFields(): void
-    {
-        $this->parseDefaultFields();
-        $destinationStopover = $this->repository->findOrFailStopover($this->validated['destinationStopover']);
-
-        $this->dto->setDestination($destinationStopover->station)
-            ->setArrival($destinationStopover->arrival_planned);
-    }
-
-    /**
-     * @throws DataProviderException
-     * @throws JsonException
-     */
     private function parseApiFields(): void
     {
-        $this->parseDefaultFields();
-
-        $arrival = Carbon::parse($this->validated['arrival']);
-        $destinationStation = $this->repository->getOneStation($this->searchKey, $this->validated['destination']);
-
-        $this->dto->setArrival($arrival)
-            ->setDestination($destinationStation);
-    }
-
-    /**
-     * @throws DataProviderException
-     * @throws JsonException
-     */
-    private function parseDefaultFields(): void
-    {
-        $this->searchKey = empty($this->validated['ibnr']) ? 'id' : 'ibnr';
-        $originStation = $this->repository->getOneStation($this->searchKey, $this->validated['start']);
-        $departure = Carbon::parse($this->validated['departure']);
-        $travelReason = Business::tryFrom($this->validated['business'] ?? Business::PRIVATE->value);
-        $visibility = StatusVisibility::tryFrom($this->validated['visibility'] ?? StatusVisibility::PUBLIC->value);
-        $event = isset($this->validated['eventId']) ? $this->repository->findEvent($this->validated['eventId']) : null;
-        $trip = $this->repository->getHafasTrip($this->validated['tripId'], $this->validated['lineName']);
+        $departure = Carbon::parse($this->request->departure);
+        $arrival = Carbon::parse($this->request->arrival);
+        $travelReason = Business::tryFrom($this->request->business ?? Business::PRIVATE->value);
+        $visibility = StatusVisibility::tryFrom($this->request->visibility ?? StatusVisibility::PUBLIC->value);
+        $event = isset($this->request->eventId) ? $this->eventRepository->getById($this->request->eventId) : null;
+        $trip = $this->tripRepository->getByIdentifier($this->request->tripId, $this->request->lineName);
 
         $this->dto->setUser($this->user)
             ->setTrip($trip)
-            ->setOrigin($originStation)
+            ->setOrigin($this->getOriginStation())
+            ->setDestination($this->getDestinationStation())
+            ->setArrival($arrival)
             ->setDeparture($departure)
             ->setTravelReason($travelReason)
             ->setStatusVisibility($visibility)
-            ->setBody($this->validated['body'] ?? null)
+            ->setBody($this->request->body ?? null)
             ->setEvent($event)
-            ->setForceFlag(!empty($this->validated['force']))
-            ->setPostOnMastodonFlag(!empty($this->validated['toot']))
-            ->setChainFlag(!empty($this->validated['chainPost']));
+            ->setForceFlag(!empty($this->request->force))
+            ->setPostOnMastodonFlag(!empty($this->request->toot))
+            ->setChainFlag(!empty($this->request->chainPost))
+            ->setUserIds($this->request->with ?? []);
+    }
+
+    private function getOriginStation(): ?Station
+    {
+        if ($this->request->ibnr && !empty($this->request->start)) {
+            return $this->stationRepository->getByIdentifier((string) $this->request->start, StationIdentifierType::DE_DB_IBNR);
+        }
+        if ($this->request->start && !$this->request->ibnr) {
+            return $this->stationRepository->getById((int) $this->request->start);
+        }
+        if (!empty($this->request->startIdentifier) && !empty($this->request->startIdentifierType)) {
+            return $this->stationRepository->getByIdentifier($this->request->startIdentifier, StationIdentifierType::from($this->request->startIdentifierType));
+        }
+
+        return null;
+    }
+
+    private function getDestinationStation(): ?Station
+    {
+        if ($this->request->ibnr && !empty($this->request->destination)) {
+            return $this->stationRepository->getByIdentifier((string) $this->request->destination, StationIdentifierType::DE_DB_IBNR);
+        }
+        if ($this->request->destination && !$this->request->ibnr) {
+            return $this->stationRepository->getById((int) $this->request->destination);
+        }
+        if (!empty($this->request->destinationIdentifier) && !empty($this->request->destinationIdentifierType)) {
+            return $this->stationRepository->getByIdentifier($this->request->destinationIdentifier, StationIdentifierType::from($this->request->destinationIdentifierType));
+        }
+
+        return null;
     }
 }

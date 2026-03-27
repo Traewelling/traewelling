@@ -131,4 +131,17 @@ class StationRepository
                 return $latestStations->firstWhere('train_station_id', $station->id)->arrival;
             }, SORT_REGULAR, true);
     }
+
+    public function getByIdentifier(string $identifier, StationIdentifierType $identifierType): ?Station
+    {
+        return StationIdentifier::whereIdentifier($identifier)
+            ->whereType($identifierType)
+            ->with('station')
+            ->first()?->station;
+    }
+
+    public function getById(int $id): ?Station
+    {
+        return Station::whereId($id)->first();
+    }
 }

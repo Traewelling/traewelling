@@ -195,7 +195,7 @@ class NotificationsTest extends ApiTestCase
         $this->assertDatabaseCount('notifications', 0);
 
         // bob also checks into the train (with same origin and destination - but not relevant)
-        $bobsData = TrainCheckinController::checkin((new CheckinRequestTestHydrator($bob))->hydrateFromCheckin($aliceCheckIn));
+        $bobsData = new TrainCheckinController()->checkin((new CheckinRequestTestHydrator($bob))->hydrateFromCheckin($aliceCheckIn));
         $bobStatus = $bobsData->status;
 
         // Check if there is one notification
@@ -230,7 +230,7 @@ class NotificationsTest extends ApiTestCase
         $bob = User::factory(['privacy_ack_at' => Carbon::now()])->create();
         $dto = (new CheckinRequestTestHydrator($bob))->hydrateFromCheckin($aliceCheckIn);
         $dto->setStatusVisibility(StatusVisibility::PRIVATE);
-        TrainCheckinController::checkin($dto);
+        new TrainCheckinController()->checkin($dto);
 
         // Check if there are no notifications
         $this->assertDatabaseCount('notifications', 0);
