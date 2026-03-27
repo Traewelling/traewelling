@@ -1680,7 +1680,15 @@
                         "in": "path",
                         "description": "User-ID or UUID",
                         "schema": {
-                            "type": "string"
+                            "oneOf": [
+                                {
+                                    "type": "string",
+                                    "format": "uuid"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
                         },
                         "example": "00000000-0000-0000-0000-000000000000"
                     }
@@ -1734,7 +1742,15 @@
                         "in": "path",
                         "description": "User-ID or UUID",
                         "schema": {
-                            "type": "string"
+                            "oneOf": [
+                                {
+                                    "type": "string",
+                                    "format": "uuid"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
                         },
                         "example": "00000000-0000-0000-0000-000000000000"
                     }
@@ -1967,7 +1983,15 @@
                         "in": "path",
                         "description": "User-ID or UUID",
                         "schema": {
-                            "type": "string"
+                            "oneOf": [
+                                {
+                                    "type": "string",
+                                    "format": "uuid"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
                         },
                         "example": "00000000-0000-0000-0000-000000000000"
                     }
@@ -2014,7 +2038,15 @@
                         "in": "path",
                         "description": "User-ID or UUID",
                         "schema": {
-                            "type": "string"
+                            "oneOf": [
+                                {
+                                    "type": "string",
+                                    "format": "uuid"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
                         },
                         "example": "00000000-0000-0000-0000-000000000000"
                     }
@@ -2056,7 +2088,15 @@
                         "in": "path",
                         "description": "User-ID or UUID",
                         "schema": {
-                            "type": "string"
+                            "oneOf": [
+                                {
+                                    "type": "string",
+                                    "format": "uuid"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
                         },
                         "example": "00000000-0000-0000-0000-000000000000"
                     }
@@ -6728,7 +6768,7 @@
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "user_id"
+                                    "userId"
                                 ],
                                 "properties": {
                                     "userId": {
@@ -6817,11 +6857,20 @@
                     {
                         "name": "user",
                         "in": "path",
-                        "description": "ID or UUID of the user (or string 'self' for current user)",
+                        "description": "User-ID or UUID",
                         "required": true,
                         "schema": {
-                            "type": "string"
-                        }
+                            "oneOf": [
+                                {
+                                    "type": "string",
+                                    "format": "uuid"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
+                        },
+                        "example": "00000000-0000-0000-0000-000000000000"
                     },
                     {
                         "name": "trusted",
@@ -6829,8 +6878,17 @@
                         "description": "ID or UUID of the trusted user",
                         "required": true,
                         "schema": {
-                            "type": "string"
-                        }
+                            "oneOf": [
+                                {
+                                    "type": "string",
+                                    "format": "uuid"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
+                        },
+                        "example": "00000000-0000-0000-0000-000000000000"
                     }
                 ],
                 "responses": {
@@ -7081,7 +7139,15 @@
                         "in": "path",
                         "description": "User-ID or UUID",
                         "schema": {
-                            "type": "string"
+                            "oneOf": [
+                                {
+                                    "type": "string",
+                                    "format": "uuid"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
                         },
                         "example": "00000000-0000-0000-0000-000000000000"
                     }
@@ -7142,7 +7208,15 @@
                         "in": "path",
                         "description": "User-ID or UUID",
                         "schema": {
-                            "type": "string"
+                            "oneOf": [
+                                {
+                                    "type": "string",
+                                    "format": "uuid"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
                         },
                         "example": "00000000-0000-0000-0000-000000000000"
                     }
@@ -7205,7 +7279,15 @@
                         "in": "path",
                         "description": "User-ID or UUID",
                         "schema": {
-                            "type": "string"
+                            "oneOf": [
+                                {
+                                    "type": "string",
+                                    "format": "uuid"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
                         },
                         "example": "00000000-0000-0000-0000-000000000000"
                     }
@@ -7263,7 +7345,15 @@
                         "in": "path",
                         "description": "User-ID or UUID",
                         "schema": {
-                            "type": "string"
+                            "oneOf": [
+                                {
+                                    "type": "string",
+                                    "format": "uuid"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
                         },
                         "example": "00000000-0000-0000-0000-000000000000"
                     }

@@ -49,6 +49,12 @@ use Laravel\Passport\Token;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OAuthClient whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OAuthClient whereWebhooksEnabled($value)
  *
+ * @property-read array $grant_types
+ * @property-read \Illuminate\Foundation\Auth\User $owner
+ * @property-read array $redirect_uris
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OAuthClient existsIn(array $haystack)
+ *
  * @mixin \Eloquent
  */
 class OAuthClient extends PassportClient

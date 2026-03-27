@@ -70,6 +70,9 @@ use stdClass;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin whereUserId($value)
  *
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, StatusTag> $statusTags
+ * @property-read int|null $status_tags_count
+ *
  * @mixin \Eloquent
  */
 class Checkin extends Model

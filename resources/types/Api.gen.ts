@@ -3342,7 +3342,7 @@ export class Api<
      * @request POST:/user/{id}/follow
      * @secure
      */
-    createFollow: (id?: string, params: RequestParams = {}) =>
+    createFollow: (id?: string | number, params: RequestParams = {}) =>
       this.request<
         {
           /** User model */
@@ -3366,7 +3366,7 @@ export class Api<
      * @request DELETE:/user/{id}/follow
      * @secure
      */
-    destroyFollow: (id?: string, params: RequestParams = {}) =>
+    destroyFollow: (id?: string | number, params: RequestParams = {}) =>
       this.request<
         {
           /** User model */
@@ -3501,7 +3501,7 @@ export class Api<
      * @request DELETE:/user/self/followers/{userId}
      * @secure
      */
-    removeFollower: (userId?: string, params: RequestParams = {}) =>
+    removeFollower: (userId?: string | number, params: RequestParams = {}) =>
       this.request<void, void>({
         path: `/user/self/followers/${userId}`,
         method: "DELETE",
@@ -3518,7 +3518,10 @@ export class Api<
      * @request PUT:/user/self/follow-requests/{userId}
      * @secure
      */
-    acceptFollowRequest: (userId?: string, params: RequestParams = {}) =>
+    acceptFollowRequest: (
+      userId?: string | number,
+      params: RequestParams = {},
+    ) =>
       this.request<void, void>({
         path: `/user/self/follow-requests/${userId}`,
         method: "PUT",
@@ -3535,7 +3538,10 @@ export class Api<
      * @request DELETE:/user/self/follow-requests/{userId}
      * @secure
      */
-    rejectFollowRequest: (userId?: string, params: RequestParams = {}) =>
+    rejectFollowRequest: (
+      userId?: string | number,
+      params: RequestParams = {},
+    ) =>
       this.request<void, void>({
         path: `/user/self/follow-requests/${userId}`,
         method: "DELETE",
@@ -3602,7 +3608,7 @@ export class Api<
          * User-ID or UUID
          * @example "00000000-0000-0000-0000-000000000000"
          */
-        userId?: string;
+        userId: string;
         /**
          * @format date-time
          * @example "2024-07-28T00:00:00Z"
@@ -3649,8 +3655,8 @@ export class Api<
      * @request DELETE:/user/{user}/trusted/{trusted}
      */
     trustedUserDestroy: (
-      user: string,
-      trusted: string,
+      user: string | number,
+      trusted: string | number,
       params: RequestParams = {},
     ) =>
       this.request<void, void>({
@@ -3741,7 +3747,7 @@ export class Api<
      * @request POST:/user/{id}/block
      * @secure
      */
-    createBlock: (id?: string, params: RequestParams = {}) =>
+    createBlock: (id?: string | number, params: RequestParams = {}) =>
       this.request<
         {
           /** User model */
@@ -3765,7 +3771,7 @@ export class Api<
      * @request DELETE:/user/{id}/block
      * @secure
      */
-    destroyBlock: (id?: string, params: RequestParams = {}) =>
+    destroyBlock: (id?: string | number, params: RequestParams = {}) =>
       this.request<
         {
           /** User model */
@@ -3789,7 +3795,7 @@ export class Api<
      * @request POST:/user/{id}/mute
      * @secure
      */
-    createMute: (id?: string, params: RequestParams = {}) =>
+    createMute: (id?: string | number, params: RequestParams = {}) =>
       this.request<
         {
           /** User model */
@@ -3813,7 +3819,7 @@ export class Api<
      * @request DELETE:/user/{id}/mute
      * @secure
      */
-    destroyMute: (id?: string, params: RequestParams = {}) =>
+    destroyMute: (id?: string | number, params: RequestParams = {}) =>
       this.request<
         {
           /** User model */

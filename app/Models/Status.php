@@ -72,6 +72,11 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereVisibility($value)
  *
+ * @property int|null $created_by_user_id
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereCreatedByUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereTicketId($value)
+ *
  * @mixin \Eloquent
  */
 class Status extends Model

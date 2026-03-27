@@ -31,7 +31,10 @@ class FollowController extends Controller
                 name: 'id',
                 description: 'User-ID or UUID',
                 in: 'path',
-                schema: new OA\Schema(type: 'string'),
+                schema: new OA\Schema(oneOf: [
+                    new OA\Schema(type: 'string', format: 'uuid'),
+                    new OA\Schema(type: 'integer'),
+                ]),
                 example: '00000000-0000-0000-0000-000000000000',
             ),
         ],
@@ -84,7 +87,10 @@ class FollowController extends Controller
                 name: 'id',
                 description: 'User-ID or UUID',
                 in: 'path',
-                schema: new OA\Schema(type: 'string'),
+                schema: new OA\Schema(oneOf: [
+                    new OA\Schema(type: 'string', format: 'uuid'),
+                    new OA\Schema(type: 'integer'),
+                ]),
                 example: '00000000-0000-0000-0000-000000000000',
             ),
         ],
@@ -252,9 +258,6 @@ class FollowController extends Controller
 
     /**
      * @param  Request  $request
-     *
-     * @todo paths should use kebab-case
-     * @todo paths should not use verbs
      */
     #[OA\Delete(
         path: '/user/self/followers/{userId}',
@@ -267,7 +270,10 @@ class FollowController extends Controller
                 name: 'userId',
                 description: 'User-ID or UUID',
                 in: 'path',
-                schema: new OA\Schema(type: 'string'),
+                schema: new OA\Schema(oneOf: [
+                    new OA\Schema(type: 'string', format: 'uuid'),
+                    new OA\Schema(type: 'integer'),
+                ]),
                 example: '00000000-0000-0000-0000-000000000000',
             ),
         ],
@@ -315,7 +321,10 @@ class FollowController extends Controller
                 name: 'userId',
                 description: 'User-ID or UUID',
                 in: 'path',
-                schema: new OA\Schema(type: 'string'),
+                schema: new OA\Schema(oneOf: [
+                    new OA\Schema(type: 'string', format: 'uuid'),
+                    new OA\Schema(type: 'integer'),
+                ]),
                 example: '00000000-0000-0000-0000-000000000000',
             ),
         ],
@@ -359,7 +368,10 @@ class FollowController extends Controller
                 name: 'userId',
                 description: 'User-ID or UUID',
                 in: 'path',
-                schema: new OA\Schema(type: 'string'),
+                schema: new OA\Schema(oneOf: [
+                    new OA\Schema(type: 'string', format: 'uuid'),
+                    new OA\Schema(type: 'integer'),
+                ]),
                 example: '00000000-0000-0000-0000-000000000000',
             ),
         ],

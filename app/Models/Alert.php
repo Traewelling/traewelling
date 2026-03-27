@@ -30,6 +30,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Alert whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Alert whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Alert whereUrl($value)
+ * @method static \Database\Factories\AlertFactory factory($count = null, $state = [])
  *
  * @mixin \Eloquent
  */
