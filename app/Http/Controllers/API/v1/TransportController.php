@@ -24,7 +24,7 @@ use App\Http\Resources\TripResource;
 use App\Hydrators\CheckinRequestHydrator;
 use App\Models\Station;
 use App\Models\Status;
-use App\Repositories\CheckinHydratorRepository;
+use App\Repositories\TripRepository;
 use App\Services\GeoService;
 use Carbon\Carbon;
 use Exception;
@@ -264,8 +264,8 @@ class TransportController extends Controller
         ]);
 
         try {
-            $trip = app(CheckinHydratorRepository::class)
-                ->getHafasTrip(
+            $trip = app(TripRepository::class)
+                ->getByIdentifier(
                     tripID: $validated['hafasTripId'],
                     lineName: $validated['lineName']
                 )
