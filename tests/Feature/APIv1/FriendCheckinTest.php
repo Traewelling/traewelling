@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Notifications\YouHaveBeenCheckedIn;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Notification;
 use Tests\ApiTestCase;
 
 class FriendCheckinTest extends ApiTestCase
@@ -202,6 +203,47 @@ class FriendCheckinTest extends ApiTestCase
             'user_id' => $user->id,
             'created_by_user_id' => null,
         ]);
+    }
+
+    public function test_friend_checkin_with_multiple_users_does_not_loop(): void
+    {
+        // Regression test for: checkin -> checkinOtherUsers -> checkin (loop) for multiple users
+        Notification::fake();
+
+        $userA = User::factory()->create();
+        $userB = User::factory(['friend_checkin' => FriendCheckinSetting::FRIENDS->value])->create();
+        $userC = User::factory(['friend_checkin' => FriendCheckinSetting::FRIENDS->value])->create();
+
+        // A-B and A-C are mutual friends (required for friend_checkin = FRIENDS)
+        FollowController::createOrRequestFollow($userA, $userB);
+        FollowController::createOrRequestFollow($userB, $userA);
+        FollowController::createOrRequestFollow($userA, $userC);
+        FollowController::createOrRequestFollow($userC, $userA);
+
+        $trip = Trip::factory()->create();
+
+        $this->actAsApiUserWithAllScopes($userA);
+        $response = $this->postJson(
+            uri: '/api/v1/trains/checkin',
+            data: [
+                'tripId' => $trip->trip_id,
+                'lineName' => $trip->linename,
+                'start' => $trip->originStation->id,
+                'departure' => $trip->departure,
+                'destination' => $trip->destinationStation->id,
+                'arrival' => $trip->arrival,
+                'with' => [$userB->id, $userC->id],
+            ],
+        );
+        $response->assertCreated();
+
+        // Exactly one checkin per user
+        $this->assertDatabaseCount('train_checkins', 3);
+
+        // All friends must be attributed to A, not to each other
+        $this->assertDatabaseHas('statuses', ['user_id' => $userA->id, 'created_by_user_id' => null]);
+        $this->assertDatabaseHas('statuses', ['user_id' => $userB->id, 'created_by_user_id' => $userA->id]);
+        $this->assertDatabaseHas('statuses', ['user_id' => $userC->id, 'created_by_user_id' => $userA->id]);
     }
 
     public function test_self_checkin_has_null_created_by_user_id(): void
