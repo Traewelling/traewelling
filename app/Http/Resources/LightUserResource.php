@@ -2,10 +2,10 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Controllers\Backend\User\ProfilePictureController;
 use App\Models\MastodonServer;
 use App\Models\SocialLoginProfile;
 use App\Models\User;
+use App\Services\ProfilePictureService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Attributes as OA;
 
@@ -50,7 +50,7 @@ class LightUserResource extends JsonResource
             'uuid' => (string) $user->uuid,
             'displayName' => (string) $user->name,
             'username' => (string) $user->username,
-            'profilePicture' => ProfilePictureController::getUrl($user),
+            'profilePicture' => resolve(ProfilePictureService::class)->getUrl($user),
             'mastodon' => [
                 'server' => $mastodonServer?->domain,
                 'user_id' => $socialProfile?->mastodon_id,

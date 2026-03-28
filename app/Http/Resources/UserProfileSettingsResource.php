@@ -2,8 +2,8 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Controllers\Backend\User\ProfilePictureController;
 use App\Models\User;
+use App\Services\ProfilePictureService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Attributes as OA;
 
@@ -97,7 +97,7 @@ class UserProfileSettingsResource extends JsonResource
         return [
             'username' => $this->username,
             'displayName' => $this->name,
-            'profilePicture' => ProfilePictureController::getUrlForUserId($this->id),
+            'profilePicture' => resolve(ProfilePictureService::class)->getUrlForUserId($this->id),
             'privateProfile' => (bool) $this->private_profile,
             'preventIndex' => (bool) $this->prevent_index,
             'defaultStatusVisibility' => (int) $this->default_status_visibility->value,

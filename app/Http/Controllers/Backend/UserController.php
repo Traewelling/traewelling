@@ -12,6 +12,7 @@ use App\Models\Like;
 use App\Models\User;
 use App\Models\UserBlock;
 use App\Models\UserMute;
+use App\Services\ProfilePictureService;
 use Exception;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Pagination\Paginator;
@@ -22,7 +23,7 @@ abstract class UserController extends Controller
 {
     public static function deleteUserAccount(User $user): ?bool
     {
-        SettingsController::deleteProfilePicture(user: $user);
+        resolve(ProfilePictureService::class)->delete(user: $user);
 
         DatabaseNotification::where([
             'notifiable_id' => $user->id,

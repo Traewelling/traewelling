@@ -25,7 +25,7 @@
                                         <div class="image-box pe-0 d-lg-flex" style="width: 4em; height: 4em;">
                                             <a href="{{ route('profile', ['username' => $follower->user->username]) }}">
                                                 <img
-                                                    src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($follower->user) }}"
+                                                    src="{{ resolve(\App\Services\ProfilePictureService::class)->getUrl($follower->user) }}"
                                                     style="height: 4em;"
                                                     loading="lazy"
                                                     decoding="async"
@@ -76,7 +76,7 @@
                                         <div class="image-box pe-0 d-lg-flex" style="width: 4em; height: 4em;">
                                             <a href="{{ route('profile', ['username' => $request->user->username]) }}">
                                                 <img loading="lazy" decoding="async"
-                                                     src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($request->user) }}"
+                                                     src="{{ resolve(\App\Services\ProfilePictureService::class)->getUrl($request->user) }}"
                                                      style="height: 3em;" alt="{{ $request->user->username }}"
                                                 />
                                             </a>

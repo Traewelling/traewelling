@@ -6,6 +6,7 @@ use App\Exceptions\RateLimitExceededException;
 use App\Http\Controllers\Backend\SettingsController as BackendSettingsController;
 use App\Http\Requests\UpdateProfileInformationRequest;
 use App\Http\Resources\UserProfileSettingsResource;
+use App\Services\ProfilePictureService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -15,6 +16,8 @@ use OpenApi\Attributes as OA;
 
 class SettingsController extends Controller
 {
+    public function __construct(private readonly ProfilePictureService $profilePictureService) {}
+
     #[OA\Get(
         path: '/settings/profile',
         operationId: 'getProfileSettings',
@@ -244,7 +247,7 @@ class SettingsController extends Controller
     )]
     public function deleteProfilePicture(): JsonResponse
     {
-        if (BackendSettingsController::deleteProfilePicture(user: auth()->user())) {
+        if ($this->profilePictureService->delete(user: auth()->user())) {
             return $this->sendResponse(['message' => __('settings.profilePicture.deleted')]);
         }
 
@@ -297,7 +300,7 @@ class SettingsController extends Controller
         if (auth()->user()->can('disallow-social-interaction')) {
             return response()->json(null, 403);
         }
-        if (BackendSettingsController::updateProfilePicture($request->input('image'))) {
+        if ($this->profilePictureService->update(auth()->user(), $request->input('image'))) {
             return $this->sendResponse(['message' => __('settings.saved')]);
         }
 

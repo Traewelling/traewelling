@@ -3,8 +3,8 @@
 namespace App\Dto;
 
 use App\Dto\GeoJson\Feature;
-use App\Http\Controllers\Backend\User\ProfilePictureController;
 use App\Models\Status;
+use App\Services\ProfilePictureService;
 use JsonSerializable;
 use OpenApi\Attributes as OA;
 use stdClass;
@@ -96,7 +96,7 @@ readonly class LivePointDto implements JsonSerializable
                     'id' => $this->status->user->id,
                     'username' => $this->status->user->username,
                     'name' => $this->status->user->name,
-                    'profilePictureUrl' => ProfilePictureController::getUrl($this->status->user),
+                    'profilePictureUrl' => resolve(ProfilePictureService::class)->getUrl($this->status->user),
                 ],
             ],
         ];

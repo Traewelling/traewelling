@@ -15,7 +15,7 @@
                                         <div class="image-box pe-0 d-lg-flex" style="width: 4em; height: 4em;">
                                             <a href="{{ route('profile', ['username' => $user->username]) }}">
                                                 <img
-                                                    src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($user) }}"
+                                                    src="{{ resolve(\App\Services\ProfilePictureService::class)->getUrl($user) }}"
                                                     style="height: 3em;" alt="{{$user->username}}"
                                                 />
                                             </a>

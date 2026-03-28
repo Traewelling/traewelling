@@ -1,4 +1,3 @@
-@php use App\Http\Controllers\Backend\User\ProfilePictureController; @endphp
 @php /** @var \Illuminate\Pagination\LengthAwarePaginator<int, \App\Models\Trip> $trips */ @endphp
 @extends('admin.layout')
 

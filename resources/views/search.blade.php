@@ -17,7 +17,7 @@
                             <div class="col-2 image-box search-image-box d-lg-flex">
                                 <a href="{{ route('profile', ['username' => $user->username]) }}">
                                     <img
-                                        src="{{\App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($user)}}"
+                                        src="{{resolve(\App\Services\ProfilePictureService::class)->getUrl($user)}}"
                                         alt="Profile picture"
                                         loading="lazy"
                                         decoding="async"/>

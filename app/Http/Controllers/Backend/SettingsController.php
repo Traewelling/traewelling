@@ -9,12 +9,8 @@ use App\Jobs\SendVerificationEmail;
 use App\Models\MailChange;
 use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
-use Intervention\Image\Drivers\Gd\Driver;
-use Intervention\Image\ImageManager as Image;
 
 abstract class SettingsController extends Controller
 {
@@ -105,37 +101,6 @@ abstract class SettingsController extends Controller
                 'url' => $link['url'],
             ]);
         }
-    }
-
-    public static function deleteProfilePicture(User $user): bool
-    {
-        if ($user->avatar !== null) {
-            File::delete(public_path('/uploads/avatars/' . $user->avatar));
-            $user->update(['avatar' => null]);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public static function updateProfilePicture(string $avatar): bool
-    {
-        $filename = strtr(':userId_:time.png', [':userId' => Auth::user()->id, ':time' => time()]);
-
-        (new Image(new Driver()))->read($avatar)
-            ->resize(400, 400)
-            ->save(public_path('/uploads/avatars/' . $filename));
-
-        if (auth()->user()->avatar) {
-            File::delete(public_path('/uploads/avatars/' . auth()->user()->avatar));
-        }
-
-        auth()->user()->update([
-            'avatar' => $filename,
-        ]);
-
-        return true;
     }
 
     public static function sendEmailVerificationNotification(User $user): void
