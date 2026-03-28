@@ -112,6 +112,7 @@ abstract class MastodonController extends Controller
     {
         $user->socialProfile->update([
             'mastodon_id' => $socialiteUser->id,
+            'mastodon_username' => $socialiteUser->getNickname(),
             'mastodon_token' => $socialiteUser->token,
             'mastodon_server' => $server->id,
         ]);

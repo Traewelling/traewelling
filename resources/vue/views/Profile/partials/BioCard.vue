@@ -35,7 +35,7 @@ const mergedLinks = computed(() => {
                     target="_blank"
                     rel="me"
                 >
-                    <i :class="IconHelper.getLinkIcon(link.name) || 'fa-link'" class="fa-solid" />
+                    <i :class="IconHelper.getLinkIcon(link.name) || 'fa-solid fa-link'" />
                 </a>
             </div>
         </div>

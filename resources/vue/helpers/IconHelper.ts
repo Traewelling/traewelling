@@ -17,13 +17,13 @@ const businessIcons = {
 };
 
 const linkIcons: { [key: string]: string } = {
-    website: 'fa-globe',
-    instagram: 'fa-instagram',
-    bluesky: 'fa-bluesky',
-    facebook: 'fa-facebook',
-    mastodon: 'fa-mastodon',
-    tiktok: 'fa-tiktok',
-    github: 'fa-github',
+    website: 'fa-solid fa-globe',
+    instagram: 'fa-brands fa-instagram',
+    bluesky: 'fa-brands fa-bluesky',
+    facebook: 'fa-brands fa-facebook',
+    mastodon: 'fa-brands fa-mastodon',
+    tiktok: 'fa-brands fa-tiktok',
+    github: 'fa-brands fa-github',
 };
 
 export class IconHelper {

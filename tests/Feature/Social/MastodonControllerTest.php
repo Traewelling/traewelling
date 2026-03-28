@@ -553,7 +553,9 @@ class MastodonControllerTest extends FeatureTestCase
         $result = MastodonController::getUserFromSocialite($socialiteUser, $server);
 
         $this->assertEquals($user->id, $result->id);
-        $this->assertEquals('new_token', $user->socialProfile->fresh()->mastodon_token);
+        $fresh = $user->socialProfile->fresh();
+        $this->assertEquals('new_token', $fresh->mastodon_token);
+        $this->assertEquals('testuser', $fresh->mastodon_username);
     }
 
     public function test_get_user_from_socialite_links_to_authenticated_user(): void
@@ -572,8 +574,10 @@ class MastodonControllerTest extends FeatureTestCase
         $result = MastodonController::getUserFromSocialite($socialiteUser, $server);
 
         $this->assertEquals($user->id, $result->id);
-        $this->assertEquals('my_token', $user->socialProfile->fresh()->mastodon_token);
-        $this->assertEquals(99999, $user->socialProfile->fresh()->mastodon_id);
+        $fresh = $user->socialProfile->fresh();
+        $this->assertEquals('my_token', $fresh->mastodon_token);
+        $this->assertEquals(99999, $fresh->mastodon_id);
+        $this->assertEquals('authuser', $fresh->mastodon_username);
     }
 
     public function test_get_user_from_socialite_creates_new_user_when_registration_enabled(): void
@@ -593,6 +597,7 @@ class MastodonControllerTest extends FeatureTestCase
         $this->assertNotNull($result);
         $this->assertDatabaseHas('users', ['username' => 'newuser']);
         $this->assertEquals('brand_new_token', $result->socialProfile->mastodon_token);
+        $this->assertEquals('newuser', $result->socialProfile->mastodon_username);
     }
 
     public function test_get_user_from_socialite_aborts_when_registration_disabled(): void
