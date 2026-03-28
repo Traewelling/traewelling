@@ -14,6 +14,7 @@ export default {
             default: '',
         },
     },
+    emits: ['hidden'],
     data() {
         return {
             modal: null,
@@ -26,6 +27,9 @@ export default {
         trans,
         mount() {
             this.modal = new Modal(this.$refs.myModal, {});
+            this.$refs.myModal.addEventListener('hidden.bs.modal', () => {
+                this.$emit('hidden');
+            });
         },
         show() {
             this.modal.show();
