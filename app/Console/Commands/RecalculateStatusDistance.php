@@ -3,8 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Exceptions\DistanceDeviationException;
-use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Models\Status;
+use App\Services\Checkin\CheckinService;
 use Illuminate\Console\Command;
 
 class RecalculateStatusDistance extends Command
@@ -22,7 +22,7 @@ class RecalculateStatusDistance extends Command
         foreach ($statuses as $status) {
             try {
                 $oldDistance = $status->checkin->distance;
-                TrainCheckinController::refreshDistanceAndPoints(status: $status, resetPolyline: true);
+                app(CheckinService::class)->refreshDistanceAndPoints(status: $status, resetPolyline: true);
                 $this->info(sprintf('#%d: %d -> %d', $status->id, $oldDistance, $status->checkin->distance));
             } catch (DistanceDeviationException) {
                 $this->error(sprintf('#%d: DistanceDeviationException occurred', $status->id));

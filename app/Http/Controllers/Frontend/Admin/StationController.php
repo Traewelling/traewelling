@@ -7,7 +7,7 @@ use App\Exceptions\Wikidata\FetchException;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\StationResource;
 use App\Models\Station;
-use App\Services\StationService;
+use App\Services\Checkin\StationService;
 use App\Services\Wikidata\WikidataImportService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;

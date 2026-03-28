@@ -8,7 +8,6 @@ use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Events\StatusUpdateEvent;
 use App\Http\Controllers\Backend\Support\LocationController;
-use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\UserController as UserBackend;
@@ -18,6 +17,7 @@ use App\Models\Status;
 use App\Models\Stopover;
 use App\Models\Ticket;
 use App\Models\Trip;
+use App\Services\Checkin\CheckinService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -565,7 +565,7 @@ class StatusController extends Controller
                     return $this->sendError('Invalid stopover given', 400);
                 }
 
-                TrainCheckinController::changeDestination(
+                app(CheckinService::class)->changeDestination(
                     checkin: $status->checkin,
                     newDestinationStopover: $stopover,
                 );

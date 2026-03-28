@@ -6,7 +6,6 @@ use App\Dto\Internal\CheckInRequestDto;
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Enum\WebhookEvent;
-use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\StatusController;
 use App\Jobs\MonitoredCallWebhookJob;
 use App\Models\Station;
@@ -109,7 +108,7 @@ class WebhookStatusTest extends ApiTestCase
         );
         $trip->load('stopovers.station');
         $goettingen = $trip->stopovers->first(fn ($s) => $s->station->name === self::GOETTINGEN_HBF['name']);
-        TrainCheckinController::changeDestination($checkin, $goettingen);
+        app(CheckinService::class)->changeDestination($checkin, $goettingen);
 
         Bus::assertDispatched(function (MonitoredCallWebhookJob $job) use ($status) {
             assertEquals(

@@ -9,11 +9,11 @@ use App\Enum\StatusVisibility;
 use App\Events\StatusUpdateEvent;
 use App\Http\Controllers\Backend\Support\LocationController;
 use App\Http\Controllers\Backend\Transport\PointsCalculationController;
-use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Resources\AdminStatusResource;
 use App\Models\Station;
 use App\Models\Status;
 use App\Models\User;
+use App\Services\Checkin\CheckinService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Validation\Rules\Enum;
@@ -187,7 +187,7 @@ class AdminStatusController extends Controller
             'arrival' => $newArrival,
             'distance' => $distanceInMeters,
             'points' => $validated['points'] ?? $pointCalculation->points,
-            'duration' => TrainCheckinController::calculateCheckinDuration($status->checkin, false),
+            'duration' => app(CheckinService::class)->calculateCheckinDuration($status->checkin, false),
         ]);
 
         StatusUpdateEvent::dispatch($status->refresh());
