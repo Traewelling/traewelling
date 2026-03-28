@@ -12,6 +12,7 @@ use App\Jobs\MonitoredCallWebhookJob;
 use App\Models\Station;
 use App\Models\User;
 use App\Repositories\TripRepository;
+use App\Services\Checkin\CheckinService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
@@ -399,7 +400,7 @@ class WebhookStatusTest extends ApiTestCase
             ->setTravelReason(Business::PRIVATE)
             ->setStatusVisibility(StatusVisibility::PUBLIC)
             ->setBody(self::EXAMPLE_BODY);
-        $checkin = new TrainCheckinController()->checkin($dto);
+        $checkin = new CheckinService()->checkin($dto);
 
         return $checkin->status;
     }

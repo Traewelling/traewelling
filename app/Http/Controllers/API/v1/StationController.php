@@ -5,7 +5,6 @@ namespace App\Http\Controllers\API\v1;
 use App\DataProviders\Motis;
 use App\Enum\DataProvider;
 use App\Enum\StationIdentifierType;
-use App\Http\Controllers\Backend\Transport\StationController as StationBackendController;
 use App\Http\Resources\StationResource;
 use App\Models\Checkin;
 use App\Models\Event;
@@ -15,6 +14,7 @@ use App\Models\StationIdentifier;
 use App\Models\Stopover;
 use App\Models\Trip;
 use App\Repositories\StationRepository;
+use App\Services\Checkin\StationService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -25,12 +25,10 @@ use OpenApi\Attributes as OA;
 
 class StationController extends Controller
 {
-    private StationRepository $stationRepository;
-
-    public function __construct(StationRepository $stationRepository)
-    {
-        $this->stationRepository = $stationRepository;
-    }
+    public function __construct(
+        private StationRepository $stationRepository,
+        private StationService $stationService
+    ) {}
 
     public function store(Request $request): StationResource
     {
@@ -304,7 +302,7 @@ class StationController extends Controller
 
         // fuzzy search
         if (array_key_exists('query', $validated)) {
-            $stations = (new StationBackendController())->search($validated['query']);
+            $stations = $this->stationService->search($validated['query']);
 
             if ($withIdentifiers) {
                 $stations->loadMissing('stationIdentifiers');

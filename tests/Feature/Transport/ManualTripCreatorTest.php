@@ -6,10 +6,10 @@ use App\Dto\Internal\CheckInRequestDto;
 use App\Enum\HafasTravelType;
 use App\Enum\TripSource;
 use App\Http\Controllers\Backend\Transport\ManualTripCreator;
-use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Models\Operator;
 use App\Models\Station;
 use App\Models\User;
+use App\Services\Checkin\CheckinService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\FeatureTestCase;
@@ -82,7 +82,7 @@ class ManualTripCreatorTest extends FeatureTestCase
             ->setDeparture($departure)
             ->setDestination($destinationStation)
             ->setArrival($arrival);
-        $checkin = new TrainCheckinController()->checkin($dto);
+        $checkin = new CheckinService()->checkin($dto);
 
         $this->assertDatabaseHas('train_checkins', [
             'trip_id' => $trip->trip_id,

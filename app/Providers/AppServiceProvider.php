@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\DataProviders\DataProviderBuilder;
+use App\DataProviders\DataProviderInterface;
 use App\Helpers\Lang;
 use App\Http\Controllers\Backend\Auth\AuthorizationController;
 use App\Http\Controllers\Backend\VersionController;
@@ -36,6 +38,9 @@ class AppServiceProvider extends ServiceProvider
         Passport::tokensExpireIn(CarbonInterval::minutes(60));
         Passport::refreshTokensExpireIn(CarbonInterval::days(30));
         Passport::personalAccessTokensExpireIn(CarbonInterval::days(90));
+
+        $dataProvider = new DataProviderBuilder()->build();
+        $this->app->instance(DataProviderInterface::class, $dataProvider);
     }
 
     /**

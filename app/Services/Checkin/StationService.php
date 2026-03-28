@@ -1,25 +1,23 @@
 <?php
 
-namespace App\Http\Controllers\Backend\Transport;
+namespace App\Services\Checkin;
 
-use App\DataProviders\DataProviderBuilder;
 use App\DataProviders\DataProviderInterface;
-use App\Http\Controllers\Controller;
 use App\Models\Station;
 use App\Models\User;
 use App\Repositories\StationRepository;
 use Illuminate\Support\Collection;
 
-class StationController extends Controller
+class StationService
 {
-    private DataProviderInterface $dataProvider;
+    public function __construct(
+        private StationRepository $stationRepository,
+        private DataProviderInterface $dataProvider
+    ) {}
 
-    private StationRepository $stationRepository;
-
-    public function __construct(?StationRepository $stationRepository = null)
+    public function getLatestArrivalsForUser(User $user, int $limit): Collection
     {
-        $this->dataProvider = new DataProviderBuilder()->build();
-        $this->stationRepository = $stationRepository ?? new StationRepository();
+        return $this->stationRepository->getLatestArrivalsForUser(user: $user, maxCount: $limit);
     }
 
     public function search(string $search): Collection
@@ -47,10 +45,5 @@ class StationController extends Controller
         }
 
         return $stations;
-    }
-
-    public function getLatestArrivalsForUser(User $user, int $limit): Collection
-    {
-        return $this->stationRepository->getLatestArrivalsForUser(user: $user, maxCount: $limit);
     }
 }

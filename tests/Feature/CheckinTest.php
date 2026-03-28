@@ -4,10 +4,10 @@ namespace Tests\Feature;
 
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\DataProviderException;
-use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Models\Station;
 use App\Models\Trip;
 use App\Models\User;
+use App\Services\Checkin\CheckinService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\FeatureTestCase;
 use Tests\Helpers\CheckinRequestTestHydrator;
@@ -18,12 +18,12 @@ class CheckinTest extends FeatureTestCase
 
     private string $plus_one_day_then_8pm = '+1 day 8:00';
 
-    private TrainCheckinController $trainCheckinController;
+    private CheckinService $checkinServicew;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->trainCheckinController = app(TrainCheckinController::class);
+        $this->checkinServicew = app(CheckinService::class);
     }
 
     /**
@@ -107,7 +107,7 @@ class CheckinTest extends FeatureTestCase
         );
 
         try {
-            $this->trainCheckinController->checkin((new CheckinRequestTestHydrator($user))->hydrateFromTrip($baseTrip));
+            $this->checkinServicew->checkin((new CheckinRequestTestHydrator($user))->hydrateFromTrip($baseTrip));
         } catch (DataProviderException $e) {
             $this->markTestSkipped($e->getMessage());
         }
@@ -115,7 +115,7 @@ class CheckinTest extends FeatureTestCase
         $caseCount = 1; // This variable is needed to output error messages in case of a failed test
         foreach ($collisionTrips as $trip) {
             try {
-                $this->trainCheckinController->checkin((new CheckinRequestTestHydrator($user))->hydrateFromTrip($trip));
+                $this->checkinServicew->checkin((new CheckinRequestTestHydrator($user))->hydrateFromTrip($trip));
                 $this->fail("Expected exception for Collision Case $caseCount not thrown");
             } catch (CheckInCollisionException $exception) {
                 $this->assertEquals($baseTrip->linename, $exception->checkin->trip->first()->linename);
@@ -128,7 +128,7 @@ class CheckinTest extends FeatureTestCase
         // check normal checkin possibility
         foreach ($nonCollisionTrips as $trip) {
             try {
-                $this->trainCheckinController->checkin((new CheckinRequestTestHydrator($user))->hydrateFromTrip($trip));
+                $this->checkinServicew->checkin((new CheckinRequestTestHydrator($user))->hydrateFromTrip($trip));
                 $this->assertTrue(true);
             } catch (CheckInCollisionException $exception) {
                 $this->assertEquals($baseTrip->linename, $exception->checkin->trip->first()->linename);
