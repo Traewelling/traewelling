@@ -33,7 +33,11 @@ export const useActiveCheckin = defineStore('activeStatus', {
         async fetchActiveStatus(): Promise<void> {
             // remove status if it arrived more than 2 Minutes ago
 
-            const time = this.status?.train?.destination?.arrival ?? this.status?.train?.destination?.departure ?? null;
+            const time =
+                this.status?.train?.manualArrival ??
+                this.status?.train?.destination?.arrival ??
+                this.status?.train?.destination?.departure ??
+                null;
             if (time && Date.parse(time) < Date.now() - 60 * 2 * 1000) {
                 this.status = null;
             }
