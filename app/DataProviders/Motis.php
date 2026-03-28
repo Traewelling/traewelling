@@ -338,7 +338,7 @@ class Motis extends Controller implements DataProviderInterface
             $entries = $response->json('stopTimes');
             CacheKey::increment(HCK::DEPARTURES_SUCCESS);
 
-            return $this->hydrator->mapDepartures($entries, $station, $this->source);
+            return $this->hydrator->mapDepartures($entries, $station, $this->source, $transitousIdentifier->identifier);
         } catch (JsonException $exception) {
             report($exception);
             throw new DataProviderException(__('messages.exception.motis.general'));
