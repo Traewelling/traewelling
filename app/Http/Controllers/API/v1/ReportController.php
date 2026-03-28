@@ -80,7 +80,7 @@ class ReportController extends Controller
     )]
     public function show(string $reportId): ReportResource
     {
-        $report = Report::with(['reporter', 'activities.causer'])->findOrFail($reportId);
+        $report = Report::with(['reporter', 'activitiesAsSubject.causer'])->findOrFail($reportId);
         $this->authorize('view', $report);
 
         return new ReportResource($report);

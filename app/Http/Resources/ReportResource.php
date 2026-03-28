@@ -51,7 +51,7 @@ class ReportResource extends JsonResource
             'description' => $this->description,
             'reporter' => new LightUserResource($this->whenLoaded('reporter')),
             'created_at' => $this->created_at,
-            'activities' => $this->whenLoaded('activities', fn () => $this->activities->map(fn ($activity) => [
+            'activities' => $this->whenLoaded('activitiesAsSubject', fn () => $this->activitiesAsSubject->map(fn ($activity) => [
                 'id' => $activity->id,
                 'description' => $activity->description,
                 'causer' => $activity->causer ? new LightUserResource($activity->causer) : null,
