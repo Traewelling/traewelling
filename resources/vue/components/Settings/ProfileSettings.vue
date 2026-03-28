@@ -84,9 +84,7 @@ const updateProfile = () => {
             if (res.ok) {
                 userData.value = mapData(res.data.data);
                 userStore.fetchSettings(true);
-                profileSettingsStore.updateDefaultStatusVisibility(
-                    res.data.data.defaultStatusVisibility,
-                );
+                profileSettingsStore.updateDefaultStatusVisibility(res.data.data.defaultStatusVisibility);
                 notyf.success(trans('settings.saved'));
             }
         })
