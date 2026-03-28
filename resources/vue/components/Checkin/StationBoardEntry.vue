@@ -37,9 +37,9 @@ const delayClass = computed((): string => {
         return '';
     }
     let color = 'text-success';
-    if (props.item.delay > 300) {
+    if (props.item.delay > 5) {
         color = 'text-danger';
-    } else if (props.item.delay >= 60) {
+    } else if (props.item.delay >= 1) {
         color = 'text-warning';
     }
     return color;
