@@ -11,6 +11,7 @@ use App\Models\Checkin;
 use App\Models\Event;
 use App\Models\EventSuggestion;
 use App\Models\Follow;
+use App\Models\Stopover;
 use App\Models\User;
 use App\Notifications\EventSuggestionProcessed;
 use App\Notifications\UserFollowed;
@@ -360,5 +361,44 @@ class NotificationsTest extends ApiTestCase
             ],
         ]
         );
+    }
+
+    public function test_zero_minute_overlap_triggers_notification(): void
+    {
+        // GIVEN: Alice is on a trip; her check-in ends at $sharedTime
+        $alice = User::factory()->create();
+        $aliceCheckin = Checkin::factory(['user_id' => $alice->id])->create();
+        $sharedTime = $aliceCheckin->arrival;
+
+        // GIVEN: A new stopover on the same trip whose departure is exactly $sharedTime
+        //        (mirrors the scenario: Stop B dep :20, Stop C arr :20)
+        $bobOriginStopover = Stopover::factory([
+            'trip_id' => $aliceCheckin->trip_id,
+            'arrival_planned' => $sharedTime->clone()->subMinute(),
+            'departure_planned' => $sharedTime,
+        ])->create();
+
+        $bobDestStopover = Stopover::factory([
+            'trip_id' => $aliceCheckin->trip_id,
+            'arrival_planned' => $sharedTime->clone()->addMinutes(2),
+            'departure_planned' => $sharedTime->clone()->addMinutes(2),
+        ])->create();
+
+        $this->assertDatabaseCount('notifications', 0);
+
+        // WHEN: Bob checks in on the same trip, departing exactly at $sharedTime
+        $bob = User::factory()->create();
+        $dto = (new CheckinRequestTestHydrator($bob))->hydrateFromStopovers(
+            $aliceCheckin->trip,
+            $bobOriginStopover,
+            $bobDestStopover
+        );
+        new CheckinService()->checkin($dto);
+
+        // THEN: Alice receives a UserJoinedConnection notification
+        $this->assertDatabaseHas('notifications', [
+            'notifiable_id' => $alice->id,
+            'type' => UserJoinedConnection::class,
+        ]);
     }
 }

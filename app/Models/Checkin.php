@@ -216,8 +216,8 @@ class Checkin extends Model
             ->where([
                 ['status_id', '<>', $this->status->id],
                 ['trip_id', '=', $this->trip->trip_id],
-                ['arrival', '>', $this->departure],
-                ['departure', '<', $this->arrival],
+                ['arrival', '>=', $this->departure],
+                ['departure', '<=', $this->arrival],
             ])
             ->get()
             ->map(function (Checkin $checkin) {
