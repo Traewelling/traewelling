@@ -227,7 +227,7 @@ class MotisHydrator
         return false;
     }
 
-    public function mapDepartures(mixed $entries, Station $station, DataProvider $source): FilteredDepartures
+    public function mapDepartures(mixed $entries, Station $station, DataProvider $source, ?string $queriedStopId = null): FilteredDepartures
     {
         $departures = collect();
         $removedEntries = [];
@@ -249,12 +249,17 @@ class MotisHydrator
             $platformPlanned = $rawDepartureStation['scheduledTrack'] ?? '';
             $platformReal = $rawDepartureStation['track'] ?? $platformPlanned;
             try {
-                $departureStation = $this->stationRepository->getStationsByIdentifiers([$rawDepartureStation['stopId']], $source)->first();
-                if ($departureStation === null) {
-                    $stationId = $rawDepartureStation['stopId'];
-                    $departureStation = $this->stationRepository->updateOrCreateByIfopt($stationId, $source, $rawDepartureStation['lat'], $rawDepartureStation['lon']);
-                    // if station does not exist, request it from API
-                    $departureStation = $departureStation ?? $this->stationRepository->createMotisStationIdentifier($rawDepartureStation, $source);
+                // If the stop in the response matches the queried stop, use the requested station directly.
+                if ($queriedStopId !== null && $rawDepartureStation['stopId'] === $queriedStopId) {
+                    $departureStation = $station;
+                } else {
+                    $departureStation = $this->stationRepository->getStationsByIdentifiers([$rawDepartureStation['stopId']], $source)->first();
+                    if ($departureStation === null) {
+                        $stationId = $rawDepartureStation['stopId'];
+                        $departureStation = $this->stationRepository->updateOrCreateByIfopt($stationId, $source, $rawDepartureStation['lat'], $rawDepartureStation['lon']);
+                        // if station does not exist, request it from API
+                        $departureStation = $departureStation ?? $this->stationRepository->createMotisStationIdentifier($rawDepartureStation, $source);
+                    }
                 }
             } catch (Exception $exception) {
                 Log::error($exception->getMessage());
