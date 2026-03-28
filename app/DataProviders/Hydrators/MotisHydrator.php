@@ -120,6 +120,7 @@ class MotisHydrator
         $station = $station ?? $this->stationRepository->createMotisStationIdentifier($rawStop, $source);
         $identifier = $this->stationRepository->getStationIdentifierByIdentifier($rawStop['stopId'], $source);
 
+        $isCancelled = (bool) ($rawStop['cancelled'] ?? false);
         $departurePlanned = isset($rawStop['scheduledDeparture']) ? Carbon::parse($rawStop['scheduledDeparture']) : null;
         $departureReal = isset($rawStop['departure']) ? Carbon::parse($rawStop['departure']) : null;
         $arrivalPlanned = isset($rawStop['scheduledArrival']) ? Carbon::parse($rawStop['scheduledArrival']) : null;
@@ -131,13 +132,14 @@ class MotisHydrator
         return [
             'train_station_id' => $station->id,
             'arrival_planned' => $arrivalPlanned ?? $departurePlanned,
-            'arrival_real' => $realTime ? $arrivalReal ?? $departureReal ?? null : null,
+            'arrival_real' => !$isCancelled && $realTime ? $arrivalReal ?? $departureReal ?? null : null,
             'departure_planned' => $departurePlanned ?? $arrivalPlanned,
-            'departure_real' => $realTime ? $departureReal ?? $arrivalReal ?? null : null,
+            'departure_real' => !$isCancelled && $realTime ? $departureReal ?? $arrivalReal ?? null : null,
             'arrival_platform_planned' => $platformPlanned,
             'departure_platform_planned' => $platformPlanned,
-            'arrival_platform_real' => $realTime ? $platformReal : null,
-            'departure_platform_real' => $realTime ? $platformReal : null,
+            'arrival_platform_real' => !$isCancelled && $realTime ? $platformReal : null,
+            'departure_platform_real' => !$isCancelled && $realTime ? $platformReal : null,
+            'cancelled' => $isCancelled,
             'station_identifier_id' => $identifier?->id ?? null,
         ];
     }
@@ -266,10 +268,12 @@ class MotisHydrator
                 $departureStation = $station;
             }
 
+            $isCancelled = (bool) ($rawDepartureStation['cancelled'] ?? false);
+
             $departure = new Departure(
                 station: $departureStation,
                 plannedDeparture: Carbon::parse($rawDepartureStation['scheduledDeparture']),
-                realDeparture: !empty($rawDeparture['realTime']) ? Carbon::parse($rawDepartureStation['departure']) : null,
+                realDeparture: !$isCancelled && !empty($rawDeparture['realTime']) ? Carbon::parse($rawDepartureStation['departure']) : null,
                 trip: new BahnTrip(
                     tripId: $tripId,
                     direction: $rawDeparture['headsign'],
@@ -284,6 +288,7 @@ class MotisHydrator
                 ),
                 plannedPlatform: $platformPlanned,
                 realPlatform: $platformReal,
+                cancelled: $isCancelled,
             );
 
             $departures->push($departure);

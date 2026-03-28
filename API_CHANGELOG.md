@@ -36,6 +36,10 @@ Check back here regularly to stay ahead of removals.
 
 ---
 
+# 2026-03-28
+
+- `DepartureResource`: added `cancelled` (bool) field — `true` when the departure is cancelled according to the data provider
+
 # 2026-03-21
 
 - `GET /api/v1/status/{id}`: New optional query parameter `withIdentifiers`. When `true`, includes `identifiers` in origin and destination stopovers (`StopoverResource`)

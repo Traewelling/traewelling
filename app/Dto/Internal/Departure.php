@@ -19,7 +19,9 @@ readonly class Departure
 
     public ?string $realPlatform;
 
-    public function __construct(Station $station, Carbon $plannedDeparture, ?Carbon $realDeparture, BahnTrip $trip, ?string $plannedPlatform, ?string $realPlatform)
+    public bool $cancelled;
+
+    public function __construct(Station $station, Carbon $plannedDeparture, ?Carbon $realDeparture, BahnTrip $trip, ?string $plannedPlatform, ?string $realPlatform, bool $cancelled = false)
     {
         $this->station = $station;
         $this->plannedDeparture = $plannedDeparture;
@@ -27,6 +29,7 @@ readonly class Departure
         $this->trip = $trip;
         $this->plannedPlatform = $plannedPlatform;
         $this->realPlatform = $realPlatform;
+        $this->cancelled = $cancelled;
     }
 
     public function getDelay(): ?int

@@ -9306,6 +9306,11 @@
                         "nullable": true,
                         "deprecated": true
                     },
+                    "cancelled": {
+                        "description": "Whether this departure is cancelled",
+                        "type": "boolean",
+                        "example": false
+                    },
                     "station": {
                         "$ref": "#/components/schemas/StationResource"
                     }

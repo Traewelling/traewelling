@@ -44,7 +44,7 @@ watch(
 <template>
     <li>
         <i class="trwl-bulletpoint" aria-hidden="true" />
-        <span class="text-trwl float-end">
+        <span class="text-trwl float-end" :class="{ 'cancelled-time': status.train.origin.cancelled }">
             <s v-show="arrival.originalTime" class="text-muted me-1">
                 {{ arrival.originalTime?.toLocaleString(DateTime.TIME_SIMPLE) }}
             </s>
@@ -56,8 +56,12 @@ watch(
         <a
             :href="`/stationboard?stationId=${status.train.origin.id}&${status.train.origin.name}`"
             class="text-trwl clearfix"
+            :class="{ 'cancelled-name': status.train.origin.cancelled }"
         >
             {{ status.train.origin.name }}
+            <small v-if="status.train.origin.cancelled" class="badge cancelled-badge ms-1">{{
+                $t('stationboard.stop-cancelled')
+            }}</small>
         </a>
 
         <p class="train-status text-muted m-0">
@@ -128,4 +132,29 @@ watch(
     </li>
 </template>
 
-<style scoped></style>
+<style scoped lang="scss">
+@import '../../../../sass/_variables.scss';
+
+.cancelled-time {
+    text-decoration: line-through !important;
+    text-decoration-color: $trwlRot !important;
+    text-decoration-thickness: 2px !important;
+}
+
+.cancelled-name {
+    text-decoration: line-through !important;
+    text-decoration-color: $trwlRot !important;
+    text-decoration-thickness: 2px !important;
+}
+
+.cancelled-badge {
+    font-size: 0.6em;
+    background-color: $trwlRot;
+    color: white;
+    border-radius: 3px;
+    padding: 1px 5px;
+    vertical-align: middle;
+    text-decoration: none;
+    display: inline-block;
+}
+</style>

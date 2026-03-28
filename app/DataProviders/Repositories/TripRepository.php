@@ -32,6 +32,7 @@ class TripRepository
                         'departure_platform_planned' => $stopover->departure_platform_planned,
                         'arrival_platform_real' => $stopover->arrival_platform_real,
                         'departure_platform_real' => $stopover->departure_platform_real,
+                        'cancelled' => $stopover->cancelled,
                         'station_identifier_id' => $stopover->station_identifier_id,
                     ]
                 );

@@ -124,23 +124,37 @@ export default {
     <LoadingSkeletonRows v-if="loading" :row-height="30" class="mt-4" :rows="10" />
 
     <ul v-else-if="lineRun" class="timeline">
-        <li v-for="item in lineRun.stopovers" :key="item" @click.prevent="handleSetDestination(item)">
-            <i class="trwl-bulletpoint" aria-hidden="true" />
-            <span class="float-end" :class="{ 'text-trwl': !item.cancelled, 'cancelled-stop': item.cancelled }">
-                <small
-                    v-if="item.isArrivalDelayed || item.isDepartureDelayed"
-                    :class="{ 'text-muted': !item.cancelled }"
-                    class="text-decoration-line-through"
-                >
-                    {{ item.isArrivalDelayed ? formatTime(item.arrivalPlanned) : formatTime(item.departurePlanned) }}
-                </small>
-                &nbsp;
-                <span>{{ formatTime(getTime(item)) }}</span>
+        <li
+            v-for="item in lineRun.stopovers"
+            :key="item"
+            :class="{ 'cancelled-row': item.cancelled }"
+            @click.prevent="handleSetDestination(item)"
+        >
+            <i class="trwl-bulletpoint" :class="{ 'cancelled-bullet': item.cancelled }" aria-hidden="true" />
+            <span class="float-end">
+                <template v-if="item.cancelled">
+                    <span class="cancelled-time">{{ formatTime(getTime(item)) }}</span>
+                </template>
+                <template v-else>
+                    <small
+                        v-if="item.isArrivalDelayed || item.isDepartureDelayed"
+                        class="text-muted text-decoration-line-through"
+                    >
+                        {{
+                            item.isArrivalDelayed ? formatTime(item.arrivalPlanned) : formatTime(item.departurePlanned)
+                        }}
+                    </small>
+                    &nbsp;
+                    <span class="text-trwl">{{ formatTime(getTime(item)) }}</span>
+                </template>
             </span>
 
-            <a href="#" class="clearfix" :class="{ 'text-trwl': !item.cancelled, 'cancelled-stop': item.cancelled }">{{
-                item.name
-            }}</a>
+            <a href="#" class="clearfix text-trwl" :class="{ 'cancelled-name': item.cancelled }">
+                {{ item.name }}
+                <small v-if="item.cancelled" class="badge cancelled-badge ms-1">{{
+                    $t('stationboard.stop-cancelled')
+                }}</small>
+            </a>
         </li>
     </ul>
     <div v-if="lineRun?.dataSource?.attribution" class="pt-5 pb-2">
@@ -152,11 +166,35 @@ export default {
 <style scoped lang="scss">
 @import '../../sass/_variables.scss';
 
-.cancelled-stop {
-    color: white !important;
-    opacity: 75%;
-    text-decoration-color: $red !important;
-    text-decoration-thickness: 2px !important;
+.cancelled-row {
+    opacity: 0.65;
+    cursor: pointer;
+}
+
+.cancelled-bullet {
+    background-color: $trwlRot !important;
+}
+
+.cancelled-time {
+    color: $trwlRot;
     text-decoration: line-through;
+    text-decoration-thickness: 2px;
+}
+
+.cancelled-name {
+    text-decoration: line-through !important;
+    text-decoration-color: $trwlRot !important;
+    text-decoration-thickness: 2px !important;
+}
+
+.cancelled-badge {
+    font-size: 0.6em;
+    background-color: $trwlRot;
+    color: white;
+    border-radius: 3px;
+    padding: 1px 5px;
+    vertical-align: middle;
+    text-decoration: none;
+    display: inline-block;
 }
 </style>

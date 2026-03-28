@@ -1125,6 +1125,11 @@ export interface DepartureResource {
    * @deprecated
    */
   loadFactor?: string | null;
+  /**
+   * Whether this departure is cancelled
+   * @example false
+   */
+  cancelled?: boolean;
   station: StationResource;
 }
 
