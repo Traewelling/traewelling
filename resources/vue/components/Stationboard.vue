@@ -39,6 +39,7 @@ export default {
             pushState: null,
             fastCheckinIbnr: null,
             removedLicenses: [],
+            suppressDestinationWatcher: false,
         };
     },
     computed: {
@@ -68,6 +69,9 @@ export default {
     },
     watch: {
         selectedDestination(value) {
+            if (this.suppressDestinationWatcher) {
+                return;
+            }
             if (value === null) {
                 window.history.back();
             } else {
@@ -262,6 +266,29 @@ export default {
             this.selectedDestination = null;
             this.fastCheckinIbnr = null;
         },
+        onModalHidden() {
+            if (!this.show) {
+                // Modal was hidden by our own code (analyzeUrlParams), nothing to do
+                return;
+            }
+            // Modal was closed externally (backdrop click, ESC key): reset state without
+            // triggering the selectedDestination watcher's history.back()
+            this.suppressDestinationWatcher = true;
+            this.selectedDestination = null;
+            this.selectedTrain = null;
+            this.fastCheckinIbnr = null;
+            this.show = false;
+            this.suppressDestinationWatcher = false;
+
+            // Restore URL to stationboard (without trip params)
+            const params = new URLSearchParams({
+                stationId: this.trwlStationId,
+                stationName: this.stationName,
+                when: this.fetchTime.minus({ minutes: 5 }).toString(),
+                travelType: this.travelType || '',
+            });
+            window.history.replaceState({}, '', `?${params.toString()}`);
+        },
         showPastDataError() {
             window.notyf.error(trans('stationboard.no-past-data'));
         },
@@ -334,7 +361,7 @@ export default {
         </div>
     </div>
 
-    <FullScreenModal ref="modal" body-class="{{ showCheckinInterface ? 'p-0' : ''}}">
+    <FullScreenModal ref="modal" body-class="{{ showCheckinInterface ? 'p-0' : ''}}" @hidden="onModalHidden">
         <template v-if="selectedTrain" #header>
             <div class="col-1 align-items-center d-flex">
                 <ProductIcon :product="selectedTrain.line.product" />
