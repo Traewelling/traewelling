@@ -76,6 +76,7 @@ use OpenApi\Attributes as OA;
         ),
         new OA\Property(property: 'currentTripPosition', description: 'Deprecated. Always null.', type: 'object', nullable: true, deprecated: true),
         new OA\Property(property: 'loadFactor', description: 'Deprecated. Always null.', type: 'string', nullable: true, deprecated: true),
+        new OA\Property(property: 'cancelled', description: 'Whether this departure is cancelled', type: 'boolean', example: false),
         new OA\Property(property: 'station', ref: '#/components/schemas/StationResource'),
     ],
 )]
@@ -137,6 +138,7 @@ class DepartureResource extends JsonResource
             ],
             'currentTripPosition' => null, // @deprecated - remove after 2026-09-30
             'loadFactor' => null, // @deprecated - remove after 2026-09-30
+            'cancelled' => $this->resource->cancelled,
             'station' => new StationResource($this->resource->station),
         ];
     }
