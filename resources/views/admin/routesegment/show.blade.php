@@ -1,4 +1,3 @@
-@php use App\Http\Controllers\Backend\User\ProfilePictureController; @endphp
 @extends('admin.layout')
 
 @section('title', 'Segment ' . $segment->id)

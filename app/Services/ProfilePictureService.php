@@ -1,50 +1,46 @@
 <?php
 
-namespace App\Http\Controllers\Backend\User;
+declare(strict_types=1);
 
-use App\Http\Controllers\Controller;
+namespace App\Services;
+
 use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
 use Intervention\Image\Drivers\Gd\Driver;
-use Intervention\Image\Encoders\PngEncoder;
+use Intervention\Image\Format;
 use Intervention\Image\ImageManager as Image;
 
-abstract class ProfilePictureController extends Controller
+class ProfilePictureService
 {
-    /**
-     * To improve performance, you shouldn't use this method.
-     * Better use the method `getUrl` when you have the user model.
-     */
-    public static function getUrlForUserId(int $userId): string
+    public function getUrlForUserId(int $userId): string
     {
         $user = User::where('id', $userId)->first();
 
-        return self::getUrl(user: $user);
+        return $this->getUrl(user: $user);
     }
 
-    public static function getUrl(User $user): string
+    public function getUrl(User $user): string
     {
         // Avatar is not found or user is blocked -> show default avatar
         if ($user->avatar === null || Gate::denies('view', $user)) {
-            // Return default route to generate users avatar with matching color
             return route('profile.picture', ['username' => $user->username]);
         }
 
         return url('/uploads/avatars/' . $user->avatar);
     }
 
-    public static function generateProfilePicture(User $user): array
+    public function generateProfilePicture(User $user): array
     {
         $publicPath = public_path('/uploads/avatars/' . $user->avatar);
 
         if ($user->avatar === null
             || !file_exists($publicPath)
-            || Gate::denies('view', $user) // e.g. Blocked users always get a default picture
+            || Gate::denies('view', $user) // e.g. blocked users always get a default picture
         ) {
             return [
-                'picture' => self::generateDefaultAvatar($user),
+                'picture' => $this->generateDefaultAvatar($user),
                 'extension' => 'png',
             ];
         }
@@ -61,13 +57,13 @@ abstract class ProfilePictureController extends Controller
             report($exception);
 
             return [
-                'picture' => self::generateDefaultAvatar($user),
+                'picture' => $this->generateDefaultAvatar($user),
                 'extension' => 'png',
             ];
         }
     }
 
-    public static function generateBackgroundHash(string $username): string
+    public function generateBackgroundHash(string $username): string
     {
         $hash = 0;
         $usernameLength = strlen($username);
@@ -82,17 +78,43 @@ abstract class ProfilePictureController extends Controller
         return str_pad(dechex($hash & 0x00FFFFFF), 6, '0');
     }
 
-    /**
-     * @return string Encoded PNG Image
-     */
-    private static function generateDefaultAvatar(User $user): string
+    public function update(User $user, string $avatar): bool
     {
-        $hex = self::generateBackgroundHash($user->username);
+        $filename = strtr(':userId_:time.png', [':userId' => $user->id, ':time' => time()]);
 
-        return (new Image(new Driver()))->create(512, 512)
+        Image::usingDriver(new Driver())->decode($avatar)
+            ->resize(400, 400)
+            ->save(public_path('/uploads/avatars/' . $filename));
+
+        if ($user->avatar) {
+            File::delete(public_path('/uploads/avatars/' . $user->avatar));
+        }
+
+        $user->update(['avatar' => $filename]);
+
+        return true;
+    }
+
+    public function delete(User $user): bool
+    {
+        if ($user->avatar === null) {
+            return false;
+        }
+
+        File::delete(public_path('/uploads/avatars/' . $user->avatar));
+        $user->update(['avatar' => null]);
+
+        return true;
+    }
+
+    private function generateDefaultAvatar(User $user): string
+    {
+        $hex = $this->generateBackgroundHash($user->username);
+
+        return Image::usingDriver(new Driver())->createImage(512, 512)
             ->fill($hex)
-            ->place(public_path('/img/user.png'))
-            ->encode(new PngEncoder())
+            ->insert(public_path('/img/user.png'))
+            ->encodeUsingFormat(Format::PNG)
             ->toString();
     }
 }

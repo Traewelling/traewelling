@@ -1,4 +1,4 @@
-@php use App\Helpers\CacheKey;use App\Http\Controllers\Backend\User\ProfilePictureController; @endphp
+@php use App\Helpers\CacheKey;use App\Services\ProfilePictureService; @endphp
 @extends('admin.layout')
 
 @section('title', 'Trip ' . $trip->id)
@@ -156,23 +156,23 @@
                                     <td>{{$stopover->station?->id}}</td>
                                     <td title="{{$stopover->arrival_planned?->format('Y-m-d')}}">
                                         <span
-                                            style="color: #{{ ProfilePictureController::generateBackgroundHash($stopover->arrival_planned?->format('ddmm') ?? '') }};">
+                                            style="color: #{{ resolve(ProfilePictureService::class)->generateBackgroundHash($stopover->arrival_planned?->format('ddmm') ?? '') }};">
                                             {{userTime($stopover->arrival_planned)}}
                                         </span>
                                         /
                                         <span
-                                            style="color: #{{ ProfilePictureController::generateBackgroundHash($stopover->arrival_real?->format('ddmm') ?? '') }};">
+                                            style="color: #{{ resolve(ProfilePictureService::class)->generateBackgroundHash($stopover->arrival_real?->format('ddmm') ?? '') }};">
                                             {{userTime($stopover->arrival_real)}}
                                         </span>
                                     </td>
                                     <td title="{{$stopover->departure_planned?->format('Y-m-d')}}">
                                         <span
-                                            style="color: #{{ ProfilePictureController::generateBackgroundHash($stopover->departure_planned?->format('ddmm') ?? '') }};">
+                                            style="color: #{{ resolve(ProfilePictureService::class)->generateBackgroundHash($stopover->departure_planned?->format('ddmm') ?? '') }};">
                                             {{userTime($stopover->departure_planned)}}
                                         </span>
                                         /
                                         <span
-                                            style="color: #{{ ProfilePictureController::generateBackgroundHash($stopover->departure_real?->format('ddmm') ?? '') }};">
+                                            style="color: #{{ resolve(ProfilePictureService::class)->generateBackgroundHash($stopover->departure_real?->format('ddmm') ?? '') }};">
                                         {{userTime($stopover->departure_real)}}
                                         </span>
                                     </td>

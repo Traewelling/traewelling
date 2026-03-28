@@ -2,8 +2,8 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Controllers\Backend\User\ProfilePictureController;
 use App\Models\User;
+use App\Services\ProfilePictureService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Attributes as OA;
 
@@ -166,7 +166,7 @@ class UserResource extends JsonResource
             'uuid' => (string) $this->uuid,
             'displayName' => (string) $this->name,
             'username' => (string) $this->username,
-            'profilePicture' => ProfilePictureController::getUrlForUserId($this->id),
+            'profilePicture' => resolve(ProfilePictureService::class)->getUrlForUserId($this->id),
             'totalDistance' => (float) $this->train_distance,
             'totalDuration' => (int) $this->train_duration,
             'points' => (int) $pointsEnabled ? $this->points : 0,

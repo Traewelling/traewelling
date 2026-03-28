@@ -12,7 +12,7 @@
                 <div class="text-center pb-3 pt-3">
                     <div class="image-box pb-2">
                         <img
-                            src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl(auth()->user()) }}"
+                            src="{{ resolve(\App\Services\ProfilePictureService::class)->getUrl(auth()->user()) }}"
                             style="max-width: 96px" alt="{{__('settings.picture')}}"
                             id="theProfilePicture" loading="lazy" decoding="async"
                         />

@@ -22,7 +22,7 @@ abstract class UserController extends Controller
 {
     public static function deleteUserAccount(User $user): ?bool
     {
-        SettingsController::deleteProfilePicture(user: $user);
+        resolve(\App\Services\ProfilePictureService::class)->delete(user: $user);
 
         DatabaseNotification::where([
             'notifiable_id' => $user->id,

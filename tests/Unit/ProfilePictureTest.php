@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Http\Controllers\Backend\User\ProfilePictureController;
+use App\Services\ProfilePictureService;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
@@ -11,8 +11,9 @@ class ProfilePictureTest extends TestCase
     #[DataProvider('pictureColorProvider')]
     public function test_picture_color($avatar)
     {
-        $this->assertEquals(6, strlen(ProfilePictureController::generateBackgroundHash($avatar)));
-        $this->assertTrue(preg_match('^(?:[0-9a-fA-F]{3}){1,2}$^', ProfilePictureController::generateBackgroundHash($avatar)) === 1);
+        $hash = new ProfilePictureService()->generateBackgroundHash($avatar);
+        $this->assertEquals(6, strlen($hash));
+        $this->assertTrue(preg_match('^(?:[0-9a-fA-F]{3}){1,2}$^', $hash) === 1);
     }
 
     public static function pictureColorProvider(): array

@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\Http\Controllers\Backend\User\ProfilePictureController;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\ProfilePictureService;
 use Illuminate\Http\JsonResponse;
 use InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -51,7 +51,7 @@ class WebFingerController extends Controller
             throw new NotFoundHttpException("Couldn't find user");
         }
 
-        $avatarUrl = ProfilePictureController::getUrl($user);
+        $avatarUrl = resolve(ProfilePictureService::class)->getUrl($user);
 
         return new JsonResponse(
             [

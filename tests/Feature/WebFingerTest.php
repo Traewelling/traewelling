@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Http\Controllers\Backend\User\ProfilePictureController;
 use App\Http\Controllers\Backend\WebFingerController;
 use App\Models\User;
+use App\Services\ProfilePictureService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\FeatureTestCase;
 
@@ -23,7 +23,7 @@ class WebFingerTest extends FeatureTestCase
         $response->assertStatus(200);
         $response->assertHeader('Content-Type', 'application/jrd+json');
 
-        $avatarUrl = ProfilePictureController::getUrl($user);
+        $avatarUrl = resolve(ProfilePictureService::class)->getUrl($user);
         $response->assertJson([
             'subject' => 'acct:' . $user->username . '@' . $serverName,
             'aliases' => [
@@ -53,7 +53,7 @@ class WebFingerTest extends FeatureTestCase
         $response->assertStatus(200);
         $response->assertHeader('Content-Type', 'application/jrd+json');
 
-        $avatarUrl = ProfilePictureController::getUrl($user);
+        $avatarUrl = resolve(ProfilePictureService::class)->getUrl($user);
         $response->assertJson([
             'subject' => 'acct:' . $user->username . '@' . $serverName,
             'aliases' => [
