@@ -26,11 +26,15 @@ export default defineComponent({
     },
     computed: {
         departure() {
+            const manual = this.state.status?.train?.manualDeparture ?? null;
+            if (manual) return DateTime.fromISO(manual);
             const dep =
                 this.state.status?.train?.origin?.departure ?? this.state.status?.train?.origin?.arrival ?? null;
             return DateTime.fromISO(dep);
         },
         arrival() {
+            const manual = this.state.status?.train?.manualArrival ?? null;
+            if (manual) return DateTime.fromISO(manual);
             const arr =
                 this.state.status?.train?.destination?.arrival ??
                 this.state.status?.train?.destination?.departure ??
@@ -38,7 +42,20 @@ export default defineComponent({
             return DateTime.fromISO(arr);
         },
         showCard() {
-            return this.state.status !== null && this.state.status !== undefined;
+            return (
+                this.state.status !== null &&
+                this.state.status !== undefined &&
+                this.progress >= 0 &&
+                this.progress <= 100
+            );
+        },
+    },
+    watch: {
+        departure() {
+            this.getProgress();
+        },
+        arrival() {
+            this.getProgress();
         },
     },
     mounted() {
