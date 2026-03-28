@@ -7,10 +7,10 @@ use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Events\StatusUpdateEvent;
 use App\Http\Controllers\Backend\Helper\StatusHelper;
-use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\Controller;
 use App\Models\Status;
 use App\Models\Stopover;
+use App\Services\Checkin\CheckinService;
 use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -91,7 +91,7 @@ class StatusController extends Controller
 
             if (isset($validated['destinationStopoverId'])
                 && $validated['destinationStopoverId'] != $status->checkin->destinationStopover->id) {
-                $pointReason = TrainCheckinController::changeDestination(
+                $pointReason = app(CheckinService::class)->changeDestination(
                     checkin: $status->checkin,
                     newDestinationStopover: Stopover::findOrFail($validated['destinationStopoverId']),
                 );

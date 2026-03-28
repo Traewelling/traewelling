@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Casts\UTCDateTime;
 use App\Enum\TimeType;
-use App\Http\Controllers\Backend\Transport\TrainCheckinController;
+use App\Services\Checkin\CheckinService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -197,7 +197,7 @@ class Checkin extends Model
         }
 
         // Else calculate and cache it
-        return TrainCheckinController::calculateCheckinDuration($this);
+        return app(CheckinService::class)->calculateCheckinDuration($this);
     }
 
     public function getSpeedAttribute(): float

@@ -3,8 +3,8 @@
 namespace App\Jobs;
 
 use App\Enum\Queue;
-use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Models\Checkin;
+use App\Services\Checkin\CheckinService;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -43,7 +43,7 @@ class RecalculateStatusesDistanceForTrip implements ShouldBeUnique, ShouldQueue
 
             try {
                 DB::beginTransaction();
-                TrainCheckinController::refreshDistanceAndPoints($checkin->status);
+                app(CheckinService::class)->refreshDistanceAndPoints($checkin->status);
                 DB::commit();
             } catch (Throwable $e) {
                 DB::rollBack();

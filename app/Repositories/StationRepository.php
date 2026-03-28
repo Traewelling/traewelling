@@ -60,7 +60,7 @@ class StationRepository
         return $stations;
     }
 
-    public function getStationsByIdentifier(string $identifier, StationIdentifierType $type = StationIdentifierType::MOTIS, ?string $origin = null): Collection
+    private function getStationsByIdentifier(string $identifier, StationIdentifierType $type = StationIdentifierType::MOTIS, ?string $origin = null): Collection
     {
         $query = StationIdentifier::with(['station.stationIdentifiers'])
             ->whereIdentifier($identifier)

@@ -13,7 +13,7 @@ interface DataProviderInterface
 
     public function fetchRawHafasTrip(string $tripId, string $lineName);
 
-    public function getStations(string $query, int $results);
+    public function getStations(string $query, int $results = 10);
 
     /** @deprecated use getFilteredDepartures*/
     public function getDepartures(Station $station, Carbon $when, int $duration = 15, ?TravelType $type = null, bool $localtime = false);
