@@ -34,6 +34,20 @@ class MastodonProfileDetails
 
     public function getProfileUrl(): ?string
     {
+        // Construct URL from stored data to avoid a live API call.
+        // This also makes the profile link work for Mastodon-compatible servers
+        // (e.g. GoToSocial) that may implement the accounts API differently.
+        $username = $this->user->socialProfile?->mastodon_username;
+        $serverId = $this->user->socialProfile?->mastodon_server;
+
+        if ($username && $serverId) {
+            $server = MastodonServer::findCached($serverId);
+            if ($server) {
+                return rtrim($server->domain, '/') . '/@' . $username;
+            }
+        }
+
+        // Fallback to API call for users without stored username (pre-migration accounts)
         return $this->getData()['url'] ?? null;
     }
 
@@ -44,6 +58,11 @@ class MastodonProfileDetails
 
     public function getUserName(): ?string
     {
+        if ($this->user->socialProfile?->mastodon_username) {
+            return $this->user->socialProfile->mastodon_username;
+        }
+
+        // Fallback to API call for users without stored username (pre-migration accounts)
         return $this->getData()['username'] ?? null;
     }
 

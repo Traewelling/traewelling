@@ -11,6 +11,7 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property int $user_id
  * @property int|null $mastodon_id
+ * @property string|null $mastodon_username
  * @property int|null $mastodon_server
  * @property string|null $mastodon_token
  * @property Carbon|null $created_at
@@ -38,7 +39,7 @@ class SocialLoginProfile extends Model
     protected $fillable = [
         'user_id',
         'twitter_id',
-        'mastodon_id', 'mastodon_server', 'mastodon_token', 'mastodon_visibility',
+        'mastodon_id', 'mastodon_username', 'mastodon_server', 'mastodon_token', 'mastodon_visibility',
     ];
 
     protected $hidden = ['mastodon_server', 'mastodon_token'];
@@ -48,6 +49,7 @@ class SocialLoginProfile extends Model
         'user_id' => 'integer',
         'twitter_id' => 'integer',
         'mastodon_id' => 'integer',
+        'mastodon_username' => 'string',
         'mastodon_server' => 'integer',
         'mastodon_visibility' => MastodonVisibility::class,
         'mastodon_token' => 'encrypted',
