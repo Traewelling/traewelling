@@ -9,7 +9,7 @@ export const useProfileSettingsStore = defineStore('profileSettings', {
         settings: null as ProfileSettings | null,
         loading: false,
         error: null as unknown | null,
-        refreshed: '2021-08-01T12:00:00Z',
+        refreshed: null as string | null,
     }),
     getters: {
         getDisplayName(): string {
@@ -53,10 +53,14 @@ export const useProfileSettingsStore = defineStore('profileSettings', {
         },
     },
     actions: {
+        updateDefaultStatusVisibility(visibility: number): void {
+            if (this.settings) {
+                this.settings.defaultStatusVisibility = visibility;
+            }
+        },
         async fetchSettings(): Promise<void> {
             // Fetch Data every 15 Minutes
             // ToDo: reduce interval
-            // ToDo: refresh with settings update
             // ToDo: invalidate when logging out
             if (this.refreshed && new Date().getTime() - new Date(this.refreshed).getTime() < 60 * 15 * 1000) {
                 return;

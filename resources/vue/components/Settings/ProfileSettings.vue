@@ -12,6 +12,7 @@ import {
     UserProfileSettingsResource,
 } from '../../../types/Api.gen';
 import { showApiValidationErrors } from '../../helpers/NotyfHelper';
+import { useProfileSettingsStore } from '../../stores/profileSettings';
 import { useUserStore } from '../../stores/user';
 import Input from './Partials/Input.vue';
 import Select from './Partials/Select.vue';
@@ -19,6 +20,7 @@ import Textfield from './Partials/Textfield.vue';
 import TimezoneDropdown from './Partials/TimezoneDropdown.vue';
 
 const userStore = useUserStore();
+const profileSettingsStore = useProfileSettingsStore();
 const notyf = new Notyf({ position: { x: 'right', y: 'bottom' } });
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -82,6 +84,9 @@ const updateProfile = () => {
             if (res.ok) {
                 userData.value = mapData(res.data.data);
                 userStore.fetchSettings(true);
+                profileSettingsStore.updateDefaultStatusVisibility(
+                    res.data.data.defaultStatusVisibility,
+                );
                 notyf.success(trans('settings.saved'));
             }
         })

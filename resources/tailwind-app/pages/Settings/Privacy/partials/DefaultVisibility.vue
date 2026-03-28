@@ -7,6 +7,7 @@ import {
     UpdateProfileInformationRequest,
     UserProfileSettingsResource,
 } from '../../../../../types/Api.gen';
+import { useProfileSettingsStore } from '../../../../../vue/stores/profileSettings';
 import SettingsListRow from '../../SettingsListRow.vue';
 
 const props = defineProps<{
@@ -16,6 +17,7 @@ const emits = defineEmits(['profile-updated', 'error']);
 
 const modal = ref<HTMLDialogElement>();
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const profileStore = useProfileSettingsStore();
 const input = ref<StatusVisibility>(props.profile.defaultStatusVisibility);
 
 const visibilities = [
@@ -40,6 +42,7 @@ function updateVisibility() {
         .updateProfileSettings(data)
         .then((response) => {
             response.json().then((data) => {
+                profileStore.updateDefaultStatusVisibility(input.value);
                 emits('profile-updated', data.data);
             });
             modal.value?.close();
