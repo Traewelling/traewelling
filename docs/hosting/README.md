@@ -1,7 +1,7 @@
 # Self-Hosting Träwelling
 
 Träwelling is a Laravel-based web application and can be deployed either directly on a server (“bare metal”) or through
-containerized setups such as Docker or Nix flake environments.
+containerized setups such as Docker.
 
 ---
 
@@ -46,11 +46,3 @@ They can be used to spin up a containerized instance of Träwelling.
 > Feel free to use it **at your own risk** or help us maintain it!
 
 If you’d like to help keep the Docker configuration up to date, contributions are very welcome.
-
-## 3. Nix Flake Setup
-
-There is also a **Nix flake** configuration available.
-
-> [!IMPORTANT]
-> This setup is currently **not actively maintained** and may not work reliably in its current state.
-> Use the Nix flake setup **at your own risk** and help us maintain it if you can!
