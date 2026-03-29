@@ -14,7 +14,7 @@ class DailyStatsController extends Controller
 {
     public function renderDailyStats(string $dateString): View
     {
-        $date = Date::parse($dateString);
+        $date = Date::parse($dateString, Auth::user()->timezone);
         $statuses = DailyStatsBackend::getStatusesOnDate(Auth::user(), $date)
             ->map(function (Status $status) {
                 $status->mapLines = LocationController::forStatus($status)->getMapLines(true);
