@@ -48,8 +48,9 @@ class PrivacyPolicyRepository
 
     public function getLastAcceptedPolicy(User $user): ?PrivacyPolicyAcceptance
     {
-        return PrivacyPolicyAcceptance::where('user_id', $user->uuid)
-            ->orderByDesc('accepted_at')
+        return PrivacyPolicyAcceptance::leftJoin('privacy_policies', 'privacy_policies.id', '=', 'privacy_policy_acceptances.privacy_policy_id')
+            ->where('user_id', $user->uuid)
+            ->orderByDesc('privacy_policies.valid_at')
             ->first();
     }
 }

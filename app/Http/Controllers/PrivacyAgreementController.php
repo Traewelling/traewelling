@@ -41,8 +41,8 @@ class PrivacyAgreementController extends Controller
     {
         $validated = $request->validate(['id' => 'required']);
         try {
-            $this->privacyPolicyService->getPrivacyPolicy($validated['id']);
-            $this->privacyPolicyService->acceptPrivacyPolicy(user: auth()->user());
+            $policy = $this->privacyPolicyService->getPrivacyPolicy($validated['id']);
+            $this->privacyPolicyService->acceptPrivacyPolicy(user: auth()->user(), policy: $policy);
         } catch (AlreadyAcceptedException) {
             return redirect()->route('dashboard');
         }

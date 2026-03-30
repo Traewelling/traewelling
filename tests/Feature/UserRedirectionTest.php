@@ -80,7 +80,7 @@ class UserRedirectionTest extends FeatureTestCase
 
         new PrivacyPolicyRepository()->acceptPrivacyPolicy($user, $policy1);
 
-        PrivacyPolicy::factory()->create(['valid_at' => Carbon::today()->toIso8601String()]);
+        $policy2 = PrivacyPolicy::factory()->create(['valid_at' => Carbon::today()->toIso8601String()]);
 
         // If the user opens the app again, they get intercepted again.
         $response = $this->actingAs($user)
@@ -88,11 +88,13 @@ class UserRedirectionTest extends FeatureTestCase
         $response->assertStatus(302);
         $response->assertRedirect('/gdpr-intercept');
         $this->followRedirects($response)
-            ->assertSee(__('privacy.we-changed'), false);
+            ->assertSee(__('privacy.we-changed'), false)
+            ->assertSee('<input type="hidden" name="id" value="' . $policy2->id . '"/>', false)
+            ->assertSee(__('privacy.sign.more'), true);
 
         // At this point, we can sign the new agreement and get redirected again:
         $response = $this->actingAs($user)
-            ->post('/gdpr-ack');
+            ->post('/gdpr-ack', ['id' => $policy2->id]);
         $response->assertStatus(302);
         $response->assertRedirect('/dashboard');
     }

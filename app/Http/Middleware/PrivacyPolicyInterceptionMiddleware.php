@@ -30,7 +30,7 @@ class PrivacyPolicyInterceptionMiddleware extends Controller
             return $next($request);
         }
 
-        $ack = $this->privacyPolicyService->hasUserAcceptedPolicy($user);
+        $ack = $this->privacyPolicyService->hasUserAcceptedPolicy($user, $agreement);
 
         if (!$ack) {
             $lastPolicy = $this->privacyPolicyService->getLastAcceptedPolicy($user);
@@ -40,8 +40,10 @@ class PrivacyPolicyInterceptionMiddleware extends Controller
                 code: 406,
                 additional: [
                     'policy' => route(name: 'api.v1.getPrivacyPolicy'),
+                    'policy_id' => $agreement->id,
                     'validFrom' => $agreement->valid_at,
                     'acceptedAt' => $lastPolicy?->accepted_at,
+                    'last_accepted_policy_id' => $lastPolicy?->privacy_policy_id,
                 ]
             );
         }

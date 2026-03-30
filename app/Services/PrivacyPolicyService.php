@@ -8,7 +8,6 @@ use App\Models\PrivacyPolicy;
 use App\Models\PrivacyPolicyAcceptance;
 use App\Models\User;
 use App\Repositories\PrivacyPolicyRepository;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 
 readonly class PrivacyPolicyService
@@ -44,19 +43,19 @@ readonly class PrivacyPolicyService
      */
     public function acceptPrivacyPolicy(User $user, PrivacyPolicy $policy): void
     {
-        $privacyPolicy = $this->repository->getPrivacyPolicyValidAt(Carbon::parse($validAt));
+        $currentPolicy = $this->repository->getPrivacyPolicyValidAt(now());
 
-        if ($privacyPolicy->id !== $policy->id && $privacyPolicy->valid_at->isBefore($policy->valid_at)) {
-            throw new AcceptingOldPrivacyPolicyException(oldValidAt: $privacyPolicy->valid_at, currentValidAt: $policy->valid_at);
+        if ($currentPolicy->id !== $policy->id && $policy->valid_at->isBefore($currentPolicy->valid_at)) {
+            throw new AcceptingOldPrivacyPolicyException(oldValidAt: $currentPolicy->valid_at, currentValidAt: $policy->valid_at);
         }
 
-        $ack = $this->repository->getUserPolicyAcceptance($user, $privacyPolicy)->first();
+        $ack = $this->repository->getUserPolicyAcceptance($user, $policy)->first();
 
         if ($ack) {
-            throw new AlreadyAcceptedException(agreement: $privacyPolicy, ackAt: $ack->accepted_at);
+            throw new AlreadyAcceptedException(agreement: $currentPolicy, ackAt: $ack->accepted_at);
         }
 
-        $this->repository->acceptPrivacyPolicy($user, $privacyPolicy);
+        $this->repository->acceptPrivacyPolicy($user, $policy);
     }
 
     public function hasUserAcceptedPolicy(User $user, ?PrivacyPolicy $policy = null): bool

@@ -10,7 +10,7 @@ return new class() extends Migration
     public function up(): void
     {
         Schema::create('privacy_policy_acceptances', function (Blueprint $table) {
-            $table->uuid()->primary();
+            $table->uuid('id')->primary();
             $table->uuid('user_id');
             $table->foreignIdFor(PrivacyPolicy::class)->constrained();
             $table->timestamp('accepted_at');

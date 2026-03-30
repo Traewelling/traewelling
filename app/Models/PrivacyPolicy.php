@@ -41,7 +41,6 @@ class PrivacyPolicy extends Model
     protected $fillable = ['body_md_de', 'body_md_en', 'valid_at'];
 
     protected $casts = [
-        'id' => 'integer',
         'valid_at' => 'datetime',
     ];
 

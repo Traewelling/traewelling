@@ -5,7 +5,6 @@ namespace Tests\Feature\Privacy;
 use App\Models\PrivacyPolicy;
 use App\Models\PrivacyPolicyAcceptance;
 use App\Models\User;
-use App\Repositories\PrivacyPolicyRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Passport\Passport;
 use Tests\ApiTestCase;
@@ -22,7 +21,7 @@ class PrivacyPolicyServiceTest extends ApiTestCase
         Passport::actingAs($user, ['*']);
 
         $this->putJson('/api/v1/settings/acceptPrivacy')
-            ->assertStatus(204);
+            ->assertNoContent();
 
         $this->putJson('/api/v1/settings/acceptPrivacy')
             ->assertStatus(409);
@@ -48,7 +47,7 @@ class PrivacyPolicyServiceTest extends ApiTestCase
             ->assertStatus(406);
 
         $this->putJson('/api/v1/settings/acceptPrivacy')
-            ->assertStatus(204);
+            ->assertNoContent();
 
         $this->getJson('/api/v1/dashboard')
             ->assertStatus(200);
@@ -97,41 +96,73 @@ class PrivacyPolicyServiceTest extends ApiTestCase
 
         $validDate = now()->addDays(7)->setHour(0)->toIso8601ZuluString();
 
-        PrivacyPolicy::factory()->create([
+        $policy = PrivacyPolicy::factory()->create([
             'valid_at' => $validDate,
         ]);
 
         $this->getJson('/api/v1/dashboard')
             ->assertStatus(200);
 
-        $this->putJson('/api/v1/settings/acceptPrivacy?validAt=' . $validDate)
-            ->assertStatus(204);
+        $this->putJson('/api/v1/privacy-policies/' . $policy->id . '/acceptance')
+            ->assertNoContent();
+
+        $this->getJson('/api/v1/dashboard')
+            ->assertStatus(200);
+
+        $this->travel(20)->days();
+        $this->getJson('/api/v1/dashboard')
+            ->assertStatus(200);
+    }
+
+    public function test_dont_accept_future_privacy_policy(): void
+    {
+        $user = User::factory()->create();
+        Passport::actingAs($user, ['*']);
+        $this->getJson('/api/v1/dashboard')
+            ->assertStatus(200);
+
+        $validDate = now()->addDays(7)->setHour(0)->toIso8601ZuluString();
+
+        $policy = PrivacyPolicy::factory()->create([
+            'valid_at' => $validDate,
+        ]);
+
+        $this->getJson('/api/v1/dashboard')
+            ->assertStatus(200);
+
+        $this->travel(20)->days();
+        $this->getJson('/api/v1/dashboard')
+            ->assertStatus(406);
     }
 
     public function test_accept_conflicting_privacy_policy(): void
     {
+        PrivacyPolicy::whereNotNull('id')->delete();
         $validDate = now()->subDays(7)->setHour(0);
         $futureValidDate = now()->addDays(7)->setHour(0);
-        PrivacyPolicy::factory()->create([
+        $obsolete = PrivacyPolicy::factory()->create([
             'valid_at' => $validDate->toIso8601ZuluString(),
         ]);
-        $policy = PrivacyPolicy::factory()->create([
+        $current = PrivacyPolicy::factory()->create([
             'valid_at' => now()->toIso8601ZuluString(),
         ]);
-        PrivacyPolicy::factory()->create([
+        $future = PrivacyPolicy::factory()->create([
             'valid_at' => $futureValidDate->toIso8601ZuluString(),
         ]);
         $user = User::factory()->create();
         PrivacyPolicyAcceptance::where('user_id', $user->uuid)->delete();
 
-        new PrivacyPolicyRepository()->acceptPrivacyPolicy($user, $policy);
-
         Passport::actingAs($user, ['*']);
+        $this->getJson('/api/v1/dashboard')
+            ->assertStatus(406);
+
+        $this->putJson('/api/v1/privacy-policies/' . $current->id . '/acceptance');
+
         $this->getJson('/api/v1/dashboard')
             ->assertStatus(200);
 
         // test accept obsolete policy
-        $this->putJson('/api/v1/settings/acceptPrivacy?validAt=' . $validDate->clone()->addDay()->toIso8601ZuluString())
+        $this->putJson('/api/v1/privacy-policies/' . $obsolete->id . '/acceptance')
             ->assertStatus(409)
             ->assertSee('obsolete')
             ->assertSee($validDate->toIso8601String());
@@ -139,15 +170,15 @@ class PrivacyPolicyServiceTest extends ApiTestCase
             ->assertStatus(200);
 
         // test accept current policy again
-        $this->putJson('/api/v1/settings/acceptPrivacy')
+        $this->putJson('/api/v1/privacy-policies/' . $current->id . '/acceptance')
             ->assertStatus(409)
             ->assertSee('User already accepted privacy policy');
         $this->getJson('/api/v1/dashboard')
             ->assertStatus(200);
 
         // accept future privacy policy
-        $this->putJson('/api/v1/settings/acceptPrivacy?validAt=' . $futureValidDate->toIso8601ZuluString())
-            ->assertStatus(204);
+        $this->putJson('/api/v1/privacy-policies/' . $future->id . '/acceptance')
+            ->assertNoContent();
         $this->getJson('/api/v1/dashboard')
             ->assertStatus(200);
 
