@@ -57,8 +57,13 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
     Route::get('app/configuration', [ConfigurationInfoController::class, 'getConfigurationInfo'])
         ->name('api.v1.getConfigurationInfo');
 
-    Route::get('static/privacy', [PrivacyPolicyController::class, 'getPrivacyPolicy'])
-        ->name('api.v1.getPrivacyPolicy');
+    Route::get('static/privacy', [PrivacyPolicyController::class, 'getPrivacyPolicy']); // todo: delete after 2026-07-15
+
+    Route::prefix('privacy-policies')->group(static function () {
+        Route::get('current', [PrivacyPolicyController::class, 'getPrivacyPolicy'])->name('api.v1.getPrivacyPolicy');
+        Route::put('{id}/acceptance', [PrivacyPolicyController::class, 'accept'])
+            ->withoutMiddleware('privacy-policy');
+    });
 
     Route::group(['middleware' => ['auth:api', 'privacy-policy']], static function () {
         Route::get('year-in-review', [YearInReviewController::class, 'show'])
@@ -136,7 +141,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         });
         Route::group(['prefix' => 'settings'], static function () {
             Route::put('acceptPrivacy', [PrivacyPolicyController::class, 'acceptPrivacyPolicy'])
-                ->withoutMiddleware('privacy-policy');
+                ->withoutMiddleware('privacy-policy'); // TODO: Remove after 2026-07-15
             Route::get('profile', [SettingsController::class, 'getProfileSettings'])
                 ->middleware(['scope:read-settings']);
             Route::put('profile', [SettingsController::class, 'updateSettings'])

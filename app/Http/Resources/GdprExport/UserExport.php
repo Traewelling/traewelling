@@ -25,7 +25,6 @@ abstract class UserExport
             'mapprovider' => $user->mapprovider,
             'email' => $user->email,
             'email_verified_at' => $user->email_verified_at,
-            'privacy_ack_at' => $user->privacy_ack_at,
             'last_login' => $user->last_login,
             'created_at' => $user->created_at,
             'updated_at' => $user->updated_at,

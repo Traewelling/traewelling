@@ -5,6 +5,7 @@ namespace Tests\Feature\Commands;
 use App\Models\Checkin;
 use App\Models\Like;
 use App\Models\PolyLine;
+use App\Models\PrivacyPolicyAcceptance;
 use App\Models\Trip;
 use App\Models\User;
 use App\Notifications\StatusLiked;
@@ -88,7 +89,8 @@ class CleanUpTest extends FeatureTestCase
     {
         $this->assertDatabaseCount('users', 0);
 
-        User::factory(['privacy_ack_at' => null, 'created_at' => now()])->create();
+        $user = User::factory(['created_at' => now()])->create();
+        PrivacyPolicyAcceptance::where('user_id', $user->uuid)->delete();
         $this->assertDatabaseCount('users', 1);
 
         // should not be removed yet

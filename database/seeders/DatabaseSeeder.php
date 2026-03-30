@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
         $this->call(PermissionSeeder::class);
 
         // Seed example data for development
+        $this->call(PrivacyAgreementSeeder::class);
         $this->call(UsersTableSeeder::class);
         $this->call(ClientSeeder::class);
         $this->call(FollowTableSeeder::class);
@@ -24,7 +25,6 @@ class DatabaseSeeder extends Seeder
         $this->call(EventSeeder::class);
         Trip::factory()->count(50)->create();
         $this->call(CheckinSeeder::class);
-        $this->call(PrivacyAgreementSeeder::class);
         EventSuggestion::factory(['user_id' => 1])->count(5)->create();
         Operator::factory()->count(300)->create();
     }

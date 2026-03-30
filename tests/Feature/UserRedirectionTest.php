@@ -2,8 +2,10 @@
 
 namespace Tests\Feature;
 
-use App\Models\PrivacyAgreement;
+use App\Models\PrivacyPolicy;
+use App\Models\PrivacyPolicyAcceptance;
 use App\Models\User;
+use App\Repositories\PrivacyPolicyRepository;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -62,7 +64,8 @@ class UserRedirectionTest extends FeatureTestCase
     public function gdpr_interception()
     {
         // Creates user
-        $user = User::factory(['privacy_ack_at' => null])->create();
+        $user = User::factory()->create();
+        PrivacyPolicyAcceptance::where('user_id', $user->uuid)->delete();
 
         // Has not yet signed -> Redirection.
         $response = $this->actingAs($user)
@@ -72,14 +75,12 @@ class UserRedirectionTest extends FeatureTestCase
         $this->followRedirects($response)
             ->assertSee(__('privacy.not-signed-yet'), false);
 
-        $user->update(['privacy_ack_at' => Carbon::yesterday()->toIso8601String()]);
-
         // Now the träwelling team puts up a new terms iteration:
-        PrivacyAgreement::create([
-            'body_md_de' => 'not empty',
-            'body_md_en' => 'not empty',
-            'valid_at' => Carbon::today()->toIso8601String(),
-        ]);
+        $policy1 = PrivacyPolicy::factory()->create(['valid_at' => Carbon::yesterday()->toIso8601String()]);
+
+        new PrivacyPolicyRepository()->acceptPrivacyPolicy($user, $policy1);
+
+        $policy2 = PrivacyPolicy::factory()->create(['valid_at' => Carbon::today()->toIso8601String()]);
 
         // If the user opens the app again, they get intercepted again.
         $response = $this->actingAs($user)
@@ -87,11 +88,13 @@ class UserRedirectionTest extends FeatureTestCase
         $response->assertStatus(302);
         $response->assertRedirect('/gdpr-intercept');
         $this->followRedirects($response)
-            ->assertSee(__('privacy.we-changed'), false);
+            ->assertSee(__('privacy.we-changed'), false)
+            ->assertSee('<input type="hidden" name="id" value="' . $policy2->id . '"/>', false)
+            ->assertSee(__('privacy.sign.more'), true);
 
         // At this point, we can sign the new agreement and get redirected again:
         $response = $this->actingAs($user)
-            ->post('/gdpr-ack');
+            ->post('/gdpr-ack', ['id' => $policy2->id]);
         $response->assertStatus(302);
         $response->assertRedirect('/dashboard');
     }

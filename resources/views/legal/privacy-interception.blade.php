@@ -1,3 +1,9 @@
+@props([
+    'agreement',
+    'hasUserSigned' => false,
+    'policyChanged' => false,
+    'user' => null,
+])
 @extends('layouts.app')
 
 @section('title', html_entity_decode(__('privacy.title')))
@@ -15,24 +21,25 @@
             <div class="col-md-8 col-lg-7">
 
                 @auth
-                    @if($user->privacy_ack_at == null)
-                        <div class="card mb-3">
-                            <p class="card-body mb-0">
-                                {!! __('privacy.not-signed-yet') !!}
-                            </p>
-                        </div>
-                    @elseif($user->privacy_ack_at->isBefore($agreement->valid_at))
+                    @if($policyChanged)
                         <div class="card mb-3">
                             <p class="card-body mb-0">
                                 {!! __('privacy.we-changed') !!}
                             </p>
                         </div>
+                    @elseif(!$hasUserSigned)
+                        <div class="card mb-3">
+                            <p class="card-body mb-0">
+                                {!! __('privacy.not-signed-yet') !!}
+                            </p>
+                        </div>
                     @endif
 
-                    @if(is_null($user->privacy_ack_at)||$agreement->valid_at->isAfter($user->privacy_ack_at))
+                    @if(!$hasUserSigned)
                         <form method="POST" action="{{ route('gdpr.ack') }}" class="fixed-bottom text-end"
                               style="background-color: hsl(216, 25%, 95.1%);" id="form-privacy">
                             @csrf
+                            <input type="hidden" name="id" value="{{ $agreement->id }}"/>
                             <div class="container">
                                 <div class="row justify-content-center">
                                     <div class="col-md-8 col-lg-7 my-2">

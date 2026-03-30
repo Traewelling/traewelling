@@ -2,8 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\PrivacyAgreement;
-use Carbon\Carbon;
+use App\Services\PrivacyPolicyService;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -13,14 +12,16 @@ use Illuminate\Support\Facades\Log;
  */
 class PrivacyInterceptionMiddleware
 {
+    public function __construct(
+        private readonly PrivacyPolicyService $privacyPolicyService,
+    ) {}
+
     /**
      * Handle an incoming request.
      */
     public function handle(Request $request, Closure $next): mixed
     {
-        $agreement = PrivacyAgreement::where('valid_at', '<=', Carbon::now()->toIso8601String())
-            ->orderByDesc('valid_at')
-            ->first();
+        $agreement = $this->privacyPolicyService->getPrivacyPolicy();
 
         if ($agreement === null) {
             Log::critical('No privacy agreement found!');
@@ -30,12 +31,11 @@ class PrivacyInterceptionMiddleware
 
         // If the last execution is newer than the ack, please redirect me.
         $user = auth()->user();
-        if (is_null($user->privacy_ack_at) || $agreement->valid_at->isAfter($user->privacy_ack_at)) {
+
+        $ack = $this->privacyPolicyService->hasUserAcceptedPolicy($user);
+
+        if (!$ack) {
             if ($request->is('api*')) {
-                $agreement = PrivacyAgreement::where('valid_at', '<=', Carbon::now()->toIso8601String())
-                    ->orderByDesc('valid_at')
-                    ->take(1)
-                    ->first();
 
                 return response()->json(
                     data: [

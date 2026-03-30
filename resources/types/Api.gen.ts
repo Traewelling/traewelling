@@ -1395,6 +1395,20 @@ export interface PaginationMeta {
   to?: number;
 }
 
+export interface PrivacyPolicy {
+  /** @example "2022-01-05T16:26:14.000000Z" */
+  validFrom: any;
+  /** @example "This is the english privacy policy" */
+  en: any;
+  /** @example "Dies ist die deutsche Datenschutzerklärung" */
+  de: any;
+  /**
+   * Has the current user already accepted this Privacy Policy?
+   * @example "2022-01-05T16:26:14.000000Z"
+   */
+  acceptedAt: any;
+}
+
 /**
  * ProfileLinkResource
  * ProfileLinkResource
@@ -4512,245 +4526,44 @@ export class Api<
         ...params,
       }),
   };
-  static = {
+  privacyPolicies = {
     /**
      * @description Get the current privacy policy
      *
-     * @tags Settings
-     * @name E649Bec35Ba50765Db023E745233Eda9
+     * @tags Privacy Policy
+     * @name AppHttpControllersApiV1PrivacyPolicyController
      * @summary Get the current privacy policy
-     * @request GET:/static/privacy
+     * @request GET:/privacy-policies/current
      */
-    e649Bec35Ba50765Db023E745233Eda9: (params: RequestParams = {}) =>
+    appHttpControllersApiV1PrivacyPolicyController: (
+      params: RequestParams = {},
+    ) =>
       this.request<
         {
-          data?: {
-            /** @example "2022-01-05T16:26:14.000000Z" */
-            validFrom?: any;
-            /** @example "This is the english privacy policy" */
-            en?: any;
-            /** @example "Dies ist die deutsche Datenschutzerklärung" */
-            de?: any;
-          };
+          data?: PrivacyPolicy;
         },
         any
       >({
-        path: `/static/privacy`,
+        path: `/privacy-policies/current`,
         method: "GET",
         format: "json",
         ...params,
       }),
-  };
-  settings = {
+
     /**
      * @description Accept the current privacy policy
      *
-     * @tags Settings
+     * @tags Privacy Policy
      * @name AcceptPrivacyPolicy
      * @summary Accept the current privacy policy
-     * @request POST:/settings/acceptPrivacy
+     * @request PUT:/privacy-policies/{id}/acceptance
      * @secure
      */
-    acceptPrivacyPolicy: (params: RequestParams = {}) =>
+    acceptPrivacyPolicy: (id?: any, params: RequestParams = {}) =>
       this.request<void, void>({
-        path: `/settings/acceptPrivacy`,
-        method: "POST",
-        secure: true,
-        ...params,
-      }),
-
-    /**
-     * @description Get the current user's profile settings
-     *
-     * @tags Settings
-     * @name GetProfileSettings
-     * @summary Get the current user's profile settings
-     * @request GET:/settings/profile
-     * @secure
-     */
-    getProfileSettings: (params: RequestParams = {}) =>
-      this.request<
-        {
-          data?: UserProfileSettingsResource;
-        },
-        void
-      >({
-        path: `/settings/profile`,
-        method: "GET",
-        secure: true,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Update the current user's profile settings
-     *
-     * @tags Settings
-     * @name UpdateProfileSettings
-     * @summary Update the current user's profile settings
-     * @request PUT:/settings/profile
-     * @secure
-     */
-    updateProfileSettings: (
-      data: UpdateProfileInformationRequest,
-      params: RequestParams = {},
-    ) =>
-      this.request<
-        {
-          data?: UserProfileSettingsResource;
-        },
-        void
-      >({
-        path: `/settings/profile`,
+        path: `/privacy-policies/${id}/acceptance`,
         method: "PUT",
-        body: data,
         secure: true,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Update the current user's email address
-     *
-     * @tags Settings
-     * @name UpdateEmail
-     * @summary Update the current user's email address
-     * @request PUT:/settings/email
-     * @secure
-     */
-    updateEmail: (
-      data: {
-        /**
-         * @format email
-         * @example "mail@example.com"
-         */
-        email?: string;
-        /**
-         * @format password
-         * @example "thisisnotasecurepassword123"
-         */
-        password?: string;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<
-        {
-          data?: UserProfileSettingsResource;
-        },
-        void
-      >({
-        path: `/settings/email`,
-        method: "PUT",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Resend verification email
-     *
-     * @tags Settings
-     * @name ResendVerificationEmail
-     * @summary Resend verification email
-     * @request POST:/settings/email/verification
-     * @secure
-     */
-    resendVerificationEmail: (params: RequestParams = {}) =>
-      this.request<void, void>({
-        path: `/settings/email/verification`,
-        method: "POST",
-        secure: true,
-        ...params,
-      }),
-
-    /**
-     * @description Upload a new profile picture for the current user
-     *
-     * @tags Settings
-     * @name UploadProfilePicture
-     * @summary Upload a new profile picture for the current user
-     * @request POST:/settings/profile-picture
-     * @secure
-     */
-    uploadProfilePicture: (
-      data: {
-        /**
-         * @format base64
-         * @example "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA..."
-         */
-        image?: string;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<
-        {
-          /** @example "Profile picture updated successfully." */
-          message?: string;
-        },
-        void
-      >({
-        path: `/settings/profile-picture`,
-        method: "POST",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Delete the current user's profile picture
-     *
-     * @tags Settings
-     * @name DeleteProfilePicture
-     * @summary Delete the current user's profile picture
-     * @request DELETE:/settings/profile-picture
-     * @secure
-     */
-    deleteProfilePicture: (params: RequestParams = {}) =>
-      this.request<
-        {
-          /** @example "Profile picture deleted successfully." */
-          message?: string;
-        },
-        void
-      >({
-        path: `/settings/profile-picture`,
-        method: "DELETE",
-        secure: true,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Deletes the Account for the user and all posts created by it
-     *
-     * @tags Settings
-     * @name DeleteUserAccount
-     * @summary Delete User Account
-     * @request DELETE:/settings/account
-     * @secure
-     */
-    deleteUserAccount: (
-      data: {
-        /**
-         * confirmation
-         * Username of the to be deleted account (needs to match the currently logged in user)
-         * @example "Gertrud123"
-         */
-        confirmation?: any;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<void, void>({
-        path: `/settings/account`,
-        method: "DELETE",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
         ...params,
       }),
   };
@@ -5129,6 +4942,202 @@ export class Api<
         path: `/security/tokens/${tokenId}`,
         method: "DELETE",
         secure: true,
+        ...params,
+      }),
+  };
+  settings = {
+    /**
+     * @description Get the current user's profile settings
+     *
+     * @tags Settings
+     * @name GetProfileSettings
+     * @summary Get the current user's profile settings
+     * @request GET:/settings/profile
+     * @secure
+     */
+    getProfileSettings: (params: RequestParams = {}) =>
+      this.request<
+        {
+          data?: UserProfileSettingsResource;
+        },
+        void
+      >({
+        path: `/settings/profile`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Update the current user's profile settings
+     *
+     * @tags Settings
+     * @name UpdateProfileSettings
+     * @summary Update the current user's profile settings
+     * @request PUT:/settings/profile
+     * @secure
+     */
+    updateProfileSettings: (
+      data: UpdateProfileInformationRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data?: UserProfileSettingsResource;
+        },
+        void
+      >({
+        path: `/settings/profile`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Update the current user's email address
+     *
+     * @tags Settings
+     * @name UpdateEmail
+     * @summary Update the current user's email address
+     * @request PUT:/settings/email
+     * @secure
+     */
+    updateEmail: (
+      data: {
+        /**
+         * @format email
+         * @example "mail@example.com"
+         */
+        email?: string;
+        /**
+         * @format password
+         * @example "thisisnotasecurepassword123"
+         */
+        password?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data?: UserProfileSettingsResource;
+        },
+        void
+      >({
+        path: `/settings/email`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Resend verification email
+     *
+     * @tags Settings
+     * @name ResendVerificationEmail
+     * @summary Resend verification email
+     * @request POST:/settings/email/verification
+     * @secure
+     */
+    resendVerificationEmail: (params: RequestParams = {}) =>
+      this.request<void, void>({
+        path: `/settings/email/verification`,
+        method: "POST",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Upload a new profile picture for the current user
+     *
+     * @tags Settings
+     * @name UploadProfilePicture
+     * @summary Upload a new profile picture for the current user
+     * @request POST:/settings/profile-picture
+     * @secure
+     */
+    uploadProfilePicture: (
+      data: {
+        /**
+         * @format base64
+         * @example "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA..."
+         */
+        image?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          /** @example "Profile picture updated successfully." */
+          message?: string;
+        },
+        void
+      >({
+        path: `/settings/profile-picture`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Delete the current user's profile picture
+     *
+     * @tags Settings
+     * @name DeleteProfilePicture
+     * @summary Delete the current user's profile picture
+     * @request DELETE:/settings/profile-picture
+     * @secure
+     */
+    deleteProfilePicture: (params: RequestParams = {}) =>
+      this.request<
+        {
+          /** @example "Profile picture deleted successfully." */
+          message?: string;
+        },
+        void
+      >({
+        path: `/settings/profile-picture`,
+        method: "DELETE",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Deletes the Account for the user and all posts created by it
+     *
+     * @tags Settings
+     * @name DeleteUserAccount
+     * @summary Delete User Account
+     * @request DELETE:/settings/account
+     * @secure
+     */
+    deleteUserAccount: (
+      data: {
+        /**
+         * confirmation
+         * Username of the to be deleted account (needs to match the currently logged in user)
+         * @example "Gertrud123"
+         */
+        confirmation?: any;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, void>({
+        path: `/settings/account`,
+        method: "DELETE",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
         ...params,
       }),
   };

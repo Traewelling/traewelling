@@ -2750,14 +2750,14 @@
                 }
             }
         },
-        "/static/privacy": {
+        "/privacy-policies/current": {
             "get": {
                 "tags": [
-                    "Settings"
+                    "Privacy Policy"
                 ],
                 "summary": "Get the current privacy policy",
                 "description": "Get the current privacy policy",
-                "operationId": "e649bec35ba50765db023e745233eda9",
+                "operationId": "App\\Http\\Controllers\\API\\v1\\PrivacyPolicyController",
                 "responses": {
                     "200": {
                         "description": "Success",
@@ -2766,18 +2766,7 @@
                                 "schema": {
                                     "properties": {
                                         "data": {
-                                            "properties": {
-                                                "validFrom": {
-                                                    "example": "2022-01-05T16:26:14.000000Z"
-                                                },
-                                                "en": {
-                                                    "example": "This is the english privacy policy"
-                                                },
-                                                "de": {
-                                                    "example": "Dies ist die deutsche Datenschutzerklärung"
-                                                }
-                                            },
-                                            "type": "object"
+                                            "$ref": "#/components/schemas/Privacy Policy"
                                         }
                                     },
                                     "type": "object"
@@ -2788,14 +2777,23 @@
                 }
             }
         },
-        "/settings/acceptPrivacy": {
-            "post": {
+        "/privacy-policies/{id}/acceptance": {
+            "put": {
                 "tags": [
-                    "Settings"
+                    "Privacy Policy"
                 ],
                 "summary": "Accept the current privacy policy",
                 "description": "Accept the current privacy policy",
                 "operationId": "acceptPrivacyPolicy",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the privacy policy",
+                        "required": false,
+                        "example": "cec8587a-c73d-45dd-b35e-04f8edf637fc"
+                    }
+                ],
                 "responses": {
                     "204": {
                         "description": "Success"
@@ -2805,6 +2803,9 @@
                     },
                     "401": {
                         "description": "Unauthorized"
+                    },
+                    "409": {
+                        "description": "Conflict - User already accepted privacy policy"
                     }
                 },
                 "security": [
@@ -9760,6 +9761,31 @@
                 },
                 "type": "object"
             },
+            "Privacy Policy": {
+                "required": [
+                    "validFrom",
+                    "de",
+                    "en",
+                    "acceptedAt"
+                ],
+                "properties": {
+                    "validFrom": {
+                        "example": "2022-01-05T16:26:14.000000Z"
+                    },
+                    "en": {
+                        "example": "This is the english privacy policy"
+                    },
+                    "de": {
+                        "example": "Dies ist die deutsche Datenschutzerklärung"
+                    },
+                    "acceptedAt": {
+                        "description": "Has the current user already accepted this Privacy Policy?",
+                        "example": "2022-01-05T16:26:14.000000Z",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
             "ProfileLinkResource": {
                 "title": "ProfileLinkResource",
                 "description": "ProfileLinkResource",
@@ -11447,6 +11473,10 @@
         {
             "name": "Admin",
             "description": "Admin"
+        },
+        {
+            "name": "Privacy Policy",
+            "description": "Privacy Policy"
         },
         {
             "name": "Security",

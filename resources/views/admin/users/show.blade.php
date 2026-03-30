@@ -1,3 +1,9 @@
+@props([
+'user' => null,
+'privacyPolicyCurrent' => null,
+'privacyPolicyFuture' => null,
+'privacyPolicyFutureExists' => false,
+])
 @php use Spatie\Permission\Models\Role; @endphp
 @extends('admin.layout')
 
@@ -126,16 +132,32 @@
                         <tr>
                             <th>Privacy ack at</th>
                             <td>
-                                @isset($user->privacy_ack_at)
+                                @if ($privacyPolicyFutureExists)
+                                    @isset($privacyPolicyFuture)
+                                        <small class="text-success">
+                                            <i class="fa-solid fa-check"></i>
+                                            {{ $privacyPolicyFuture->accepted_at->diffForHumans() }}<br/>
+                                            ({{ $privacyPolicyFuture->accepted_at }})
+                                        </small>
+                                        <br />
+                                    @else
+                                        <small class="text-danger">
+                                            <i class="fa-solid fa-times"></i>
+                                            Not agreed to Future Privacy Agreement
+                                        </small>
+                                        <br />
+                                    @endisset
+                                @endif
+                                @isset($privacyPolicyCurrent)
                                     <small class="text-success">
                                         <i class="fa-solid fa-check"></i>
-                                        {{ $user->privacy_ack_at->diffForHumans() }}<br/>
-                                        ({{$user->privacy_ack_at}})
+                                        {{ $privacyPolicyCurrent->accepted_at->diffForHumans() }}<br/>
+                                        ({{ $privacyPolicyCurrent->accepted_at }})
                                     </small>
                                 @else
                                     <small class="text-danger">
                                         <i class="fa-solid fa-times"></i>
-                                        Not agreed to Privacy Agreement
+                                        Not agreed to Current Privacy Agreement
                                     </small>
                                 @endisset
                             </td>

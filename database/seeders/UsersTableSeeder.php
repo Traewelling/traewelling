@@ -4,11 +4,16 @@ namespace Database\Seeders;
 
 use App\Models\IcsToken;
 use App\Models\User;
+use App\Repositories\PrivacyPolicyRepository;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class UsersTableSeeder extends Seeder
 {
+    public function __construct(
+        private PrivacyPolicyRepository $privacyPolicyRepository
+    ) {}
+
     /**
      * Run the database seeds.
      */
@@ -30,7 +35,7 @@ class UsersTableSeeder extends Seeder
         }
 
         if (!User::where('username', '=', 'bob')->count()) {
-            User::factory()
+            $user = User::factory()
                 ->create([
                     'username' => 'bob',
                     'name' => 'Bob from Alice & Bob',

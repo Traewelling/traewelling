@@ -2,15 +2,15 @@
 
 namespace App\Exceptions;
 
-use App\Models\PrivacyAgreement;
-use App\Models\User;
+use App\Models\PrivacyPolicy;
+use Carbon\CarbonInterface;
 use DateTime;
 
 class AlreadyAcceptedException extends Referencable
 {
-    private readonly User $user;
+    private readonly PrivacyPolicy $privacyAgreement;
 
-    private readonly PrivacyAgreement $privacyAgreement;
+    private readonly CarbonInterface $ackAt;
 
     /**
      * AlreadyFollowingException constructor.
@@ -18,12 +18,12 @@ class AlreadyAcceptedException extends Referencable
      * OR
      * $initiator has already requested a follow to $user
      *
-     * @param  PrivacyAgreement  $agreement  privacyPolicy
+     * @param  PrivacyPolicy  $agreement  privacyPolicy
      */
-    public function __construct(PrivacyAgreement $agreement, User $user)
+    public function __construct(PrivacyPolicy $agreement, CarbonInterface $ackAt)
     {
         $this->privacyAgreement = $agreement;
-        $this->user = $user;
+        $this->ackAt = $ackAt;
         parent::__construct();
     }
 
@@ -32,8 +32,8 @@ class AlreadyAcceptedException extends Referencable
         return $this->privacyAgreement->valid_at;
     }
 
-    public function getUserAccepted(): DateTime
+    public function getUserAccepted(): CarbonInterface
     {
-        return $this->user->privacy_ack_at;
+        return $this->ackAt;
     }
 }

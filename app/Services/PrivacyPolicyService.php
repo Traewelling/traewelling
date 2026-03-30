@@ -2,31 +2,79 @@
 
 namespace App\Services;
 
+use App\Exceptions\AcceptingOldPrivacyPolicyException;
 use App\Exceptions\AlreadyAcceptedException;
-use App\Http\Controllers\Controller;
-use App\Models\PrivacyAgreement;
+use App\Models\PrivacyPolicy;
+use App\Models\PrivacyPolicyAcceptance;
 use App\Models\User;
+use App\Repositories\PrivacyPolicyRepository;
+use Illuminate\Database\Eloquent\Collection;
 
-abstract class PrivacyPolicyService extends Controller
+readonly class PrivacyPolicyService
 {
-    public static function getCurrentPrivacyPolicy()
+    public function __construct(
+        private PrivacyPolicyRepository $repository,
+    ) {}
+
+    public function getPrivacyPolicy(?string $id = null, ?User $visitingUser = null): ?PrivacyPolicy
     {
-        return PrivacyAgreement::where('valid_at', '<=', now()->toIso8601String())
-            ->orderByDesc('valid_at')
-            ->first();
+        if ($id === null) {
+            return $this->repository->getPrivacyPolicyValidAt(now());
+        }
+
+        $policy = $this->repository->getPrivacyPolicyById($id);
+        $currentPolicy = $this->repository->getPrivacyPolicyValidAt(now());
+
+        if ($policy->id !== $currentPolicy->id && $policy->valid_at->isBefore($currentPolicy->valid_at) && !$visitingUser?->hasRole('admin')) {
+            throw new AcceptingOldPrivacyPolicyException(oldValidAt: $policy->valid_at, currentValidAt: $currentPolicy->valid_at);
+        }
+
+        return $policy;
+    }
+
+    public function getUserAcceptance(User $user): Collection
+    {
+        return $this->repository->getUserPolicyAcceptance($user);
     }
 
     /**
      * @throws AlreadyAcceptedException
+     * @throws AcceptingOldPrivacyPolicyException
      */
-    public static function acceptPrivacyPolicy(User $user): void
+    public function acceptPrivacyPolicy(User $user, PrivacyPolicy $policy): void
     {
-        $privacyPolicy = self::getCurrentPrivacyPolicy();
+        $currentPolicy = $this->repository->getPrivacyPolicyValidAt(now());
 
-        if ($user->privacy_ack_at && $privacyPolicy->valid_at->isBefore($user->privacy_ack_at)) {
-            throw new AlreadyAcceptedException(agreement: $privacyPolicy, user: $user);
+        if ($currentPolicy->id !== $policy->id && $policy->valid_at->isBefore($currentPolicy->valid_at)) {
+            throw new AcceptingOldPrivacyPolicyException(oldValidAt: $currentPolicy->valid_at, currentValidAt: $policy->valid_at);
         }
 
-        $user->update(['privacy_ack_at' => now()->toIso8601String()]);
+        $ack = $this->repository->getUserPolicyAcceptance($user, $policy)->first();
+
+        if ($ack) {
+            throw new AlreadyAcceptedException(agreement: $currentPolicy, ackAt: $ack->accepted_at);
+        }
+
+        $this->repository->acceptPrivacyPolicy($user, $policy);
+    }
+
+    public function hasUserAcceptedPolicy(User $user, ?PrivacyPolicy $policy = null): bool
+    {
+        if ($policy === null) {
+            $policy = $this->repository->getPrivacyPolicyValidAt(now());
+        }
+
+        $ack = $this->repository->getUserPolicyAcceptance($user, $policy)->first();
+
+        if ($ack) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function getLastAcceptedPolicy(User $user): ?PrivacyPolicyAcceptance
+    {
+        return $this->repository->getLastAcceptedPolicy($user);
     }
 }

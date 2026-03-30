@@ -176,6 +176,9 @@ use Spatie\PersonalDataExport\PersonalDataSelection;
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUuid($value)
  *
+ * @property-read Collection<int, PrivacyPolicyAcceptance> $privacyPolicyAcceptances
+ * @property-read int|null $privacy_policy_acceptances_count
+ *
  * @mixin \Eloquent
  */
 class User extends Authenticatable implements ExportsPersonalData, OAuthenticatable
@@ -482,5 +485,10 @@ class User extends Authenticatable implements ExportsPersonalData, OAuthenticata
     public function mailChanges(): HasMany
     {
         return $this->hasMany(MailChange::class, 'user_id', 'id');
+    }
+
+    public function privacyPolicyAcceptances(): HasMany
+    {
+        return $this->hasMany(PrivacyPolicyAcceptance::class, 'user_id', 'uuid');
     }
 }

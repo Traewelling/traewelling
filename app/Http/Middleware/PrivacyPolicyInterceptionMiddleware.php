@@ -3,21 +3,22 @@
 namespace App\Http\Middleware;
 
 use App\Http\Controllers\API\v1\Controller;
-use App\Models\PrivacyAgreement;
 use App\Services\PrivacyPolicyService;
-use Carbon\Carbon;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class PrivacyPolicyInterceptionMiddleware extends Controller
 {
+    public function __construct(
+        private readonly PrivacyPolicyService $privacyPolicyService,
+    ) {}
+
     /**
      * Handle an incoming request.
      */
     public function handle(Request $request, Closure $next): mixed
     {
-        $agreement = PrivacyPolicyService::getCurrentPrivacyPolicy();
+        $agreement = $this->privacyPolicyService->getPrivacyPolicy();
 
         $user = auth()->user();
         if ($user === null) {
@@ -25,24 +26,24 @@ class PrivacyPolicyInterceptionMiddleware extends Controller
         }
 
         if ($agreement === null) {
-            Log::critical('No privacy agreement found!');
 
             return $next($request);
         }
 
-        if (is_null($user->privacy_ack_at) || $agreement->valid_at->isAfter($user->privacy_ack_at)) {
-            $agreement = PrivacyAgreement::where('valid_at', '<=', Carbon::now()->toIso8601String())
-                ->orderByDesc('valid_at')
-                ->take(1)
-                ->first();
+        $ack = $this->privacyPolicyService->hasUserAcceptedPolicy($user, $agreement);
+
+        if (!$ack) {
+            $lastPolicy = $this->privacyPolicyService->getLastAcceptedPolicy($user);
 
             return $this->sendError(
                 error: 'Privacy agreement not yet accepted!',
                 code: 406,
                 additional: [
                     'policy' => route(name: 'api.v1.getPrivacyPolicy'),
+                    'policy_id' => $agreement->id,
                     'validFrom' => $agreement->valid_at,
-                    'acceptedAt' => $user->privacy_ack_at,
+                    'acceptedAt' => $lastPolicy?->accepted_at,
+                    'last_accepted_policy_id' => $lastPolicy?->privacy_policy_id,
                 ]
             );
         }
