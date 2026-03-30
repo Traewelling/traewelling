@@ -14,6 +14,7 @@ use App\Listeners\StatusUpdateWebhookListener;
 use App\Models\Checkin;
 use App\Models\EventSuggestion;
 use App\Models\Follow;
+use App\Models\FollowRequest;
 use App\Models\Like;
 use App\Models\Report;
 use App\Models\RouteSegment;
@@ -23,6 +24,7 @@ use App\Models\User;
 use App\Observers\CheckinObserver;
 use App\Observers\EventSuggestionObserver;
 use App\Observers\FollowObserver;
+use App\Observers\FollowRequestObserver;
 use App\Observers\LikeObserver;
 use App\Observers\ReportObserver;
 use App\Observers\RouteSegmentObserver;
@@ -68,6 +70,7 @@ class EventServiceProvider extends ServiceProvider
         Checkin::class => [CheckinObserver::class],
         EventSuggestion::class => [EventSuggestionObserver::class],
         Follow::class => [FollowObserver::class],
+        FollowRequest::class => [FollowRequestObserver::class],
         Like::class => [LikeObserver::class],
         Report::class => [ReportObserver::class],
         RouteSegment::class => [RouteSegmentObserver::class],
