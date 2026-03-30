@@ -148,7 +148,7 @@
     "event": "Akce/Událost",
     "events": "Události",
     "events.begin": "začíná v",
-    "events.closestStation": "Nejbližší stanice Träwelling",
+    "events.closestStation": "Nejbližší stanice Träwellingu",
     "events.disclaimer.extendedcheckin": "Máte prodlouženou dobu pro zápis jízdy.",
     "events.disclaimer.organizer": "Träwelling není pořadatelem.",
     "events.disclaimer.source": "Tuto událost navrhl uživatel Träwellingu a my jsme ji schválili.",
@@ -1121,5 +1121,6 @@
     "validation-inline.url": "Toto musí být platná URL adresa.",
     "validation-inline.uuid": "Musí se jednat o platný UUID.",
     "validation.accepted": "Atribut :attribute musí být akceptován.",
-    "dates.Today": "Dnes"
+    "dates.Today": "Dnes",
+    "events.duration": "Trvání události"
 }
