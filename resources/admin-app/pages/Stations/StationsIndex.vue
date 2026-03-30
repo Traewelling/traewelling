@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ExternalLink } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
-import BackendLayout from '../../../../tailwind-app/layouts/BackendLayout.vue';
-import { Api, type Station } from '../../../../types/Api.gen';
+import { Api, type Station } from '../../../types/Api.gen';
+import BackendLayout from '../../layouts/BackendLayout.vue';
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 

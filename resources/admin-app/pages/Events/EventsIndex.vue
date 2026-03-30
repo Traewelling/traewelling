@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { PencilLine, Plus, Trash2 } from 'lucide-vue-next';
 import { onMounted, ref, watch } from 'vue';
-import BackendLayout from '../../../../tailwind-app/layouts/BackendLayout.vue';
-import { Api, type EventAdminResource } from '../../../../types/Api.gen';
+import { Api, type EventAdminResource } from '../../../types/Api.gen';
+import BackendLayout from '../../layouts/BackendLayout.vue';
 
 const adminUser = (window as unknown as { __adminUser?: { roles: string[] } }).__adminUser;
 const isAdmin = adminUser?.roles?.includes('admin') ?? false;

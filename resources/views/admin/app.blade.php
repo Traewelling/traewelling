@@ -18,7 +18,7 @@
         };
     </script>
 
-    @vite(['resources/tailwind-app/admin.ts'])
+    @vite(['resources/admin-app/app.ts'])
 
     <link rel="shortcut icon" href="{{ asset('images/icons/touch-icon-vector.svg') }}" />
 </head>

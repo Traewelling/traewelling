@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import BackendLayout from '../../../../tailwind-app/layouts/BackendLayout.vue';
-import { Api, type ReportResource } from '../../../../types/Api.gen';
+import { Api, type ReportResource } from '../../../types/Api.gen';
+import BackendLayout from '../../layouts/BackendLayout.vue';
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 

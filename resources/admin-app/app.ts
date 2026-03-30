@@ -2,11 +2,11 @@ import { createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import '../css/tailwind-app.css';
 import AdminApp from './AdminApp.vue';
-import adminRoutes from './router/admin-routes';
+import routes from './router/routes';
 
 const router = createRouter({
     history: createWebHistory(),
-    routes: adminRoutes,
+    routes: routes,
 });
 
 document.addEventListener('DOMContentLoaded', () => {
