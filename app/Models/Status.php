@@ -77,6 +77,9 @@ use Spatie\Activitylog\Support\LogOptions;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereCreatedByUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereTicketId($value)
  *
+ * @property-read Collection<int, Activity> $activitiesAsSubject
+ * @property-read int|null $activities_as_subject_count
+ *
  * @mixin \Eloquent
  */
 class Status extends Model
