@@ -2,8 +2,8 @@
 import { ArrowLeft, Save } from 'lucide-vue-next';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import BackendLayout from '../../../../tailwind-app/layouts/BackendLayout.vue';
-import { Api, type AdminStatusResource } from '../../../../types/Api.gen';
+import { Api, type AdminStatusResource } from '../../../types/Api.gen';
+import BackendLayout from '../../layouts/BackendLayout.vue';
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 const route = useRoute();

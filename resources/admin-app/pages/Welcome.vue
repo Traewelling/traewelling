@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Hammer } from 'lucide-vue-next';
-import BackendLayout from '../../layouts/BackendLayout.vue';
+import BackendLayout from '../layouts/BackendLayout.vue';
 </script>
 
 <template>

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { Check, X } from 'lucide-vue-next';
 import { onMounted, ref } from 'vue';
-import BackendLayout from '../../../../tailwind-app/layouts/BackendLayout.vue';
-import { Api, type EventSuggestionResource } from '../../../../types/Api.gen';
+import { Api, type EventSuggestionResource } from '../../../types/Api.gen';
+import BackendLayout from '../../layouts/BackendLayout.vue';
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 

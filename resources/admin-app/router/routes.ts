@@ -1,19 +1,19 @@
 import { RouteRecordRaw } from 'vue-router';
-import AlertsForm from '../../vue/components/Admin/Alerts/AlertsForm.vue';
-import AlertsIndex from '../../vue/components/Admin/Alerts/AlertsIndex.vue';
-import EventsForm from '../../vue/components/Admin/Events/EventsForm.vue';
-import EventsIndex from '../../vue/components/Admin/Events/EventsIndex.vue';
-import SuggestionAccept from '../../vue/components/Admin/Events/SuggestionAccept.vue';
-import SuggestionsIndex from '../../vue/components/Admin/Events/SuggestionsIndex.vue';
-import ReportsIndex from '../../vue/components/Admin/Reports/ReportsIndex.vue';
-import ReportsShow from '../../vue/components/Admin/Reports/ReportsShow.vue';
-import StationsIndex from '../../vue/components/Admin/Stations/StationsIndex.vue';
-import StationsShow from '../../vue/components/Admin/Stations/StationsShow.vue';
-import StatusesIndex from '../../vue/components/Admin/Statuses/StatusesIndex.vue';
-import StatusesShow from '../../vue/components/Admin/Statuses/StatusesShow.vue';
-import Welcome from '../pages/Admin/Welcome.vue';
+import AlertsIndex from '../pages/Alerts/AlertsIndex.vue';
+import AlertsForm from '../pages/Alerts/partials/AlertsForm.vue';
+import EventsIndex from '../pages/Events/EventsIndex.vue';
+import EventsForm from '../pages/Events/partials/EventsForm.vue';
+import SuggestionAccept from '../pages/Events/SuggestionAccept.vue';
+import SuggestionsIndex from '../pages/Events/SuggestionsIndex.vue';
+import ReportsIndex from '../pages/Reports/ReportsIndex.vue';
+import ReportsShow from '../pages/Reports/ReportsShow.vue';
+import StationsIndex from '../pages/Stations/StationsIndex.vue';
+import StationsShow from '../pages/Stations/StationsShow.vue';
+import StatusesIndex from '../pages/Statuses/StatusesIndex.vue';
+import StatusesShow from '../pages/Statuses/StatusesShow.vue';
+import Welcome from '../pages/Welcome.vue';
 
-const adminRoutes: Array<RouteRecordRaw> = [
+const routes: Array<RouteRecordRaw> = [
     {
         path: '/admin',
         component: Welcome,
@@ -76,4 +76,4 @@ const adminRoutes: Array<RouteRecordRaw> = [
     },
 ];
 
-export default adminRoutes;
+export default routes;
