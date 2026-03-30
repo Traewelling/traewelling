@@ -255,7 +255,7 @@ abstract class ExportController extends Controller
     ): StreamedResponse {
         $headers = [
             'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
-            'Content-type' => 'text/csv',
+            'Content-type' => 'text/csv; header=present',
             'Content-Disposition' => sprintf(
                 'attachment; filename="Traewelling_export_%s_to_%s.csv"',
                 $from->format('Y-m-d'),
@@ -279,9 +279,10 @@ abstract class ExportController extends Controller
             fputcsv(
                 stream: $csv,
                 fields: $stringColumns,
+                eol: "\r\n",
             );
             foreach ($data as $row) {
-                fputcsv($csv, $row);
+                fputcsv($csv, $row, eol: "\r\n");
             }
             fclose($csv);
         };
