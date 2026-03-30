@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -25,11 +27,16 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivacyPolicy whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivacyPolicy whereValidAt($value)
  *
+ * @property-read Collection<int, PrivacyPolicyAcceptance> $privacyPolicyAcceptance
+ * @property-read int|null $privacy_policy_acceptance_count
+ *
+ * @method static \Database\Factories\PrivacyPolicyFactory factory($count = null, $state = [])
+ *
  * @mixin \Eloquent
  */
 class PrivacyPolicy extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     protected $fillable = ['body_md_de', 'body_md_en', 'valid_at'];
 
