@@ -104,6 +104,48 @@ class PrivateProfileFollowerRelationsTest extends ApiTestCase
     }
 
     #[Test]
+    public function accepting_a_follow_request_should_delete_the_notification(): void
+    {
+        $alice = User::factory()->create();
+        $bob = User::factory(['private_profile' => true])->create();
+
+        FollowController::createOrRequestFollow($alice, $bob);
+
+        $this->assertDatabaseHas('notifications', [
+            'notifiable_id' => $bob->id,
+            'type' => FollowRequestIssued::class,
+        ]);
+
+        FollowController::approveFollower($bob, $alice);
+
+        $this->assertDatabaseMissing('notifications', [
+            'notifiable_id' => $bob->id,
+            'type' => FollowRequestIssued::class,
+        ]);
+    }
+
+    #[Test]
+    public function rejecting_a_follow_request_should_delete_the_notification(): void
+    {
+        $alice = User::factory()->create();
+        $bob = User::factory(['private_profile' => true])->create();
+
+        FollowController::createOrRequestFollow($alice, $bob);
+
+        $this->assertDatabaseHas('notifications', [
+            'notifiable_id' => $bob->id,
+            'type' => FollowRequestIssued::class,
+        ]);
+
+        FollowController::rejectFollower($bob, $alice);
+
+        $this->assertDatabaseMissing('notifications', [
+            'notifiable_id' => $bob->id,
+            'type' => FollowRequestIssued::class,
+        ]);
+    }
+
+    #[Test]
     public function declining_a_follow_request_should_keep_invisibility(): void
     {
         // Given: Users Alice and Bob
