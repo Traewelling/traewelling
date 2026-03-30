@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend\Admin;
 
 use App\Exceptions\RateLimitExceededException;
 use App\Models\User;
+use App\Repositories\PrivacyPolicyRepository;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,6 +14,10 @@ use Spatie\Permission\Models\Role;
 class UserController
 {
     use SendsPasswordResetEmails;
+
+    public function __construct(
+        private PrivacyPolicyRepository $privacyPolicyRepository
+    ) {}
 
     public function renderIndex(Request $request): View|RedirectResponse
     {
@@ -56,9 +61,21 @@ class UserController
     public function renderUser(int $id): View
     {
         $user = User::findOrFail($id);
+        $current = $this->privacyPolicyRepository->getPrivacyPolicyValidAt(now());
+        $future = $this->privacyPolicyRepository->getPrivacyPolicyValidAt(now()->addYear());
+        $acceptedFuture = null;
+
+        if ($current->id !== $future->id) {
+            $acceptedFuture = $this->privacyPolicyRepository->getUserPolicyAcceptance($user, $future)->first();
+        }
+
+        $acceptedCurrent = $this->privacyPolicyRepository->getUserPolicyAcceptance($user, $current)->first();
 
         return view('admin.users.show', [
             'user' => $user,
+            'privacyPolicyCurrent' => $acceptedCurrent,
+            'privacyPolicyFuture' => $acceptedFuture,
+            'privacyPolicyFutureExists' => $current->id !== $future->id,
         ]);
     }
 

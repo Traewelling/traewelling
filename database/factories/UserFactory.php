@@ -4,6 +4,8 @@ namespace Database\Factories;
 
 use App\Enum\StatusVisibility;
 use App\Enum\User\FriendCheckinSetting;
+use App\Models\User;
+use App\Repositories\PrivacyPolicyRepository;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
@@ -18,7 +20,6 @@ class UserFactory extends Factory
             'avatar' => $this->getAvatar(),
             'email' => $this->faker->unique()->safeEmail,
             'email_verified_at' => now(),
-            'privacy_ack_at' => now(),
             'password' => Hash::make('password'),
             'home_id' => null,
             'private_profile' => false,
@@ -30,6 +31,19 @@ class UserFactory extends Factory
             'points_enabled' => true,
             'friend_checkin' => FriendCheckinSetting::FORBIDDEN,
         ];
+    }
+
+    public function configure(): UserFactory
+    {
+        return $this->afterMaking(function (User $user) {
+            //
+        })->afterCreating(function (User $user) {
+            try {
+                new PrivacyPolicyRepository()->acceptPrivacyPolicy($user);
+            } catch (\Throwable $exception) {
+                // do nothing
+            }
+        });
     }
 
     private function getAvatar(): ?string

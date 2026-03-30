@@ -483,4 +483,9 @@ class User extends Authenticatable implements ExportsPersonalData, OAuthenticata
     {
         return $this->hasMany(MailChange::class, 'user_id', 'id');
     }
+
+    public function privacyPolicyAcceptances(): HasMany
+    {
+        return $this->hasMany(PrivacyPolicyAcceptance::class, 'user_id', 'uuid');
+    }
 }

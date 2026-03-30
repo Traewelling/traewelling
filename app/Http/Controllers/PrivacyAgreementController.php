@@ -15,18 +15,35 @@ use Illuminate\Support\Facades\Auth;
  */
 class PrivacyAgreementController extends Controller
 {
-    public function intercept(): Renderable
-    {
-        $agreement = PrivacyPolicyService::getCurrentPrivacyPolicy();
-        $user = Auth::user();
+    public function __construct(
+        private readonly PrivacyPolicyService $privacyPolicyService
+    ) {}
 
-        return view('legal.privacy-interception', ['agreement' => $agreement, 'user' => $user]);
+    public function intercept(?string $date = null): Renderable
+    {
+        $agreement = $this->privacyPolicyService->getPrivacyPolicy($date);
+        $user = Auth::user();
+        $hasUserSigned = false;
+        $policyChanged = false;
+
+        if ($user) {
+            $acceptances = $this->privacyPolicyService->getUserAcceptance($user);
+            $hasUserSigned = $this->privacyPolicyService->hasUserAcceptedPolicy($user, $agreement);
+            if (count($acceptances) > 0) {
+                $policyChanged = true;
+            }
+        }
+
+        return view('legal.privacy-interception', ['agreement' => $agreement, 'user' => $user, 'hasUserSigned' => $hasUserSigned, 'policyChanged' => $policyChanged]);
     }
 
     public function ack(Request $request): RedirectResponse|JsonResponse
     {
+        $validated = $request->validate([
+            'valid_at' => 'nullable|date',
+        ]);
         try {
-            PrivacyPolicyService::acceptPrivacyPolicy(user: auth()->user());
+            $this->privacyPolicyService->acceptPrivacyPolicy(user: auth()->user(), validAt: $validated['valid_at'] ?? null);
         } catch (AlreadyAcceptedException) {
             return redirect()->route('dashboard');
         }

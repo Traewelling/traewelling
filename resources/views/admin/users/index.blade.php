@@ -34,7 +34,6 @@
                                 <th>Name</th>
                                 <th>Last login</th>
                                 <th>Mail</th>
-                                <th>Privacy Agreement</th>
                                 <th class="text-end">Aktionen</th>
                             </tr>
                             </thead>
@@ -75,20 +74,6 @@
                                                     Not verified
                                                 </small>
                                             @endisset
-                                        @endisset
-                                    </td>
-                                    <td>
-                                        @isset($user->privacy_ack_at)
-                                            <small class="text-success">
-                                                <i class="fa-solid fa-check"></i>
-                                                {{ $user->privacy_ack_at->diffForHumans() }}<br/>
-                                                ({{$user->privacy_ack_at}})
-                                            </small>
-                                        @else
-                                            <small class="text-danger">
-                                                <i class="fa-solid fa-times"></i>
-                                                Not agreed to Privacy Agreement
-                                            </small>
                                         @endisset
                                     </td>
                                     <td class="text-end">

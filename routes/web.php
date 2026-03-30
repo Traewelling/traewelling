@@ -49,6 +49,8 @@ Route::prefix('legal')->group(function () {
         ->name('legal.notice');
     Route::get('/privacy-policy', [PrivacyAgreementController::class, 'intercept'])
         ->name('legal.privacy');
+    Route::get('/privacy-policy/{date}', [PrivacyAgreementController::class, 'intercept'])
+        ->name('legal.privacy');
 });
 
 Route::get('/@{username}', [FrontendUserController::class, 'getProfilePage'])

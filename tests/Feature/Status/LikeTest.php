@@ -7,7 +7,6 @@ use App\Http\Controllers\StatusController as StatusBackend;
 use App\Models\Checkin;
 use App\Models\User;
 use App\Notifications\StatusLiked;
-use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\FeatureTestCase;
@@ -54,7 +53,7 @@ class LikeTest extends FeatureTestCase
     public function test_liking_does_not_work_if_i_have_disabled_likes(): void
     {
         $checkin = Checkin::factory()->create();
-        $likingUser = User::factory(['privacy_ack_at' => Carbon::now()])->create();
+        $likingUser = User::factory()->create();
 
         $checkin->status->user->update(['likes_enabled' => false]);
 

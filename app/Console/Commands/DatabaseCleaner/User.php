@@ -17,8 +17,9 @@ class User extends Command
         $this->info('Deleting users who have not agreed to the privacy policy...');
         $this->output->writeln('');
         do {
-            $result = UserModel::where('privacy_ack_at', null)
-                ->where('created_at', '<', now()->subDay())
+            $result = UserModel::leftJoin('privacy_policy_acceptances', 'users.uuid', '=', 'privacy_policy_acceptances.user_id')
+                ->whereNull('privacy_policy_acceptances.user_id')
+                ->where('users.created_at', '<', now()->subDay())
                 ->limit(1000)
                 ->delete();
             if ($result > 0) {

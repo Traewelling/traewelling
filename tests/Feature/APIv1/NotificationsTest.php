@@ -17,7 +17,6 @@ use App\Notifications\EventSuggestionProcessed;
 use App\Notifications\UserFollowed;
 use App\Notifications\UserJoinedConnection;
 use App\Services\Checkin\CheckinService;
-use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Passport\Passport;
 use Tests\ApiTestCase;
@@ -221,14 +220,14 @@ class NotificationsTest extends ApiTestCase
     public function test_bob_joining_on_alices_connection_should_not_spawn_a_notification_when_private(): void
     {
         // GIVEN: A mocked checkin for Alice
-        $alice = User::factory(['privacy_ack_at' => Carbon::now()])->create();
+        $alice = User::factory()->create();
         $aliceCheckIn = Checkin::factory(['user_id' => $alice->id])->create();
 
         // Check if there are no notifications
         $this->assertDatabaseCount('notifications', 0);
 
         // WHEN: Bob also checks into the train (with same origin and destination - but not relevant)
-        $bob = User::factory(['privacy_ack_at' => Carbon::now()])->create();
+        $bob = User::factory()->create();
         $dto = (new CheckinRequestTestHydrator($bob))->hydrateFromCheckin($aliceCheckIn);
         $dto->setStatusVisibility(StatusVisibility::PRIVATE);
         new CheckinService()->checkin($dto);
