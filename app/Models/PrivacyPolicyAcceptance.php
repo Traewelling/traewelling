@@ -27,6 +27,10 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivacyPolicyAcceptance whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivacyPolicyAcceptance whereUuid($value)
  *
+ * @property string $id
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PrivacyPolicyAcceptance whereId($value)
+ *
  * @mixin \Eloquent
  */
 class PrivacyPolicyAcceptance extends Model

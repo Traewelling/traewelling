@@ -13,18 +13,35 @@ import {
     Users,
 } from 'lucide-vue-next';
 import { type FunctionalComponent } from 'vue';
+import { useUserStore } from '../../vue/stores/user';
 
-const navLinks: { label: string; icon: FunctionalComponent; href: string }[] = [
-    { label: 'Trips', icon: Train, href: '/admin/trips' },
-    { label: 'Users', icon: Users, href: '/admin/users' },
-    { label: 'Events', icon: CalendarDays, href: '/admin/events' },
-    { label: 'Status', icon: Radio, href: '/admin/statuses' },
-    { label: 'Stations', icon: MapPin, href: '/admin/stations' },
-    { label: 'Operators', icon: BriefcaseBusiness, href: '/admin/operators' },
-    { label: 'Activity', icon: Activity, href: '/admin/activity' },
-    { label: 'Reports', icon: Flag, href: '/admin/reports' },
-    { label: 'Licenses', icon: Scale, href: '/admin/sources' },
-    { label: 'Alerts', icon: Bell, href: '/admin/alerts' },
+const user = useUserStore();
+user.fetchSettings();
+
+// |update-events|delete-events
+const navLinks: {
+    label: string;
+    icon: FunctionalComponent;
+    href: string;
+    roles: string[];
+    permissions?: string[];
+}[] = [
+    { label: 'Trips', icon: Train, href: '/admin/trips', roles: ['admin'] },
+    { label: 'Users', icon: Users, href: '/admin/users', roles: ['admin'] },
+    {
+        label: 'Events',
+        icon: CalendarDays,
+        href: '/admin/events',
+        roles: ['admin', 'event-moderator'],
+        permissions: ['view-events', 'deny-events', 'update-events', 'delete-events', 'create-events', 'accept-events'],
+    },
+    { label: 'Status', icon: Radio, href: '/admin/statuses', roles: ['admin'] },
+    { label: 'Stations', icon: MapPin, href: '/admin/stations', roles: ['admin'] },
+    { label: 'Operators', icon: BriefcaseBusiness, href: '/admin/operators', roles: ['admin'] },
+    { label: 'Activity', icon: Activity, href: '/admin/activity', roles: ['admin'] },
+    { label: 'Reports', icon: Flag, href: '/admin/reports', roles: ['admin'] },
+    { label: 'Licenses', icon: Scale, href: '/admin/sources', roles: ['admin'] },
+    { label: 'Alerts', icon: Bell, href: '/admin/alerts', roles: ['admin'] },
 ];
 
 function isActive(href: string): boolean {
@@ -52,7 +69,14 @@ function isActive(href: string): boolean {
 
                 <div class="navbar-center hidden xl:flex">
                     <ul class="menu menu-horizontal gap-0.5 px-1 text-sm">
-                        <li v-for="link in navLinks" :key="link.href">
+                        <li
+                            v-for="link in navLinks"
+                            v-show="
+                                link.roles.some((role) => user.user?.roles.includes(role)) ||
+                                link.roles.some((role) => user.user?.roles.includes(role))
+                            "
+                            :key="link.href"
+                        >
                             <a
                                 :href="link.href"
                                 class="gap-1.5 px-2 py-1.5"
@@ -100,7 +124,14 @@ function isActive(href: string): boolean {
             <label for="backend-drawer" aria-label="close sidebar" class="drawer-overlay" />
             <ul class="menu bg-base-100 min-h-full w-72 p-4 gap-1">
                 <li class="menu-title text-xs">Navigation</li>
-                <li v-for="link in navLinks" :key="link.href">
+                <li
+                    v-for="link in navLinks"
+                    v-show="
+                        link.roles.some((role) => user.user?.roles.includes(role)) ||
+                        link.roles.some((role) => user.user?.roles.includes(role))
+                    "
+                    :key="link.href"
+                >
                     <a :href="link.href" :class="isActive(link.href) ? 'active' : ''">
                         <component :is="link.icon" class="w-4 h-4" />
                         {{ link.label }}
