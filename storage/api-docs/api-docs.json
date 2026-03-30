@@ -2758,15 +2758,6 @@
                 "summary": "Get the current privacy policy",
                 "description": "Get the current privacy policy",
                 "operationId": "App\\Http\\Controllers\\API\\v1\\PrivacyPolicyController",
-                "parameters": [
-                    {
-                        "name": "validAt",
-                        "in": "query",
-                        "description": "Get the privacy policy valid at a specific time (defaults to now)",
-                        "required": false,
-                        "example": "2022-01-05T16:26:14.000000Z"
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "Success",
@@ -2786,8 +2777,8 @@
                 }
             }
         },
-        "/privacy-policies/accept": {
-            "post": {
+        "/privacy-policies/{id}/acceptance": {
+            "put": {
                 "tags": [
                     "Privacy Policy"
                 ],
@@ -2796,11 +2787,11 @@
                 "operationId": "acceptPrivacyPolicy",
                 "parameters": [
                     {
-                        "name": "validAt",
-                        "in": "query",
-                        "description": "Get the privacy policy valid at a specific time (defaults to now)",
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the privacy policy",
                         "required": false,
-                        "example": "2022-01-05T16:26:14.000000Z"
+                        "example": "cec8587a-c73d-45dd-b35e-04f8edf637fc"
                     }
                 ],
                 "responses": {

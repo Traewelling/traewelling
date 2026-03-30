@@ -19,9 +19,9 @@ class PrivacyAgreementController extends Controller
         private readonly PrivacyPolicyService $privacyPolicyService
     ) {}
 
-    public function intercept(?string $date = null): Renderable
+    public function intercept(?string $id = null): Renderable
     {
-        $agreement = $this->privacyPolicyService->getPrivacyPolicy($date);
+        $agreement = $this->privacyPolicyService->getPrivacyPolicy($id);
         $user = Auth::user();
         $hasUserSigned = false;
         $policyChanged = false;
@@ -39,11 +39,10 @@ class PrivacyAgreementController extends Controller
 
     public function ack(Request $request): RedirectResponse|JsonResponse
     {
-        $validated = $request->validate([
-            'valid_at' => 'nullable|date',
-        ]);
+        $validated = $request->validate(['id' => 'required']);
         try {
-            $this->privacyPolicyService->acceptPrivacyPolicy(user: auth()->user(), validAt: $validated['valid_at'] ?? null);
+            $this->privacyPolicyService->getPrivacyPolicy($validated['id']);
+            $this->privacyPolicyService->acceptPrivacyPolicy(user: auth()->user());
         } catch (AlreadyAcceptedException) {
             return redirect()->route('dashboard');
         }

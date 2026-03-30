@@ -17,6 +17,11 @@ class PrivacyPolicyRepository
             ->first();
     }
 
+    public function getPrivacyPolicyById(string $id): PrivacyPolicy
+    {
+        return PrivacyPolicy::whereId($id)->firstOrFail();
+    }
+
     public function getUserPolicyAcceptance(User $user, ?PrivacyPolicy $privacyPolicy = null): Collection
     {
         $query = PrivacyPolicyAcceptance::where('user_id', $user->uuid);

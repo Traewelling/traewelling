@@ -22,15 +22,6 @@ class PrivacyPolicyController extends Controller
         description: 'Get the current privacy policy',
         summary: 'Get the current privacy policy',
         tags: ['Privacy Policy'],
-        parameters: [
-            new OA\Parameter(
-                name: 'validAt',
-                description: 'Get the privacy policy valid at a specific time (defaults to now)',
-                in: 'query',
-                required: false,
-                example: '2022-01-05T16:26:14.000000Z',
-            ),
-        ],
         responses: [
             new OA\Response(
                 response: 200,
@@ -49,13 +40,11 @@ class PrivacyPolicyController extends Controller
     )]
     public function getPrivacyPolicy(Request $request): PrivacyPolicyResource
     {
-        $validated = $request->validate(['validAt' => 'date']);
-
-        return new PrivacyPolicyResource($this->privacyPolicyService->getPrivacyPolicy($validated['validAt'] ?? null));
+        return new PrivacyPolicyResource($this->privacyPolicyService->getPrivacyPolicy());
     }
 
-    #[OA\Post(
-        path: '/privacy-policies/accept',
+    #[OA\Put(
+        path: '/privacy-policies/{id}/acceptance',
         operationId: 'acceptPrivacyPolicy',
         description: 'Accept the current privacy policy',
         summary: 'Accept the current privacy policy',
@@ -63,11 +52,11 @@ class PrivacyPolicyController extends Controller
         tags: ['Privacy Policy'],
         parameters: [
             new OA\Parameter(
-                name: 'validAt',
-                description: 'Get the privacy policy valid at a specific time (defaults to now)',
-                in: 'query',
+                name: 'id',
+                description: 'ID of the privacy policy',
+                in: 'path',
                 required: false,
-                example: '2022-01-05T16:26:14.000000Z',
+                example: 'cec8587a-c73d-45dd-b35e-04f8edf637fc',
             ),
         ],
         responses: [
@@ -77,12 +66,35 @@ class PrivacyPolicyController extends Controller
             new OA\Response(response: 409, description: 'Conflict - User already accepted privacy policy'),
         ],
     )]
+    public function accept(Request $request, string $id): JsonResponse
+    {
+        try {
+            $policy = $this->privacyPolicyService->getPrivacyPolicy($id);
+            $this->privacyPolicyService->acceptPrivacyPolicy(user: auth()->user(), policy: $policy);
+        } catch (AlreadyAcceptedException $exception) {
+            $error = strtr('User already accepted privacy policy (valid from ptime) at utime', [
+                'ptime' => $exception->getPrivacyValidity(),
+                'utime' => $exception->getUserAccepted(),
+            ]);
+
+            return $this->sendError(error: $error, code: 409);
+        } catch (AcceptingOldPrivacyPolicyException $e) {
+            $error = strtr('Trying to accept an obsolete privacy policy (old: otime, current: ntime)', [
+                'otime' => $e->oldValidAt->toIso8601String(),
+                'ntime' => $e->oldValidAt->toIso8601String(),
+            ]);
+
+            return $this->sendError(error: $error, code: 409);
+        }
+
+        return $this->sendResponse(code: 204);
+    }
+
     public function acceptPrivacyPolicy(Request $request): JsonResponse
     {
-        $validated = $request->validate(['validAt' => 'date']);
-
         try {
-            $this->privacyPolicyService->acceptPrivacyPolicy(user: auth()->user(), validAt: $validated['validAt'] ?? null);
+            $policy = $this->privacyPolicyService->getPrivacyPolicy();
+            $this->privacyPolicyService->acceptPrivacyPolicy(user: auth()->user(), policy: $policy);
         } catch (AlreadyAcceptedException $exception) {
             $error = strtr('User already accepted privacy policy (valid from ptime) at utime', [
                 'ptime' => $exception->getPrivacyValidity(),

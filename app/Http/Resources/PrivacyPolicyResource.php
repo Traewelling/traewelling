@@ -43,6 +43,7 @@ class PrivacyPolicyResource extends JsonResource
     {
         /** @var PrivacyPolicy $this */
         return [
+            'id' => $this->id,
             'validFrom' => $this->valid_at,
             'en' => $this->body_md_en,
             'de' => $this->body_md_de,

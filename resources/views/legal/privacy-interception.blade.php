@@ -39,7 +39,7 @@
                         <form method="POST" action="{{ route('gdpr.ack') }}" class="fixed-bottom text-end"
                               style="background-color: hsl(216, 25%, 95.1%);" id="form-privacy">
                             @csrf
-                            <input type="hidden" name="valid_at" value="{{ $agreement->valid_at->toIso8601String() }}"/>
+                            <input type="hidden" name="id" value="{{ $agreement->id }}"/>
                             <div class="container">
                                 <div class="row justify-content-center">
                                     <div class="col-md-8 col-lg-7 my-2">

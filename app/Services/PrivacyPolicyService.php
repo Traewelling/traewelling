@@ -17,9 +17,20 @@ readonly class PrivacyPolicyService
         private PrivacyPolicyRepository $repository,
     ) {}
 
-    public function getPrivacyPolicy(?string $validAt = null): PrivacyPolicy
+    public function getPrivacyPolicy(?string $id = null, ?User $visitingUser = null): ?PrivacyPolicy
     {
-        return $this->repository->getPrivacyPolicyValidAt(Carbon::parse($validAt));
+        if ($id === null) {
+            return $this->repository->getPrivacyPolicyValidAt(now());
+        }
+
+        $policy = $this->repository->getPrivacyPolicyById($id);
+        $currentPolicy = $this->repository->getPrivacyPolicyValidAt(now());
+
+        if ($policy->id !== $currentPolicy->id && $policy->valid_at->isBefore($currentPolicy->valid_at) && !$visitingUser?->hasRole('admin')) {
+            throw new AcceptingOldPrivacyPolicyException(oldValidAt: $policy->valid_at, currentValidAt: $currentPolicy->valid_at);
+        }
+
+        return $policy;
     }
 
     public function getUserAcceptance(User $user): Collection
@@ -31,13 +42,12 @@ readonly class PrivacyPolicyService
      * @throws AlreadyAcceptedException
      * @throws AcceptingOldPrivacyPolicyException
      */
-    public function acceptPrivacyPolicy(User $user, ?string $validAt = null): void
+    public function acceptPrivacyPolicy(User $user, PrivacyPolicy $policy): void
     {
-        $currentPolicy = $this->repository->getPrivacyPolicyValidAt(now());
         $privacyPolicy = $this->repository->getPrivacyPolicyValidAt(Carbon::parse($validAt));
 
-        if ($privacyPolicy->id !== $currentPolicy->id && $privacyPolicy->valid_at->isBefore($currentPolicy->valid_at)) {
-            throw new AcceptingOldPrivacyPolicyException(oldValidAt: $privacyPolicy->valid_at, currentValidAt: $currentPolicy->valid_at);
+        if ($privacyPolicy->id !== $policy->id && $privacyPolicy->valid_at->isBefore($policy->valid_at)) {
+            throw new AcceptingOldPrivacyPolicyException(oldValidAt: $privacyPolicy->valid_at, currentValidAt: $policy->valid_at);
         }
 
         $ack = $this->repository->getUserPolicyAcceptance($user, $privacyPolicy)->first();

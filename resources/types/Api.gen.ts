@@ -4536,13 +4536,6 @@ export class Api<
      * @request GET:/privacy-policies/current
      */
     appHttpControllersApiV1PrivacyPolicyController: (
-      query?: {
-        /**
-         * Get the privacy policy valid at a specific time (defaults to now)
-         * @example "2022-01-05T16:26:14.000000Z"
-         */
-        validAt?: any;
-      },
       params: RequestParams = {},
     ) =>
       this.request<
@@ -4553,7 +4546,6 @@ export class Api<
       >({
         path: `/privacy-policies/current`,
         method: "GET",
-        query: query,
         format: "json",
         ...params,
       }),
@@ -4564,23 +4556,13 @@ export class Api<
      * @tags Privacy Policy
      * @name AcceptPrivacyPolicy
      * @summary Accept the current privacy policy
-     * @request POST:/privacy-policies/accept
+     * @request PUT:/privacy-policies/{id}/acceptance
      * @secure
      */
-    acceptPrivacyPolicy: (
-      query?: {
-        /**
-         * Get the privacy policy valid at a specific time (defaults to now)
-         * @example "2022-01-05T16:26:14.000000Z"
-         */
-        validAt?: any;
-      },
-      params: RequestParams = {},
-    ) =>
+    acceptPrivacyPolicy: (id?: any, params: RequestParams = {}) =>
       this.request<void, void>({
-        path: `/privacy-policies/accept`,
-        method: "POST",
-        query: query,
+        path: `/privacy-policies/${id}/acceptance`,
+        method: "PUT",
         secure: true,
         ...params,
       }),
