@@ -53,6 +53,9 @@ use Spatie\Activitylog\Support\LogOptions;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereTimeOffset($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereUpdatedAt($value)
  *
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Activity> $activitiesAsSubject
+ * @property-read int|null $activities_as_subject_count
+ *
  * @mixin \Eloquent
  */
 class Station extends Model

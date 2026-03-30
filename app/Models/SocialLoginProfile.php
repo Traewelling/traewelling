@@ -31,6 +31,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile whereMastodonVisibility($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile whereMastodonUsername($value)
  *
  * @mixin \Eloquent
  */
