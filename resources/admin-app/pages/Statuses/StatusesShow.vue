@@ -309,43 +309,46 @@ onMounted(() => fetchStatus());
                                 </fieldset>
                             </div>
 
-                            <div class="divider my-1 text-warning text-xs">Danger Zone</div>
-
-                            <p class="text-xs text-base-content/60">
-                                The note below is visible to the user. Explain why you changed the status.
-                            </p>
-
-                            <fieldset class="fieldset">
-                                <legend class="fieldset-legend text-xs">Moderation Notes</legend>
-                                <textarea
-                                    v-model="form.moderation_notes"
-                                    class="textarea textarea-bordered w-full"
-                                    rows="2"
-                                    maxlength="255"
-                                />
-                            </fieldset>
-
-                            <div class="grid grid-cols-2 gap-2">
-                                <fieldset class="fieldset">
-                                    <legend class="fieldset-legend text-xs">Lock Visibility?</legend>
-                                    <select
-                                        v-model="form.lock_visibility"
-                                        class="select select-bordered select-sm w-full"
-                                    >
-                                        <option :value="false">No</option>
-                                        <option :value="true">Yes</option>
-                                    </select>
-                                </fieldset>
+                            <div class="border-warning border-2 border-dashed -mx-4 p-4 rounded-lg my-5">
+                                <div class="text-warning text-xs mb-6">Danger Zone</div>
+                                <p class="text-xs text-base-content/60">
+                                    The note below is visible to the user. Explain why you changed the status.
+                                </p>
 
                                 <fieldset class="fieldset">
-                                    <legend class="fieldset-legend text-xs">Hide Body from Public?</legend>
-                                    <select v-model="form.hide_body" class="select select-bordered select-sm w-full">
-                                        <option :value="false">No</option>
-                                        <option :value="true">Yes</option>
-                                    </select>
+                                    <legend class="fieldset-legend text-xs">Moderation Notes</legend>
+                                    <textarea
+                                        v-model="form.moderation_notes"
+                                        class="textarea textarea-bordered w-full"
+                                        rows="2"
+                                        maxlength="255"
+                                    />
                                 </fieldset>
+
+                                <div class="grid grid-cols-2 gap-2">
+                                    <fieldset class="fieldset">
+                                        <legend class="fieldset-legend text-xs">Lock Visibility?</legend>
+                                        <select
+                                            v-model="form.lock_visibility"
+                                            class="select select-bordered select-sm w-full"
+                                        >
+                                            <option :value="false">No</option>
+                                            <option :value="true">Yes</option>
+                                        </select>
+                                    </fieldset>
+
+                                    <fieldset class="fieldset">
+                                        <legend class="fieldset-legend text-xs">Hide Body from Public?</legend>
+                                        <select
+                                            v-model="form.hide_body"
+                                            class="select select-bordered select-sm w-full"
+                                        >
+                                            <option :value="false">No</option>
+                                            <option :value="true">Yes</option>
+                                        </select>
+                                    </fieldset>
+                                </div>
                             </div>
-
                             <button type="submit" class="btn btn-primary w-full" :disabled="saving">
                                 <span v-if="saving" class="loading loading-spinner loading-sm" />
                                 <Save v-else class="w-4 h-4" />
