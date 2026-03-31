@@ -1,3 +1,5 @@
+import { createPinia } from 'pinia';
+import piniaPluginPersistedState from 'pinia-plugin-persistedstate';
 import { createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import '../css/tailwind-app.css';
@@ -12,7 +14,11 @@ const router = createRouter({
 document.addEventListener('DOMContentLoaded', () => {
     const el = document.getElementById('vue-admin-app');
     if (el) {
+        const pinia = createPinia();
+        pinia.use(piniaPluginPersistedState);
+
         const app = createApp(AdminApp);
+        app.use(pinia);
         app.use(router);
         app.mount(el);
     }

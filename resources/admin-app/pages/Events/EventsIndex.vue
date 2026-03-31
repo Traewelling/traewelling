@@ -2,11 +2,12 @@
 import { PencilLine, Plus, Trash2 } from 'lucide-vue-next';
 import { onMounted, ref, watch } from 'vue';
 import { Api, type EventAdminResource } from '../../../types/Api.gen';
+import { useUserStore } from '../../../vue/stores/user';
 import BackendLayout from '../../layouts/BackendLayout.vue';
 
-const adminUser = (window as unknown as { __adminUser?: { roles: string[] } }).__adminUser;
-const isAdmin = adminUser?.roles?.includes('admin') ?? false;
-const canEdit = isAdmin || (adminUser?.roles?.includes('event-moderator') ?? false);
+const userStore = useUserStore();
+const isAdmin = userStore.user?.roles.includes('admin') ?? false;
+const canEdit = isAdmin || (userStore.user?.roles.includes('event-moderator') ?? false);
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 

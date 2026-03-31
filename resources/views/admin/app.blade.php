@@ -13,9 +13,6 @@
             const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             document.documentElement.setAttribute('data-theme', saved ?? (prefersDark ? 'dark' : 'light'));
         })();
-        window.__adminUser = { // temp workaround to get roles, maybe make this besser in future (sorry. ~kris)
-            roles: @json(auth()->user()?->getRoleNames() ?? []),
-        };
     </script>
 
     @vite(['resources/admin-app/app.ts'])
