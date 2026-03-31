@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Helpers\Lang;
 use App\Models\FollowRequest;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
@@ -30,16 +31,18 @@ class FollowRequestIssued extends Notification implements BaseNotification
         ];
     }
 
-    public static function getLead(array $data): string
+    public static function getLead(array $data, ?string $locale = null): string
     {
-        return __('notifications.userRequestedFollow.lead', [
+        return Lang::trans('notifications.userRequestedFollow.lead', [
             'followerRequestUsername' => $data['user']['username'],
-        ]);
+        ],
+
+            $locale);
     }
 
-    public static function getNotice(array $data): ?string
+    public static function getNotice(array $data, ?string $locale = null): ?string
     {
-        return __('notifications.userRequestedFollow.notice');
+        return Lang::trans('notifications.userRequestedFollow.notice', [], $locale);
     }
 
     public static function getLink(array $data): ?string

@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Helpers\Lang;
 use App\Models\Like;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
@@ -39,21 +40,22 @@ class StatusLiked extends Notification implements BaseNotification
         ];
     }
 
-    public static function getLead(array $data): string
+    public static function getLead(array $data, ?string $locale = null): string
     {
-        return __('notifications.statusLiked.lead', [
+        return Lang::trans('notifications.statusLiked.lead', [
             'likerUsername' => $data['liker']['username'],
-        ]);
+        ], $locale);
     }
 
-    public static function getNotice(array $data): ?string
+    public static function getNotice(array $data, ?string $locale = null): ?string
     {
-        return trans_choice('notifications.statusLiked.notice',
+        return Lang::trans_choice('notifications.statusLiked.notice',
             preg_match('/\s/', $data['trip']['lineName']),
             [
                 'line' => $data['trip']['lineName'],
                 'createdDate' => Date::parse($data['trip']['plannedDeparture'])->isoFormat(__('date-format')),
-            ]
+            ],
+            $locale
         );
     }
 

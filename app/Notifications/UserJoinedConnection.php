@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Helpers\Lang;
 use App\Models\Status;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
@@ -12,12 +13,17 @@ class UserJoinedConnection extends Notification implements BaseNotification
 
     private Status $status;
 
-    public function __construct(Status $status)
+    private string $origin;
+
+    private string $destination;
+
+    public function __construct(Status $status, ?string $locale = null)
     {
         $this->status = $status;
 
         $this->origin = $status->checkin->originStopover->station->name;
         $this->destination = $status->checkin->destinationStopover->station->name;
+        $this->locale = $locale;
     }
 
     public function via(): array
@@ -38,23 +44,24 @@ class UserJoinedConnection extends Notification implements BaseNotification
         ];
     }
 
-    public static function getLead(array $data): string
+    public static function getLead(array $data, ?string $locale = null): string
     {
-        return __('notifications.userJoinedConnection.lead', [
+        return Lang::trans('notifications.userJoinedConnection.lead', [
             'username' => $data['user']['username'],
-        ]);
+        ], $locale);
     }
 
-    public static function getNotice(array $data): ?string
+    public static function getNotice(array $data, ?string $locale = null): ?string
     {
-        return trans_choice(
+        return Lang::trans_choice(
             'notifications.userJoinedConnection.notice',
             preg_match('/\s/', $data['checkin']['linename']), [
                 'username' => $data['user']['username'],
                 'linename' => $data['checkin']['linename'],
                 'origin' => $data['checkin']['origin'],
                 'destination' => $data['checkin']['destination'],
-            ]
+            ],
+            $locale
         );
     }
 

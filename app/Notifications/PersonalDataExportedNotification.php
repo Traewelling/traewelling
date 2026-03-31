@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Helpers\Lang;
 use Carbon\Carbon;
 use Spatie\PersonalDataExport\Notifications\PersonalDataExportedNotification as MainPersonalDataExportedNotification;
 
@@ -12,18 +13,18 @@ class PersonalDataExportedNotification extends MainPersonalDataExportedNotificat
         return ['mail', 'database'];
     }
 
-    public static function getLead(array $data): string
+    public static function getLead(array $data, ?string $locale = null): string
     {
-        return __('notifications.personalDataExported.lead');
+        return Lang::trans('notifications.personalDataExported.lead', [], $locale);
     }
 
-    public static function getNotice(array $data): ?string
+    public static function getNotice(array $data, ?string $locale = null): ?string
     {
         $date = Carbon::parse($data['deletionDatetime']);
 
-        return __('notifications.personalDataExported.notice', [
+        return Lang::trans('notifications.personalDataExported.notice', [
             'date' => userTime($date, __('datetime-format')),
-        ]);
+        ], $locale);
     }
 
     public static function getLink(array $data): ?string

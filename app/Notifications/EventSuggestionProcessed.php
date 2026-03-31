@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Enum\EventRejectionReason;
+use App\Helpers\Lang;
 use App\Models\Event;
 use App\Models\EventSuggestion;
 use Illuminate\Bus\Queueable;
@@ -43,23 +44,23 @@ class EventSuggestionProcessed extends Notification implements BaseNotification
         ];
     }
 
-    public static function getLead(array $data): string
+    public static function getLead(array $data, ?string $locale = null): string
     {
-        return __('notifications.eventSuggestionProcessed.lead', [
+        return Lang::trans('notifications.eventSuggestionProcessed.lead', [
             'name' => $data['suggestedName'],
-        ]);
+        ], $locale);
     }
 
-    public static function getNotice(array $data): ?string
+    public static function getNotice(array $data, ?string $locale = null): ?string
     {
         if ($data['accepted']) {
-            return __('notifications.eventSuggestionProcessed.accepted');
+            return Lang::trans('notifications.eventSuggestionProcessed.accepted', [], $locale);
         }
         if (!empty($data['rejectionReason'])) {
-            return EventRejectionReason::tryFrom($data['rejectionReason'])->getReason();
+            return EventRejectionReason::tryFrom($data['rejectionReason'])->getReason($locale);
         }
 
-        return EventRejectionReason::DEFAULT->getReason();
+        return EventRejectionReason::DEFAULT->getReason($locale);
     }
 
     public static function getLink(array $data): ?string

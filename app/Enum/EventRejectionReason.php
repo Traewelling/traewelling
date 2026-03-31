@@ -2,6 +2,8 @@
 
 namespace App\Enum;
 
+use App\Helpers\Lang;
+
 enum EventRejectionReason: string
 {
     case DEFAULT = 'denied';
@@ -10,9 +12,9 @@ enum EventRejectionReason: string
     case NOT_APPLICABLE = 'not-applicable';
     case MISSING_INFORMATION = 'missing-information';
 
-    public function getReason(): string
+    public function getReason(?string $locale = null): string
     {
-        return __(sprintf('notifications.eventSuggestionProcessed.%s', $this->value));
+        return Lang::trans(sprintf('notifications.eventSuggestionProcessed.%s', $this->value), [], $locale);
     }
 
     public function getXPChange(): int

@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Helpers\Lang;
 use App\Models\Status;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -39,20 +40,21 @@ class YouHaveBeenCheckedIn extends Notification implements BaseNotification
         ];
     }
 
-    public static function getLead(array $data): string
+    public static function getLead(array $data, ?string $locale = null): string
     {
-        return __('notifications.youHaveBeenCheckedIn.lead', [
+        return Lang::trans('notifications.youHaveBeenCheckedIn.lead', [
             'username' => $data['user']['username'],
-        ]);
+        ], $locale);
     }
 
-    public static function getNotice(array $data): ?string
+    public static function getNotice(array $data, ?string $locale = null): ?string
     {
-        return __('notifications.youHaveBeenCheckedIn.notice', [
+        return Lang::trans('notifications.youHaveBeenCheckedIn.notice', [
             'line' => $data['checkin']['line'],
             'origin' => $data['checkin']['origin'],
             'destination' => $data['checkin']['destination'],
-        ]
+        ],
+            $locale
         );
     }
 

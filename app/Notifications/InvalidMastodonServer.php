@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Helpers\Lang;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 
@@ -26,14 +27,14 @@ class InvalidMastodonServer extends Notification implements BaseNotification
         return ['domain' => $this->domain];
     }
 
-    public static function getLead(array $data): string
+    public static function getLead(array $data, ?string $locale = null): string
     {
-        return __('notifications.mastodon-server.lead');
+        return Lang::trans('notifications.mastodon-server.lead', [], $locale);
     }
 
-    public static function getNotice(array $data): ?string
+    public static function getNotice(array $data, ?string $locale = null): ?string
     {
-        return __('notifications.mastodon-server.exception', ['domain' => $data['domain']]);
+        return Lang::trans('notifications.mastodon-server.exception', ['domain' => $data['domain']], $locale);
     }
 
     public static function getLink(array $data): ?string
