@@ -33,18 +33,20 @@ Check back here regularly to stay ahead of removals.
 | 2026-01-20 | `StatusResource.userDetails` is deprecated → use `user` instead                                                                                                                                                   | 2026-07-31 | [#4313](https://github.com/Traewelling/traewelling/pull/4313) |
 | 2026-01-20 | `LightUserResource.mastodonUrl` is always `null` → use `mastodon.server` instead                                                                                                                                  | 2026-07-31 | [#4313](https://github.com/Traewelling/traewelling/pull/4313) |
 | 2026-03-20 | `POST /api/v1/report` is deprecated → use `POST /api/v1/reports` instead                                                                                                                                          | 2026-09-30 | [#4602](https://github.com/Traewelling/traewelling/pull/4602) |
-| 2026-03-30 | `GET /api/v1/static/privacy` is deprecated -> use `GET /api/v1/privacy-policies/current` instead                                                                                                                  |            |                                                               |
-| 2026-03-30 | `PUT /api/v1/settings/acceptPrivacy` is deprecated -> use `PUT /api/v1/privacy-policies/accept` instead                                                                                                           |            |                                                               |
+| 2026-03-30 | `GET /api/v1/static/privacy` is deprecated -> use `GET /api/v1/privacy-policies/current` instead                                                                                                                  | 2026-09-30 | [#4650](https://github.com/Traewelling/traewelling/pull/4650) |
+| 2026-03-30 | `PUT /api/v1/settings/acceptPrivacy` is deprecated -> use `PUT /api/v1/privacy-policies/accept` instead                                                                                                           | 2026-09-30 | [#4650](https://github.com/Traewelling/traewelling/pull/4650) |
 
 ---
 
 # 2026-03-28
 
-- `DepartureResource`: added `cancelled` (bool) field — `true` when the departure is cancelled according to the data provider
+- `DepartureResource`: added `cancelled` (bool) field — `true` when the departure is cancelled according to the data
+  provider
 
 # 2026-03-21
 
-- `GET /api/v1/status/{id}`: New optional query parameter `withIdentifiers`. When `true`, includes `identifiers` in origin and destination stopovers (`StopoverResource`)
+- `GET /api/v1/status/{id}`: New optional query parameter `withIdentifiers`. When `true`, includes `identifiers` in
+  origin and destination stopovers (`StopoverResource`)
 
 # 2026-03-20
 
