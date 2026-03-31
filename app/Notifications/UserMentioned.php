@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Helpers\Lang;
 use App\Models\Mention;
 use App\Models\Status;
 use App\Models\User;
@@ -39,14 +40,14 @@ class UserMentioned extends Notification implements BaseNotification
         ];
     }
 
-    public static function getLead(array $data): string
+    public static function getLead(array $data, ?string $locale = null): string
     {
-        return __('notifications.userMentioned.lead');
+        return Lang::trans('notifications.userMentioned.lead', [], $locale);
     }
 
-    public static function getNotice(array $data): ?string
+    public static function getNotice(array $data, ?string $locale = null): ?string
     {
-        return __('notifications.userMentioned.notice', ['username' => $data['creator']['username']]);
+        return Lang::trans('notifications.userMentioned.notice', ['username' => $data['creator']['username']], $locale);
     }
 
     public static function getLink(array $data): ?string

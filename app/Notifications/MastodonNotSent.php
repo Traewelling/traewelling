@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Helpers\Lang;
 use App\Models\Status;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
@@ -33,16 +34,16 @@ class MastodonNotSent extends Notification implements BaseNotification
         ];
     }
 
-    public static function getLead(array $data): string
+    public static function getLead(array $data, ?string $locale = null): string
     {
-        return __('notifications.socialNotShared.lead', [
+        return Lang::trans('notifications.socialNotShared.lead', [
             'platform' => 'Mastodon',
-        ]);
+        ], $locale);
     }
 
-    public static function getNotice(array $data): ?string
+    public static function getNotice(array $data, ?string $locale = null): ?string
     {
-        return __('notifications.socialNotShared.mastodon.' . $data['httpResponseCode']);
+        return Lang::trans('notifications.socialNotShared.mastodon.' . $data['httpResponseCode'], [], $locale);
     }
 
     public static function getLink(array $data): ?string
