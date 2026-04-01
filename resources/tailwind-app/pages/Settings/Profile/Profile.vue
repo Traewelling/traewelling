@@ -3,6 +3,7 @@ import { trans } from 'laravel-vue-i18n';
 import { Notyf } from 'notyf';
 import { inject, ref } from 'vue';
 import { Api, UserProfileSettingsResource } from '../../../../types/Api.gen';
+import { useUserStore } from '../../../../vue/stores/user';
 import SettingsLayout from '../../../layouts/SettingsLayout.vue';
 import Avatar from './partials/Avatar.vue';
 import Bio from './partials/Bio.vue';
@@ -12,6 +13,7 @@ import Username from './partials/Username.vue';
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 
+const user = useUserStore();
 const profile = ref<UserProfileSettingsResource | null>(null);
 const loading = ref(true);
 
@@ -29,6 +31,7 @@ function getUserProfile() {
 function updateProfile(updatedProfile: UserProfileSettingsResource) {
     profile.value = updatedProfile;
     notyf.success(trans('settings.saved'));
+    user.fetchSettings(true);
 }
 
 function updateImage() {

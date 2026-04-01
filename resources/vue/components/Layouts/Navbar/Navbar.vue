@@ -52,7 +52,7 @@ const prideClass = computed(() => {
                             {{ trans('menu.dashboard') }}
                         </NavLink>
                     </li>
-                    <li v-if="!user.authenticated || user.user?.pointsEnabled" class="nav-item">
+                    <li v-if="user.authenticated && user.user?.pointsEnabled" class="nav-item">
                         <NavLink href="/leaderboard">
                             {{ trans('menu.leaderboard') }}
                         </NavLink>

@@ -12,7 +12,7 @@
 
             <div class="navbar-center hidden text-white lg:flex">
                 <ul class="menu menu-horizontal px-1">
-                    <li v-for="link in links" :key="link.route">
+                    <li v-for="link in links" v-show="link.condition === undefined || link.condition" :key="link.route">
                         <a v-if="link.legacy" :href="link.route">
                             <component :is="link.icon" class="inline-block w-6 h-6 mr-2" />
                             {{ trans(link.name) }}
@@ -112,7 +112,7 @@
             <label for="my-drawer-5" aria-label="close sidebar" class="drawer-overlay"></label>
             <ul class="menu bg-base-200 min-h-full w-80 p-4">
                 <!-- Sidebar content here -->
-                <li v-for="link in links" :key="link.route">
+                <li v-for="link in links" v-show="link.condition === undefined || link.condition" :key="link.route">
                     <a v-if="link.legacy" :href="link.route">
                         <component :is="link.icon" class="inline-block w-6 h-6 mr-2" />
                         {{ trans(link.name) }}
@@ -165,13 +165,20 @@ import DarkModeSelector from './Footer/DarkModeSelector.vue';
 import LanguageSelector from './Footer/LanguageSelector.vue';
 
 const user = useUserStore();
+user.fetchSettings();
 
 const config = useConfigurationStore();
 config.fetchData();
 
 const links: { name: string; icon: FunctionalComponent; route: string; legacy: boolean; condition?: boolean }[] = [
     { name: 'menu.dashboard', icon: House, route: '/dashboard', legacy: true },
-    { name: 'menu.leaderboard', icon: Medal, route: '/leaderboard', legacy: true },
+    {
+        name: 'menu.leaderboard',
+        icon: Medal,
+        route: '/leaderboard',
+        legacy: true,
+        condition: user.user?.pointsEnabled || false,
+    },
     { name: 'menu.active', icon: Map, route: '/statuses/active', legacy: true },
     { name: 'stats', icon: ChartNoAxesCombined, route: '/statistics', legacy: true },
 ];
