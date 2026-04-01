@@ -3,6 +3,7 @@ import { trans } from 'laravel-vue-i18n';
 import { Notyf } from 'notyf';
 import { inject, ref } from 'vue';
 import { Api, TrustedUserResource, UserProfileSettingsResource } from '../../../../types/Api.gen';
+import { useUserStore } from '../../../../vue/stores/user';
 import SettingsLayout from '../../../layouts/SettingsLayout.vue';
 import AllowFriendCheckinFor from './partials/AllowFriendCheckinFor.vue';
 import DefaultVisibility from './partials/DefaultVisibility.vue';
@@ -16,6 +17,7 @@ import ShowPoints from './partials/ShowPoints.vue';
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 
+const user = useUserStore();
 const profile = ref<UserProfileSettingsResource | null>(null);
 const trustedUsers = ref<TrustedUserResource[]>([]);
 const loading = ref(true);
@@ -52,6 +54,7 @@ function getTrustedUsers() {
 function updateProfile(updatedProfile: UserProfileSettingsResource) {
     profile.value = updatedProfile;
     notyf.success(trans('settings.saved'));
+    user.fetchSettings(true);
 }
 
 function updateFriends(updatedFriends: TrustedUserResource[]) {
