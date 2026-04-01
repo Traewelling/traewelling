@@ -35,6 +35,7 @@ Check back here regularly to stay ahead of removals.
 | 2026-03-20 | `POST /api/v1/report` is deprecated → use `POST /api/v1/reports` instead                                                                                                                                          | 2026-09-30 | [#4602](https://github.com/Traewelling/traewelling/pull/4602) |
 | 2026-03-30 | `GET /api/v1/static/privacy` is deprecated -> use `GET /api/v1/privacy-policies/current` instead                                                                                                                  | 2026-09-30 | [#4650](https://github.com/Traewelling/traewelling/pull/4650) |
 | 2026-03-30 | `PUT /api/v1/settings/acceptPrivacy` is deprecated -> use `PUT /api/v1/privacy-policies/accept` instead                                                                                                           | 2026-09-30 | [#4650](https://github.com/Traewelling/traewelling/pull/4650) |
+| 2026-04-01 | `DepartureResource.stop.*` is deprecated → use `DepartureResource.station` instead                                                                                                                                | 2026-09-30 | [#4663](https://github.com/Traewelling/traewelling/pull/4663) |
 
 ---
 

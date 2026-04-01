@@ -9119,41 +9119,49 @@
                         "properties": {
                             "type": {
                                 "type": "string",
-                                "example": "stop"
+                                "example": "stop",
+                                "deprecated": true
                             },
                             "id": {
                                 "description": "Träwelling internal station ID",
                                 "type": "integer",
-                                "example": 5181
+                                "example": 5181,
+                                "deprecated": true
                             },
                             "name": {
                                 "type": "string",
-                                "example": "Karlsruhe Hbf"
+                                "example": "Karlsruhe Hbf",
+                                "deprecated": true
                             },
                             "location": {
                                 "properties": {
                                     "type": {
                                         "type": "string",
-                                        "example": "location"
+                                        "example": "location",
+                                        "deprecated": true
                                     },
                                     "id": {
                                         "description": "IBNR identifier (if available)",
                                         "type": "string",
                                         "example": "8000191",
-                                        "nullable": true
+                                        "nullable": true,
+                                        "deprecated": true
                                     },
                                     "latitude": {
                                         "type": "number",
                                         "format": "float",
-                                        "example": 48.993207
+                                        "example": 48.993207,
+                                        "deprecated": true
                                     },
                                     "longitude": {
                                         "type": "number",
                                         "format": "float",
-                                        "example": 8.400977
+                                        "example": 8.400977,
+                                        "deprecated": true
                                     }
                                 },
-                                "type": "object"
+                                "type": "object",
+                                "deprecated": true
                             },
                             "products": {
                                 "description": "Deprecated. Always true for all modes.",
@@ -9161,7 +9169,8 @@
                                 "deprecated": true
                             }
                         },
-                        "type": "object"
+                        "type": "object",
+                        "deprecated": true
                     },
                     "when": {
                         "description": "Actual departure time (null if no realtime data)",

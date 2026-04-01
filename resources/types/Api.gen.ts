@@ -969,31 +969,48 @@ export interface DepartureResource {
    * @example "1|200513|0|81|6012023"
    */
   tripId: string;
-  /** The stop at which this departure occurs */
+  /**
+   * The stop at which this departure occurs
+   * @deprecated
+   */
   stop: {
-    /** @example "stop" */
+    /**
+     * @deprecated
+     * @example "stop"
+     */
     type?: string;
     /**
      * Träwelling internal station ID
+     * @deprecated
      * @example 5181
      */
     id?: number;
-    /** @example "Karlsruhe Hbf" */
+    /**
+     * @deprecated
+     * @example "Karlsruhe Hbf"
+     */
     name?: string;
+    /** @deprecated */
     location?: {
-      /** @example "location" */
+      /**
+       * @deprecated
+       * @example "location"
+       */
       type?: string;
       /**
        * IBNR identifier (if available)
+       * @deprecated
        * @example "8000191"
        */
       id?: string | null;
       /**
+       * @deprecated
        * @format float
        * @example 48.993207
        */
       latitude?: number;
       /**
+       * @deprecated
        * @format float
        * @example 8.400977
        */

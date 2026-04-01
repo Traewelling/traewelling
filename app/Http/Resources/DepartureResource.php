@@ -19,18 +19,19 @@ use OpenApi\Attributes as OA;
             property: 'stop',
             description: 'The stop at which this departure occurs',
             properties: [
-                new OA\Property(property: 'type', type: 'string', example: 'stop'),
-                new OA\Property(property: 'id', description: 'Träwelling internal station ID', type: 'integer', example: 5181),
-                new OA\Property(property: 'name', type: 'string', example: 'Karlsruhe Hbf'),
+                new OA\Property(property: 'type', type: 'string', example: 'stop', deprecated: true),
+                new OA\Property(property: 'id', description: 'Träwelling internal station ID', type: 'integer', example: 5181, deprecated: true),
+                new OA\Property(property: 'name', type: 'string', example: 'Karlsruhe Hbf', deprecated: true),
                 new OA\Property(
                     property: 'location',
                     properties: [
-                        new OA\Property(property: 'type', type: 'string', example: 'location'),
-                        new OA\Property(property: 'id', description: 'IBNR identifier (if available)', type: 'string', example: '8000191', nullable: true),
-                        new OA\Property(property: 'latitude', type: 'number', format: 'float', example: 48.993207),
-                        new OA\Property(property: 'longitude', type: 'number', format: 'float', example: 8.400977),
+                        new OA\Property(property: 'type', type: 'string', example: 'location', deprecated: true),
+                        new OA\Property(property: 'id', description: 'IBNR identifier (if available)', type: 'string', example: '8000191', nullable: true, deprecated: true),
+                        new OA\Property(property: 'latitude', type: 'number', format: 'float', example: 48.993207, deprecated: true),
+                        new OA\Property(property: 'longitude', type: 'number', format: 'float', example: 8.400977, deprecated: true),
                     ],
                     type: 'object',
+                    deprecated: true,
                 ),
                 new OA\Property(
                     property: 'products',
@@ -40,6 +41,7 @@ use OpenApi\Attributes as OA;
                 ),
             ],
             type: 'object',
+            deprecated: true,
         ),
         new OA\Property(property: 'when', description: 'Actual departure time (null if no realtime data)', type: 'string', format: 'date-time', example: '2023-01-06T13:49:00+01:00', nullable: true),
         new OA\Property(property: 'plannedWhen', description: 'Scheduled departure time', type: 'string', format: 'date-time', example: '2023-01-06T13:49:00+01:00'),
@@ -89,7 +91,7 @@ class DepartureResource extends JsonResource
     {
         return [
             'tripId' => $this->resource->trip->tripId,
-            'stop' => [
+            'stop' => [ // @deprecated - remove after 2026-09-30, use station instead
                 'type' => 'stop',
                 'id' => $this->resource->station->id,
                 'name' => $this->resource->station->name,
@@ -143,10 +145,13 @@ class DepartureResource extends JsonResource
         ];
     }
 
-    /** @return array<string, bool> */
+    /**
+     * @return array<string, bool>
+     *
+     * @deprecated Remove after 2026-09-30, products are always true and this field is deprecated anyway.
+     */
     private function placeholderProducts(): array
     {
-        // TODO: populate from actual transit data
         return [
             'nationalExpress' => true,
             'national' => true,
