@@ -37,6 +37,15 @@ class LeaderboardController extends Controller
         )->filter(fn (stdClass $row) => Gate::allows('view', $row->user));
     }
 
+    public function getCachedMonthlyLeaderboard(Carbon $date): Collection
+    {
+        return Cache::remember(
+            CacheKey::getMonthlyLeaderboardKey($date),
+            $this->ttl,
+            fn () => $this->getMonthlyLeaderboard($date)
+        )->filter(fn (stdClass $row) => Gate::allows('view', $row->user));
+    }
+
     public function getCachedFriendsLeaderboard(): ?Collection
     {
         return auth()->check()
