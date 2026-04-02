@@ -78,14 +78,14 @@
                     <br />
 
                     Version
-                    <a href="/changelog" class="link link-hover">
+                    <router-link :to="{ name: 'changelog' }" class="link link-hover">
                         {{ config.appVersion?.substring(0, 11) }}
-                    </a>
+                    </router-link>
                 </p>
             </aside>
             <nav>
                 <h6 class="footer-title">{{ trans('footer.services') }}</h6>
-                <a href="/events" class="link link-hover">{{ trans('events') }}</a>
+                <router-link :to="{ name: 'event-list' }" class="link link-hover">{{ trans('events') }}</router-link>
                 <a href="https://help.traewelling.de/faq" target="_blank" class="link link-hover">About</a>
             </nav>
             <nav>

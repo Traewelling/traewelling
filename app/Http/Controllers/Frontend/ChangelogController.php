@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Http\Controllers\Backend\ChangelogController as BackendController;
 use App\Http\Controllers\Controller;
+use App\Services\ChangelogService;
 use Illuminate\View\View;
 
 class ChangelogController extends Controller
 {
-    private BackendController $backendController;
+    private ChangelogService $backendController;
 
-    public function __construct(BackendController $backendController)
+    public function __construct(ChangelogService $backendController)
     {
         $this->backendController = $backendController;
     }

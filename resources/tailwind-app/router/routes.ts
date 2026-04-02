@@ -1,4 +1,5 @@
 import { RouteRecordRaw } from 'vue-router';
+import Changelog from '../pages/Changelog/Changelog.vue';
 import Index from '../pages/Contribute/Index.vue';
 import Profile from '../pages/Contribute/Profile.vue';
 import SuggestEvent from '../pages/Contribute/SuggestEvent.vue';
@@ -79,6 +80,12 @@ const routes: Array<RouteRecordRaw> = [
         name: 'event-list',
         component: EventList,
         meta: { title: 'events' },
+    },
+    {
+        path: '/changelog',
+        name: 'changelog',
+        component: Changelog,
+        meta: { title: 'changelog' },
     },
     {
         path: '/leaderboard',

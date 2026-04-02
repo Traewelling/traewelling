@@ -11,6 +11,7 @@
 |
 */
 
+use App\Http\Controllers\API\ChangelogController;
 use App\Http\Controllers\API\v1\AdminEventController;
 use App\Http\Controllers\API\v1\AdminEventSuggestionController;
 use App\Http\Controllers\API\v1\AdminStatusController;
@@ -54,8 +55,11 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         });
     });
 
-    Route::get('app/configuration', [ConfigurationInfoController::class, 'getConfigurationInfo'])
-        ->name('api.v1.getConfigurationInfo');
+    Route::group(['prefix' => 'app'], function () {
+        Route::get('configuration', [ConfigurationInfoController::class, 'getConfigurationInfo'])
+            ->name('api.v1.getConfigurationInfo');
+        Route::get('changelog', [ChangelogController::class, 'getChangelog']);
+    });
 
     Route::get('static/privacy', [PrivacyPolicyController::class, 'getPrivacyPolicy']); // todo: delete after 2026-09-30
 

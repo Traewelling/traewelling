@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import 'notyf/notyf.min.css';
 
+@plugin "@tailwindcss/typography";
 @plugin "daisyui";
 @import './trwl-theme.css';
