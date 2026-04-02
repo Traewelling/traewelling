@@ -3,10 +3,11 @@ import { currentLocale, trans } from 'laravel-vue-i18n';
 import { Calendar, ChevronRight, HashIcon, LinkIcon, SquareArrowOutUpRight } from 'lucide-vue-next';
 import { computed } from 'vue';
 import { EventResource } from '../../../../types/Api.gen';
+import { contrastingColor, generateColorFromString } from '../../../../vue/helpers/ColorHelper';
 
 const props = defineProps<{
     event: EventResource;
-    style: string;
+    style: string | undefined;
 }>();
 
 function showModal() {
@@ -31,10 +32,26 @@ const duration = computed(() => {
         return begin.toLocaleDateString(locale, options);
     }
 });
+
+const fallbackStyle = computed(() => {
+    if (props.style !== undefined) {
+        return null;
+    }
+
+    const background = generateColorFromString(props.event.name);
+    const color = contrastingColor(background);
+
+    return `background-color: #${background}; color: #${color};`;
+});
 </script>
 
 <template>
-    <div class="px-2 py-1 rounded-lg mt-1 overflow-hidden border cursor-pointer" :class="style" @click="showModal()">
+    <div
+        class="px-2 py-1 rounded-lg mt-1 overflow-hidden border cursor-pointer"
+        :class="style"
+        :style="fallbackStyle"
+        @click="showModal()"
+    >
         <p class="text-sm truncate leading-tight" v-text="event.name"></p>
     </div>
     <dialog :id="`${event.slug}-modal`" class="modal modal-bottom sm:modal-middle">
@@ -90,3 +107,28 @@ const duration = computed(() => {
         </form>
     </dialog>
 </template>
+
+<style scoped>
+.rainbow {
+    background: linear-gradient(
+        90deg,
+        rgba(255, 0, 0, 1) 0%,
+        rgba(255, 154, 0, 1) 10%,
+        rgba(208, 222, 33, 1) 20%,
+        rgba(79, 220, 74, 1) 30%,
+        rgba(63, 218, 216, 1) 40%,
+        rgba(47, 201, 226, 1) 50%,
+        rgba(28, 127, 238, 1) 60%,
+        rgba(95, 21, 242, 1) 70%,
+        rgba(186, 12, 248, 1) 80%,
+        rgba(251, 7, 217, 1) 90%,
+        rgba(255, 0, 0, 1) 100%
+    );
+    color: #fff;
+    text-shadow:
+        #0a0a0f 1px 0px 2px,
+        #0a0a0f 0px 1px 2px,
+        #0a0a0f -1px 0px 2px,
+        #0a0a0f 0px -1px 2px;
+}
+</style>

@@ -8,7 +8,7 @@ import EventPopup from './EventPopup.vue';
 export type CalendarEvent = {
     date: Date;
     title: string;
-    style: string;
+    style: string | undefined;
     event: EventResource | undefined;
 };
 
