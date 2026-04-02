@@ -12,8 +12,8 @@
 
             <div class="navbar-center hidden text-white lg:flex">
                 <ul class="menu menu-horizontal px-1">
-                    <li v-for="link in links" v-show="link.condition === undefined || link.condition" :key="link.route">
-                        <a v-if="link.legacy" :href="link.route">
+                    <li v-for="link in links" v-show="link.condition === undefined || link.condition" :key="link.name">
+                        <a v-if="link.legacy" :href="link.route as string">
                             <component :is="link.icon" class="inline-block w-6 h-6 mr-2" />
                             {{ trans(link.name) }}
                         </a>
@@ -32,11 +32,11 @@
                         {{ user.user.username }}
                     </div>
                     <ul tabindex="-1" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
-                        <li v-for="link in userLinks" :key="link.route">
+                        <li v-for="link in userLinks" :key="link.name">
                             <a
                                 v-if="link.legacy"
                                 v-show="link.condition === undefined || link.condition"
-                                :href="link.route"
+                                :href="link.route as string"
                             >
                                 <component :is="link.icon" class="inline-block w-6 h-6 mr-2" />
                                 {{ trans(link.name) }}
@@ -112,12 +112,12 @@
             <label for="my-drawer-5" aria-label="close sidebar" class="drawer-overlay"></label>
             <ul class="menu bg-base-200 min-h-full w-80 p-4">
                 <!-- Sidebar content here -->
-                <li v-for="link in links" v-show="link.condition === undefined || link.condition" :key="link.route">
-                    <a v-if="link.legacy" :href="link.route">
+                <li v-for="link in links" v-show="link.condition === undefined || link.condition" :key="link.name">
+                    <a v-if="link.legacy" :href="link.route as string">
                         <component :is="link.icon" class="inline-block w-6 h-6 mr-2" />
                         {{ trans(link.name) }}
                     </a>
-                    <router-link v-else to="link.route">
+                    <router-link v-else :to="link.route">
                         <component :is="link.icon" class="inline-block w-6 h-6 mr-2" />
                         {{ trans(link.name) }}
                     </router-link>
@@ -159,6 +159,7 @@ import {
     User,
 } from 'lucide-vue-next';
 import { computed, FunctionalComponent } from 'vue';
+import { RouteLocationRaw } from 'vue-router';
 import { useConfigurationStore } from '../../vue/stores/configuration';
 import { useUserStore } from '../../vue/stores/user';
 import DarkModeSelector from './Footer/DarkModeSelector.vue';
@@ -170,13 +171,19 @@ user.fetchSettings();
 const config = useConfigurationStore();
 config.fetchData();
 
-const links: { name: string; icon: FunctionalComponent; route: string; legacy: boolean; condition?: boolean }[] = [
+const links: {
+    name: string;
+    icon: FunctionalComponent;
+    route: string | RouteLocationRaw;
+    legacy: boolean;
+    condition?: boolean;
+}[] = [
     { name: 'menu.dashboard', icon: House, route: '/dashboard', legacy: true },
     {
         name: 'menu.leaderboard',
         icon: Medal,
-        route: '/leaderboard',
-        legacy: true,
+        route: { name: 'leaderboard' },
+        legacy: false,
         condition: user.user?.pointsEnabled || false,
     },
     { name: 'menu.active', icon: Map, route: '/statuses/active', legacy: true },

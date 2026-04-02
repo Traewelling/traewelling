@@ -4,6 +4,8 @@ import Index from '../pages/Contribute/Index.vue';
 import Profile from '../pages/Contribute/Profile.vue';
 import SuggestEvent from '../pages/Contribute/SuggestEvent.vue';
 import EventList from '../pages/Events/EventList.vue';
+import Leaderboard from '../pages/Leaderboard/Leaderboard.vue';
+import MonthlyLeaderboard from '../pages/Leaderboard/MonthlyLeaderboard.vue';
 import Account from '../pages/Settings/Account/Account.vue';
 import Followers from '../pages/Settings/Followers/Followers.vue';
 import Followings from '../pages/Settings/Followers/Followings.vue';
@@ -84,6 +86,17 @@ const routes: Array<RouteRecordRaw> = [
         name: 'changelog',
         component: Changelog,
         meta: { title: 'changelog' },
+    },
+    {
+        path: '/leaderboard',
+        name: 'leaderboard',
+        component: Leaderboard,
+        meta: { title: 'leaderboard' },
+    },
+    {
+        path: '/leaderboard/monthly/:month',
+        name: 'leaderboard-monthly',
+        component: MonthlyLeaderboard,
     },
 ];
 

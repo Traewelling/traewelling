@@ -26,6 +26,8 @@ use OpenApi\Attributes as OA;
 
 class StatisticsController extends Controller
 {
+    private static string $cacheRetentionConfigKey = 'trwl.cache.leaderboard-retention-seconds';
+
     private LeaderboardBackend $leaderboardBackend;
 
     public function __construct(LeaderboardBackend $leaderboard)
@@ -155,9 +157,13 @@ class StatisticsController extends Controller
     )]
     public function leaderboardForMonth(string $date): AnonymousResourceCollection
     {
-        $date = Carbon::parse($date);
+        try {
+            $date = Carbon::parse($date);
+        } catch (\Exception) {
+            abort(400);
+        }
 
-        return LeaderboardUserResource::collection(LeaderboardBackend::getMonthlyLeaderboard(date: $date));
+        return LeaderboardUserResource::collection($this->leaderboardBackend->getCachedMonthlyLeaderboard($date));
     }
 
     #[OA\Get(
