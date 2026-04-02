@@ -23,6 +23,34 @@
         }
     ],
     "paths": {
+        "/app/changelog": {
+            "get": {
+                "operationId": "getChangelog",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ChangelogResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/admin/events": {
             "get": {
                 "tags": [
@@ -8891,6 +8919,65 @@
                     "adminLevel": {
                         "type": "integer",
                         "example": "1"
+                    }
+                },
+                "type": "object"
+            },
+            "ChangelogChangeResource": {
+                "required": [
+                    "emoji",
+                    "info",
+                    "fullText"
+                ],
+                "properties": {
+                    "emoji": {
+                        "description": "The emoji representing the type of change. See gitmoji.com for reference.",
+                        "example": "🐛"
+                    },
+                    "info": {
+                        "description": "A short description of the change.",
+                        "example": "Added new feature X"
+                    },
+                    "fullText": {
+                        "description": "The full markdown line from the changelog, including the emoji and any additional",
+                        "example": "* :bug: Fixed this and that by @username"
+                    }
+                },
+                "type": "object"
+            },
+            "ChangelogResource": {
+                "required": [
+                    "title",
+                    "description",
+                    "tagName",
+                    "createdAt",
+                    "changes"
+                ],
+                "properties": {
+                    "title": {
+                        "description": "The title of the release",
+                        "type": "string",
+                        "example": "2026-04-01"
+                    },
+                    "description": {
+                        "description": "The markdown description of the release",
+                        "type": "string"
+                    },
+                    "tagName": {
+                        "description": "The tag name of the release",
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "description": "The release date of the release",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "changes": {
+                        "description": "The changes of the release",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ChangelogChangeResource"
+                        }
                     }
                 },
                 "type": "object"

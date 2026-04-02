@@ -31,6 +31,7 @@
     "carriage": "Carriage",
     "carriage-sequence": "Carriage sequence",
     "changelog": "Changelog",
+    "changelog.view_on_github": "Änderungen auf GitHub ansehen",
     "checkin.conflict": "A parallel check-in already exists.",
     "checkin.conflict.question": "Do you still want to check in? You will not earn any points for this, but your personal statistic will still be updated.",
     "checkin.points.could-have": "You could have gotten more points if you had checked in closer to the real departure time!",

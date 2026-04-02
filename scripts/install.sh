@@ -160,6 +160,10 @@ finish_application() {
   echo -e "${YELLOW}Restarting queue workers...${RESET}"
   php artisan queue:restart
 
+  echo -e "${YELLOW}Clearing relevant caches...${RESET}"
+  php artisan cache:forget changelog
+  php artisan cache:forget changelog_parsed
+
   echo -e "${YELLOW}Disabling maintenance mode...${RESET}"
   php artisan up
 }

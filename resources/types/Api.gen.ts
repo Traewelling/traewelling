@@ -832,6 +832,43 @@ export interface AreaResource {
   adminLevel: number;
 }
 
+export interface ChangelogChangeResource {
+  /**
+   * The emoji representing the type of change. See gitmoji.com for reference.
+   * @example "🐛"
+   */
+  emoji: any;
+  /**
+   * A short description of the change.
+   * @example "Added new feature X"
+   */
+  info: any;
+  /**
+   * The full markdown line from the changelog, including the emoji and any additional
+   * @example "* :bug: Fixed this and that by @username"
+   */
+  fullText: any;
+}
+
+export interface ChangelogResource {
+  /**
+   * The title of the release
+   * @example "2026-04-01"
+   */
+  title: string;
+  /** The markdown description of the release */
+  description: string;
+  /** The tag name of the release */
+  tagName: string;
+  /**
+   * The release date of the release
+   * @format date-time
+   */
+  createdAt: string;
+  /** The changes of the release */
+  changes: ChangelogChangeResource[];
+}
+
 /** PointsCalculation */
 export interface PointsCalculation {
   /**
@@ -2606,6 +2643,42 @@ export class HttpClient<SecurityDataType = unknown> {
 export class Api<
   SecurityDataType extends unknown,
 > extends HttpClient<SecurityDataType> {
+  app = {
+    /**
+     * No description
+     *
+     * @name GetChangelog
+     * @request GET:/app/changelog
+     */
+    getChangelog: (params: RequestParams = {}) =>
+      this.request<
+        {
+          data: ChangelogResource[];
+        },
+        any
+      >({
+        path: `/app/changelog`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Retrieves configuration information about the application, including features and supported languages.
+     *
+     * @tags Configuration Information
+     * @name GetConfigurationInfo
+     * @summary Get Application Configuration Information
+     * @request GET:/app/configuration
+     */
+    getConfigurationInfo: (params: RequestParams = {}) =>
+      this.request<ConfigurationInformation, any>({
+        path: `/app/configuration`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+  };
   admin = {
     /**
      * No description
@@ -3241,23 +3314,6 @@ export class Api<
         method: "GET",
         query: query,
         secure: true,
-        format: "json",
-        ...params,
-      }),
-  };
-  app = {
-    /**
-     * @description Retrieves configuration information about the application, including features and supported languages.
-     *
-     * @tags Configuration Information
-     * @name GetConfigurationInfo
-     * @summary Get Application Configuration Information
-     * @request GET:/app/configuration
-     */
-    getConfigurationInfo: (params: RequestParams = {}) =>
-      this.request<ConfigurationInformation, any>({
-        path: `/app/configuration`,
-        method: "GET",
         format: "json",
         ...params,
       }),

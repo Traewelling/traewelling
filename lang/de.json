@@ -31,6 +31,7 @@
     "carriage": "Wagen",
     "carriage-sequence": "Wagenreihung",
     "changelog": "Changelog",
+    "changelog.view_on_github": "Änderungen auf GitHub ansehen",
     "checkin.conflict": "Es existiert bereits ein paralleler Check-in.",
     "checkin.conflict.question": "Möchtest du trotzdem einchecken? Hierfür bekommst du keine Punkte, aber deine persönliche Statistik wird dennoch aktualisiert.",
     "checkin.points.could-have": "Du hättest mehr Punkte bekommen können, wenn du näher an der reellen Abfahrtszeit eingecheckt hättest!",
