@@ -2,38 +2,32 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Helpers\CacheKey;
 use App\Http\Controllers\Backend\LeaderboardController as LeaderboardBackend;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Gate;
-use stdClass;
 
 class LeaderboardController extends Controller
 {
-    private static string $cacheRetentionConfigKey = 'trwl.cache.leaderboard-retention-seconds';
+    public function __construct(
+        private readonly LeaderboardBackend $leaderboardBackend,
+    ) {}
 
-    public static function renderMonthlyLeaderboard(string $date): Renderable|RedirectResponse
+    public function renderMonthlyLeaderboard(string $date): Renderable|RedirectResponse
     {
         if (auth()->user()?->points_enabled === false) {
             return redirect()->route('dashboard');
         }
 
-        $date = Carbon::parse($date);
-
-        $leaderboard = Cache::remember(
-            CacheKey::getMonthlyLeaderboardKey($date),
-            config(self::$cacheRetentionConfigKey),
-            static fn () => LeaderboardBackend::getMonthlyLeaderboard($date)
-        )->filter(function (stdClass $row) {
-            return Gate::allows('view', $row->user);
-        });
+        try {
+            $date = Carbon::parse($date);
+        } catch (\Exception) {
+            abort(400);
+        }
 
         return view('leaderboard.month', [
-            'leaderboard' => $leaderboard,
+            'leaderboard' => $this->leaderboardBackend->getCachedMonthlyLeaderboard($date),
             'date' => Carbon::parse($date),
         ]);
     }
