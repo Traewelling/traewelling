@@ -31,9 +31,7 @@ function fetchEvents(date: Date) {
                     events.value.push({
                         date: new Date(d),
                         title: event.name,
-                        style: event.isPride
-                            ? 'bg-gradient-to-r from-pink-700 to-purple-700 text-white border-orange-500'
-                            : 'border-blue-200 text-blue-800 bg-blue-100',
+                        style: event.isPride ? 'rainbow' : undefined,
                         event: event,
                     });
                 }
