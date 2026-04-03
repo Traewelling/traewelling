@@ -182,7 +182,7 @@
                                     <tr class="bg-body-tertiary">
                                         <td colspan="4" class="py-1 text-center small text-body-secondary">
                                             @if($stopover->route_segment_id)
-                                                <a href="{{route('admin.routesegment.show', ['id' => $stopover->route_segment_id])}}">
+                                                <a href="{{url('/admin/routesegment/' . $stopover->route_segment_id)}}">
                                                     ✅ Route segment ↓
                                                 </a>
                                             @else
