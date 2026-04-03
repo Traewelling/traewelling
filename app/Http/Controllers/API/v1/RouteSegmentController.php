@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers\API\v1;
 
 use App\Dto\Coordinate;
+use App\Enum\BRouterProfile;
+use App\Enum\SegmentPathType;
+use App\Exceptions\BRouterException;
 use App\Http\Resources\RouteSegmentResource;
 use App\Jobs\AssignRouteSegmentToStopovers;
 use App\Jobs\DeleteRouteSegment;
@@ -12,6 +15,7 @@ use App\Models\RouteSegment;
 use App\Models\Station;
 use App\Models\Stopover;
 use App\Repositories\TripRepository;
+use App\Services\BRouterService;
 use App\Services\GeoService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
@@ -93,7 +97,9 @@ class RouteSegmentController extends Controller
     )]
     public function show(string $id): RouteSegmentResource
     {
-        $segment = RouteSegment::with(['fromStation', 'toStation'])->findOrFail($id);
+        $segment = RouteSegment::with(['fromStation', 'toStation', 'fromIdentifier', 'toIdentifier'])
+            ->withCount('trips')
+            ->findOrFail($id);
         $this->authorize('view', $segment);
 
         return new RouteSegmentResource($segment);
@@ -268,6 +274,203 @@ class RouteSegmentController extends Controller
         AssignRouteSegmentToStopovers::dispatch($segment->id);
 
         return response()->json([], 202);
+    }
+
+    #[OA\Post(
+        path: '/route-segments/{id}/brouter-preview',
+        operationId: 'brouterPreviewRouteSegment',
+        summary: 'Request a BRouter route preview for the given waypoints (admin only).',
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['waypoints'],
+                properties: [
+                    new OA\Property(
+                        property: 'waypoints',
+                        type: 'array',
+                        items: new OA\Items(
+                            required: ['lat', 'lng'],
+                            properties: [
+                                new OA\Property(property: 'lat', type: 'number'),
+                                new OA\Property(property: 'lng', type: 'number'),
+                            ],
+                            type: 'object',
+                        ),
+                    ),
+                    new OA\Property(property: 'path_type', type: 'string', nullable: true),
+                ],
+            ),
+        ),
+        tags: ['Polyline'],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid')),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'BRouter coordinates and distance.',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'coordinates',
+                            type: 'array',
+                            items: new OA\Items(
+                                properties: [
+                                    new OA\Property(property: 'lat', type: 'number'),
+                                    new OA\Property(property: 'lng', type: 'number'),
+                                ],
+                                type: 'object',
+                            ),
+                        ),
+                        new OA\Property(property: 'distance', description: 'Distance in meters', type: 'integer'),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 401, description: self::OA_DESC_UNAUTHENTICATED),
+            new OA\Response(response: 403, description: self::OA_DESC_FORBIDDEN),
+            new OA\Response(response: 404, description: self::OA_DESC_NOT_FOUND),
+            new OA\Response(response: 422, description: self::OA_DESC_UNPROCESSABLE),
+        ],
+    )]
+    public function brouterPreview(Request $request, string $id, BRouterService $brouter): JsonResponse
+    {
+        $segment = RouteSegment::findOrFail($id);
+        $this->authorize('update', $segment);
+
+        $validated = $request->validate([
+            'waypoints' => ['required', 'array', 'min:2'],
+            'waypoints.*.lat' => ['required', 'numeric'],
+            'waypoints.*.lng' => ['required', 'numeric'],
+            'path_type' => ['nullable', 'string'],
+        ]);
+
+        $waypoints = array_map(
+            static fn (array $w) => new Coordinate((float) $w['lat'], (float) $w['lng']),
+            $validated['waypoints'],
+        );
+
+        $pathType = isset($validated['path_type']) ? SegmentPathType::tryFrom($validated['path_type']) : null;
+        $profile = $pathType?->getBRouterProfile() ?? BRouterProfile::RAIL;
+
+        try {
+            $route = $brouter->getRoute($waypoints, $profile);
+        } catch (BRouterException $e) {
+            return response()->json(['error' => $e->getMessage()], 422);
+        }
+
+        return response()->json([
+            'coordinates' => array_map(
+                static fn (Coordinate $c) => ['lat' => $c->latitude, 'lng' => $c->longitude],
+                $route->coordinates,
+            ),
+            'distance' => $route->distanceInMeters,
+        ]);
+    }
+
+    #[OA\Post(
+        path: '/route-segments/{id}/polyline',
+        operationId: 'applyPolylineToRouteSegment',
+        summary: 'Save custom waypoints and regenerate the segment\'s polyline via BRouter (admin only).',
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['waypoints'],
+                properties: [
+                    new OA\Property(
+                        property: 'waypoints',
+                        type: 'array',
+                        items: new OA\Items(
+                            required: ['lat', 'lng'],
+                            properties: [
+                                new OA\Property(property: 'lat', type: 'number'),
+                                new OA\Property(property: 'lng', type: 'number'),
+                            ],
+                            type: 'object',
+                        ),
+                    ),
+                ],
+            ),
+        ),
+        tags: ['Polyline'],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid')),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Segment updated successfully.',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'polyline', type: 'string'),
+                        new OA\Property(property: 'distance', description: 'Distance in meters', type: 'integer'),
+                        new OA\Property(
+                            property: 'customWaypoints',
+                            type: 'array',
+                            items: new OA\Items(
+                                properties: [
+                                    new OA\Property(property: 'lat', type: 'number'),
+                                    new OA\Property(property: 'lng', type: 'number'),
+                                ],
+                                type: 'object',
+                            ),
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 401, description: self::OA_DESC_UNAUTHENTICATED),
+            new OA\Response(response: 403, description: self::OA_DESC_FORBIDDEN),
+            new OA\Response(response: 404, description: self::OA_DESC_NOT_FOUND),
+            new OA\Response(response: 422, description: self::OA_DESC_UNPROCESSABLE),
+        ],
+    )]
+    public function applyPolyline(Request $request, string $id, BRouterService $brouter): JsonResponse
+    {
+        $segment = RouteSegment::findOrFail($id);
+        $this->authorize('update', $segment);
+
+        $validated = $request->validate([
+            'waypoints' => ['required', 'array', 'min:2'],
+            'waypoints.*.lat' => ['required', 'numeric'],
+            'waypoints.*.lng' => ['required', 'numeric'],
+        ]);
+
+        $waypointDtos = array_map(
+            static fn (array $w) => new Coordinate((float) $w['lat'], (float) $w['lng']),
+            $validated['waypoints'],
+        );
+
+        $pathType = $segment->path_type !== null ? SegmentPathType::tryFrom($segment->path_type) : null;
+        $profile = $pathType?->getBRouterProfile() ?? BRouterProfile::RAIL;
+
+        try {
+            $route = $brouter->getRoute($waypointDtos, $profile);
+        } catch (BRouterException $e) {
+            return response()->json(['error' => $e->getMessage()], 422);
+        }
+
+        $transcoder = new PolylineTranscoder();
+        $encodedPolyline = $transcoder->encodePolyline(
+            array_map(static fn (Coordinate $c) => [$c->longitude, $c->latitude], $route->coordinates),
+            5,
+        );
+
+        $customWaypoints = array_map(
+            static fn (Coordinate $c) => ['lat' => $c->latitude, 'lng' => $c->longitude],
+            $waypointDtos,
+        );
+
+        $segment->update([
+            'polyline' => $encodedPolyline,
+            'polyline_precision' => 5,
+            'distance' => $route->distanceInMeters,
+            'custom_waypoints' => $customWaypoints,
+        ]);
+
+        return response()->json([
+            'polyline' => $encodedPolyline,
+            'distance' => $route->distanceInMeters,
+            'customWaypoints' => $customWaypoints,
+        ]);
     }
 
     /**

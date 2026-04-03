@@ -1515,8 +1515,10 @@ export interface RouteSegmentResource {
    * @example "01960000-0000-7000-8000-000000000001"
    */
   id: string;
-  fromStation: Station | null;
-  toStation: Station | null;
+  fromStation: StationResource | null;
+  toStation: StationResource | null;
+  fromIdentifier: StationIdentifierResource | null;
+  toIdentifier: StationIdentifierResource | null;
   /**
    * Distance in meters
    * @example 42300
@@ -1541,6 +1543,18 @@ export interface RouteSegmentResource {
    * @example 4
    */
   customWaypointsCount?: number | null;
+  /** Custom waypoint coordinates used as BRouter input, or null if not set. */
+  customWaypoints?:
+    | {
+        lat?: number;
+        lng?: number;
+      }[]
+    | null;
+  /**
+   * Number of trips using this segment.
+   * @example 12
+   */
+  tripsCount?: number | null;
 }
 
 export interface SessionResource {
@@ -4863,6 +4877,82 @@ export class Api<
       this.request<void, void>({
         path: `/route-segments/${id}/assign-stopovers`,
         method: "POST",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Polyline
+     * @name BrouterPreviewRouteSegment
+     * @summary Request a BRouter route preview for the given waypoints (admin only).
+     * @request POST:/route-segments/{id}/brouter-preview
+     */
+    brouterPreviewRouteSegment: (
+      id: string,
+      data: {
+        waypoints: {
+          lat: number;
+          lng: number;
+        }[];
+        path_type?: string | null;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          coordinates?: {
+            lat?: number;
+            lng?: number;
+          }[];
+          /** Distance in meters */
+          distance?: number;
+        },
+        void
+      >({
+        path: `/route-segments/${id}/brouter-preview`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Polyline
+     * @name ApplyPolylineToRouteSegment
+     * @summary Save custom waypoints and regenerate the segment's polyline via BRouter (admin only).
+     * @request POST:/route-segments/{id}/polyline
+     */
+    applyPolylineToRouteSegment: (
+      id: string,
+      data: {
+        waypoints: {
+          lat: number;
+          lng: number;
+        }[];
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          polyline?: string;
+          /** Distance in meters */
+          distance?: number;
+          customWaypoints?: {
+            lat?: number;
+            lng?: number;
+          }[];
+        },
+        void
+      >({
+        path: `/route-segments/${id}/polyline`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
         ...params,
       }),
   };

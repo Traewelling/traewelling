@@ -7,6 +7,7 @@ import SuggestionAccept from '../pages/Events/SuggestionAccept.vue';
 import SuggestionsIndex from '../pages/Events/SuggestionsIndex.vue';
 import ReportsIndex from '../pages/Reports/ReportsIndex.vue';
 import ReportsShow from '../pages/Reports/ReportsShow.vue';
+import RouteSegmentsShow from '../pages/RouteSegments/RouteSegmentsShow.vue';
 import StationsIndex from '../pages/Stations/StationsIndex.vue';
 import StationsShow from '../pages/Stations/StationsShow.vue';
 import StatusesIndex from '../pages/Statuses/StatusesIndex.vue';
@@ -65,6 +66,10 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: '/admin/statuses/:id',
         component: StatusesShow,
+    },
+    {
+        path: '/admin/routesegment/:id',
+        component: RouteSegmentsShow,
     },
     {
         path: '/admin/stations',

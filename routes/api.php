@@ -216,6 +216,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
 
         Route::apiResource('route-segments', RouteSegmentController::class)->only(['index', 'show', 'store', 'destroy']);
         Route::post('route-segments/{id}/assign-stopovers', [RouteSegmentController::class, 'assignStopovers']);
+        Route::post('route-segments/{id}/brouter-preview', [RouteSegmentController::class, 'brouterPreview']);
+        Route::post('route-segments/{id}/polyline', [RouteSegmentController::class, 'applyPolyline']);
 
         Route::apiResource('tickets', TicketController::class);
         Route::get('tickets/{id}/statistics', [TicketController::class, 'statistics'])->middleware(['scope:read-statistics']);

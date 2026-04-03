@@ -3324,6 +3324,207 @@
                 }
             }
         },
+        "/route-segments/{id}/brouter-preview": {
+            "post": {
+                "tags": [
+                    "Polyline"
+                ],
+                "summary": "Request a BRouter route preview for the given waypoints (admin only).",
+                "operationId": "brouterPreviewRouteSegment",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "waypoints"
+                                ],
+                                "properties": {
+                                    "waypoints": {
+                                        "type": "array",
+                                        "items": {
+                                            "required": [
+                                                "lat",
+                                                "lng"
+                                            ],
+                                            "properties": {
+                                                "lat": {
+                                                    "type": "number"
+                                                },
+                                                "lng": {
+                                                    "type": "number"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "path_type": {
+                                        "type": "string",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "BRouter coordinates and distance.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "coordinates": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "lat": {
+                                                        "type": "number"
+                                                    },
+                                                    "lng": {
+                                                        "type": "number"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "distance": {
+                                            "description": "Distance in meters",
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/route-segments/{id}/polyline": {
+            "post": {
+                "tags": [
+                    "Polyline"
+                ],
+                "summary": "Save custom waypoints and regenerate the segment's polyline via BRouter (admin only).",
+                "operationId": "applyPolylineToRouteSegment",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "waypoints"
+                                ],
+                                "properties": {
+                                    "waypoints": {
+                                        "type": "array",
+                                        "items": {
+                                            "required": [
+                                                "lat",
+                                                "lng"
+                                            ],
+                                            "properties": {
+                                                "lat": {
+                                                    "type": "number"
+                                                },
+                                                "lng": {
+                                                    "type": "number"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Segment updated successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "polyline": {
+                                            "type": "string"
+                                        },
+                                        "distance": {
+                                            "description": "Distance in meters",
+                                            "type": "integer"
+                                        },
+                                        "customWaypoints": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "lat": {
+                                                        "type": "number"
+                                                    },
+                                                    "lng": {
+                                                        "type": "number"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
         "/security/sessions": {
             "get": {
                 "tags": [
@@ -10011,6 +10212,8 @@
                     "id",
                     "fromStation",
                     "toStation",
+                    "fromIdentifier",
+                    "toIdentifier",
                     "distance",
                     "duration",
                     "pathType",
@@ -10026,7 +10229,7 @@
                     "fromStation": {
                         "oneOf": [
                             {
-                                "$ref": "#/components/schemas/Station"
+                                "$ref": "#/components/schemas/StationResource"
                             }
                         ],
                         "nullable": true
@@ -10034,7 +10237,23 @@
                     "toStation": {
                         "oneOf": [
                             {
-                                "$ref": "#/components/schemas/Station"
+                                "$ref": "#/components/schemas/StationResource"
+                            }
+                        ],
+                        "nullable": true
+                    },
+                    "fromIdentifier": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/StationIdentifierResource"
+                            }
+                        ],
+                        "nullable": true
+                    },
+                    "toIdentifier": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/StationIdentifierResource"
                             }
                         ],
                         "nullable": true
@@ -10069,6 +10288,28 @@
                         "description": "Number of custom waypoints, or null if none set",
                         "type": "integer",
                         "example": 4,
+                        "nullable": true
+                    },
+                    "customWaypoints": {
+                        "description": "Custom waypoint coordinates used as BRouter input, or null if not set.",
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "lat": {
+                                    "type": "number"
+                                },
+                                "lng": {
+                                    "type": "number"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "nullable": true
+                    },
+                    "tripsCount": {
+                        "description": "Number of trips using this segment.",
+                        "type": "integer",
+                        "example": 12,
                         "nullable": true
                     }
                 },

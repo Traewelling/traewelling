@@ -15,6 +15,9 @@ enum SegmentPathType: string
     /** Great-circle interpolation: used for flights. No external routing service required. */
     case GREAT_CIRCLE = 'great-circle';
 
+    /** Waterway routing via BRouter: used for ferries. */
+    case WATER = 'water';
+
     /**
      * Returns the BRouter profile to use for this path type,
      * or null if BRouter is not applicable (e.g. great-circle arcs).
@@ -24,6 +27,7 @@ enum SegmentPathType: string
         return match ($this) {
             self::RAIL => BRouterProfile::RAIL,
             self::ROAD => BRouterProfile::ROAD,
+            self::WATER => BRouterProfile::RIVER,
             default => null,
         };
     }
