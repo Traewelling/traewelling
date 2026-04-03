@@ -168,6 +168,7 @@ class RouteSegmentController extends Controller
         );
 
         $duration = null;
+        $pathType = null;
         $stopover = null;
 
         if (isset($validated['stopover_id'])) {
@@ -187,6 +188,18 @@ class RouteSegmentController extends Controller
             }
 
             $duration = $this->deriveDurationFromPair($stopover, $next);
+            $pathType = $stopover->trip->category->getSegmentPathType();
+
+            if ($duration !== null) {
+                $existingSegment = $tripRepository->getRouteSegmentBetweenStops($stopover, $next, $duration, $pathType);
+                if ($existingSegment !== null) {
+                    $tripRepository->setRouteSegmentForStop($stopover, $existingSegment);
+
+                    return new RouteSegmentResource($existingSegment)
+                        ->response()
+                        ->setStatusCode(200);
+                }
+            }
         }
 
         $segment = $tripRepository->createRouteSegment(
@@ -194,6 +207,7 @@ class RouteSegmentController extends Controller
             toStation: $toStation,
             encodedPolyline: $encodedPolyline,
             duration: $duration,
+            pathType: $pathType,
             distanceInMeters: $distanceInMeters,
         );
 
