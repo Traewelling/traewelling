@@ -3,22 +3,9 @@ import 'bootstrap';
 import 'leaflet';
 import 'leaflet/dist/leaflet.js';
 import { Notyf } from 'notyf';
-import { createApp } from 'vue';
-import RouteSegmentPanel from '../vue/components/Admin/RouteSegmentPanel.vue';
 import './components/maps';
 
 window.Popper = Popper;
-
-document.addEventListener('DOMContentLoaded', () => {
-    const el = document.getElementById('vue-route-segment-panel');
-    if (el) {
-        createApp(RouteSegmentPanel, {
-            segmentId: el.dataset.segmentId,
-            fromStationId: Number(el.dataset.fromStationId),
-            toStationId: Number(el.dataset.toStationId),
-        }).mount(el);
-    }
-});
 
 window.notyf = new Notyf({
     duration: 5000,

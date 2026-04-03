@@ -183,9 +183,9 @@ class ReRoutingServiceTest extends UnitTestCase
     {
         $station = $this->makeStation(self::LAT_A, self::LON_A);
         $stopA = $this->makeStopover($station);
-        $stopB = $this->makeStopover($station); // FERRY has no SegmentPathType
+        $stopB = $this->makeStopover($station); // TAXI has no SegmentPathType (default => null)
 
-        $trip = $this->makeTrip([$stopA, $stopB], HafasTravelType::FERRY);
+        $trip = $this->makeTrip([$stopA, $stopB], HafasTravelType::TAXI);
 
         $this->brouter->shouldNotReceive('getRoute');
         $this->repository->shouldNotReceive('createRouteSegment');

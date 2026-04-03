@@ -11,4 +11,7 @@ enum BRouterProfile: string
 
     /** Road routing — used for bus routes. */
     case ROAD = 'car-fast';
+
+    /** River/waterway routing, used for ferries and ships. */
+    case RIVER = 'river';
 }

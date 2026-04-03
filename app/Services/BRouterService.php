@@ -11,6 +11,7 @@ use App\Exceptions\BRouterException;
 use App\Http\Controllers\Backend\VersionController;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Support\Facades\Log;
 use JsonException;
 
 class BRouterService
@@ -76,10 +77,23 @@ class BRouterService
             $profile->value,
         );
 
-        $response = $this->client->get($url);
+        Log::debug('BRouterService: sending request', [
+            'url' => $url,
+            'profile' => $profile->value,
+            'waypoint_count' => count($waypoints),
+        ]);
 
-        if ($response->getStatusCode() !== 200) {
-            throw new BRouterException('BRouter returned HTTP ' . $response->getStatusCode());
+        $response = $this->client->get($url);
+        $statusCode = $response->getStatusCode();
+
+        if ($statusCode !== 200) {
+            $body = $response->getBody()->getContents();
+            Log::debug('BRouterService: non-200 response', [
+                'status' => $statusCode,
+                'url' => $url,
+                'response_body' => $body,
+            ]);
+            throw new BRouterException('BRouter returned HTTP ' . $statusCode . ': ' . $body);
         }
 
         return json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);

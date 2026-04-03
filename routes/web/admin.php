@@ -4,7 +4,6 @@ use App\Http\Controllers\Frontend\Admin\ActivityController;
 use App\Http\Controllers\Frontend\Admin\LicensesController;
 use App\Http\Controllers\Frontend\Admin\MotisSourceController;
 use App\Http\Controllers\Frontend\Admin\OperatorController;
-use App\Http\Controllers\Frontend\Admin\RouteSegmentController;
 use App\Http\Controllers\Frontend\Admin\StationController;
 use App\Http\Controllers\Frontend\Admin\TripController;
 use App\Http\Controllers\Frontend\Admin\UserController;
@@ -43,17 +42,6 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function () {
             Route::get('/{id}/reroute', [TripController::class, 'rerouteTrip'])
                 ->whereNumber('id')
                 ->name('admin.trips.reroute');
-        });
-
-        Route::prefix('routesegment')->group(function () {
-            Route::get('/{id}', [RouteSegmentController::class, 'renderSegment'])
-                ->name('admin.routesegment.show');
-            // experimental endpoint: Should be into the contribution-system mid-term:
-            Route::post('/{id}/brouter-preview', [RouteSegmentController::class, 'brouterPreview'])
-                ->name('admin.routesegment.brouter-preview');
-            // experimental endpoint: Should be into the contribution-system mid-term:
-            Route::post('/{id}/save-from-brouter', [RouteSegmentController::class, 'saveFromBrouter'])
-                ->name('admin.routesegment.save-from-brouter');
         });
 
         Route::prefix('stations')->group(function () {

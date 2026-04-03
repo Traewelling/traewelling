@@ -3,6 +3,7 @@ import piniaPluginPersistedState from 'pinia-plugin-persistedstate';
 import { createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import '../css/tailwind-app.css';
+import '../js/components/maps';
 import AdminApp from './AdminApp.vue';
 import routes from './router/routes';
 

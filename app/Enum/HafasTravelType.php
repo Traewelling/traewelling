@@ -66,6 +66,7 @@ enum HafasTravelType: string
             HafasTravelType::TRAM,
             HafasTravelType::SUBWAY => SegmentPathType::RAIL,
             HafasTravelType::BUS => SegmentPathType::ROAD,
+            HafasTravelType::FERRY => SegmentPathType::WATER,
             HafasTravelType::PLANE => SegmentPathType::GREAT_CIRCLE,
             default => null,
         };

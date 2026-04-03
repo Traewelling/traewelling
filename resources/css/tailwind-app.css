@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import 'notyf/notyf.min.css';
+@import 'leaflet/dist/leaflet.css';
 
 @plugin "@tailwindcss/typography";
 @plugin "daisyui";
