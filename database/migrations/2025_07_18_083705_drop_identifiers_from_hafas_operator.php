@@ -1,39 +1,44 @@
 <?php
 
-use App\Enum\DataProvider;
-use App\Models\Operator;
-use App\Models\OperatorIdentifier;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 return new class() extends Migration
 {
     public function up(): void
     {
-        foreach (Operator::all() as $operator) {
+        DB::table('hafas_operators')->orderBy('id')->each(function (object $row): void {
             // Migrate existing identifiers to the new OperatorIdentifier model
-            if ($operator->hafas_id) {
-                OperatorIdentifier::create([
-                    'operator_id' => $operator->id,
-                    'identifier' => $operator->hafas_id,
+            if ($row->hafas_id) {
+                DB::table('operator_identifiers')->insert([
+                    'id' => Str::uuid()->toString(),
+                    'operator_id' => $row->id,
+                    'identifier' => $row->hafas_id,
                     'type' => 'hafas',
                     'source' => 'hafas',
-                    'name' => $operator->name,
+                    'name' => $row->name,
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ]);
             }
 
-            if ($operator->motis_id) {
+            if ($row->motis_id) {
                 // Only create motis identifier if it exists
-                OperatorIdentifier::create([
-                    'operator_id' => $operator->id,
-                    'identifier' => $operator->motis_id,
+                DB::table('operator_identifiers')->insert([
+                    'id' => Str::uuid()->toString(),
+                    'operator_id' => $row->id,
+                    'identifier' => $row->motis_id,
                     'type' => 'motis',
-                    'source' => $operator->motis_source ?? DataProvider::TRANSITOUS,
-                    'name' => $operator->name,
+                    'source' => $row->motis_source ?? 'transitous',
+                    'name' => $row->name,
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ]);
             }
-        }
+        });
 
         Schema::table('hafas_operators', function (Blueprint $table) {
             $table->dropUnique(['motis_id']);
@@ -52,29 +57,24 @@ return new class() extends Migration
             $table->string('motis_id')->unique()->nullable()->after('hafas_id');
         });
 
-        foreach (Operator::all() as $operator) {
-            try {
-                $identifier = OperatorIdentifier::where('operator_id', $operator->id)
-                    ->where('type', 'hafas')
-                    ->first();
-                if ($identifier) {
-                    $operator->hafas_id = $identifier->identifier;
-                    $operator->save();
-                }
+        DB::table('hafas_operators')->orderBy('id')->each(function (object $row): void {
+            $hafas = DB::table('operator_identifiers')
+                ->where('operator_id', $row->id)
+                ->where('type', 'hafas')
+                ->first();
 
-                $identifier = OperatorIdentifier::where('operator_id', $operator->id)
-                    ->where('type', 'motis')
-                    ->first();
-                if ($identifier) {
-                    $operator->motis_id = $identifier->identifier;
-                    $operator->motis_source = $identifier->source;
-                    $operator->save();
-                }
-            } catch (Throwable $e) {
-                // Handle any exceptions that may occur during the migration
-                // For example, log the error or rethrow it
-                Log::error('Error migrating identifiers for operator ID ' . $operator->id . ': ' . $e->getMessage());
+            $motis = DB::table('operator_identifiers')
+                ->where('operator_id', $row->id)
+                ->where('type', 'motis')
+                ->first();
+
+            if ($hafas || $motis) {
+                DB::table('hafas_operators')->where('id', $row->id)->update(array_filter([
+                    'hafas_id' => $hafas?->identifier,
+                    'motis_id' => $motis?->identifier,
+                    'motis_source' => $motis?->source,
+                ]));
             }
-        }
+        });
     }
 };

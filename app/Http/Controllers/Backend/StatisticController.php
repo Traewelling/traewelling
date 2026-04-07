@@ -114,13 +114,13 @@ abstract class StatisticController extends Controller
         return DB::table('train_checkins')
             ->join('statuses', 'train_checkins.status_id', '=', 'statuses.id')
             ->join('hafas_trips', 'train_checkins.trip_id', '=', 'hafas_trips.trip_id')
-            ->leftJoin('hafas_operators', 'hafas_operators.id', '=', 'hafas_trips.operator_id')
+            ->leftJoin('operators', 'operators.id', '=', 'hafas_trips.operator_id')
             ->where('statuses.user_id', '=', $user->id)
             ->where('train_checkins.departure', '>=', $from->toIso8601String())
             ->where('train_checkins.departure', '<=', $until->toIso8601String())
-            ->groupBy('hafas_operators.name')
+            ->groupBy('operators.name')
             ->select([
-                'hafas_operators.name',
+                'operators.name',
                 DB::raw('COUNT(*) AS count'),
                 DB::raw('SUM(TIMESTAMPDIFF(MINUTE, train_checkins.departure,
                               train_checkins.arrival)) AS duration'),

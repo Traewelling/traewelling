@@ -3,7 +3,6 @@
 use App\Http\Controllers\Frontend\Admin\ActivityController;
 use App\Http\Controllers\Frontend\Admin\LicensesController;
 use App\Http\Controllers\Frontend\Admin\MotisSourceController;
-use App\Http\Controllers\Frontend\Admin\OperatorController;
 use App\Http\Controllers\Frontend\Admin\StationController;
 use App\Http\Controllers\Frontend\Admin\TripController;
 use App\Http\Controllers\Frontend\Admin\UserController;
@@ -49,10 +48,8 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function () {
             Route::post('/{id}/wikidata', [StationController::class, 'fetchWikidata']);
         });
 
-        Route::prefix('operators')->group(function () {
-            Route::get('/', [OperatorController::class, 'index'])
-                ->name('admin.operators');
-        });
+        Route::get('operators', fn () => view('admin.app'))
+            ->name('admin.operators');
 
         Route::get('activity', [ActivityController::class, 'render'])
             ->name('admin.activity');

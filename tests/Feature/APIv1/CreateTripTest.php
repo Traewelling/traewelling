@@ -101,6 +101,24 @@ class CreateTripTest extends ApiTestCase
         ]);
     }
 
+    /**
+     * @deprecated can be removed after 2026-09 (legacy id will be removed)
+     */
+    public function test_create_trip_with_operator_legacy_id(): void
+    {
+        $this->actAsApiUserWithAllScopes();
+        $operator = Operator::factory()->create(['legacy_id' => 42]);
+
+        $response = $this->postJson('/api/v1/trips', $this->validPayload([
+            'operatorId' => $operator->legacy_id,
+        ]));
+
+        $response->assertCreated();
+        $this->assertDatabaseHas('hafas_trips', [
+            'operator_id' => $operator->id,
+        ]);
+    }
+
     public function test_create_trip_with_stopovers(): void
     {
         $this->actAsApiUserWithAllScopes();
@@ -198,8 +216,7 @@ class CreateTripTest extends ApiTestCase
         $response = $this->postJson('/api/v1/trips', $this->validPayload([
             'operatorId' => 99999999,
         ]));
-        $response->assertUnprocessable();
-        $response->assertJsonValidationErrors(['operatorId']);
+        $response->assertNotFound();
     }
 
     public function test_create_trip_fails_when_duration_exceeds_maximum(): void

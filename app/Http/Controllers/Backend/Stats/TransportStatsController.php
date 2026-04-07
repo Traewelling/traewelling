@@ -73,10 +73,10 @@ abstract class TransportStatsController extends Controller
 
         return self::getTrainCheckinsBetween($user, $from, $to)
             ->join('hafas_trips', 'train_checkins.trip_id', '=', 'hafas_trips.trip_id')
-            ->join('hafas_operators', 'hafas_trips.operator_id', '=', 'hafas_operators.id')
-            ->groupBy('hafas_operators.name')
+            ->join('operators', 'hafas_trips.operator_id', '=', 'operators.id')
+            ->groupBy('operators.name')
             ->select([
-                'hafas_operators.name',
+                'operators.name',
                 DB::raw('SUM(train_checkins.distance) as distance'),
                 DB::raw('SUM(TIMESTAMPDIFF(MINUTE, train_checkins.departure, train_checkins.arrival)) as duration'),
             ])
@@ -117,11 +117,11 @@ abstract class TransportStatsController extends Controller
 
         return self::getTrainCheckinsBetween($user, $from, $to)
             ->join('hafas_trips', 'train_checkins.trip_id', '=', 'hafas_trips.trip_id')
-            ->join('hafas_operators', 'hafas_trips.operator_id', '=', 'hafas_operators.id')
-            ->groupBy('hafas_operators.name')
+            ->join('operators', 'hafas_trips.operator_id', '=', 'operators.id')
+            ->groupBy('operators.name')
             ->groupBy('hafas_trips.linename')
             ->select([
-                'hafas_operators.name',
+                'operators.name',
                 'hafas_trips.linename',
                 DB::raw('SUM(train_checkins.distance) as distance'),
                 DB::raw('SUM(TIMESTAMPDIFF(MINUTE, train_checkins.departure, train_checkins.arrival)) as duration'),

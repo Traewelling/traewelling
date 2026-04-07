@@ -30,27 +30,26 @@ class OperatorController extends Controller
         responses: [
             new OA\Response(
                 response: 200,
-                description: 'successful operation',
+                description: self::OA_DESC_SUCCESS,
                 content: new OA\JsonContent(
                     properties: [
                         new OA\Property(
                             property: 'data',
                             type: 'array',
-                            items: new OA\Items(ref: '#/components/schemas/OperatorResource'),
+                            items: new OA\Items(ref: OperatorResource::class),
                         ),
                     ],
                 ),
             ),
-            new OA\Response(response: 401, description: 'Unauthenticated'),
-            new OA\Response(response: 403, description: 'Unauthorized'),
-            new OA\Response(response: 500, description: 'Internal Server Error'),
+            new OA\Response(response: 401, description: self::OA_DESC_UNAUTHENTICATED),
+            new OA\Response(response: 403, description: self::OA_DESC_FORBIDDEN),
         ],
     )]
     public function index(Request $request): AnonymousResourceCollection
     {
         $query = $request->string('query')->trim();
 
-        $builder = Operator::orderBy('name');
+        $builder = Operator::with('identifiers')->orderBy('name');
 
         if ($query->isNotEmpty() && $query->length() >= 2) {
             $builder->where('name', 'like', '%' . $query . '%');
@@ -59,7 +58,35 @@ class OperatorController extends Controller
         return OperatorResource::collection($builder->cursorPaginate(25));
     }
 
-    public function merge(int $oldOperatorId, int $newOperatorId): JsonResponse
+    #[OA\Put(
+        path: '/operators/{oldOperatorId}/merge/{newOperatorId}',
+        operationId: 'mergeOperators',
+        summary: 'Merge two operators into one (admin only).',
+        tags: ['Checkin'],
+        parameters: [
+            new OA\Parameter(
+                name: 'oldOperatorId',
+                description: 'UUID of the operator to merge from.',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(type: 'string', format: 'uuid'),
+            ),
+            new OA\Parameter(
+                name: 'newOperatorId',
+                description: 'UUID of the operator to merge into.',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(type: 'string', format: 'uuid'),
+            ),
+        ],
+        responses: [
+            new OA\Response(response: 204, description: self::OA_DESC_NO_CONTENT),
+            new OA\Response(response: 401, description: self::OA_DESC_UNAUTHENTICATED),
+            new OA\Response(response: 403, description: self::OA_DESC_FORBIDDEN),
+            new OA\Response(response: 404, description: self::OA_DESC_NOT_FOUND),
+        ],
+    )]
+    public function merge(string $oldOperatorId, string $newOperatorId): JsonResponse
     {
         $oldOperator = Operator::findOrFail($oldOperatorId);
         $newOperator = Operator::findOrFail($newOperatorId);

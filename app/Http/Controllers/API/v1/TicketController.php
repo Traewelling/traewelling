@@ -359,9 +359,9 @@ class TicketController extends Controller
 
         $operators = (clone $base)
             ->join('hafas_trips', 'train_checkins.trip_id', '=', 'hafas_trips.trip_id')
-            ->leftJoin('hafas_operators', 'hafas_operators.id', '=', 'hafas_trips.operator_id')
-            ->groupBy('hafas_operators.name')
-            ->selectRaw('hafas_operators.name, COUNT(*) AS count, COALESCE(SUM(train_checkins.distance), 0) AS distance')
+            ->leftJoin('operators', 'operators.id', '=', 'hafas_trips.operator_id')
+            ->groupBy('operators.name')
+            ->selectRaw('operators.name, COUNT(*) AS count, COALESCE(SUM(train_checkins.distance), 0) AS distance')
             ->orderByDesc('distance')
             ->limit(10)
             ->get()

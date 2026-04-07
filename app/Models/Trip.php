@@ -29,7 +29,7 @@ use Illuminate\Support\Carbon;
  * @property $arrival
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property int|null $operator_id
+ * @property string|null $operator_id
  * @property Carbon|null $last_refreshed
  * @property int|null $journey_number
  * @property TripSource $source
@@ -104,7 +104,7 @@ class Trip extends Model
         'route_color' => 'string',
         'route_text_color' => 'string',
         'journey_number' => 'integer',
-        'operator_id' => 'integer',
+        'operator_id' => 'string',
         'origin_id' => 'integer',
         'destination_id' => 'integer',
         'polyline_id' => 'integer',

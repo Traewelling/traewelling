@@ -37,14 +37,28 @@ Check back here regularly to stay ahead of removals.
 | 2026-03-30 | `PUT /api/v1/settings/acceptPrivacy` is deprecated -> use `PUT /api/v1/privacy-policies/accept` instead                                                                                                           | 2026-09-30 | [#4650](https://github.com/Traewelling/traewelling/pull/4650) |
 | 2026-04-01 | `DepartureResource.stop.*` is deprecated → use `DepartureResource.station` instead                                                                                                                                | 2026-09-30 | [#4663](https://github.com/Traewelling/traewelling/pull/4663) |
 | 2026-04-07 | `OperatorResource.identifier` is deprecated: legacy HAFAS operator ID, always `null` for new operators                                                                                                            | 2026-09-30 | [#4675](https://github.com/Traewelling/traewelling/pull/4675) |
+| 2026-04-07 | `OperatorResource.id` is deprecated as integer: will become a UUID after 2026-09-30. prefer `uuid` instead while migration-period                                                                                 | 2026-09-30 | [#4676](https://github.com/Traewelling/traewelling/pull/4676) |
 
 ---
 
 # 2026-04-07
 
-- `OperatorResource`: added `type` field (always `"operator"`)
-- `OperatorResource.identifier`: deprecated. Legacy HAFAS operator ID, always `null` for new operators. Will be removed
-  after 2026-10-31.
+### Operator migration: UUID primary keys
+
+Operators have been migrated from integer IDs to UUIDs. The `OperatorResource` was extended:
+
+**New fields:**
+- `type`: always `"operator"` (as of friendly public transport format)
+- `uuid`: stable UUID identifier, use this going forward
+- `identifiers`: array of `{ type, identifier, name }` objects covering all known provider IDs (e.g. `motis`, `hafas`, `wikidata`). Returned by `GET /api/v1/operators`.
+
+**Deprecated fields** (see "Upcoming Breaking Changes" table above):
+- `id`: still returns the numeric legacy ID for now, but will become a UUID after 2026-09-30. Use `uuid` instead (will be renamed to `id` later)
+- `identifier`: single legacy HAFAS operator ID string. Always `null` for new operators. Use the `identifiers` array instead.
+
+**Endpoint changes:**
+- `GET /api/v1/operators`: returns `identifiers` for each operator.
+- `POST /api/v1/trips` (`operatorId` field): now accepts both UUID and numeric legacy ID. UUID should be preferred.
 
 # 2026-03-28
 

@@ -88,7 +88,13 @@ class TripController extends Controller
                     new OA\Property(property: 'category', type: 'string', example: 'regional'),
                     new OA\Property(property: 'lineName', type: 'string', example: 'RE 1'),
                     new OA\Property(property: 'journeyNumber', type: 'integer', example: 12345, nullable: true),
-                    new OA\Property(property: 'operatorId', type: 'integer', example: 1, nullable: true),
+                    new OA\Property(
+                        property: 'operatorId',
+                        description: 'Operator UUID (preferred) or numeric legacy ID. Use the `uuid` field from the operators endpoint.',
+                        type: 'string',
+                        example: '00000000-0000-0000-0000-000000000000',
+                        nullable: true,
+                    ),
                     new OA\Property(property: 'originId', type: 'integer', example: 8000105),
                     new OA\Property(property: 'originDeparturePlanned', type: 'string', format: 'date-time', example: '2025-01-01T10:00:00Z'),
                     new OA\Property(property: 'destinationId', type: 'integer', example: 8000261),
@@ -144,7 +150,10 @@ class TripController extends Controller
                     );
 
                 if (isset($validated['operatorId'])) {
-                    $creator->setOperator(Operator::findOrFail($validated['operatorId']));
+                    $operator = Operator::where('id', $validated['operatorId'])
+                        ->orWhere('legacy_id', $validated['operatorId'])
+                        ->firstOrFail();
+                    $creator->setOperator($operator);
                 }
 
                 foreach ($validated['stopovers'] ?? [] as $stopover) {

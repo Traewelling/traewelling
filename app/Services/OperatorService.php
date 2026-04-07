@@ -42,10 +42,10 @@ class OperatorService
         ])->with('operator')->first()?->operator ?? null;
 
         // If the operator is already linked with a wikidata ID we don't need to evaluate any further
-        if ($databaseOperator?->wikidata_id) {
-            Log::debug('Found existing operator in database with wikidata_id', [
+        if ($databaseOperator?->identifiers()->where('type', 'wikidata')->exists()) {
+            Log::debug('Found existing operator in database with wikidata identifier', [
                 'operatorId' => $databaseOperator->id,
-                'wikidataId' => $databaseOperator->wikidata_id,
+                'wikidataId' => $databaseOperator->identifiers()->where('type', 'wikidata')->value('identifier'),
             ]);
 
             return $databaseOperator;
@@ -221,10 +221,18 @@ class OperatorService
     {
         $operators = $this->loadOperatorOfficialNames();
         foreach ($operators as $wikidataId => $name) {
-            Operator::updateOrCreate(
-                ['wikidata_id' => $wikidataId],
-                ['name' => $name]
-            );
+            $existing = OperatorIdentifier::where('type', 'wikidata')
+                ->where('identifier', $wikidataId)
+                ->with('operator')
+                ->first()
+                ?->operator;
+
+            if ($existing) {
+                $existing->update(['name' => $name]);
+            } else {
+                $operator = Operator::create(['name' => $name]);
+                $operator->identifiers()->create(['type' => 'wikidata', 'identifier' => $wikidataId]);
+            }
         }
     }
 
@@ -238,21 +246,20 @@ class OperatorService
             // Update all trips to point to the new operator
             $oldOperator->trips()->update(['operator_id' => $newOperator->id]);
 
+            // If the new operator already has a wikidata identifier, drop the old one before moving to avoid duplicates.
+            if ($newOperator->identifiers()->where('type', 'wikidata')->exists()) {
+                $oldOperator->identifiers()->where('type', 'wikidata')->delete();
+            }
+
             $oldOperator->identifiers()->update(['operator_id' => $newOperator->id]);
 
             // Delete the old operator
             $oldOperator->delete();
 
-            // Update columns with old values, if newOperator has null values
-            // AFTER deletion so there are no conflicts (duplicate entry)
-            $newOperator->update([
-                'wikidata_id' => !empty($newOperator->wikidata_id) ? $newOperator->wikidata_id : $oldOperator->wikidata_id,
-            ]);
-
             Log::debug('Operators merged successfully', [
                 'oldOperatorId' => $oldOperator->id,
                 'newOperatorId' => $newOperator->id,
-                'wikidataId' => $newOperator->wikidata_id,
+                'wikidataId' => $newOperator->identifiers()->where('type', 'wikidata')->value('identifier'),
             ]);
         });
     }
@@ -293,30 +300,44 @@ class OperatorService
                         'name' => $name,
                     ]);
 
-                    $lookupWikidataId = Operator::where('wikidata_id', $wikidataId)->first();
+                    $existingByWikidata = OperatorIdentifier::where('type', 'wikidata')
+                        ->where('identifier', $wikidataId)
+                        ->with('operator')
+                        ->first()
+                        ?->operator;
 
-                    if ($lookupWikidataId) {
+                    if ($existingByWikidata) {
                         Log::debug('Wikidata ID already exists in database', [
                             'wikidataId' => $wikidataId,
-                            'operatorId' => $lookupWikidataId->id,
+                            'operatorId' => $existingByWikidata->id,
                             'motisAgencyId' => $motisAgencyId,
                             'motisAgencyName' => $motisAgencyName,
                         ]);
 
-                        return $lookupWikidataId;
+                        return $existingByWikidata;
                     }
 
-                    // Update the existing operator with the new wikidata_id and name.
-                    return $dbOperator->update([
-                        'wikidata_id' => $wikidataId,
-                        'name' => $name,
-                    ]) ? $dbOperator : null;
+                    // Link the existing operator to the wikidata ID and update the name.
+                    $dbOperator->identifiers()->updateOrCreate(
+                        ['type' => 'wikidata'],
+                        ['identifier' => $wikidataId],
+                    );
+
+                    return $dbOperator->update(['name' => $name]) ? $dbOperator : null;
                 }
 
-                $operator = Operator::updateOrCreate(
-                    ['wikidata_id' => $wikidataId],
-                    ['name' => $name]
-                );
+                $operator = OperatorIdentifier::where('type', 'wikidata')
+                    ->where('identifier', $wikidataId)
+                    ->with('operator')
+                    ->first()
+                    ?->operator;
+
+                if ($operator) {
+                    $operator->update(['name' => $name]);
+                } else {
+                    $operator = Operator::create(['name' => $name]);
+                    $operator->identifiers()->create(['type' => 'wikidata', 'identifier' => $wikidataId]);
+                }
                 $operator->identifiers()->updateOrCreate(
                     [
                         'identifier' => $motisAgencyId,

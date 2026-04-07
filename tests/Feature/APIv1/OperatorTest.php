@@ -85,7 +85,7 @@ class OperatorTest extends ApiTestCase
 
         $response = $this->put('/api/v1/operators/' . $oldOperator->id . '/merge/' . $newOperator->id);
         $response->assertForbidden();
-        $this->assertDatabaseHas('hafas_operators', [
+        $this->assertDatabaseHas('operators', [
             'id' => $oldOperator->id,
         ]);
     }
@@ -101,7 +101,7 @@ class OperatorTest extends ApiTestCase
 
         $response = $this->put('/api/v1/operators/' . $oldOperator->id . '/merge/' . $newOperator->id);
         $response->assertNoContent();
-        $this->assertDatabaseMissing('hafas_operators', [
+        $this->assertDatabaseMissing('operators', [
             'id' => $oldOperator->id,
         ]);
     }

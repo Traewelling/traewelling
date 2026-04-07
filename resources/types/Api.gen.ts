@@ -1417,11 +1417,30 @@ export interface Links {
   next?: string | null;
 }
 
+export interface OperatorIdentifierResource {
+  /** @example "motis" */
+  type: string;
+  /** @example "de:db-regio-ag" */
+  identifier: string;
+  /** @example "DB Regio AG" */
+  name?: string | null;
+}
+
 export interface OperatorResource {
   /** @example "operator" */
   type: string;
-  /** @example 1 */
+  /**
+   * Numeric legacy ID. Deprecated: will become a UUID after 2026-09-30.
+   * @deprecated
+   * @example 1
+   */
   id: number;
+  /**
+   * Stable UUID identifier for this operator.
+   * @format uuid
+   * @example "00000000-0000-0000-0000-000000000000"
+   */
+  uuid: string;
   /**
    * Legacy HAFAS operator ID. Always NULL for new operators. Will be removed soon.
    * @deprecated
@@ -1430,6 +1449,7 @@ export interface OperatorResource {
   identifier: string | null;
   /** @example "DB Regio AG Nord" */
   name: string;
+  identifiers: OperatorIdentifierResource[];
 }
 
 /**
@@ -4618,6 +4638,25 @@ export class Api<
         format: "json",
         ...params,
       }),
+
+    /**
+     * No description
+     *
+     * @tags Checkin
+     * @name MergeOperators
+     * @summary Merge two operators into one (admin only).
+     * @request PUT:/operators/{oldOperatorId}/merge/{newOperatorId}
+     */
+    mergeOperators: (
+      oldOperatorId: string,
+      newOperatorId: string,
+      params: RequestParams = {},
+    ) =>
+      this.request<void, void>({
+        path: `/operators/${oldOperatorId}/merge/${newOperatorId}`,
+        method: "PUT",
+        ...params,
+      }),
   };
   privacyPolicies = {
     /**
@@ -6419,8 +6458,11 @@ export class Api<
         lineName: string;
         /** @example 12345 */
         journeyNumber?: number | null;
-        /** @example 1 */
-        operatorId?: number | null;
+        /**
+         * Operator UUID (preferred) or numeric legacy ID. Use the `uuid` field from the operators endpoint.
+         * @example "00000000-0000-0000-0000-000000000000"
+         */
+        operatorId?: string | null;
         /** @example 8000105 */
         originId: number;
         /**
