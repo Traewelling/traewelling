@@ -10008,19 +10008,26 @@
             },
             "OperatorResource": {
                 "required": [
+                    "type",
                     "id",
                     "identifier",
                     "name"
                 ],
                 "properties": {
+                    "type": {
+                        "type": "string",
+                        "example": "operator"
+                    },
                     "id": {
                         "type": "integer",
                         "example": 1
                     },
                     "identifier": {
+                        "description": "Legacy HAFAS operator ID. Always NULL for new operators. Will be removed soon.",
                         "type": "string",
                         "example": "db-regio-ag-nord",
-                        "nullable": true
+                        "nullable": true,
+                        "deprecated": true
                     },
                     "name": {
                         "type": "string",

@@ -1418,9 +1418,15 @@ export interface Links {
 }
 
 export interface OperatorResource {
+  /** @example "operator" */
+  type: string;
   /** @example 1 */
   id: number;
-  /** @example "db-regio-ag-nord" */
+  /**
+   * Legacy HAFAS operator ID. Always NULL for new operators. Will be removed soon.
+   * @deprecated
+   * @example "db-regio-ag-nord"
+   */
   identifier: string | null;
   /** @example "DB Regio AG Nord" */
   name: string;
