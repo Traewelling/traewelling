@@ -169,12 +169,8 @@ Route::middleware(['auth', 'privacy'])->group(function () {
 
     Route::get('/search/', [FrontendUserController::class, 'searchUser'])->name('userSearch');
 
-    Route::post('/user/block', [UserController::class, 'blockUser'])
-        ->name('user.block'); // TODO: Replace with API Endpoint
     Route::post('/user/unblock', [UserController::class, 'unblockUser'])
         ->name('user.unblock'); // TODO: Replace with API Endpoint
-    Route::post('/user/mute', [UserController::class, 'muteUser'])
-        ->name('user.mute'); // TODO: Replace with API Endpoint
     Route::post('/user/unmute', [UserController::class, 'unmuteUser'])
         ->name('user.unmute'); // TODO: Replace with API Endpoint
 });
