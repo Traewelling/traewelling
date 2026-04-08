@@ -14,9 +14,13 @@ const tabs = [
     { name: 'settings.tab.account', route: '/settings/account', icon: ShieldUser },
     { name: 'menu.privacy', route: '/settings/privacy', icon: Lock },
     { name: 'settings.title-security', route: '/settings/security', icon: UserRoundKey },
+    {
+        name: 'your-apps',
+        route: '/settings/applications',
+        icon: LayoutGrid,
+        activeRoutes: ['/settings/applications'],
+    },
 ];
-
-const legacyTabs = [{ name: 'your-apps', route: '/settings/applications', icon: LayoutGrid }];
 
 function isActiveTab(route: { route: string; activeRoutes?: string[] }): boolean {
     if (route.activeRoutes) {
@@ -51,19 +55,6 @@ function isActiveTab(route: { route: string; activeRoutes?: string[] }): boolean
                         {{ trans(tab.name) }}
                     </span>
                 </router-link>
-                <a
-                    v-for="tab in legacyTabs"
-                    :key="tab.route"
-                    role="tab"
-                    class="tab"
-                    :href="tab.route"
-                    :class="{ 'tab-active': isActiveTab(tab) }"
-                >
-                    <component :is="tab.icon" class="size-5 md:me-1"></component>
-                    <span class="hidden md:inline">
-                        {{ trans(tab.name) }}
-                    </span>
-                </a>
             </div>
             <div class="mt-4 min-h-100">
                 <slot />

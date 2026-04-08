@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
         $this->call(PrivacyAgreementSeeder::class);
         $this->call(UsersTableSeeder::class);
         $this->call(ClientSeeder::class);
+        $this->call(WebhookCallLogSeeder::class);
         $this->call(FollowTableSeeder::class);
         Station::factory()->count(50)->create();
         $this->call(EventSeeder::class);

@@ -16,6 +16,7 @@ use App\Http\Controllers\API\v1\AdminEventController;
 use App\Http\Controllers\API\v1\AdminEventSuggestionController;
 use App\Http\Controllers\API\v1\AdminStatusController;
 use App\Http\Controllers\API\v1\AlertController;
+use App\Http\Controllers\API\v1\ApplicationController;
 use App\Http\Controllers\API\v1\AuthController as v1Auth;
 use App\Http\Controllers\API\v1\CommunityController;
 use App\Http\Controllers\API\v1\ConfigurationInfoController;
@@ -173,7 +174,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::group(['middleware' => ['scope:extra-terminate-sessions']], static function () {
                 Route::get('sessions', [SessionController::class, 'index']);
                 Route::delete('sessions', [SessionController::class, 'deleteAllSessions']);
-                Route::post('tokens', [TokenController::class, 'createToken']);
+                Route::post('tokens', [TokenController::class, 'createToken'])->middleware('personal-token');
                 Route::get('tokens', [TokenController::class, 'index']);
                 Route::delete('tokens', [TokenController::class, 'revokeAllTokens']);
                 Route::delete('tokens/{tokenId}', [TokenController::class, 'revokeToken']);
@@ -187,6 +188,16 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         });
 
         Route::apiResource('webhooks', WebhookController::class)->only(['index', 'show', 'destroy']);
+
+        Route::get('applications/{clientId}/webhook-stats', [ApplicationController::class, 'webhookStats'])
+            ->name('api.applications.webhook-stats');
+
+        Route::middleware('personal-token')->group(function () {
+            Route::get('applications', [ApplicationController::class, 'index'])->name('api.applications.index');
+            Route::post('applications', [ApplicationController::class, 'store'])->name('api.applications.store');
+            Route::put('applications/{clientId}', [ApplicationController::class, 'update'])->name('api.applications.update');
+            Route::delete('applications/{clientId}', [ApplicationController::class, 'destroy'])->name('api.applications.destroy');
+        });
 
         Route::apiResource('station', StationController::class); // TODO: rename to "stations" when stable
         Route::apiResource('stations', StationController::class);

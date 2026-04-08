@@ -16,6 +16,8 @@ use Laravel\Passport\Passport;
  * @property int $user_id
  * @property string $url
  * @property string|null $secret
+ * @property int $consecutive_failures
+ * @property Carbon|null $disabled_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read OAuthClient $client
@@ -40,7 +42,7 @@ class Webhook extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'oauth_client_id', 'url', 'secret'];
+    protected $fillable = ['user_id', 'oauth_client_id', 'url', 'secret', 'consecutive_failures', 'disabled_at'];
 
     protected $hidden = ['oauth_client_id', 'secret', 'created_at', 'updated_at'];
 
@@ -50,6 +52,8 @@ class Webhook extends Model
         'url' => 'string',
         'secret' => 'string',
         'user_id' => 'integer',
+        'consecutive_failures' => 'integer',
+        'disabled_at' => 'datetime',
     ];
 
     public function client(): BelongsTo

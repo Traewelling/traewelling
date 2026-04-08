@@ -174,12 +174,6 @@
                             {{ __('settings.tab.account') }}
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{route('dev.apps')}}">
-                            <i class="fas fa-flask"></i>
-                            {{ __('your-apps') }}
-                        </a>
-                    </li>
                 </ul>
             </div>
         </nav>

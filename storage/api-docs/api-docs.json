@@ -1145,6 +1145,237 @@
                 ]
             }
         },
+        "/applications": {
+            "get": {
+                "tags": [
+                    "Applications"
+                ],
+                "summary": "List OAuth applications",
+                "description": "Returns all OAuth applications owned by the authenticated user. Requires a personal access token, third-party OAuth application tokens are not accepted.",
+                "operationId": "getApplications",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/OAuthClientResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Applications"
+                ],
+                "summary": "Create OAuth application",
+                "description": "Create a new OAuth application for the authenticated user. Requires a personal access token — third-party OAuth application tokens are not accepted.",
+                "operationId": "createApplication",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreOAuthClientRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/OAuthClientResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/applications/{clientId}": {
+            "put": {
+                "tags": [
+                    "Applications"
+                ],
+                "summary": "Update OAuth application",
+                "description": "Update an OAuth application owned by the authenticated user. Requires a personal access token, third-party OAuth application tokens are not accepted.",
+                "operationId": "updateApplication",
+                "parameters": [
+                    {
+                        "name": "clientId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreOAuthClientRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/OAuthClientResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Applications"
+                ],
+                "summary": "Delete OAuth application",
+                "description": "Delete an OAuth application owned by the authenticated user. Requires a personal access token, third-party OAuth application tokens are not accepted.",
+                "operationId": "deleteApplication",
+                "parameters": [
+                    {
+                        "name": "clientId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/applications/{clientId}/webhook-stats": {
+            "get": {
+                "tags": [
+                    "Applications"
+                ],
+                "summary": "Get webhook call statistics for an application",
+                "description": "Returns webhook call log statistics for the last 7 days for a given OAuth application. Only the application owner or admins can access it.",
+                "operationId": "getApplicationWebhookStats",
+                "parameters": [
+                    {
+                        "name": "clientId",
+                        "in": "path",
+                        "description": "OAuth Client ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/WebhookStatsResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/auth/logout": {
             "post": {
                 "tags": [
@@ -6196,7 +6427,7 @@
                     "Security"
                 ],
                 "summary": "Create API token",
-                "description": "Create a new API token for the authenticated user",
+                "description": "Create a new API token for the authenticated user. Requires a personal access token, third-party OAuth application tokens are not accepted.",
                 "operationId": "createToken",
                 "responses": {
                     "201": {
@@ -6230,9 +6461,7 @@
                 },
                 "security": [
                     {
-                        "passport": [
-                            "scope:extra-terminate-sessions"
-                        ]
+                        "token": []
                     }
                 ]
             },
@@ -8304,6 +8533,72 @@
                     "name": "Station"
                 }
             },
+            "WebhookDayStatsDto": {
+                "title": "WebhookDayStatsDto",
+                "required": [
+                    "date",
+                    "total",
+                    "success",
+                    "failed"
+                ],
+                "properties": {
+                    "date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2026-04-01"
+                    },
+                    "total": {
+                        "type": "integer",
+                        "example": 20
+                    },
+                    "success": {
+                        "type": "integer",
+                        "example": 15
+                    },
+                    "failed": {
+                        "type": "integer",
+                        "example": 5
+                    }
+                },
+                "type": "object"
+            },
+            "WebhookEventStatsDto": {
+                "title": "WebhookEventStatsDto",
+                "required": [
+                    "event",
+                    "total"
+                ],
+                "properties": {
+                    "event": {
+                        "type": "string",
+                        "example": "checkin_create"
+                    },
+                    "total": {
+                        "type": "integer",
+                        "example": 100
+                    }
+                },
+                "type": "object"
+            },
+            "WebhookResponseCodeStatsDto": {
+                "title": "WebhookResponseCodeStatsDto",
+                "required": [
+                    "response_code",
+                    "total"
+                ],
+                "properties": {
+                    "response_code": {
+                        "type": "integer",
+                        "example": 200,
+                        "nullable": true
+                    },
+                    "total": {
+                        "type": "integer",
+                        "example": 120
+                    }
+                },
+                "type": "object"
+            },
             "Business": {
                 "title": "Business",
                 "description": "What type of travel (0=private, 1=business, 2=commute) did the user specify?",
@@ -8836,6 +9131,42 @@
                             "type": "integer",
                             "example": 1
                         },
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "StoreOAuthClientRequest": {
+                "title": "StoreOAuthClientRequest",
+                "required": [
+                    "name",
+                    "redirect"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "My App"
+                    },
+                    "redirect": {
+                        "type": "string",
+                        "example": "https://example.com/callback"
+                    },
+                    "confidential": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "webhooksEnabled": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "authorizedWebhookUrl": {
+                        "type": "string",
+                        "example": "https://example.com/webhook",
+                        "nullable": true
+                    },
+                    "privacyPolicyUrl": {
+                        "type": "string",
+                        "example": "https://example.com/privacy",
                         "nullable": true
                     }
                 },
@@ -10045,6 +10376,72 @@
                         "format": "uri",
                         "example": "https://traewelling.de/api/v1/ENDPOINT?page=2",
                         "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "OAuthClientResource": {
+                "title": "OAuthClientResource",
+                "description": "OAuth application owned by the authenticated user",
+                "required": [
+                    "id",
+                    "name",
+                    "redirect",
+                    "confidential",
+                    "webhooksEnabled",
+                    "activeTokensCount",
+                    "hasWebhooks",
+                    "createdAt"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 42
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "My App"
+                    },
+                    "redirect": {
+                        "type": "string",
+                        "example": "https://example.com/callback"
+                    },
+                    "confidential": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "webhooksEnabled": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "authorizedWebhookUrl": {
+                        "type": "string",
+                        "example": "https://example.com/webhook",
+                        "nullable": true
+                    },
+                    "privacyPolicyUrl": {
+                        "type": "string",
+                        "example": "https://example.com/privacy",
+                        "nullable": true
+                    },
+                    "activeTokensCount": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "hasWebhooks": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "plainSecret": {
+                        "description": "Only present immediately after creation or secret regeneration",
+                        "type": "string",
+                        "example": "abc123",
+                        "nullable": true
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-01-01T00:00:00Z"
                     }
                 },
                 "type": "object"
@@ -11723,7 +12120,8 @@
                     "user",
                     "url",
                     "createdAt",
-                    "events"
+                    "events",
+                    "disabledAt"
                 ],
                 "properties": {
                     "id": {
@@ -11764,6 +12162,58 @@
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/WebhookEventResource"
+                        }
+                    },
+                    "disabledAt": {
+                        "description": "ISO 8601 timestamp when the webhook was automatically disabled due to repeated failures, or null if active",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-04-08T10:00:00Z",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "WebhookStatsResource": {
+                "title": "WebhookStatsResource",
+                "description": "Webhook call log statistics for an OAuth application over the last 7 days",
+                "required": [
+                    "client_id",
+                    "client_name",
+                    "total",
+                    "by_day",
+                    "by_event",
+                    "by_response_code"
+                ],
+                "properties": {
+                    "client_id": {
+                        "type": "integer",
+                        "example": 42
+                    },
+                    "client_name": {
+                        "type": "string",
+                        "example": "My App"
+                    },
+                    "total": {
+                        "type": "integer",
+                        "example": 150
+                    },
+                    "by_day": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/WebhookDayStatsDto"
+                        }
+                    },
+                    "by_event": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/WebhookEventStatsDto"
+                        }
+                    },
+                    "by_response_code": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/WebhookResponseCodeStatsDto"
                         }
                     }
                 },
@@ -11819,6 +12269,10 @@
         }
     },
     "tags": [
+        {
+            "name": "Applications",
+            "description": "Manage OAuth applications"
+        },
         {
             "name": "Community",
             "description": "Community contribution system endpoints"

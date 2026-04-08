@@ -83,6 +83,7 @@ abstract class WebhookController extends Controller
                 $builder->where('event', '=', $event);
             })
             ->where('user_id', $user->id)
+            ->whereNull('disabled_at')
             ->get();
 
         foreach ($webhooks as $webhook) {
@@ -95,6 +96,7 @@ abstract class WebhookController extends Controller
                 ->withHeaders([
                     'X-Trwl-User-Id' => $user->id,
                     'X-Trwl-Webhook-Id' => $webhook->id,
+                    'X-Trwl-OAuth-Client-Id' => $webhook->oauth_client_id,
                 ])
                 ->payload([
                     'event' => $event->value,

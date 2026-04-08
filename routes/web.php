@@ -14,7 +14,6 @@
 use App\Http\Controllers\Frontend\AccountController;
 use App\Http\Controllers\Frontend\ChangelogController;
 use App\Http\Controllers\Frontend\DebugController;
-use App\Http\Controllers\Frontend\DevController;
 use App\Http\Controllers\Frontend\EventController;
 use App\Http\Controllers\Frontend\IcsController;
 use App\Http\Controllers\Frontend\LandingPageController;
@@ -138,14 +137,7 @@ Route::middleware(['auth', 'privacy'])->group(function () {
     Route::prefix('settings')->group(function () {
 
         Route::prefix('/applications')->group(function () {
-            Route::get('/', [DevController::class, 'renderAppList'])->name('dev.apps');
-            Route::post('/createPersonalAccessToken', [DevController::class, 'createPersonalAccessToken'])
-                ->name('dev.apps.createPersonalAccessToken');
-            Route::get('/create', [DevController::class, 'renderCreateApp'])->name('dev.apps.create');
-            Route::get('/{appId}', [DevController::class, 'renderUpdateApp'])->name('dev.apps.edit');
-            Route::post('/{appId}', [DevController::class, 'updateApp'])->name('dev.apps.update');           // TODO: Replace with API Endpoint
-            Route::post('/{appId}/destroy', [DevController::class, 'destroyApp'])->name('dev.apps.destroy'); // TODO: Replace with API Endpoint
-            Route::post('/', [DevController::class, 'createApp'])->name('dev.apps.create.post');             // TODO: Replace with API Endpoint
+            Route::get('/{any?}', fn () => view('vue.spa'))->where('any', '.*');
         });
 
         Route::redirect('/', '/settings/profile')->name('settings');

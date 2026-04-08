@@ -421,6 +421,37 @@ export interface Station {
   rilIdentifier?: string | null;
 }
 
+/** WebhookDayStatsDto */
+export interface WebhookDayStatsDto {
+  /**
+   * @format date
+   * @example "2026-04-01"
+   */
+  date: string;
+  /** @example 20 */
+  total: number;
+  /** @example 15 */
+  success: number;
+  /** @example 5 */
+  failed: number;
+}
+
+/** WebhookEventStatsDto */
+export interface WebhookEventStatsDto {
+  /** @example "checkin_create" */
+  event: string;
+  /** @example 100 */
+  total: number;
+}
+
+/** WebhookResponseCodeStatsDto */
+export interface WebhookResponseCodeStatsDto {
+  /** @example 200 */
+  response_code: number | null;
+  /** @example 120 */
+  total: number;
+}
+
 /** AdminEventRequest */
 export interface AdminEventRequest {
   /** @maxLength 255 */
@@ -698,6 +729,22 @@ export interface CheckinRequestBody {
   force?: boolean | null;
   /** Also check in these user IDs (max. 10). Requires mutual follow. */
   with?: number[] | null;
+}
+
+/** StoreOAuthClientRequest */
+export interface StoreOAuthClientRequest {
+  /** @example "My App" */
+  name: string;
+  /** @example "https://example.com/callback" */
+  redirect: string;
+  /** @example true */
+  confidential?: boolean;
+  /** @example false */
+  webhooksEnabled?: boolean;
+  /** @example "https://example.com/webhook" */
+  authorizedWebhookUrl?: string | null;
+  /** @example "https://example.com/privacy" */
+  privacyPolicyUrl?: string | null;
 }
 
 /**
@@ -1415,6 +1462,41 @@ export interface Links {
    * @example "https://traewelling.de/api/v1/ENDPOINT?page=2"
    */
   next?: string | null;
+}
+
+/**
+ * OAuthClientResource
+ * OAuth application owned by the authenticated user
+ */
+export interface OAuthClientResource {
+  /** @example 42 */
+  id: number;
+  /** @example "My App" */
+  name: string;
+  /** @example "https://example.com/callback" */
+  redirect: string;
+  /** @example true */
+  confidential: boolean;
+  /** @example false */
+  webhooksEnabled: boolean;
+  /** @example "https://example.com/webhook" */
+  authorizedWebhookUrl?: string | null;
+  /** @example "https://example.com/privacy" */
+  privacyPolicyUrl?: string | null;
+  /** @example 3 */
+  activeTokensCount: number;
+  /** @example true */
+  hasWebhooks: boolean;
+  /**
+   * Only present immediately after creation or secret regeneration
+   * @example "abc123"
+   */
+  plainSecret?: string | null;
+  /**
+   * @format date-time
+   * @example "2026-01-01T00:00:00Z"
+   */
+  createdAt: string;
 }
 
 export interface OperatorIdentifierResource {
@@ -2414,6 +2496,28 @@ export interface WebhookResource {
   createdAt: string;
   /** List of events which are triggered for this webhook */
   events: WebhookEventResource[];
+  /**
+   * ISO 8601 timestamp when the webhook was automatically disabled due to repeated failures, or null if active
+   * @format date-time
+   * @example "2026-04-08T10:00:00Z"
+   */
+  disabledAt: string | null;
+}
+
+/**
+ * WebhookStatsResource
+ * Webhook call log statistics for an OAuth application over the last 7 days
+ */
+export interface WebhookStatsResource {
+  /** @example 42 */
+  client_id: number;
+  /** @example "My App" */
+  client_name: string;
+  /** @example 150 */
+  total: number;
+  by_day: WebhookDayStatsDto[];
+  by_event: WebhookEventStatsDto[];
+  by_response_code: WebhookResponseCodeStatsDto[];
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -3222,6 +3326,133 @@ export class Api<
         path: `/alerts/${id}`,
         method: "DELETE",
         secure: true,
+        ...params,
+      }),
+  };
+  applications = {
+    /**
+     * @description Returns all OAuth applications owned by the authenticated user. Requires a personal access token, third-party OAuth application tokens are not accepted.
+     *
+     * @tags Applications
+     * @name GetApplications
+     * @summary List OAuth applications
+     * @request GET:/applications
+     * @secure
+     */
+    getApplications: (params: RequestParams = {}) =>
+      this.request<
+        {
+          data?: OAuthClientResource[];
+        },
+        void
+      >({
+        path: `/applications`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Create a new OAuth application for the authenticated user. Requires a personal access token — third-party OAuth application tokens are not accepted.
+     *
+     * @tags Applications
+     * @name CreateApplication
+     * @summary Create OAuth application
+     * @request POST:/applications
+     * @secure
+     */
+    createApplication: (
+      data: StoreOAuthClientRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          /** OAuth application owned by the authenticated user */
+          data?: OAuthClientResource;
+        },
+        void
+      >({
+        path: `/applications`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Update an OAuth application owned by the authenticated user. Requires a personal access token, third-party OAuth application tokens are not accepted.
+     *
+     * @tags Applications
+     * @name UpdateApplication
+     * @summary Update OAuth application
+     * @request PUT:/applications/{clientId}
+     * @secure
+     */
+    updateApplication: (
+      clientId: number,
+      data: StoreOAuthClientRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          /** OAuth application owned by the authenticated user */
+          data?: OAuthClientResource;
+        },
+        void
+      >({
+        path: `/applications/${clientId}`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Delete an OAuth application owned by the authenticated user. Requires a personal access token, third-party OAuth application tokens are not accepted.
+     *
+     * @tags Applications
+     * @name DeleteApplication
+     * @summary Delete OAuth application
+     * @request DELETE:/applications/{clientId}
+     * @secure
+     */
+    deleteApplication: (clientId: number, params: RequestParams = {}) =>
+      this.request<void, void>({
+        path: `/applications/${clientId}`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Returns webhook call log statistics for the last 7 days for a given OAuth application. Only the application owner or admins can access it.
+     *
+     * @tags Applications
+     * @name GetApplicationWebhookStats
+     * @summary Get webhook call statistics for an application
+     * @request GET:/applications/{clientId}/webhook-stats
+     * @secure
+     */
+    getApplicationWebhookStats: (
+      clientId: number,
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          /** Webhook call log statistics for an OAuth application over the last 7 days */
+          data?: WebhookStatsResource;
+        },
+        void
+      >({
+        path: `/applications/${clientId}/webhook-stats`,
+        method: "GET",
+        secure: true,
+        format: "json",
         ...params,
       }),
   };
@@ -5091,7 +5322,7 @@ export class Api<
       }),
 
     /**
-     * @description Create a new API token for the authenticated user
+     * @description Create a new API token for the authenticated user. Requires a personal access token, third-party OAuth application tokens are not accepted.
      *
      * @tags Security
      * @name CreateToken

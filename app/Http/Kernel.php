@@ -10,6 +10,7 @@ use App\Http\Middleware\Language;
 use App\Http\Middleware\PrivacyInterceptionMiddleware;
 use App\Http\Middleware\PrivacyPolicyInterceptionMiddleware;
 use App\Http\Middleware\RedirectIfAuthenticated;
+use App\Http\Middleware\RequirePersonalToken;
 use App\Http\Middleware\SemiScope;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustProxies;
@@ -103,6 +104,7 @@ class Kernel extends HttpKernel
         'scopes' => CheckToken::class,
         'scope' => CheckTokenForAnyScope::class,
         'semiscope' => SemiScope::class,
+        'personal-token' => RequirePersonalToken::class,
         'role' => RoleMiddleware::class,
         'permission' => PermissionMiddleware::class,
         'role_or_permission' => RoleOrPermissionMiddleware::class,

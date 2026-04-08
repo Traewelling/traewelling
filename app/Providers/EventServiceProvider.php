@@ -6,8 +6,11 @@ use App\Events\StatusUpdateEvent;
 use App\Events\UserCheckedIn;
 use App\Jobs\PostStatusOnMastodon;
 use App\Listeners\CacheMissedListener;
+use App\Listeners\DisableFailingWebhookListener;
+use App\Listeners\LogWebhookCallListener;
 use App\Listeners\NotificationSentWebhookListener;
 use App\Listeners\RemoveAbsentWebhooksListener;
+use App\Listeners\ResetWebhookFailureCountListener;
 use App\Listeners\StatusCreateCheckPolylineListener;
 use App\Listeners\StatusCreateWebhookListener;
 use App\Listeners\StatusUpdateWebhookListener;
@@ -37,7 +40,9 @@ use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvi
 use Illuminate\Notifications\Events\NotificationSent;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
+use Spatie\WebhookServer\Events\FinalWebhookCallFailedEvent;
 use Spatie\WebhookServer\Events\WebhookCallFailedEvent;
+use Spatie\WebhookServer\Events\WebhookCallSucceededEvent;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -60,6 +65,14 @@ class EventServiceProvider extends ServiceProvider
         ],
         WebhookCallFailedEvent::class => [
             RemoveAbsentWebhooksListener::class,
+            LogWebhookCallListener::class,
+        ],
+        FinalWebhookCallFailedEvent::class => [
+            DisableFailingWebhookListener::class,
+        ],
+        WebhookCallSucceededEvent::class => [
+            ResetWebhookFailureCountListener::class,
+            LogWebhookCallListener::class,
         ],
         CacheMissed::class => [
             CacheMissedListener::class,
