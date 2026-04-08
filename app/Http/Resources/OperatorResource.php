@@ -46,7 +46,7 @@ class OperatorResource extends JsonResource
             'type' => 'operator', // @see https://github.com/public-transport/friendly-public-transport-format/tree/master/spec
             'id' => $this->legacy_id, // @deprecated: will become uuid after 2026-09-30
             'uuid' => $this->id, // currently NOT deprecated. But deprecate it, when ID is available -> migration uuid to id
-            'identifier' => $this->whenLoaded('identifiers', fn () => $this->identifiers->firstWhere('type', 'hafas')?->identifier), // @deprecated: remove after 2026-09
+            'identifier' => $this->identifiers->firstWhere('type', 'hafas')?->identifier, // @deprecated: remove after 2026-09
             'name' => $this->name,
             'identifiers' => $this->whenLoaded('identifiers', fn () => OperatorIdentifierResource::collection($this->identifiers)),
         ];
