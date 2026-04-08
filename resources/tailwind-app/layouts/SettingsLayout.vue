@@ -5,15 +5,15 @@ import AppLayout from './AppLayout.vue';
 
 const tabs = [
     { name: 'menu.profile', route: '/settings/profile', icon: User },
+    { name: 'settings.tab.account', route: '/settings/account', icon: ShieldUser },
+    { name: 'menu.privacy', route: '/settings/privacy', icon: Lock },
+    { name: 'settings.title-security', route: '/settings/security', icon: UserRoundKey },
     {
         name: 'settings.follower.manage',
         route: '/settings/followers',
         icon: Users,
         activeRoutes: ['/settings/followers', '/settings/follow-requests', '/settings/followings'],
     },
-    { name: 'settings.tab.account', route: '/settings/account', icon: ShieldUser },
-    { name: 'menu.privacy', route: '/settings/privacy', icon: Lock },
-    { name: 'settings.title-security', route: '/settings/security', icon: UserRoundKey },
 ];
 
 const legacyTabs = [{ name: 'your-apps', route: '/settings/applications', icon: LayoutGrid }];
