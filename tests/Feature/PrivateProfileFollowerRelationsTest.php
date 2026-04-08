@@ -89,10 +89,10 @@ class PrivateProfileFollowerRelationsTest extends ApiTestCase
             ->assertJsonPath('meta.reason', 'PRIVATE_PROFILE');
 
         // When: Alice follows Bob
-        $request = $this->actingAs($alice)->post(route('follow.request'), ['follow_id' => $bob->id]);
-        $request->assertStatus(201);
-        $follow = $this->actingAs($bob)->post(route('settings.follower.approve'), ['user_id' => $alice->id]);
-        $follow->assertStatus(302);
+        Passport::actingAs($alice, ['*']);
+        $this->postJson('/api/v1/user/' . $bob->id . '/follow')->assertStatus(201);
+        Passport::actingAs($bob, ['*']);
+        $this->putJson('/api/v1/user/self/follow-requests/' . $alice->id)->assertOk();
         $alice->refresh();
         $bob->refresh();
         $this->assertContains($alice->id, $bob->followers->pluck('user_id'));
@@ -160,10 +160,10 @@ class PrivateProfileFollowerRelationsTest extends ApiTestCase
             ->assertJsonPath('meta.reason', 'PRIVATE_PROFILE');
 
         // When: Alice requests to follow Bob, but Bob declines
-        $request = $this->actingAs($alice)->post(route('follow.request'), ['follow_id' => $bob->id]);
-        $request->assertStatus(201);
-        $follow = $this->actingAs($bob)->post(route('settings.follower.reject'), ['user_id' => $alice->id]);
-        $follow->assertStatus(302);
+        Passport::actingAs($alice, ['*']);
+        $this->postJson('/api/v1/user/' . $bob->id . '/follow')->assertStatus(201);
+        Passport::actingAs($bob, ['*']);
+        $this->deleteJson('/api/v1/user/self/follow-requests/' . $alice->id)->assertOk();
 
         $alice->refresh();
         $bob->refresh();
@@ -192,9 +192,8 @@ class PrivateProfileFollowerRelationsTest extends ApiTestCase
         $this->getJson('/api/v1/user/' . $bob->username)->assertOk();
 
         // When: Bob removes Alice from his followers
-        $this->actingAs($bob)
-            ->post(route('settings.follower.remove'), ['user_id' => $alice->id])
-            ->assertStatus(302);
+        Passport::actingAs($bob, ['*']);
+        $this->deleteJson('/api/v1/user/self/followers/' . $alice->id)->assertOk();
 
         // Alice can no longer see Bob : removing a follower restores invisibility
         $alice->refresh();

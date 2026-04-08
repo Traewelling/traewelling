@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Enum\StatusVisibility;
 use App\Exceptions\AlreadyFollowingException;
 use App\Http\Controllers\Backend\User\BlockController;
-use App\Http\Controllers\Backend\User\SessionController;
-use App\Http\Controllers\Backend\User\TokenController;
 use App\Models\Follow;
 use App\Models\FollowRequest;
 use App\Models\Status;
@@ -16,7 +14,6 @@ use App\Notifications\FollowRequestIssued;
 use App\Notifications\UserFollowed;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Pagination\Paginator;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -172,32 +169,5 @@ class UserController extends Controller
         $user->load('follows');
 
         return !$user->follows->contains('id', $userToUnfollow->id);
-    }
-
-    public function deleteSession(): RedirectResponse
-    {
-        $user = Auth::user();
-        Auth::logout();
-        SessionController::deleteAllSessionsFor(user: $user);
-
-        return redirect()->route('static.welcome');
-    }
-
-    /**
-     * delete a specific session for user
-     */
-    public function deleteToken(Request $request): RedirectResponse
-    {
-        $validated = $request->validate([
-            'tokenId' => ['required', 'exists:oauth_access_tokens,id'],
-        ]);
-
-        try {
-            TokenController::revokeToken(tokenId: $validated['tokenId'], user: auth()->user());
-
-            return redirect()->route('settings.tokens')->with('alert-success', __('settings.revoke-token.success'));
-        } catch (AuthorizationException) {
-            return redirect()->route('settings.tokens')->withErrors(__('messages.exception.general'));
-        }
     }
 }

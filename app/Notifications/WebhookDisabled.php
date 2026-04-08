@@ -42,6 +42,6 @@ class WebhookDisabled extends Notification implements BaseNotification
 
     public static function getLink(array $data): ?string
     {
-        return route('settings.webhooks');
+        return url('/settings/security');
     }
 }

@@ -96,19 +96,19 @@
             <div class="position-sticky pt-3 sidebar-sticky">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="{{route('settings.profile')}}">
+                        <a class="nav-link" aria-current="page" href="/settings/profile">
                             <i class="fas fa-user" aria-hidden="true"></i>
                             {{ __('settings.title-profile') }}
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{route('settings.privacy')}}">
+                        <a class="nav-link" href="/settings/privacy">
                             <i class="fas fa-user-secret" aria-hidden="true"></i>
                             {{ __('settings.title-privacy') }}
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{route('settings.follower')}}">
+                        <a class="nav-link" href="/settings/followers">
                             <i class="fas fa-users" aria-hidden="true"></i>
                             {{ __('menu.settings.myFollower') }}
                         </a>
@@ -133,33 +133,9 @@
                         <span>{{ __('settings.title-security') }}</span>
                     </h6>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{route('settings.login-providers')}}">
+                        <a class="nav-link" href="/settings/security">
                             <i class="fas fa-plug" aria-hidden="true"></i>
-                            {{ __('settings.title-loginservices') }}
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{route('settings.sessions')}}">
-                            <i class="fas fa-clipboard-list" aria-hidden="true"></i>
-                            {{ __('settings.title-sessions') }}
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{route('settings.ics')}}">
-                            <i class="fas fa-calendar-alt" aria-hidden="true"></i>
-                            {{ __('settings.title-ics') }}
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{route('settings.tokens')}}">
-                            <i class="fas fa-shapes" aria-hidden="true"></i>
-                            {{ __('settings.title-tokens') }}
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{route('settings.webhooks')}}">
-                            <i class="fas fa-shapes" aria-hidden="true"></i>
-                            {{ __('settings.title-webhooks') }}
+                            {{ __('settings.title-security') }}
                         </a>
                     </li>
                 </ul>

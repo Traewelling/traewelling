@@ -76,7 +76,6 @@ class LanguageTest extends FeatureTestCase
         $response = $this->actingAs($user)
             ->get(route('settings.profile'));
         $response->assertOk();
-        $response->assertViewIs('settings.profile');
-        $response->assertSee(__('menu.settings', [], 'de'));
+        $response->assertViewIs('vue.spa');
     }
 }
