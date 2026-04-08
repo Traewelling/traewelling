@@ -23,13 +23,13 @@ use App\Http\Controllers\Frontend\Social\MastodonController;
 use App\Http\Controllers\Frontend\Stats\DailyStatsController;
 use App\Http\Controllers\Frontend\Transport\StatusController;
 use App\Http\Controllers\Frontend\User\ProfilePictureController;
+use App\Http\Controllers\Frontend\UserController;
 use App\Http\Controllers\Frontend\VueFrontendController;
 use App\Http\Controllers\Frontend\WebFingerController;
 use App\Http\Controllers\FrontendStatusController;
 use App\Http\Controllers\FrontendUserController;
 use App\Http\Controllers\PrivacyAgreementController;
 use App\Http\Controllers\SitemapController;
-use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -147,10 +147,6 @@ Route::middleware(['auth', 'privacy'])->group(function () {
         Route::view('/blocks', 'settings.blocks')->name('settings.blocks');
         Route::view('/mutes', 'settings.mutes')->name('settings.mutes');
 
-        Route::post('/delsession', [UserController::class, 'deleteSession'])
-            ->name('delsession'); // TODO: Replace with API Endpoint
-        Route::post('/deltoken', [UserController::class, 'deleteToken'])
-            ->name('deltoken'); // TODO: Replace with API Endpoint
         Route::get('/{any?}', function () {
             return view('vue.spa');
         })->where('any', '.*')->name('settings.vue');
@@ -167,28 +163,19 @@ Route::middleware(['auth', 'privacy'])->group(function () {
     Route::view('/tickets', 'vue.tickets')->name('tickets');
     Route::view('/tickets/{id}', 'vue.ticket-detail')->name('tickets.detail');
 
-    Route::post('/createfollow', [FrontendUserController::class, 'CreateFollow'])
-        ->name('follow.create'); // TODO: Replace with API Endpoint
-
-    Route::post('/requestfollow', [FrontendUserController::class, 'requestFollow'])
-        ->name('follow.request'); // TODO: Replace with API Endpoint
-
-    Route::post('/destroyfollow', [FrontendUserController::class, 'destroyFollow'])
-        ->name('follow.destroy'); // TODO: Replace with API Endpoint
-
     Route::get('/stationboard', [VueFrontendController::class, 'stationBoard'])->name('stationboard');
 
     Route::redirect('/trains/stationboard', '/stationboard')->name('trains.stationboard');
 
     Route::get('/search/', [FrontendUserController::class, 'searchUser'])->name('userSearch');
 
-    Route::post('/user/block', [App\Http\Controllers\Frontend\UserController::class, 'blockUser'])
+    Route::post('/user/block', [UserController::class, 'blockUser'])
         ->name('user.block'); // TODO: Replace with API Endpoint
-    Route::post('/user/unblock', [App\Http\Controllers\Frontend\UserController::class, 'unblockUser'])
+    Route::post('/user/unblock', [UserController::class, 'unblockUser'])
         ->name('user.unblock'); // TODO: Replace with API Endpoint
-    Route::post('/user/mute', [App\Http\Controllers\Frontend\UserController::class, 'muteUser'])
+    Route::post('/user/mute', [UserController::class, 'muteUser'])
         ->name('user.mute'); // TODO: Replace with API Endpoint
-    Route::post('/user/unmute', [App\Http\Controllers\Frontend\UserController::class, 'unmuteUser'])
+    Route::post('/user/unmute', [UserController::class, 'unmuteUser'])
         ->name('user.unmute'); // TODO: Replace with API Endpoint
 });
 
