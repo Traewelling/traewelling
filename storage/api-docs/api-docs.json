@@ -2770,10 +2770,52 @@
                         "description": "Unauthenticated"
                     },
                     "403": {
-                        "description": "Unauthorized"
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/operators/{oldOperatorId}/merge/{newOperatorId}": {
+            "put": {
+                "tags": [
+                    "Checkin"
+                ],
+                "summary": "Merge two operators into one (admin only).",
+                "operationId": "mergeOperators",
+                "parameters": [
+                    {
+                        "name": "oldOperatorId",
+                        "in": "path",
+                        "description": "UUID of the operator to merge from.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
                     },
-                    "500": {
-                        "description": "Internal Server Error"
+                    {
+                        "name": "newOperatorId",
+                        "in": "path",
+                        "description": "UUID of the operator to merge into.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
                     }
                 }
             }
@@ -6839,8 +6881,9 @@
                                         "nullable": true
                                     },
                                     "operatorId": {
-                                        "type": "integer",
-                                        "example": 1,
+                                        "description": "Operator UUID (preferred) or numeric legacy ID. Use the `uuid` field from the operators endpoint.",
+                                        "type": "string",
+                                        "example": "00000000-0000-0000-0000-000000000000",
                                         "nullable": true
                                     },
                                     "originId": {
@@ -10006,12 +10049,36 @@
                 },
                 "type": "object"
             },
+            "OperatorIdentifierResource": {
+                "required": [
+                    "type",
+                    "identifier"
+                ],
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "example": "motis"
+                    },
+                    "identifier": {
+                        "type": "string",
+                        "example": "de:db-regio-ag"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "DB Regio AG",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
             "OperatorResource": {
                 "required": [
                     "type",
                     "id",
+                    "uuid",
                     "identifier",
-                    "name"
+                    "name",
+                    "identifiers"
                 ],
                 "properties": {
                     "type": {
@@ -10019,8 +10086,16 @@
                         "example": "operator"
                     },
                     "id": {
+                        "description": "Numeric legacy ID. Deprecated: will become a UUID after 2026-09-30.",
                         "type": "integer",
-                        "example": 1
+                        "example": 1,
+                        "deprecated": true
+                    },
+                    "uuid": {
+                        "description": "Stable UUID identifier for this operator.",
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "00000000-0000-0000-0000-000000000000"
                     },
                     "identifier": {
                         "description": "Legacy HAFAS operator ID. Always NULL for new operators. Will be removed soon.",
@@ -10032,6 +10107,12 @@
                     "name": {
                         "type": "string",
                         "example": "DB Regio AG Nord"
+                    },
+                    "identifiers": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/OperatorIdentifierResource"
+                        }
                     }
                 },
                 "type": "object"

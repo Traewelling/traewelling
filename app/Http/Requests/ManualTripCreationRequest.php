@@ -23,7 +23,7 @@ class ManualTripCreationRequest extends FormRequest
             'category' => ['required', new Enum(HafasTravelType::class)],
             'lineName' => ['required'],
             'journeyNumber' => ['nullable', 'numeric', 'min:1'],
-            'operatorId' => ['nullable', 'numeric', 'exists:hafas_operators,id'],
+            'operatorId' => ['nullable'],
             'originId' => ['required', 'exists:train_stations,id'],
             'originDeparturePlanned' => ['required', 'date'],
             'originDepartureReal' => ['nullable', 'date'],

@@ -5,6 +5,7 @@ import EventsIndex from '../pages/Events/EventsIndex.vue';
 import EventsForm from '../pages/Events/partials/EventsForm.vue';
 import SuggestionAccept from '../pages/Events/SuggestionAccept.vue';
 import SuggestionsIndex from '../pages/Events/SuggestionsIndex.vue';
+import OperatorsIndex from '../pages/Operators/OperatorsIndex.vue';
 import ReportsIndex from '../pages/Reports/ReportsIndex.vue';
 import ReportsShow from '../pages/Reports/ReportsShow.vue';
 import RouteSegmentsShow from '../pages/RouteSegments/RouteSegmentsShow.vue';
@@ -70,6 +71,10 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: '/admin/routesegment/:id',
         component: RouteSegmentsShow,
+    },
+    {
+        path: '/admin/operators',
+        component: OperatorsIndex,
     },
     {
         path: '/admin/stations',

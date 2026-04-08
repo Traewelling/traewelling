@@ -156,9 +156,9 @@ class PrometheusServiceProvider extends ServiceProvider
             ->labels(['operator', 'category'])
             ->value(function () {
                 return Cache::remember('prom_trips_by_operator_category', PROM_CACHE_TTL, function () {
-                    return Trip::leftJoin('hafas_operators', 'hafas_trips.operator_id', '=', 'hafas_operators.id')
+                    return Trip::leftJoin('operators', 'hafas_trips.operator_id', '=', 'operators.id')
                         ->groupBy('hafas_trips.operator_id', 'hafas_trips.category')
-                        ->selectRaw('count(*) AS total, MAX(hafas_operators.name) AS operator_name, hafas_trips.category')
+                        ->selectRaw('count(*) AS total, MAX(operators.name) AS operator_name, hafas_trips.category')
                         ->get()
                         ->map(fn ($item) => [$item->total, [$item->operator_name, $item->category]])
                         ->toArray();
