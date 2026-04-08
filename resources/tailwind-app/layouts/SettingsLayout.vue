@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
-import { LayoutGrid, Lock, ShieldUser, TriangleAlert, User, UserRoundKey, Users } from 'lucide-vue-next';
+import { LayoutGrid, Lock, ShieldUser, User, UserRoundKey, Users } from 'lucide-vue-next';
 import AppLayout from './AppLayout.vue';
 
 const tabs = [
@@ -34,13 +34,6 @@ function isActiveTab(route: { route: string; activeRoutes?: string[] }): boolean
     <AppLayout>
         <div>
             <h1 class="text-2xl lg:text-4xl font-bold mb-4">Settings</h1>
-            <div role="alert" class="alert alert-warning mt-3">
-                <TriangleAlert class="size-5" />
-                <span>
-                    This page is still experimental. Please disable experimental features if you want to change your
-                    password or delete your account.
-                </span>
-            </div>
             <div role="tablist" class="tabs tabs-border">
                 <router-link
                     v-for="tab in tabs"

@@ -219,6 +219,6 @@ class DisableFailingWebhookListenerTest extends FeatureTestCase
         $this->assertStringContainsString($client->name, $notice);
 
         $link = WebhookDisabled::getLink($notification->data);
-        $this->assertStringContainsString('webhooks', $link);
+        $this->assertStringContainsString('settings/security', $link);
     }
 }

@@ -111,11 +111,6 @@ Route::middleware(['auth', 'privacy'])->group(function () {
     Route::view('/trip/create', 'beta.trip-creation')
         ->name('trip.create');
 
-    Route::post('/ics/createPersonalAccessToken', [IcsController::class, 'createIcsToken'])
-        ->name('ics.createPersonalAccessToken'); // TODO: Replace with API Endpoint
-    Route::post('/ics/revokeToken', [IcsController::class, 'revokeIcsToken'])
-        ->name('ics.revokeToken'); // TODO: Replace with API Endpoint
-
     Route::prefix('stats')->group(static function () {
         Route::permanentRedirect('/', '/statistics');
         Route::permanentRedirect('/daily/{dateString}', '/statistics/daily/{dateString}');
@@ -141,34 +136,13 @@ Route::middleware(['auth', 'privacy'])->group(function () {
         });
 
         Route::redirect('/', '/settings/profile')->name('settings');
-        Route::view('/profile', 'settings.profile')->name('settings.profile');
-        Route::view('/privacy', 'settings.privacy')->name('settings.privacy');
-        Route::post('/update/privacy', [SettingsController::class, 'updatePrivacySettings'])
-            ->name('settings.privacy.update');
+        Route::view('/profile', 'vue.spa')->name('settings.profile');
+        Route::view('/privacy', 'vue.spa')->name('settings.privacy');
 
         Route::view('/account', 'settings.account')
             ->name('settings.account');
         Route::post('/account/update', [SettingsController::class, 'updatePassword'])
             ->name('password.change');
-
-        Route::view('/security', 'settings.account');
-        Route::view('/security/login-providers', 'settings.login-providers')
-            ->name('settings.login-providers');
-        Route::get('/security/sessions', [SettingsController::class, 'renderSessions'])
-            ->name('settings.sessions');
-
-        Route::get('/security/ics', [SettingsController::class, 'renderIcs'])->name('settings.ics');
-        Route::get('/security/api-tokens', [SettingsController::class, 'renderToken'])->name('settings.tokens');
-        Route::view('/security/webhooks', 'settings.webhooks')->name('settings.webhooks');
-
-        Route::get('/follower', [SettingsController::class, 'renderFollowerSettings'])
-            ->name('settings.follower');
-        Route::post('/follower/remove', [App\Http\Controllers\SettingsController::class, 'removeFollower'])
-            ->name('settings.follower.remove'); // TODO: Replace with API Endpoint
-        Route::post('/follower/approve', [SettingsController::class, 'approveFollower'])
-            ->name('settings.follower.approve'); // TODO: Replace with API Endpoint
-        Route::post('/follower/reject', [SettingsController::class, 'rejectFollower'])
-            ->name('settings.follower.reject'); // TODO: Replace with API Endpoint
 
         Route::view('/blocks', 'settings.blocks')->name('settings.blocks');
         Route::view('/mutes', 'settings.mutes')->name('settings.mutes');
