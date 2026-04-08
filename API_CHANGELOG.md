@@ -41,6 +41,16 @@ Check back here regularly to stay ahead of removals.
 
 ---
 
+# 2026-04-08
+
+- Added `GET /api/v1/applications`: List all OAuth applications owned by the authenticated user.
+- Added `POST /api/v1/applications`: Create a new OAuth application. Returns `plainSecret` on creation for confidential clients.
+- Added `PUT /api/v1/applications/{clientId}`: Update an OAuth application owned by the authenticated user.
+- Added `DELETE /api/v1/applications/{clientId}`: Delete an OAuth application owned by the authenticated user.
+- Added `GET /api/v1/applications/{clientId}/webhook-stats`: Returns webhook call log statistics (last 7 days) for an OAuth application. Requires open-beta or admin role; only the application owner or admins can access it.
+- Added `disabledAt` field to `WebhookResource`: ISO 8601 timestamp when a webhook was automatically disabled due to repeated failures, or `null` if active.
+- Webhooks are now automatically disabled after 5 consecutive final failures. The webhook owner receives an in-app notification.
+
 # 2026-04-07
 
 ### Operator migration: UUID primary keys
