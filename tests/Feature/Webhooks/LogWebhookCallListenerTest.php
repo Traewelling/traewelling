@@ -25,7 +25,6 @@ class LogWebhookCallListenerTest extends FeatureTestCase
         return [
             'X-Trwl-User-Id' => $user->id,
             'X-Trwl-Webhook-Id' => $webhook->id,
-            'X-Trwl-OAuth-Client-Id' => $webhook->oauth_client_id,
         ];
     }
 

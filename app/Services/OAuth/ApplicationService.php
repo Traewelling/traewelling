@@ -11,12 +11,12 @@ use App\Repositories\WebhookCallLogRepository;
 use Illuminate\Support\Collection;
 use Laravel\Passport\ClientRepository;
 
-class ApplicationService
+readonly class ApplicationService
 {
     public function __construct(
-        private readonly OAuthClientRepository $oauthClientRepository,
-        private readonly ClientRepository $clientRepository,
-        private readonly WebhookCallLogRepository $webhookCallLogRepository,
+        private OAuthClientRepository $oauthClientRepository,
+        private ClientRepository $clientRepository,
+        private WebhookCallLogRepository $webhookCallLogRepository,
     ) {}
 
     public function listForUser(User $user): Collection

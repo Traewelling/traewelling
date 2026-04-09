@@ -33,10 +33,10 @@ class ApplicationWebhookStatsTest extends ApiTestCase
         $response = $this->getJson("/api/v1/applications/{$client->id}/webhook-stats");
 
         $response->assertOk();
-        $response->assertJsonPath('data.client_id', $client->id);
-        $response->assertJsonPath('data.client_name', $client->name);
+        $response->assertJsonPath('data.clientId', $client->id);
+        $response->assertJsonPath('data.clientName', $client->name);
         $response->assertJsonPath('data.total', 1);
-        $response->assertJsonStructure(['data' => ['client_id', 'client_name', 'total', 'by_day', 'by_event', 'by_response_code']]);
+        $response->assertJsonStructure(['data' => ['clientId', 'clientName', 'total', 'byDay', 'byEvent', 'byResponseCode']]);
     }
 
     public function test_admin_can_access_any_app_stats(): void
@@ -50,7 +50,7 @@ class ApplicationWebhookStatsTest extends ApiTestCase
         $response = $this->getJson("/api/v1/applications/{$client->id}/webhook-stats");
 
         $response->assertOk();
-        $response->assertJsonPath('data.client_id', $client->id);
+        $response->assertJsonPath('data.clientId', $client->id);
     }
 
     public function test_user_cannot_access_other_users_app_stats(): void
@@ -116,8 +116,8 @@ class ApplicationWebhookStatsTest extends ApiTestCase
         $response = $this->getJson("/api/v1/applications/{$client->id}/webhook-stats");
 
         $response->assertOk();
-        $response->assertJsonPath('data.by_response_code.0.response_code', null);
-        $response->assertJsonPath('data.by_response_code.0.total', 1);
+        $response->assertJsonPath('data.byResponseCode.0.responseCode', null);
+        $response->assertJsonPath('data.byResponseCode.0.total', 1);
     }
 
     private function newUserWithRole(string $role): User

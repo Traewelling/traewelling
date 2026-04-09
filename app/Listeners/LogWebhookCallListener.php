@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Listeners;
 
+use App\Models\Webhook;
 use App\Models\WebhookCallLog;
 use Spatie\WebhookServer\Events\WebhookCallEvent;
 
@@ -13,9 +14,13 @@ class LogWebhookCallListener
     {
         $webhookId = $event->headers['X-Trwl-Webhook-Id'] ?? null;
         $userId = $event->headers['X-Trwl-User-Id'] ?? null;
-        $oauthClientId = $event->headers['X-Trwl-OAuth-Client-Id'] ?? null;
 
-        if ($webhookId === null || $userId === null || $oauthClientId === null) {
+        if ($webhookId === null || $userId === null) {
+            return;
+        }
+
+        $webhook = Webhook::find($webhookId);
+        if ($webhook === null) {
             return;
         }
 
@@ -27,7 +32,7 @@ class LogWebhookCallListener
         WebhookCallLog::create([
             'webhook_id' => $webhookId,
             'user_id' => $userId,
-            'oauth_client_id' => $oauthClientId,
+            'oauth_client_id' => $webhook->oauth_client_id,
             'event' => $payload['event'] ?? 'unknown',
             'url' => $event->webhookUrl,
             'attempt' => $event->attempt,

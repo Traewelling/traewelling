@@ -45,7 +45,7 @@ class WebhookCallLogRepository
         $byResponseCode = $logs
             ->groupBy(fn ($l) => $l->response_code ?? 'timeout')
             ->map(fn ($group, $key) => new WebhookResponseCodeStatsDto(
-                response_code: is_numeric($key) ? (int) $key : null,
+                responseCode: is_numeric($key) ? (int) $key : null,
                 total: $group->count(),
             ))
             ->sortByDesc('total')

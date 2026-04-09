@@ -177,7 +177,7 @@ class ApplicationController extends Controller
     {
         $client = $this->applicationService->findForUserOrAdmin($clientId, auth()->user());
         if ($client === null) {
-            return $this->sendError(null, 404);
+            return response()->json(null, 404);
         }
 
         return new WebhookStatsResource($this->applicationService->getWebhookStats($client));

@@ -14,14 +14,14 @@ use OpenApi\Attributes as OA;
 #[OA\Schema(
     title: 'WebhookStatsResource',
     description: 'Webhook call log statistics for an OAuth application over the last 7 days',
-    required: ['client_id', 'client_name', 'total', 'by_day', 'by_event', 'by_response_code'],
+    required: ['clientId', 'clientName', 'total', 'byDay', 'byEvent', 'byResponseCode'],
     properties: [
-        new OA\Property(property: 'client_id', type: 'integer', example: 42),
-        new OA\Property(property: 'client_name', type: 'string', example: 'My App'),
+        new OA\Property(property: 'clientId', type: 'integer', example: 42),
+        new OA\Property(property: 'clientName', type: 'string', example: 'My App'),
         new OA\Property(property: 'total', type: 'integer', example: 150),
-        new OA\Property(property: 'by_day', type: 'array', items: new OA\Items(ref: WebhookDayStatsDto::class)),
-        new OA\Property(property: 'by_event', type: 'array', items: new OA\Items(ref: WebhookEventStatsDto::class)),
-        new OA\Property(property: 'by_response_code', type: 'array', items: new OA\Items(ref: WebhookResponseCodeStatsDto::class)),
+        new OA\Property(property: 'byDay', type: 'array', items: new OA\Items(ref: WebhookDayStatsDto::class)),
+        new OA\Property(property: 'byEvent', type: 'array', items: new OA\Items(ref: WebhookEventStatsDto::class)),
+        new OA\Property(property: 'byResponseCode', type: 'array', items: new OA\Items(ref: WebhookResponseCodeStatsDto::class)),
     ],
     type: 'object'
 )]
@@ -30,12 +30,12 @@ class WebhookStatsResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'client_id' => $this->resource['client_id'],
-            'client_name' => $this->resource['client_name'],
+            'clientId' => $this->resource['client_id'],
+            'clientName' => $this->resource['client_name'],
             'total' => $this->resource['total'],
-            'by_day' => $this->resource['by_day'],
-            'by_event' => $this->resource['by_event'],
-            'by_response_code' => $this->resource['by_response_code'],
+            'byDay' => $this->resource['by_day'],
+            'byEvent' => $this->resource['by_event'],
+            'byResponseCode' => $this->resource['by_response_code'],
         ];
     }
 }
