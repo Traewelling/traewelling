@@ -28,7 +28,7 @@ class UserController extends Controller
         operationId: 'deleteUserAccount',
         description: 'Deletes the Account for the user and all posts created by it',
         summary: 'Delete User Account',
-        security: [['passport' => ['extra-delete']], ['token' => []]],
+        security: [['passport' => []], ['token' => []]],
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
@@ -44,14 +44,14 @@ class UserController extends Controller
         ),
         tags: ['Settings'],
         responses: [
-            new OA\Response(response: 200, description: 'successful operation'),
+            new OA\Response(response: 200, description: self::OA_DESC_SUCCESS),
+            new OA\Response(response: 400, description: self::OA_DESC_BAD_REQUEST),
+            new OA\Response(response: 401, description: self::OA_DESC_UNAUTHENTICATED),
+            new OA\Response(response: 403, description: self::OA_DESC_FORBIDDEN),
             new OA\Response(
                 response: 409,
                 description: 'Conflict. This should not happen but it tries to prevent a 500.',
             ),
-            new OA\Response(response: 400, description: 'Bad request'),
-            new OA\Response(response: 401, description: 'Not logged in'),
-            new OA\Response(response: 403, description: 'User not authorized to do this action'),
         ],
     )]
     public function deleteAccount(Request $request): JsonResponse

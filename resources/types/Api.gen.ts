@@ -5493,6 +5493,47 @@ export class Api<
       }),
 
     /**
+     * @description Change the current user's password.
+     *
+     * @tags Settings
+     * @name UpdatePassword
+     * @summary Change password
+     * @request PUT:/settings/password
+     * @secure
+     */
+    updatePassword: (
+      data: {
+        /**
+         * Current password (required if the account has a password set)
+         * @format password
+         */
+        currentPassword?: string;
+        /**
+         * @format password
+         * @minLength 8
+         */
+        password: string;
+        /** @format password */
+        password_confirmation: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data?: UserProfileSettingsResource;
+        },
+        void
+      >({
+        path: `/settings/password`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * @description Upload a new profile picture for the current user
      *
      * @tags Settings

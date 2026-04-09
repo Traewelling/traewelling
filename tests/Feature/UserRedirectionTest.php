@@ -42,13 +42,12 @@ class UserRedirectionTest extends FeatureTestCase
         // Given: A new user
         $user = User::factory()->create();
 
-        // When: They delete their account
-        $response = $this->actingAs($user)
-            ->post(route('account.destroy'), [
+        // When: They delete their account via API
+        $response = $this->actingAs($user, 'api')
+            ->deleteJson('/api/v1/settings/account', [
                 'confirmation' => $user->username,
             ]);
-        $response->assertStatus(302);
-        $response->assertRedirect('/');
+        $response->assertOk();
 
         // Then: It isn't there anymore.
         $this->expectException(ModelNotFoundException::class);

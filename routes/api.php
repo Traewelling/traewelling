@@ -159,11 +159,11 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
                 ->middleware(['scope:write-settings-mail']);
             Route::post('email/verification', [SettingsController::class, 'resendMail'])
                 ->middleware(['scope:write-settings-mail']);
-            Route::put('password', [SettingsController::class, 'updatePassword']) // TODO: undocumented endpoint - document when stable
-                ->middleware(['scope:extra-write-password']);
+            Route::put('password', [SettingsController::class, 'updatePassword'])
+                ->middleware(['personal-token']);
 
             Route::delete('account', [UserController::class, 'deleteAccount'])
-                ->middleware(['scope:extra-delete'])
+                ->middleware(['personal-token'])
                 ->withoutMiddleware('privacy-policy');
         });
 

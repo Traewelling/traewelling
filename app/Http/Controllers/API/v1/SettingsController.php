@@ -192,6 +192,42 @@ class SettingsController extends Controller
         }
     }
 
+    #[OA\Put(
+        path: '/settings/password',
+        operationId: 'updatePassword',
+        description: 'Change the current user\'s password.',
+        summary: 'Change password',
+        security: [['passport' => []], ['token' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['password', 'password_confirmation'],
+                properties: [
+                    new OA\Property(
+                        property: 'currentPassword',
+                        description: 'Current password (required if the account has a password set)',
+                        type: 'string',
+                        format: 'password',
+                    ),
+                    new OA\Property(property: 'password', type: 'string', format: 'password', minLength: 8),
+                    new OA\Property(property: 'password_confirmation', type: 'string', format: 'password'),
+                ],
+            ),
+        ),
+        tags: ['Settings'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Password changed successfully',
+                content: new OA\JsonContent(
+                    properties: [new OA\Property(property: 'data', ref: UserProfileSettingsResource::class)],
+                ),
+            ),
+            new OA\Response(response: 400, description: self::OA_DESC_BAD_REQUEST),
+            new OA\Response(response: 401, description: self::OA_DESC_UNAUTHENTICATED),
+            new OA\Response(response: 422, description: self::OA_DESC_UNPROCESSABLE),
+        ],
+    )]
     /**
      * @throws ValidationException
      */

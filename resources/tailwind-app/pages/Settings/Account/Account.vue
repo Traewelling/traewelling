@@ -5,9 +5,11 @@ import { inject, ref } from 'vue';
 import { Api, UserProfileSettingsResource } from '../../../../types/Api.gen';
 import { useUserStore } from '../../../../vue/stores/user';
 import SettingsLayout from '../../../layouts/SettingsLayout.vue';
+import DeleteAccount from './partials/DeleteAccount.vue';
 import Email from './partials/Email.vue';
 import ExperimentalFeatures from './partials/ExperimentalFeatures.vue';
 import MapProvider from './partials/MapProvider.vue';
+import Password from './partials/Password.vue';
 import Timezone from './partials/Timezone.vue';
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
@@ -48,8 +50,8 @@ getUserProfile();
             <Email :profile="profile" @profile-updated="updateProfile" @error="error" />
             <MapProvider :profile="profile" @profile-updated="updateProfile" />
             <ExperimentalFeatures :profile="profile" @profile-updated="updateProfile" />
-            <!-- todo: password -->
-            <!-- todo: delete account -->
+            <Password :profile="profile" @profile-updated="updateProfile" />
         </ul>
+        <DeleteAccount v-if="!loading && profile" :profile="profile" />
     </SettingsLayout>
 </template>

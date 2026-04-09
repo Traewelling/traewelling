@@ -11,14 +11,12 @@
 |
 */
 
-use App\Http\Controllers\Frontend\AccountController;
 use App\Http\Controllers\Frontend\ChangelogController;
 use App\Http\Controllers\Frontend\DebugController;
 use App\Http\Controllers\Frontend\EventController;
 use App\Http\Controllers\Frontend\IcsController;
 use App\Http\Controllers\Frontend\LandingPageController;
 use App\Http\Controllers\Frontend\LeaderboardController;
-use App\Http\Controllers\Frontend\SettingsController;
 use App\Http\Controllers\Frontend\Social\MastodonController;
 use App\Http\Controllers\Frontend\Stats\DailyStatsController;
 use App\Http\Controllers\Frontend\Transport\StatusController;
@@ -91,8 +89,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/gdpr-ack', [PrivacyAgreementController::class, 'ack'])
         ->name('gdpr.ack');
 
-    Route::post('/settings/destroy', [AccountController::class, 'deleteUserAccount'])
-        ->name('account.destroy');
 });
 
 Route::get('/ics', [IcsController::class, 'renderIcs'])
@@ -138,10 +134,7 @@ Route::middleware(['auth', 'privacy'])->group(function () {
         Route::view('/profile', 'vue.spa')->name('settings.profile');
         Route::view('/privacy', 'vue.spa')->name('settings.privacy');
 
-        Route::view('/account', 'settings.account')
-            ->name('settings.account');
-        Route::post('/account/update', [SettingsController::class, 'updatePassword'])
-            ->name('password.change');
+        Route::view('/account', 'vue.spa')->name('settings.account');
 
         Route::view('/blocks', 'vue.spa')->name('settings.blocks');
         Route::view('/mutes', 'vue.spa')->name('settings.mutes');
