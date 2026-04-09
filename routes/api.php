@@ -16,6 +16,7 @@ use App\Http\Controllers\API\v1\AdminEventController;
 use App\Http\Controllers\API\v1\AdminEventSuggestionController;
 use App\Http\Controllers\API\v1\AdminStatusController;
 use App\Http\Controllers\API\v1\AlertController;
+use App\Http\Controllers\API\v1\ApplicationController;
 use App\Http\Controllers\API\v1\AuthController as v1Auth;
 use App\Http\Controllers\API\v1\CommunityController;
 use App\Http\Controllers\API\v1\ConfigurationInfoController;
@@ -187,6 +188,9 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         });
 
         Route::apiResource('webhooks', WebhookController::class)->only(['index', 'show', 'destroy']);
+
+        Route::get('applications/{clientId}/webhook-stats', [ApplicationController::class, 'webhookStats'])
+            ->name('api.applications.webhook-stats');
 
         Route::apiResource('station', StationController::class); // TODO: rename to "stations" when stable
         Route::apiResource('stations', StationController::class);

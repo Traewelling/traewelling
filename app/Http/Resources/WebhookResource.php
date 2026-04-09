@@ -9,7 +9,7 @@ use OpenApi\Attributes as OA;
 #[OA\Schema(
     title: 'WebhookResource',
     description: 'Webhook model',
-    required: ['id', 'clientId', 'client', 'userId', 'user', 'url', 'createdAt', 'events'],
+    required: ['id', 'clientId', 'client', 'userId', 'user', 'url', 'createdAt', 'events', 'disabledAt'],
     properties: [
         new OA\Property(
             property: 'id',
@@ -59,6 +59,14 @@ use OpenApi\Attributes as OA;
             type: 'array',
             items: new OA\Items(ref: '#/components/schemas/WebhookEventResource')
         ),
+        new OA\Property(
+            property: 'disabledAt',
+            description: 'ISO 8601 timestamp when the webhook was automatically disabled due to repeated failures, or null if active',
+            type: 'string',
+            format: 'date-time',
+            example: '2026-04-08T10:00:00Z',
+            nullable: true
+        ),
     ],
     type: 'object'
 )]
@@ -80,6 +88,7 @@ class WebhookResource extends JsonResource
             'url' => $this->url,
             'createdAt' => $this->created_at->toIso8601String(),
             'events' => WebhookEventResource::collection($this->events),
+            'disabledAt' => $this->disabled_at?->toIso8601String(),
         ];
     }
 }

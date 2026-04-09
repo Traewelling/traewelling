@@ -142,6 +142,9 @@ Route::middleware(['auth', 'privacy'])->group(function () {
             Route::post('/createPersonalAccessToken', [DevController::class, 'createPersonalAccessToken'])
                 ->name('dev.apps.createPersonalAccessToken');
             Route::get('/create', [DevController::class, 'renderCreateApp'])->name('dev.apps.create');
+            Route::get('/{clientId}/webhook-stats', fn () => view('vue.spa'))
+                ->middleware('role:open-beta')
+                ->name('dev.apps.webhook-stats');
             Route::get('/{appId}', [DevController::class, 'renderUpdateApp'])->name('dev.apps.edit');
             Route::post('/{appId}', [DevController::class, 'updateApp'])->name('dev.apps.update');           // TODO: Replace with API Endpoint
             Route::post('/{appId}/destroy', [DevController::class, 'destroyApp'])->name('dev.apps.destroy'); // TODO: Replace with API Endpoint
