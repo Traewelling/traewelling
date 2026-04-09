@@ -6740,6 +6740,53 @@ export class Api<
         ...params,
       }),
   };
+  users = {
+    /**
+     * @description Returns all users blocked by the authenticated user.
+     *
+     * @tags User/Hide and Block
+     * @name GetBlockedUsers
+     * @summary List blocked users
+     * @request GET:/users/self/blocks
+     * @secure
+     */
+    getBlockedUsers: (params: RequestParams = {}) =>
+      this.request<
+        {
+          data?: LightUserResource[];
+        },
+        void
+      >({
+        path: `/users/self/blocks`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Returns all users muted by the authenticated user.
+     *
+     * @tags User/Hide and Block
+     * @name GetMutedUsers
+     * @summary List muted users
+     * @request GET:/users/self/mutes
+     * @secure
+     */
+    getMutedUsers: (params: RequestParams = {}) =>
+      this.request<
+        {
+          data?: LightUserResource[];
+        },
+        void
+      >({
+        path: `/users/self/mutes`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+  };
   webhooks = {
     /**
      * @description Returns all webhooks which are created for the current user and which the current authorized applicaton has access to.

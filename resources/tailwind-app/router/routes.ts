@@ -8,6 +8,8 @@ import Leaderboard from '../pages/Leaderboard/Leaderboard.vue';
 import MonthlyLeaderboard from '../pages/Leaderboard/MonthlyLeaderboard.vue';
 import Account from '../pages/Settings/Account/Account.vue';
 import Applications from '../pages/Settings/Applications/Applications.vue';
+import Blocks from '../pages/Settings/Blocks/Blocks.vue';
+import Mutes from '../pages/Settings/Mutes/Mutes.vue';
 import WebhookStats from '../pages/Settings/Applications/WebhookStats.vue';
 import Followers from '../pages/Settings/Followers/Followers.vue';
 import Followings from '../pages/Settings/Followers/Followings.vue';
@@ -34,6 +36,18 @@ const routes: Array<RouteRecordRaw> = [
         name: 'events-suggest',
         component: SuggestEvent,
         meta: { title: 'contribute.suggest_event.title' },
+    },
+    {
+        path: '/settings/blocks',
+        name: 'settings-blocks',
+        component: Blocks,
+        meta: { title: 'user.blocked.heading2' },
+    },
+    {
+        path: '/settings/mutes',
+        name: 'settings-mutes',
+        component: Mutes,
+        meta: { title: 'user.muted.heading2' },
     },
     {
         path: '/settings/applications',

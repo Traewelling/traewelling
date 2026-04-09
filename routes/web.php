@@ -144,8 +144,8 @@ Route::middleware(['auth', 'privacy'])->group(function () {
         Route::post('/account/update', [SettingsController::class, 'updatePassword'])
             ->name('password.change');
 
-        Route::view('/blocks', 'settings.blocks')->name('settings.blocks');
-        Route::view('/mutes', 'settings.mutes')->name('settings.mutes');
+        Route::view('/blocks', 'vue.spa')->name('settings.blocks');
+        Route::view('/mutes', 'vue.spa')->name('settings.mutes');
 
         Route::get('/{any?}', function () {
             return view('vue.spa');

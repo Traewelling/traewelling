@@ -7901,6 +7901,92 @@
                 ]
             }
         },
+        "/users/self/blocks": {
+            "get": {
+                "tags": [
+                    "User/Hide and Block"
+                ],
+                "summary": "List blocked users",
+                "description": "Returns all users blocked by the authenticated user.",
+                "operationId": "getBlockedUsers",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/LightUserResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-blocks"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/users/self/mutes": {
+            "get": {
+                "tags": [
+                    "User/Hide and Block"
+                ],
+                "summary": "List muted users",
+                "description": "Returns all users muted by the authenticated user.",
+                "operationId": "getMutedUsers",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/LightUserResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-blocks"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/user/search/{query}": {
             "get": {
                 "tags": [

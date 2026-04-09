@@ -8,6 +8,7 @@ use App\Exceptions\UserNotBlockedException;
 use App\Exceptions\UserNotMutedException;
 use App\Http\Controllers\Backend\UserController as BackendUserBackend;
 use App\Http\Controllers\UserController as UserBackend;
+use App\Http\Resources\LightUserResource;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
@@ -428,6 +429,52 @@ class UserController extends Controller
                 ),
             ], 409);
         }
+    }
+
+    #[OA\Get(
+        path: '/users/self/blocks',
+        operationId: 'getBlockedUsers',
+        description: 'Returns all users blocked by the authenticated user.',
+        summary: 'List blocked users',
+        security: [['passport' => ['write-blocks']], ['token' => []]],
+        tags: ['User/Hide and Block'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: self::OA_DESC_SUCCESS,
+                content: new OA\JsonContent(
+                    properties: [new OA\Property(property: 'data', type: 'array', items: new OA\Items(ref: LightUserResource::class))],
+                )
+            ),
+            new OA\Response(response: 401, description: self::OA_DESC_UNAUTHENTICATED),
+        ],
+    )]
+    public function getBlockedUsers(): AnonymousResourceCollection
+    {
+        return LightUserResource::collection(auth()->user()->blockedUsers()->cursorPaginate());
+    }
+
+    #[OA\Get(
+        path: '/users/self/mutes',
+        operationId: 'getMutedUsers',
+        description: 'Returns all users muted by the authenticated user.',
+        summary: 'List muted users',
+        security: [['passport' => ['write-blocks']], ['token' => []]],
+        tags: ['User/Hide and Block'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: self::OA_DESC_SUCCESS,
+                content: new OA\JsonContent(
+                    properties: [new OA\Property(property: 'data', type: 'array', items: new OA\Items(ref: LightUserResource::class))],
+                )
+            ),
+            new OA\Response(response: 401, description: self::OA_DESC_UNAUTHENTICATED),
+        ],
+    )]
+    public function getMutedUsers(): AnonymousResourceCollection
+    {
+        return LightUserResource::collection(auth()->user()->mutedUsers()->cursorPaginate());
     }
 
     #[OA\Get(

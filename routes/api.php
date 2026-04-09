@@ -203,7 +203,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::apiResource('stations', StationController::class);
         Route::put('station/{oldStationId}/merge/{newStationId}', [StationController::class, 'merge']); // currently admin/backend only
 
-        Route::group(['prefix' => 'user/self'], static function () {
+        Route::group(['prefix' => 'user/self'], static function () { // move new endpoints to users/self to comply api guidelines
             Route::group(['middleware' => ['scope:read-settings-followers']], static function () {
                 Route::get('followers', [FollowController::class, 'getFollowers']);
                 Route::get('follow-requests', [FollowController::class, 'getFollowRequests']);
@@ -216,6 +216,11 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             });
 
             Route::get('trusted-by', [TrustedUserController::class, 'indexTrustedBy']);
+        });
+
+        Route::group(['prefix' => 'users/self', 'middleware' => ['scope:write-blocks']], static function () {
+            Route::get('blocks', [UserController::class, 'getBlockedUsers']);
+            Route::get('mutes', [UserController::class, 'getMutedUsers']);
         });
 
         Route::apiResource('user.trusted', TrustedUserController::class)->only(['index', 'store', 'destroy']);
