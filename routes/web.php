@@ -125,23 +125,7 @@ Route::middleware(['auth', 'privacy'])->group(function () {
     });
 
     Route::prefix('settings')->group(function () {
-
-        Route::prefix('/applications')->group(function () {
-            Route::get('/{any?}', fn () => view('vue.spa'))->where('any', '.*');
-        });
-
-        Route::redirect('/', '/settings/profile')->name('settings');
-        Route::view('/profile', 'vue.spa')->name('settings.profile');
-        Route::view('/privacy', 'vue.spa')->name('settings.privacy');
-
-        Route::view('/account', 'vue.spa')->name('settings.account');
-
-        Route::view('/blocks', 'vue.spa')->name('settings.blocks');
-        Route::view('/mutes', 'vue.spa')->name('settings.mutes');
-
-        Route::get('/{any?}', function () {
-            return view('vue.spa');
-        })->where('any', '.*')->name('settings.vue');
+        Route::get('/{any?}', fn () => view('vue.spa'))->where('any', '.*');
     });
 
     Route::view('/dashboard', 'vue.dashboard')

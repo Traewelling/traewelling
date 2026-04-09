@@ -74,7 +74,7 @@ class LanguageTest extends FeatureTestCase
     {
         $user = User::factory(['language' => 'de'])->create();
         $response = $this->actingAs($user)
-            ->get(route('settings.profile'));
+            ->get('/settings/profile');
         $response->assertOk();
         $response->assertViewIs('vue.spa');
     }

@@ -126,6 +126,15 @@ const routes: Array<RouteRecordRaw> = [
         name: 'leaderboard-monthly',
         component: MonthlyLeaderboard,
     },
+    {
+        path: '/settings',
+        redirect: '/settings/profile',
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        name: 'not-found',
+        component: () => import('../pages/NotFound.vue'),
+    },
 ];
 
 export default routes;
