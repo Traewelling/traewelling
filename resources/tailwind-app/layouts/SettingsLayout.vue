@@ -5,6 +5,9 @@ import AppLayout from './AppLayout.vue';
 
 const tabs = [
     { name: 'menu.profile', route: '/settings/profile', icon: User },
+    { name: 'settings.tab.account', route: '/settings/account', icon: ShieldUser },
+    { name: 'settings.tab.wellbeing', route: '/settings/wellbeing', icon: Activity },
+    { name: 'menu.privacy', route: '/settings/privacy', icon: Lock },
     {
         name: 'settings.social.manage',
         route: '/settings/followers',
@@ -17,9 +20,6 @@ const tabs = [
             '/settings/mutes',
         ],
     },
-    { name: 'settings.tab.account', route: '/settings/account', icon: ShieldUser },
-    { name: 'menu.privacy', route: '/settings/privacy', icon: Lock },
-    { name: 'settings.tab.wellbeing', route: '/settings/wellbeing', icon: Activity },
     { name: 'settings.title-services-and-security', route: '/settings/security', icon: UserRoundKey },
     {
         name: 'your-apps',

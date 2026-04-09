@@ -25,6 +25,19 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|WebhookCallLog newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|WebhookCallLog query()
  *
+ * @property-read Webhook|null $webhook
+ *
+ * @method static \Database\Factories\WebhookCallLogFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WebhookCallLog whereAttempt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WebhookCallLog whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WebhookCallLog whereEvent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WebhookCallLog whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WebhookCallLog whereOauthClientId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WebhookCallLog whereResponseCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WebhookCallLog whereUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WebhookCallLog whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WebhookCallLog whereWebhookId($value)
+ *
  * @mixin \Eloquent
  */
 class WebhookCallLog extends Model

@@ -673,7 +673,6 @@
   "settings.title-profile": "Profil-Einstellungen",
   "settings.title-security": "Sicherheit",
   "settings.title-services-and-security": "Dienste & Sicherheit",
-  "settings.tokens-managed-in-applications": "API-Tokens und persönliche Zugangstoken werden unter \"Anwendungen\" verwaltet.",
   "settings.title-sessions": "Sitzungen",
   "settings.sessions.description": "Alle aktiven Anmeldungen deines Accounts auf verschiedenen Geräten und Browsern.",
   "settings.title-tokens": "API-Tokens",

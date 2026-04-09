@@ -63,6 +63,14 @@ onMounted(async () => {
             <ChartBar class="size-6" />
             <h2 class="text-xl font-bold">{{ trans('webhook-stats.title') }}</h2>
         </div>
+        <div class="breadcrumbs text-sm">
+            <ul>
+                <li>
+                    <RouterLink :to="{ name: 'settings-applications' }">{{ trans('your-apps') }}</RouterLink>
+                </li>
+                <li>{{ trans('webhook-stats.title') }}</li>
+            </ul>
+        </div>
 
         <div v-if="!userStore.hasBeta" role="alert" class="alert alert-error">
             <TriangleAlert class="size-5" />

@@ -86,11 +86,5 @@ getUserProfile();
             <Sessions />
             <ManageWebhooks @error="error" />
         </ul>
-
-        <h2 class="text-xl font-bold mt-4">{{ trans('settings.title-tokens') }}</h2>
-        <p class="text-sm text-base-content/60 mt-1 mb-2">{{ trans('settings.tokens-managed-in-applications') }}</p>
-        <router-link to="/settings/applications" class="btn btn-outline btn-sm">
-            {{ trans('your-apps') }}
-        </router-link>
     </SettingsLayout>
 </template>

@@ -154,14 +154,19 @@ fetchApps();
                 </div>
 
                 <div class="flex gap-2 shrink-0 flex-wrap">
-                    <a
-                        :href="`/settings/applications/${app.id}/webhook-stats`"
+                    <RouterLink
+                        :to="{
+                            name: 'settings-application-webhook-stats',
+                            params: {
+                                clientId: app.id,
+                            },
+                        }"
                         class="btn btn-sm btn-ghost"
                         :title="trans('webhook-stats.title')"
                     >
                         <ChartBar class="size-4" />
                         <span class="hidden sm:inline">{{ trans('webhook-stats.title') }}</span>
-                    </a>
+                    </RouterLink>
                     <button class="btn btn-sm btn-ghost" @click="openEdit(app)">
                         <Pencil class="size-4" />
                         <span class="hidden sm:inline">{{ trans('edit') }}</span>
