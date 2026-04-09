@@ -3331,6 +3331,105 @@ export class Api<
   };
   applications = {
     /**
+     * @description Returns all OAuth applications owned by the authenticated user. Requires a personal access token, third-party OAuth application tokens are not accepted.
+     *
+     * @tags Applications
+     * @name GetApplications
+     * @summary List OAuth applications
+     * @request GET:/applications
+     * @secure
+     */
+    getApplications: (params: RequestParams = {}) =>
+      this.request<
+        {
+          data?: OAuthClientResource[];
+        },
+        void
+      >({
+        path: `/applications`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Create a new OAuth application for the authenticated user. Requires a personal access token — third-party OAuth application tokens are not accepted.
+     *
+     * @tags Applications
+     * @name CreateApplication
+     * @summary Create OAuth application
+     * @request POST:/applications
+     * @secure
+     */
+    createApplication: (
+      data: StoreOAuthClientRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          /** OAuth application owned by the authenticated user */
+          data?: OAuthClientResource;
+        },
+        void
+      >({
+        path: `/applications`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Update an OAuth application owned by the authenticated user. Requires a personal access token, third-party OAuth application tokens are not accepted.
+     *
+     * @tags Applications
+     * @name UpdateApplication
+     * @summary Update OAuth application
+     * @request PUT:/applications/{clientId}
+     * @secure
+     */
+    updateApplication: (
+      clientId: number,
+      data: StoreOAuthClientRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          /** OAuth application owned by the authenticated user */
+          data?: OAuthClientResource;
+        },
+        void
+      >({
+        path: `/applications/${clientId}`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Delete an OAuth application owned by the authenticated user. Requires a personal access token, third-party OAuth application tokens are not accepted.
+     *
+     * @tags Applications
+     * @name DeleteApplication
+     * @summary Delete OAuth application
+     * @request DELETE:/applications/{clientId}
+     * @secure
+     */
+    deleteApplication: (clientId: number, params: RequestParams = {}) =>
+      this.request<void, void>({
+        path: `/applications/${clientId}`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
      * @description Returns webhook call log statistics for the last 7 days for a given OAuth application. Only the application owner or admins can access it.
      *
      * @tags Applications
