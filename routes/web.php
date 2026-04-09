@@ -23,7 +23,6 @@ use App\Http\Controllers\Frontend\Social\MastodonController;
 use App\Http\Controllers\Frontend\Stats\DailyStatsController;
 use App\Http\Controllers\Frontend\Transport\StatusController;
 use App\Http\Controllers\Frontend\User\ProfilePictureController;
-use App\Http\Controllers\Frontend\UserController;
 use App\Http\Controllers\Frontend\VueFrontendController;
 use App\Http\Controllers\Frontend\WebFingerController;
 use App\Http\Controllers\FrontendStatusController;
@@ -169,10 +168,6 @@ Route::middleware(['auth', 'privacy'])->group(function () {
 
     Route::get('/search/', [FrontendUserController::class, 'searchUser'])->name('userSearch');
 
-    Route::post('/user/unblock', [UserController::class, 'unblockUser'])
-        ->name('user.unblock'); // TODO: Replace with API Endpoint
-    Route::post('/user/unmute', [UserController::class, 'unmuteUser'])
-        ->name('user.unmute'); // TODO: Replace with API Endpoint
 });
 
 Route::get('/sitemap.xml', [SitemapController::class, 'renderSitemap']);
