@@ -89,7 +89,7 @@ const fallbackStyle = computed(() => {
                     {{ trans('events.closestStation') }}:
                     <a
                         class="link"
-                        href="`/stationboard?stationId=${event.station.id}&stationName=${event.station.name}`"
+                        :href="`/stationboard?stationId=${event.station.id}&stationName=${event.station.name}`"
                         >{{ event.station.name }}</a
                     >
                 </p>
