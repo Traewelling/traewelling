@@ -1145,6 +1145,58 @@
                 ]
             }
         },
+        "/applications/{clientId}/webhook-stats": {
+            "get": {
+                "tags": [
+                    "Applications"
+                ],
+                "summary": "Get webhook call statistics for an application",
+                "description": "Returns webhook call log statistics for the last 7 days for a given OAuth application. Only the application owner or admins can access it.",
+                "operationId": "getApplicationWebhookStats",
+                "parameters": [
+                    {
+                        "name": "clientId",
+                        "in": "path",
+                        "description": "OAuth Client ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/WebhookStatsResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/auth/logout": {
             "post": {
                 "tags": [
@@ -8304,6 +8356,72 @@
                     "name": "Station"
                 }
             },
+            "WebhookDayStatsDto": {
+                "title": "WebhookDayStatsDto",
+                "required": [
+                    "date",
+                    "total",
+                    "success",
+                    "failed"
+                ],
+                "properties": {
+                    "date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2026-04-01"
+                    },
+                    "total": {
+                        "type": "integer",
+                        "example": 20
+                    },
+                    "success": {
+                        "type": "integer",
+                        "example": 15
+                    },
+                    "failed": {
+                        "type": "integer",
+                        "example": 5
+                    }
+                },
+                "type": "object"
+            },
+            "WebhookEventStatsDto": {
+                "title": "WebhookEventStatsDto",
+                "required": [
+                    "event",
+                    "total"
+                ],
+                "properties": {
+                    "event": {
+                        "type": "string",
+                        "example": "checkin_create"
+                    },
+                    "total": {
+                        "type": "integer",
+                        "example": 100
+                    }
+                },
+                "type": "object"
+            },
+            "WebhookResponseCodeStatsDto": {
+                "title": "WebhookResponseCodeStatsDto",
+                "required": [
+                    "response_code",
+                    "total"
+                ],
+                "properties": {
+                    "response_code": {
+                        "type": "integer",
+                        "example": 200,
+                        "nullable": true
+                    },
+                    "total": {
+                        "type": "integer",
+                        "example": 120
+                    }
+                },
+                "type": "object"
+            },
             "Business": {
                 "title": "Business",
                 "description": "What type of travel (0=private, 1=business, 2=commute) did the user specify?",
@@ -11723,7 +11841,8 @@
                     "user",
                     "url",
                     "createdAt",
-                    "events"
+                    "events",
+                    "disabledAt"
                 ],
                 "properties": {
                     "id": {
@@ -11764,6 +11883,58 @@
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/WebhookEventResource"
+                        }
+                    },
+                    "disabledAt": {
+                        "description": "ISO 8601 timestamp when the webhook was automatically disabled due to repeated failures, or null if active",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-04-08T10:00:00Z",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "WebhookStatsResource": {
+                "title": "WebhookStatsResource",
+                "description": "Webhook call log statistics for an OAuth application over the last 7 days",
+                "required": [
+                    "client_id",
+                    "client_name",
+                    "total",
+                    "by_day",
+                    "by_event",
+                    "by_response_code"
+                ],
+                "properties": {
+                    "client_id": {
+                        "type": "integer",
+                        "example": 42
+                    },
+                    "client_name": {
+                        "type": "string",
+                        "example": "My App"
+                    },
+                    "total": {
+                        "type": "integer",
+                        "example": 150
+                    },
+                    "by_day": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/WebhookDayStatsDto"
+                        }
+                    },
+                    "by_event": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/WebhookEventStatsDto"
+                        }
+                    },
+                    "by_response_code": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/WebhookResponseCodeStatsDto"
                         }
                     }
                 },
@@ -11819,6 +11990,10 @@
         }
     },
     "tags": [
+        {
+            "name": "Applications",
+            "description": "Manage OAuth applications"
+        },
         {
             "name": "Community",
             "description": "Community contribution system endpoints"

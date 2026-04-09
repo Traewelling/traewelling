@@ -83,6 +83,7 @@ abstract class WebhookController extends Controller
                 $builder->where('event', '=', $event);
             })
             ->where('user_id', $user->id)
+            ->whereNull('disabled_at')
             ->get();
 
         foreach ($webhooks as $webhook) {

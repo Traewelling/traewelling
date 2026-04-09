@@ -47,6 +47,14 @@
                                                 >
                                                     @csrf
                                                     <div class="btn-group">
+                                                        @if(auth()->user()?->hasRole('open-beta'))
+                                                            <a href="{{ route('dev.apps.webhook-stats', ['clientId' => $app->id]) }}"
+                                                               class="btn btn-sm btn-outline-secondary"
+                                                            >
+                                                                <i class="fas fa-chart-bar"></i>
+                                                                {{__('webhook-stats.title')}}
+                                                            </a>
+                                                        @endif
                                                         <a href="{{route('dev.apps.edit', ['appId' => $app->id])}}"
                                                            class="btn btn-sm btn-primary"
                                                         >

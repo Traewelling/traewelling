@@ -7,6 +7,7 @@ use App\Jobs\MonitoredCallWebhookJob;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
+use Laravel\Passport\Passport;
 
 use function PHPUnit\Framework\assertEquals;
 
@@ -27,8 +28,8 @@ class WebhookNotificationTest extends FeatureTestCase
         $this->createWebhook($bob, $client, [WebhookEvent::NOTIFICATION]);
 
         // When: Alice follows Bob
-        $follow = $this->actingAs($alice)->post(route('follow.create'), ['follow_id' => $bob->id]);
-        $follow->assertStatus(201);
+        Passport::actingAs($alice, ['*']);
+        $this->postJson('/api/v1/user/' . $bob->id . '/follow')->assertStatus(201);
 
         Bus::assertDispatched(function (MonitoredCallWebhookJob $job) {
             assertEquals(WebhookEvent::NOTIFICATION->value, $job->payload['event']);

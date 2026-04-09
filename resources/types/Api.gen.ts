@@ -421,6 +421,37 @@ export interface Station {
   rilIdentifier?: string | null;
 }
 
+/** WebhookDayStatsDto */
+export interface WebhookDayStatsDto {
+  /**
+   * @format date
+   * @example "2026-04-01"
+   */
+  date: string;
+  /** @example 20 */
+  total: number;
+  /** @example 15 */
+  success: number;
+  /** @example 5 */
+  failed: number;
+}
+
+/** WebhookEventStatsDto */
+export interface WebhookEventStatsDto {
+  /** @example "checkin_create" */
+  event: string;
+  /** @example 100 */
+  total: number;
+}
+
+/** WebhookResponseCodeStatsDto */
+export interface WebhookResponseCodeStatsDto {
+  /** @example 200 */
+  response_code: number | null;
+  /** @example 120 */
+  total: number;
+}
+
 /** AdminEventRequest */
 export interface AdminEventRequest {
   /** @maxLength 255 */
@@ -2414,6 +2445,28 @@ export interface WebhookResource {
   createdAt: string;
   /** List of events which are triggered for this webhook */
   events: WebhookEventResource[];
+  /**
+   * ISO 8601 timestamp when the webhook was automatically disabled due to repeated failures, or null if active
+   * @format date-time
+   * @example "2026-04-08T10:00:00Z"
+   */
+  disabledAt: string | null;
+}
+
+/**
+ * WebhookStatsResource
+ * Webhook call log statistics for an OAuth application over the last 7 days
+ */
+export interface WebhookStatsResource {
+  /** @example 42 */
+  client_id: number;
+  /** @example "My App" */
+  client_name: string;
+  /** @example 150 */
+  total: number;
+  by_day: WebhookDayStatsDto[];
+  by_event: WebhookEventStatsDto[];
+  by_response_code: WebhookResponseCodeStatsDto[];
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -3222,6 +3275,34 @@ export class Api<
         path: `/alerts/${id}`,
         method: "DELETE",
         secure: true,
+        ...params,
+      }),
+  };
+  applications = {
+    /**
+     * @description Returns webhook call log statistics for the last 7 days for a given OAuth application. Only the application owner or admins can access it.
+     *
+     * @tags Applications
+     * @name GetApplicationWebhookStats
+     * @summary Get webhook call statistics for an application
+     * @request GET:/applications/{clientId}/webhook-stats
+     * @secure
+     */
+    getApplicationWebhookStats: (
+      clientId: number,
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          /** Webhook call log statistics for an OAuth application over the last 7 days */
+          data?: WebhookStatsResource;
+        },
+        void
+      >({
+        path: `/applications/${clientId}/webhook-stats`,
+        method: "GET",
+        secure: true,
+        format: "json",
         ...params,
       }),
   };

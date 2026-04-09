@@ -7,6 +7,7 @@ import EventList from '../pages/Events/EventList.vue';
 import Leaderboard from '../pages/Leaderboard/Leaderboard.vue';
 import MonthlyLeaderboard from '../pages/Leaderboard/MonthlyLeaderboard.vue';
 import Account from '../pages/Settings/Account/Account.vue';
+import WebhookStats from '../pages/Settings/Applications/WebhookStats.vue';
 import Followers from '../pages/Settings/Followers/Followers.vue';
 import Followings from '../pages/Settings/Followers/Followings.vue';
 import FollowRequests from '../pages/Settings/Followers/FollowRequests.vue';
@@ -32,6 +33,12 @@ const routes: Array<RouteRecordRaw> = [
         name: 'events-suggest',
         component: SuggestEvent,
         meta: { title: 'contribute.suggest_event.title' },
+    },
+    {
+        path: '/settings/applications/:clientId/webhook-stats',
+        name: 'settings-application-webhook-stats',
+        component: WebhookStats,
+        meta: { title: 'webhook-stats.title' },
     },
     {
         path: '/settings/profile',
