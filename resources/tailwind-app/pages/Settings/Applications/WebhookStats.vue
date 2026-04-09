@@ -19,19 +19,19 @@ const clientId = Number(route.params.clientId);
 
 function successRate(): string {
     if (!stats.value || stats.value.total === 0) return '0';
-    const successes = stats.value.by_response_code
-        .filter((r) => r.response_code !== null && r.response_code >= 200 && r.response_code < 300)
+    const successes = stats.value.byResponseCode
+        .filter((r) => r.responseCode !== null && r.responseCode >= 200 && r.responseCode < 300)
         .reduce((sum, r) => sum + r.total, 0);
     return ((successes / stats.value.total) * 100).toFixed(1);
 }
 
-function responseCodeLabel(code: number | null): string {
-    if (code === null) return trans('webhook-stats.timeout');
+function responseCodeLabel(code: number | null | undefined): string {
+    if (code === null || code === undefined) return trans('webhook-stats.timeout');
     return String(code);
 }
 
-function responseCodeClass(code: number | null): string {
-    if (code === null) return 'badge-error';
+function responseCodeClass(code: number | null | undefined): string {
+    if (code === null || code === undefined) return 'badge-error';
     if (code >= 200 && code < 300) return 'badge-success';
     if (code >= 500) return 'badge-error';
     return 'badge-warning';
@@ -80,7 +80,7 @@ onMounted(async () => {
 
         <template v-else-if="stats">
             <p class="text-base-content/60 text-sm mb-6">
-                {{ trans('webhook-stats.subtitle', { name: stats.client_name }) }}
+                {{ trans('webhook-stats.subtitle', { name: stats.clientName }) }}
             </p>
 
             <!-- Summary cards -->
@@ -95,7 +95,7 @@ onMounted(async () => {
                 </div>
                 <div class="stat bg-base-100 rounded-box shadow col-span-2 md:col-span-1">
                     <div class="stat-title">{{ trans('webhook-stats.active-webhooks') }}</div>
-                    <div class="stat-value text-2xl">{{ stats.by_event.length }}</div>
+                    <div class="stat-value text-2xl">{{ stats.byEvent.length }}</div>
                     <div class="stat-desc">{{ trans('webhook-stats.event-types') }}</div>
                 </div>
             </div>
@@ -113,12 +113,12 @@ onMounted(async () => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-if="stats.by_day.length === 0">
+                        <tr v-if="stats.byDay.length === 0">
                             <td colspan="4" class="text-center text-base-content/50">
                                 {{ trans('webhook-stats.no-data') }}
                             </td>
                         </tr>
-                        <tr v-for="day in stats.by_day" :key="day.date">
+                        <tr v-for="day in stats.byDay" :key="day.date">
                             <td>{{ day.date }}</td>
                             <td class="text-right">{{ day.total }}</td>
                             <td class="text-right text-success">{{ day.success }}</td>
@@ -141,12 +141,12 @@ onMounted(async () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-if="stats.by_event.length === 0">
+                                <tr v-if="stats.byEvent.length === 0">
                                     <td colspan="2" class="text-center text-base-content/50">
                                         {{ trans('webhook-stats.no-data') }}
                                     </td>
                                 </tr>
-                                <tr v-for="e in stats.by_event" :key="e.event">
+                                <tr v-for="e in stats.byEvent" :key="e.event">
                                     <td>
                                         <code class="text-xs">{{ e.event }}</code>
                                     </td>
@@ -169,15 +169,15 @@ onMounted(async () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-if="stats.by_response_code.length === 0">
+                                <tr v-if="stats.byResponseCode.length === 0">
                                     <td colspan="2" class="text-center text-base-content/50">
                                         {{ trans('webhook-stats.no-data') }}
                                     </td>
                                 </tr>
-                                <tr v-for="r in stats.by_response_code" :key="r.response_code ?? 'timeout'">
+                                <tr v-for="r in stats.byResponseCode" :key="r.responseCode ?? 'timeout'">
                                     <td>
-                                        <span :class="['badge badge-sm', responseCodeClass(r.response_code)]">
-                                            {{ responseCodeLabel(r.response_code) }}
+                                        <span :class="['badge badge-sm', responseCodeClass(r.responseCode)]">
+                                            {{ responseCodeLabel(r.responseCode) }}
                                         </span>
                                     </td>
                                     <td class="text-right">{{ r.total }}</td>

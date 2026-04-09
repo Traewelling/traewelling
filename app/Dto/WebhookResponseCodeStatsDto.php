@@ -8,9 +8,9 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(
     title: 'WebhookResponseCodeStatsDto',
-    required: ['response_code', 'total'],
+    required: ['responseCode', 'total'],
     properties: [
-        new OA\Property(property: 'response_code', type: 'integer', example: 200, nullable: true),
+        new OA\Property(property: 'responseCode', type: 'integer', example: 200, nullable: true),
         new OA\Property(property: 'total', type: 'integer', example: 120),
     ],
     type: 'object'
@@ -18,7 +18,7 @@ use OpenApi\Attributes as OA;
 readonly class WebhookResponseCodeStatsDto
 {
     public function __construct(
-        public ?int $response_code,
+        public ?int $responseCode,
         public int $total,
     ) {}
 }

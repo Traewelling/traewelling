@@ -8406,11 +8406,11 @@
             "WebhookResponseCodeStatsDto": {
                 "title": "WebhookResponseCodeStatsDto",
                 "required": [
-                    "response_code",
+                    "responseCode",
                     "total"
                 ],
                 "properties": {
-                    "response_code": {
+                    "responseCode": {
                         "type": "integer",
                         "example": 200,
                         "nullable": true
@@ -11899,19 +11899,19 @@
                 "title": "WebhookStatsResource",
                 "description": "Webhook call log statistics for an OAuth application over the last 7 days",
                 "required": [
-                    "client_id",
-                    "client_name",
+                    "clientId",
+                    "clientName",
                     "total",
-                    "by_day",
-                    "by_event",
-                    "by_response_code"
+                    "byDay",
+                    "byEvent",
+                    "byResponseCode"
                 ],
                 "properties": {
-                    "client_id": {
+                    "clientId": {
                         "type": "integer",
                         "example": 42
                     },
-                    "client_name": {
+                    "clientName": {
                         "type": "string",
                         "example": "My App"
                     },
@@ -11919,19 +11919,19 @@
                         "type": "integer",
                         "example": 150
                     },
-                    "by_day": {
+                    "byDay": {
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/WebhookDayStatsDto"
                         }
                     },
-                    "by_event": {
+                    "byEvent": {
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/WebhookEventStatsDto"
                         }
                     },
-                    "by_response_code": {
+                    "byResponseCode": {
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/WebhookResponseCodeStatsDto"

@@ -447,7 +447,7 @@ export interface WebhookEventStatsDto {
 /** WebhookResponseCodeStatsDto */
 export interface WebhookResponseCodeStatsDto {
   /** @example 200 */
-  response_code: number | null;
+  responseCode: number | null;
   /** @example 120 */
   total: number;
 }
@@ -2459,14 +2459,14 @@ export interface WebhookResource {
  */
 export interface WebhookStatsResource {
   /** @example 42 */
-  client_id: number;
+  clientId: number;
   /** @example "My App" */
-  client_name: string;
+  clientName: string;
   /** @example 150 */
   total: number;
-  by_day: WebhookDayStatsDto[];
-  by_event: WebhookEventStatsDto[];
-  by_response_code: WebhookResponseCodeStatsDto[];
+  byDay: WebhookDayStatsDto[];
+  byEvent: WebhookEventStatsDto[];
+  byResponseCode: WebhookResponseCodeStatsDto[];
 }
 
 export type QueryParamsType = Record<string | number, any>;
