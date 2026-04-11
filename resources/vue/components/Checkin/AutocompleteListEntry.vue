@@ -1,12 +1,12 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { Area, ShortStation } from '../../../types/Station';
+import { AreaResource, StationResource } from '../../../types/Api.gen';
 
 export default defineComponent({
     name: 'AutocompleteListEntry',
     props: {
         station: {
-            type: Object as () => ShortStation | null,
+            type: Object as () => StationResource | null,
             required: false,
             default: null,
         },
@@ -29,9 +29,10 @@ export default defineComponent({
     methods: {
         getArea(): string {
             if (this.$props.station?.areas) {
-                const defaultArea: null | Area = this.$props.station.areas.find((area: Area) => area.default) || null;
-                const country: null | Area =
-                    this.$props.station.areas.find((area: Area) => area.adminLevel === 2) || null;
+                const defaultArea: null | AreaResource =
+                    this.$props.station.areas.find((area: AreaResource) => area.default) || null;
+                const country: null | AreaResource =
+                    this.$props.station.areas.find((area: AreaResource) => area.adminLevel === 2) || null;
                 if (defaultArea) {
                     return country ? `${defaultArea.name}, ${country.name}` : defaultArea.name;
                 }

@@ -1504,6 +1504,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/CommunityProfile"
@@ -2726,6 +2729,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "integer",
@@ -2773,6 +2779,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -2838,6 +2847,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/Notification"
@@ -2891,6 +2903,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/Notification"
@@ -3869,6 +3884,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/UserProfileSettingsResource"
@@ -5637,6 +5655,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "properties": {
@@ -5692,6 +5713,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/StatusResource"
@@ -7069,7 +7093,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "App\\Models\\Station"
+                                                "$ref": "#/components/schemas/StationResource"
                                             }
                                         }
                                     },
@@ -11973,6 +11997,19 @@
             "Notification": {
                 "title": "Notification",
                 "description": "Notification model",
+                "required": [
+                    "id",
+                    "type",
+                    "leadFormatted",
+                    "lead",
+                    "notice",
+                    "noticeFormatted",
+                    "link",
+                    "data",
+                    "readAt",
+                    "createdAt",
+                    "createdAtForHumans"
+                ],
                 "properties": {
                     "id": {
                         "type": "string",

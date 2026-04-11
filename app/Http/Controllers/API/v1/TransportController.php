@@ -543,7 +543,7 @@ class TransportController extends Controller
                         new OA\Property(
                             property: 'data',
                             type: 'array',
-                            items: new OA\Items(ref: Station::class),
+                            items: new OA\Items(ref: StationResource::class),
                         ),
                     ],
                 ),

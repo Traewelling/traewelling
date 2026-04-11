@@ -27,6 +27,7 @@ class CommunityController extends Controller
                 response: 200,
                 description: 'Successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',

@@ -1,48 +1,48 @@
 import { defineStore } from 'pinia';
-import API from '../../js/api/api';
+import { computed, ref } from 'vue';
+import { Api, CommunityProfile } from '../../types/Api.gen';
 
-interface ContributeState {
-    xp: number;
-    level: number;
-    nextLevelXP: number;
-    progressPercent: number;
-    loading: boolean;
-}
+const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 
-export const useContributeStore = defineStore('contribute', {
-    state: (): ContributeState => ({
-        xp: 0,
-        level: 0,
-        nextLevelXP: 50,
-        progressPercent: 0,
-        loading: false,
-    }),
+export const useContributeStore = defineStore(
+    'contribute',
+    () => {
+        const profile = ref<CommunityProfile>({
+            xp: 0,
+            level: 0,
+            nextLevelXP: 50,
+            progressPercent: 0,
+        });
+        const loading = ref<boolean>(false);
 
-    getters: {
-        progressToNextLevel: (state) => state.progressPercent,
-    },
+        const progressToNextLevel = computed<number>(() => profile.value.progressPercent);
 
-    actions: {
-        async fetchProfile() {
-            this.loading = true;
+        async function fetchProfile(): Promise<void> {
+            loading.value = true;
             try {
-                const response = await API.request('/community/profile');
-                const data = await response.json();
-                this.updateProfile(data.data);
+                const response = await api.community.getCommunityProfile();
+                profile.value = response.data.data;
             } catch (error) {
                 console.error('Failed to fetch contribution profile:', error);
             } finally {
-                this.loading = false;
+                loading.value = false;
             }
-        },
+        }
 
-        updateProfile(data: { xp: number; level: number; nextLevelXP: number; progressPercent: number }) {
-            this.xp = data.xp;
-            this.level = data.level;
-            this.nextLevelXP = data.nextLevelXP;
-            this.progressPercent = data.progressPercent;
-        },
+        const xp = computed<number>(() => profile.value.xp);
+        const level = computed<number>(() => profile.value.level);
+        const nextLevelXP = computed<number>(() => profile.value.nextLevelXP);
+        const progressPercent = computed<number>(() => profile.value.progressPercent);
+
+        return {
+            xp,
+            level,
+            nextLevelXP,
+            progressPercent,
+            loading,
+            progressToNextLevel,
+            fetchProfile,
+        };
     },
-
-    persist: true,
-});
+    { persist: true },
+);
