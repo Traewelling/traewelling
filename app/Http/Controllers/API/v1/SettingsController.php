@@ -30,6 +30,7 @@ class SettingsController extends Controller
                 response: 200,
                 description: 'Success',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',

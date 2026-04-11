@@ -11,6 +11,7 @@ use OpenApi\Attributes as OA;
     schema: 'Notification',
     title: 'Notification',
     description: 'Notification model',
+    required: ['id', 'type', 'leadFormatted', 'lead', 'notice', 'noticeFormatted', 'link', 'data', 'readAt', 'createdAt', 'createdAtForHumans'],
     properties: [
         new OA\Property(property: 'id', type: 'string', example: 'bb1ba9a5-9c2b-43c3-b8c9-2f70651fc51c'),
         new OA\Property(property: 'type', type: 'string', example: 'UserJoinedConnection'),

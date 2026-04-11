@@ -1,23 +1,28 @@
 import { defineStore } from 'pinia';
-import { CheckinSuccessResource } from '../../types/Api.gen';
+import { computed, ref } from 'vue';
+import type { CheckinSuccessResource } from '../../types/Api.gen';
 
-export const checkinSuccessStore = defineStore('checkinSuccess', {
-    persist: true,
-    state: () => ({
-        checkinResponse: null as CheckinSuccessResource | null,
-    }),
-    getters: {
-        getCheckinSuccessResource(): CheckinSuccessResource | null {
-            return this.checkinResponse;
-        },
+export const checkinSuccessStore = defineStore(
+    'checkinSuccess',
+    () => {
+        const checkinResponse = ref<CheckinSuccessResource | null>(null);
+
+        const getCheckinSuccessResource = computed<CheckinSuccessResource | null>(() => checkinResponse.value);
+
+        function setResponse(response: CheckinSuccessResource | null): void {
+            checkinResponse.value = response;
+        }
+
+        function reset(): void {
+            checkinResponse.value = null;
+        }
+
+        return {
+            checkinResponse,
+            getCheckinSuccessResource,
+            setResponse,
+            reset,
+        };
     },
-    actions: {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        setResponse(CheckinSuccessResource: CheckinSuccessResource | any): void {
-            this.checkinResponse = CheckinSuccessResource;
-        },
-        reset(): void {
-            this.checkinResponse = null;
-        },
-    },
-});
+    { persist: true },
+);

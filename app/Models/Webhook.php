@@ -35,6 +35,8 @@ use Laravel\Passport\Passport;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Webhook whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Webhook whereUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Webhook whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Webhook whereConsecutiveFailures($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Webhook whereDisabledAt($value)
  *
  * @mixin \Eloquent
  */

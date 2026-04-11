@@ -1,78 +1,98 @@
 import { defineStore } from 'pinia';
-import API from '../../js/api/api';
-import { Notification } from '../../types/Notification';
+import { ref } from 'vue';
+import { Api, Notification } from '../../types/Api.gen';
 
-export const useNotificationsStore = defineStore('notifications', {
-    persist: true,
-    state: () => ({
-        notifications: [] as Notification[],
-        count: 0,
-        loading: false,
-        error: null as null | unknown,
-        refreshed: null as null | number,
-    }),
-    getters: {},
-    actions: {
-        async fetchNotifications(): Promise<void> {
-            this.loading = true;
+const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+
+async function markAsRead(id: string) {
+    const response = await api.notifications.markAsRead(id);
+    return response.data.data;
+}
+
+async function markAsUnread(id: string) {
+    const response = await api.notifications.markAsUnread(id);
+    return response.data.data;
+}
+
+export const useNotificationsStore = defineStore(
+    'notifications',
+    () => {
+        const notifications = ref<Notification[]>([]);
+        const count = ref<number>(0);
+        const loading = ref<boolean>(false);
+        const error = ref<unknown | null>(null);
+        const refreshed = ref<number | null>(null);
+
+        async function fetchNotifications(): Promise<void> {
+            loading.value = true;
             try {
-                this.notifications = await API.request('/notifications')
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    .then((response: any) => response.json())
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    .then((data: any) => data.data);
-                this.refreshed = new Date().getTime();
-            } catch (error) {
-                this.error = error;
+                const response = await api.notifications.listNotifications();
+                notifications.value = response.data.data;
+                refreshed.value = Date.now();
+            } catch (err) {
+                error.value = err;
             } finally {
-                this.loading = false;
+                loading.value = false;
             }
-        },
-        async fetchCount(): Promise<void> {
-            if (this.refreshed && new Date().getTime() - this.refreshed < 30000) {
+        }
+
+        async function fetchCount(): Promise<void> {
+            if (refreshed.value && Date.now() - refreshed.value < 30000) {
                 return;
             }
             try {
-                this.count = await API.request('/notifications/unread/count', 'GET', {}, true)
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    .then((response: any) => response.json())
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    .then((data: any) => data.data);
-                this.refreshed = new Date().getTime();
-            } catch (error) {
-                this.error = error;
-                this.count = 0;
+                const response = await api.notifications.getUnreadCount();
+                count.value = response.data.data;
+                refreshed.value = new Date().getTime();
+            } catch (err) {
+                error.value = err;
+                count.value = 0;
             }
-        },
-        async toggleAllRead(): Promise<boolean> {
+        }
+
+        async function toggleAllRead(): Promise<boolean> {
             try {
-                return await API.request('/notifications/read/all', 'PUT').then(() => {
-                    this.notifications.map((notification: Notification) => {
-                        notification.readAt = new Date().toISOString();
-                        return notification;
-                    });
-                    this.count = 0;
-                    return true;
+                await api.notifications.markAllAsRead();
+                notifications.value = notifications.value.map((notification: Notification) => {
+                    notification.readAt = new Date().toISOString();
+                    return notification;
                 });
-            } catch (error) {
-                this.error = error;
+                count.value = 0;
+                return true;
+            } catch (err) {
+                error.value = err;
                 return false;
             }
-        },
-        async toggleRead(notification: Notification, key: number): Promise<void> {
+        }
+
+        async function toggleRead(notification: Notification, key: number): Promise<void> {
             const readAction = notification.readAt ? 'unread' : 'read';
             try {
-                await API.request(`/notifications/${readAction}/${notification.id}`, 'PUT')
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    .then((response: any) => response.json())
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    .then((data: any) => {
-                        this.notifications[key].readAt = data.data.readAt;
-                        this.count = readAction === 'read' ? this.count - 1 : this.count + 1;
-                    });
-            } catch (error) {
-                this.error = error;
+                if (notification.readAt) {
+                    const data = await markAsUnread(notification.id);
+                    notifications.value[key].readAt = data.readAt;
+                } else {
+                    const data = await markAsRead(notification.id);
+                    notifications.value[key].readAt = data.readAt;
+                }
+
+                count.value = readAction === 'read' ? count.value - 1 : count.value + 1;
+            } catch (err) {
+                error.value = err;
             }
-        },
+        }
+
+        return {
+            notifications,
+            count,
+            loading,
+            error,
+            refreshed,
+            fetchNotifications,
+            fetchCount,
+            toggleAllRead,
+            toggleRead,
+        };
     },
-});
+    { persist: true },
+);

@@ -1,59 +1,77 @@
 import { defineStore } from 'pinia';
-import { Api, ConfigurationFeatureEnum, ConfigurationInformation, Feature, Language } from '../../types/Api.gen';
+import { computed, ref } from 'vue';
+import {
+    Api,
+    type ConfigurationFeatureEnum,
+    type ConfigurationInformation,
+    type Feature,
+    type Language,
+} from '../../types/Api.gen';
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 
-export const useConfigurationStore = defineStore('apiConfiguration', {
-    persist: true,
-    state: () => ({
-        configuration: null as ConfigurationInformation | null,
-        loading: false,
-        error: null as unknown | null,
-        refreshed: '2021-08-01T12:00:00Z',
-    }),
-    getters: {
-        appName: (state): string => {
-            return state.configuration?.appName || 'App';
-        },
-        appVersion: (state): string => {
-            return state.configuration?.version || 'unknown';
-        },
-        languages: (state): Language[] => {
-            return state.configuration?.languages || [];
-        },
-        isFeatureEnabled: (state) => {
-            return (feature: ConfigurationFeatureEnum): boolean => {
-                return (
-                    state.configuration?.features?.some((f: Feature) => {
-                        return (f.name as ConfigurationFeatureEnum) === feature && f.enabled;
-                    }) || false
-                );
-            };
-        },
-    },
-    actions: {
-        async fetchData(force: boolean = false): Promise<void> {
+export const useConfigurationStore = defineStore(
+    'apiConfiguration',
+    () => {
+        const configuration = ref<ConfigurationInformation>({
+            appName: 'Träwelling',
+            appDebug: false,
+            appUrl: '',
+            version: 'unknown',
+            features: [],
+            languages: [],
+        });
+        const loading = ref<boolean>(false);
+        const error = ref<unknown | null>(null);
+        const refreshed = ref<string>('2021-08-01T12:00:00Z');
+
+        const appName = computed<string>(() => configuration.value.appName);
+        const appVersion = computed<string>(() => configuration.value.version);
+        const languages = computed<Language[]>(() => configuration.value.languages);
+
+        function isFeatureEnabled(feature: ConfigurationFeatureEnum): boolean {
+            return (
+                configuration.value?.features?.some((f: Feature) => {
+                    return (f.name as ConfigurationFeatureEnum) === feature && f.enabled;
+                }) || false
+            );
+        }
+
+        async function fetchData(force: boolean = false): Promise<void> {
             // Fetch Data every 5 Minutes
             if (
                 force ||
-                (this.refreshed && new Date().getTime() - new Date(this.refreshed).getTime() > 60 * 5 * 1000)
+                (refreshed.value && new Date().getTime() - new Date(refreshed.value).getTime() > 60 * 5 * 1000)
             ) {
-                this.loading = true;
+                loading.value = true;
                 api.app
                     .getConfigurationInfo()
                     .then((response) => {
-                        this.configuration = response.data || null;
+                        configuration.value = response.data || null;
 
-                        this.loading = false;
-                        this.refreshed = new Date().toString();
+                        loading.value = false;
+                        refreshed.value = new Date().toString();
                     })
-                    .catch((error) => {
-                        this.error = error;
+                    .catch((err: unknown) => {
+                        error.value = err;
 
-                        this.loading = false;
-                        this.refreshed = new Date().toString();
+                        loading.value = false;
+                        refreshed.value = new Date().toString();
                     });
             }
-        },
+        }
+
+        return {
+            configuration,
+            loading,
+            error,
+            refreshed,
+            appName,
+            appVersion,
+            languages,
+            isFeatureEnabled,
+            fetchData,
+        };
     },
-});
+    { persist: true },
+);

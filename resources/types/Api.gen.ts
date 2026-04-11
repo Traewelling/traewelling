@@ -2202,26 +2202,26 @@ export interface UserAuthResource {
  */
 export interface Notification {
   /** @example "bb1ba9a5-9c2b-43c3-b8c9-2f70651fc51c" */
-  id?: string;
+  id: string;
   /** @example "UserJoinedConnection" */
-  type?: string;
+  type: string;
   /** @example "<b>@bob</b> is in your connection!" */
-  leadFormatted?: string;
+  leadFormatted: string;
   /** @example "@bob is in your connection!" */
-  lead?: string;
+  lead: string;
   /** @example "@bob is on <b>S 81</b> from <b>Karlsruhe Hbf</b> to <b>Freudenstadt Hbf</b>." */
-  noticeFormatted?: string;
+  noticeFormatted: string;
   /** @example "@bob is on S 81 from Karlsruhe Hbf to Freudenstadt Hbf." */
-  notice?: string;
+  notice: string;
   /** @example "https://traewelling.de/status/123456" */
-  link?: string;
-  data?: any[];
+  link: string;
+  data: any[];
   /** @example "2023-01-01T00:00:00+00:00" */
-  readAt?: string | null;
+  readAt: string | null;
   /** @example "2023-01-01T00:00:00+00:00" */
-  createdAt?: string;
+  createdAt: string;
   /** @example "2 days ago" */
-  createdAtForHumans?: string;
+  createdAtForHumans: string;
 }
 
 /** UserProfileSettings */
@@ -3391,7 +3391,7 @@ export class Api<
       this.request<
         {
           /** Community contribution profile data */
-          data?: CommunityProfile;
+          data: CommunityProfile;
         },
         void
       >({
@@ -3821,7 +3821,7 @@ export class Api<
     userState: (params: RequestParams = {}) =>
       this.request<
         {
-          data?: StatusResource;
+          data: StatusResource;
         },
         void
       >({
@@ -4581,7 +4581,7 @@ export class Api<
       this.request<
         {
           /** @example 2 */
-          data?: number;
+          data: number;
         },
         void
       >({
@@ -4604,7 +4604,7 @@ export class Api<
     listNotifications: (params: RequestParams = {}) =>
       this.request<
         {
-          data?: Notification[];
+          data: Notification[];
           /** Pagination links */
           links?: Links;
           /** Pagination meta data */
@@ -4632,7 +4632,7 @@ export class Api<
       this.request<
         {
           /** Notification model */
-          data?: Notification;
+          data: Notification;
         },
         void
       >({
@@ -4656,7 +4656,7 @@ export class Api<
       this.request<
         {
           /** Notification model */
-          data?: Notification;
+          data: Notification;
         },
         void
       >({
@@ -5247,7 +5247,7 @@ export class Api<
     getProfileSettings: (params: RequestParams = {}) =>
       this.request<
         {
-          data?: UserProfileSettingsResource;
+          data: UserProfileSettingsResource;
         },
         void
       >({
@@ -6044,7 +6044,7 @@ export class Api<
     getStopOvers: (ids?: string, params: RequestParams = {}) =>
       this.request<
         {
-          data?: {
+          data: {
             /** Array of stopovers. Key describes trip id */
             "1"?: StopoverResource[];
           };
@@ -6487,7 +6487,7 @@ export class Api<
     trainStationHistory: (params: RequestParams = {}) =>
       this.request<
         {
-          data?: any[];
+          data?: StationResource[];
         },
         void
       >({

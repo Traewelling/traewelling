@@ -1,83 +1,76 @@
 import { defineStore } from 'pinia';
-import { ProfileSettings } from '../../types/ProfileSettings';
+import { computed, ref } from 'vue';
 
-export const useProfileSettingsStore = defineStore('profileSettings', {
-    // because of the persist option. This option is defined in the pinia persisted state plugin
-    // @types-ignore
-    persist: true,
-    state: () => ({
-        settings: null as ProfileSettings | null,
-        loading: false,
-        error: null as unknown | null,
-        refreshed: null as string | null,
-    }),
-    getters: {
-        getDisplayName(): string {
-            return this.settings ? this.settings.displayName : '';
-        },
-        getUsername(): string {
-            return this.settings ? this.settings.username : '';
-        },
-        getProfilePicture(): string | null {
-            return this.settings ? this.settings.profilePicture : '';
-        },
-        isPrivateProfile(): boolean {
-            return this.settings ? this.settings.privateProfile : false;
-        },
-        isPreventIndex(): boolean {
-            return this.settings ? this.settings.preventIndex : false;
-        },
-        getDefaultStatusVisibility(): number {
-            return this.settings ? this.settings.defaultStatusVisibility : 0;
-        },
-        getPrivacyHideDays(): number {
-            return this.settings ? this.settings.privacyHideDays : 0;
-        },
-        getEmail(): string | null {
-            return this.settings ? this.settings.email : null;
-        },
-        isEmailVerified(): boolean {
-            return this.settings ? this.settings.emailVerified : false;
-        },
-        isProfilePictureSet(): boolean {
-            return this.settings ? this.settings.profilePictureSet : false;
-        },
-        getTwitter(): string | null {
-            return this.settings ? this.settings.twitter : null;
-        },
-        getMastodon(): string | null {
-            return this.settings ? this.settings.mastodon : null;
-        },
-        getMastodonVisibility(): number {
-            return this.settings ? this.settings.mastodonVisibility : 0;
-        },
-    },
-    actions: {
-        updateDefaultStatusVisibility(visibility: number): void {
-            if (this.settings) {
-                this.settings.defaultStatusVisibility = visibility;
+import { Api, UserProfileSettingsResource } from '../../types/Api.gen';
+
+const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+
+export const useProfileSettingsStore = defineStore(
+    'profileSettings',
+    () => {
+        const settings = ref<UserProfileSettingsResource | null>(null);
+        const loading = ref<boolean>(false);
+        const error = ref<unknown | null>(null);
+        const refreshed = ref<string | null>(null);
+
+        const getDisplayName = computed<string>(() => settings.value?.displayName ?? '');
+        const getUsername = computed<string>(() => settings.value?.username ?? '');
+        const getProfilePicture = computed<string | null>(() => settings.value?.profilePicture ?? '');
+        const isPrivateProfile = computed<boolean>(() => settings.value?.privateProfile ?? false);
+        const isPreventIndex = computed<boolean>(() => settings.value?.preventIndex ?? false);
+        const getDefaultStatusVisibility = computed<number>(() => settings.value?.defaultStatusVisibility ?? 0);
+        const getPrivacyHideDays = computed<number>(() => settings.value?.privacyHideDays ?? 0);
+        const getEmail = computed<string | null>(() => settings.value?.email ?? null);
+        const isEmailVerified = computed<boolean>(() => settings.value?.emailVerified ?? false);
+        const isProfilePictureSet = computed<boolean>(() => settings.value?.profilePictureSet ?? false);
+        const getMastodon = computed<string | null>(() => settings.value?.mastodon ?? null);
+        const getMastodonVisibility = computed<number>(() => settings.value?.mastodonVisibility ?? 0);
+
+        function updateDefaultStatusVisibility(visibility: number): void {
+            if (settings.value) {
+                settings.value.defaultStatusVisibility = visibility;
             }
-        },
-        async fetchSettings(): Promise<void> {
+        }
+
+        async function fetchSettings(): Promise<void> {
             // Fetch Data every 15 Minutes
             // ToDo: reduce interval
             // ToDo: invalidate when logging out
-            if (this.refreshed && new Date().getTime() - new Date(this.refreshed).getTime() < 60 * 15 * 1000) {
+            if (refreshed.value && Date.now() - new Date(refreshed.value).getTime() < 60 * 15 * 1000) {
                 return;
             }
-            this.loading = true;
+            loading.value = true;
             try {
-                this.settings = await fetch('/api/v1/settings/profile')
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    .then((response: { json: () => any }) => response.json())
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    .then((data: { data: any }) => data.data);
-                this.refreshed = new Date().toString();
-            } catch (error) {
-                this.error = error;
+                const response = await api.settings.getProfileSettings();
+                settings.value = response.data.data;
+                refreshed.value = new Date().toString();
+            } catch (err) {
+                error.value = err;
             } finally {
-                this.loading = false;
+                loading.value = false;
             }
-        },
+        }
+
+        return {
+            settings,
+            loading,
+            error,
+            refreshed,
+            getDisplayName,
+            getUsername,
+            getProfilePicture,
+            isPrivateProfile,
+            isPreventIndex,
+            getDefaultStatusVisibility,
+            getPrivacyHideDays,
+            getEmail,
+            isEmailVerified,
+            isProfilePictureSet,
+            getMastodon,
+            getMastodonVisibility,
+            updateDefaultStatusVisibility,
+            fetchSettings,
+        };
     },
-});
+    { persist: true },
+);
