@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
-use App\Models\PrivacyPolicy;
+use App\Dto\PrivacyPolicyWithAcceptance;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Attributes as OA;
@@ -58,27 +58,19 @@ use OpenApi\Attributes as OA;
 )]
 class PrivacyPolicyResource extends JsonResource
 {
-    public function __construct(
-        $resource,
-        private readonly mixed $acceptedAt,
-        private readonly bool $hasOldAcceptance,
-    ) {
+    public function __construct(PrivacyPolicyWithAcceptance $resource)
+    {
         parent::__construct($resource);
     }
 
-    /**
-     * Transform the resource into an array.
-     *
-     * @param  Request  $request
-     */
-    public function toArray($request): array
+    public function toArray(Request $request): array
     {
-        /** @var PrivacyPolicy $this */
+        /** @var PrivacyPolicyWithAcceptance $this */
         return [
-            'id' => $this->id,
-            'validFrom' => $this->valid_at,
-            'en' => $this->body_md_en,
-            'de' => $this->body_md_de,
+            'id' => $this->policy->id,
+            'validFrom' => $this->policy->valid_at,
+            'en' => $this->policy->body_md_en,
+            'de' => $this->policy->body_md_de,
             'acceptedAt' => $this->acceptedAt,
             'hasOldAcceptance' => $this->hasOldAcceptance,
         ];

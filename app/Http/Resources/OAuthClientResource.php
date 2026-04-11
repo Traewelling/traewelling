@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
-use App\Repositories\OAuthClientRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Attributes as OA;
@@ -40,8 +39,8 @@ class OAuthClientResource extends JsonResource
             'webhooksEnabled' => (bool) $this->webhooks_enabled,
             'authorizedWebhookUrl' => $this->authorized_webhook_url,
             'privacyPolicyUrl' => $this->privacy_policy_url,
-            'activeTokensCount' => $this->tokens()->where('revoked', false)->count(),
-            'hasWebhooks' => new OAuthClientRepository()->hasWebhooks($this->id),
+            'activeTokensCount' => $this->active_tokens_count ?? $this->tokens()->where('revoked', false)->count(),
+            'hasWebhooks' => $this->has_webhooks ?? $this->webhooks()->exists(),
             'plainSecret' => $this->plain_secret,
             'createdAt' => $this->created_at->toIso8601String(),
         ];

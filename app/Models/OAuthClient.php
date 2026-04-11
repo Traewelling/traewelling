@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use Laravel\Passport\AuthCode;
 use Laravel\Passport\Client as PassportClient;
@@ -23,6 +24,9 @@ use Laravel\Passport\Token;
  * @property string|null $authorized_webhook_url
  * @property string|null $privacy_policy_url
  * @property bool $webhooks_enabled
+ * @property-read Collection<int, Webhook> $webhooks
+ * @property-read int|null $webhooks_count
+ * @property-read bool|null $has_webhooks
  * @property-read Collection<int, AuthCode> $authCodes
  * @property-read int|null $auth_codes_count
  * @property-read string|null $plain_secret
@@ -83,6 +87,11 @@ class OAuthClient extends PassportClient
     protected $hidden = [
         'secret',
     ];
+
+    public function webhooks(): HasMany
+    {
+        return $this->hasMany(Webhook::class, 'oauth_client_id');
+    }
 
     public function isConfidential(): bool
     {

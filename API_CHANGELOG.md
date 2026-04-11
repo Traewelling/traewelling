@@ -41,12 +41,23 @@ Check back here regularly to stay ahead of removals.
 
 ---
 
-# 2026-04-08
+# 2026-04-11
 
-- Added `GET /api/v1/applications`: List all OAuth applications owned by the authenticated user.
-- Added `POST /api/v1/applications`: Create a new OAuth application. Returns `plainSecret` on creation for confidential clients.
-- Added `PUT /api/v1/applications/{clientId}`: Update an OAuth application owned by the authenticated user.
-- Added `DELETE /api/v1/applications/{clientId}`: Delete an OAuth application owned by the authenticated user.
+**New endpoints:**
+- `GET /api/v1/applications`: List all OAuth applications owned by the authenticated user. Requires a personal access token.
+- `POST /api/v1/applications`: Create a new OAuth application. Returns `plainSecret` on creation for confidential clients. Requires a personal access token.
+- `PUT /api/v1/applications/{clientId}`: Update an OAuth application owned by the authenticated user. Requires a personal access token.
+- `DELETE /api/v1/applications/{clientId}`: Delete an OAuth application owned by the authenticated user. Requires a personal access token.
+- `GET /api/v1/users/self/blocks`: List all users blocked by the authenticated user. Requires `write-blocks` scope.
+- `GET /api/v1/users/self/mutes`: List all users muted by the authenticated user. Requires `write-blocks` scope.
+- `PUT /api/v1/settings/password`: Change the authenticated user's password. Requires a personal access token.
+
+**`PrivacyPolicyResource` extended:**
+- Added `id` field: UUID of the privacy policy.
+- Added `hasOldAcceptance` field: `true` if the user has accepted a previous version of the policy but not the current one.
+- `acceptedAt` now returns the actual acceptance timestamp for the authenticated user (was always `null` before).
+
+**Other:**
 - Added `GET /api/v1/applications/{clientId}/webhook-stats`: Returns webhook call log statistics (last 7 days) for an OAuth application. Requires open-beta or admin role; only the application owner or admins can access it.
 - Added `disabledAt` field to `WebhookResource`: ISO 8601 timestamp when a webhook was automatically disabled due to repeated failures, or `null` if active.
 - Webhooks are now automatically disabled after 5 consecutive final failures. The webhook owner receives an in-app notification.
