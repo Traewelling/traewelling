@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PencilLine, Plus, Trash2 } from 'lucide-vue-next';
+import { ExternalLink, PencilLine, Plus, Trash2 } from 'lucide-vue-next';
 import { onMounted, ref, watch } from 'vue';
 import { Api, type EventAdminResource } from '../../../types/Api.gen';
 import { useUserStore } from '../../../vue/stores/user';
@@ -132,7 +132,19 @@ onMounted(() => fetchEvents());
                             <td colspan="6" class="text-center text-base-content/50 py-8">No events found.</td>
                         </tr>
                         <tr v-for="event in events" :key="event.id" class="hover">
-                            <td class="font-medium text-sm">{{ event.name }}</td>
+                            <td class="font-medium text-sm">
+                                <a
+                                    v-if="event.slug"
+                                    :href="`/event/${event.slug}`"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="inline-flex items-center gap-1 hover:underline"
+                                >
+                                    {{ event.name }}
+                                    <ExternalLink class="w-3 h-3 shrink-0 text-base-content/40" />
+                                </a>
+                                <span v-else>{{ event.name }}</span>
+                            </td>
                             <td class="text-xs text-base-content/60">
                                 {{ event.hashtag ? `#${event.hashtag}` : '—' }}
                             </td>
