@@ -39,6 +39,6 @@ class InvalidMastodonServer extends Notification implements BaseNotification
 
     public static function getLink(array $data): ?string
     {
-        return route('settings.login-providers');
+        return url('/settings/security');
     }
 }

@@ -96,6 +96,7 @@ abstract class WebhookController extends Controller
                 ->withHeaders([
                     'X-Trwl-User-Id' => $user->id,
                     'X-Trwl-Webhook-Id' => $webhook->id,
+                    'X-Trwl-OAuth-Client-Id' => $webhook->oauth_client_id,
                 ])
                 ->payload([
                     'event' => $event->value,

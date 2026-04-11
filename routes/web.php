@@ -11,15 +11,12 @@
 |
 */
 
-use App\Http\Controllers\Frontend\AccountController;
 use App\Http\Controllers\Frontend\ChangelogController;
 use App\Http\Controllers\Frontend\DebugController;
-use App\Http\Controllers\Frontend\DevController;
 use App\Http\Controllers\Frontend\EventController;
 use App\Http\Controllers\Frontend\IcsController;
 use App\Http\Controllers\Frontend\LandingPageController;
 use App\Http\Controllers\Frontend\LeaderboardController;
-use App\Http\Controllers\Frontend\SettingsController;
 use App\Http\Controllers\Frontend\Social\MastodonController;
 use App\Http\Controllers\Frontend\Stats\DailyStatsController;
 use App\Http\Controllers\Frontend\Transport\StatusController;
@@ -28,9 +25,7 @@ use App\Http\Controllers\Frontend\VueFrontendController;
 use App\Http\Controllers\Frontend\WebFingerController;
 use App\Http\Controllers\FrontendStatusController;
 use App\Http\Controllers\FrontendUserController;
-use App\Http\Controllers\PrivacyAgreementController;
 use App\Http\Controllers\SitemapController;
-use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -47,8 +42,7 @@ Route::permanentRedirect('/about', 'https://help.traewelling.de/faq/');
 Route::prefix('legal')->group(function () {
     Route::view('/', 'legal.notice')
         ->name('legal.notice');
-    Route::get('/privacy-policy', [PrivacyAgreementController::class, 'intercept'])->name('legal.privacy');
-    Route::get('/privacy-policy/{id}', [PrivacyAgreementController::class, 'intercept']);
+    Route::view('/privacy-policy/{id?}', 'legal.privacy-interception')->name('legal.privacy');
 });
 
 Route::get('/@{username}', [FrontendUserController::class, 'getProfilePage'])
@@ -87,14 +81,9 @@ Route::get('/status/{id}', [FrontendStatusController::class, 'getStatus'])
 Route::middleware(['auth'])->group(function () {
     Route::personalDataExports('personal-data-exports');
 
-    Route::get('/gdpr-intercept', [PrivacyAgreementController::class, 'intercept'])
+    Route::view('/gdpr-intercept', 'legal.privacy-interception')
         ->name('gdpr.intercept');
 
-    Route::post('/gdpr-ack', [PrivacyAgreementController::class, 'ack'])
-        ->name('gdpr.ack');
-
-    Route::post('/settings/destroy', [AccountController::class, 'deleteUserAccount'])
-        ->name('account.destroy');
 });
 
 Route::get('/ics', [IcsController::class, 'renderIcs'])
@@ -111,11 +100,6 @@ Route::middleware(['auth', 'privacy'])->group(function () {
 
     Route::view('/trip/create', 'beta.trip-creation')
         ->name('trip.create');
-
-    Route::post('/ics/createPersonalAccessToken', [IcsController::class, 'createIcsToken'])
-        ->name('ics.createPersonalAccessToken'); // TODO: Replace with API Endpoint
-    Route::post('/ics/revokeToken', [IcsController::class, 'revokeIcsToken'])
-        ->name('ics.revokeToken'); // TODO: Replace with API Endpoint
 
     Route::prefix('stats')->group(static function () {
         Route::permanentRedirect('/', '/statistics');
@@ -136,61 +120,7 @@ Route::middleware(['auth', 'privacy'])->group(function () {
     });
 
     Route::prefix('settings')->group(function () {
-
-        Route::prefix('/applications')->group(function () {
-            Route::get('/', [DevController::class, 'renderAppList'])->name('dev.apps');
-            Route::post('/createPersonalAccessToken', [DevController::class, 'createPersonalAccessToken'])
-                ->name('dev.apps.createPersonalAccessToken');
-            Route::get('/create', [DevController::class, 'renderCreateApp'])->name('dev.apps.create');
-            Route::get('/{clientId}/webhook-stats', fn () => view('vue.spa'))
-                ->middleware('role:open-beta')
-                ->name('dev.apps.webhook-stats');
-            Route::get('/{appId}', [DevController::class, 'renderUpdateApp'])->name('dev.apps.edit');
-            Route::post('/{appId}', [DevController::class, 'updateApp'])->name('dev.apps.update');           // TODO: Replace with API Endpoint
-            Route::post('/{appId}/destroy', [DevController::class, 'destroyApp'])->name('dev.apps.destroy'); // TODO: Replace with API Endpoint
-            Route::post('/', [DevController::class, 'createApp'])->name('dev.apps.create.post');             // TODO: Replace with API Endpoint
-        });
-
-        Route::redirect('/', '/settings/profile')->name('settings');
-        Route::view('/profile', 'settings.profile')->name('settings.profile');
-        Route::view('/privacy', 'settings.privacy')->name('settings.privacy');
-        Route::post('/update/privacy', [SettingsController::class, 'updatePrivacySettings'])
-            ->name('settings.privacy.update');
-
-        Route::view('/account', 'settings.account')
-            ->name('settings.account');
-        Route::post('/account/update', [SettingsController::class, 'updatePassword'])
-            ->name('password.change');
-
-        Route::view('/security', 'settings.account');
-        Route::view('/security/login-providers', 'settings.login-providers')
-            ->name('settings.login-providers');
-        Route::get('/security/sessions', [SettingsController::class, 'renderSessions'])
-            ->name('settings.sessions');
-
-        Route::get('/security/ics', [SettingsController::class, 'renderIcs'])->name('settings.ics');
-        Route::get('/security/api-tokens', [SettingsController::class, 'renderToken'])->name('settings.tokens');
-        Route::view('/security/webhooks', 'settings.webhooks')->name('settings.webhooks');
-
-        Route::get('/follower', [SettingsController::class, 'renderFollowerSettings'])
-            ->name('settings.follower');
-        Route::post('/follower/remove', [App\Http\Controllers\SettingsController::class, 'removeFollower'])
-            ->name('settings.follower.remove'); // TODO: Replace with API Endpoint
-        Route::post('/follower/approve', [SettingsController::class, 'approveFollower'])
-            ->name('settings.follower.approve'); // TODO: Replace with API Endpoint
-        Route::post('/follower/reject', [SettingsController::class, 'rejectFollower'])
-            ->name('settings.follower.reject'); // TODO: Replace with API Endpoint
-
-        Route::view('/blocks', 'settings.blocks')->name('settings.blocks');
-        Route::view('/mutes', 'settings.mutes')->name('settings.mutes');
-
-        Route::post('/delsession', [UserController::class, 'deleteSession'])
-            ->name('delsession'); // TODO: Replace with API Endpoint
-        Route::post('/deltoken', [UserController::class, 'deleteToken'])
-            ->name('deltoken'); // TODO: Replace with API Endpoint
-        Route::get('/{any?}', function () {
-            return view('vue.spa');
-        })->where('any', '.*')->name('settings.vue');
+        Route::get('/{any?}', fn () => view('vue.spa'))->where('any', '.*');
     });
 
     Route::view('/dashboard', 'vue.dashboard')
@@ -204,29 +134,12 @@ Route::middleware(['auth', 'privacy'])->group(function () {
     Route::view('/tickets', 'vue.tickets')->name('tickets');
     Route::view('/tickets/{id}', 'vue.ticket-detail')->name('tickets.detail');
 
-    Route::post('/createfollow', [FrontendUserController::class, 'CreateFollow'])
-        ->name('follow.create'); // TODO: Replace with API Endpoint
-
-    Route::post('/requestfollow', [FrontendUserController::class, 'requestFollow'])
-        ->name('follow.request'); // TODO: Replace with API Endpoint
-
-    Route::post('/destroyfollow', [FrontendUserController::class, 'destroyFollow'])
-        ->name('follow.destroy'); // TODO: Replace with API Endpoint
-
     Route::get('/stationboard', [VueFrontendController::class, 'stationBoard'])->name('stationboard');
 
     Route::redirect('/trains/stationboard', '/stationboard')->name('trains.stationboard');
 
     Route::get('/search/', [FrontendUserController::class, 'searchUser'])->name('userSearch');
 
-    Route::post('/user/block', [App\Http\Controllers\Frontend\UserController::class, 'blockUser'])
-        ->name('user.block'); // TODO: Replace with API Endpoint
-    Route::post('/user/unblock', [App\Http\Controllers\Frontend\UserController::class, 'unblockUser'])
-        ->name('user.unblock'); // TODO: Replace with API Endpoint
-    Route::post('/user/mute', [App\Http\Controllers\Frontend\UserController::class, 'muteUser'])
-        ->name('user.mute'); // TODO: Replace with API Endpoint
-    Route::post('/user/unmute', [App\Http\Controllers\Frontend\UserController::class, 'unmuteUser'])
-        ->name('user.unmute'); // TODO: Replace with API Endpoint
 });
 
 Route::get('/sitemap.xml', [SitemapController::class, 'renderSitemap']);

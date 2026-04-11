@@ -55,9 +55,16 @@ getFollowers();
 <template>
     <SettingsLayout>
         <FollowersSubMenu />
-        <ul v-if="followers" class="list bg-base-100 rounded-box shadow-md mt-2">
-            <li v-for="follower in followers" :key="follower.id" class="list-row items-center">
-                <div class="flex items-center gap-3">
+        <div class="mt-4">
+            <div v-if="loading && followers.length === 0" class="flex justify-center py-12">
+                <span class="loading loading-spinner loading-lg"></span>
+            </div>
+            <div v-else-if="!loading && followers.length === 0" class="text-center py-12 text-base-content/50">
+                <UserRoundX class="size-8 mx-auto mb-2" />
+                <p>{{ trans('settings.follower.no-follower') }}</p>
+            </div>
+            <ul v-else class="list bg-base-100 rounded-box shadow-md mt-2">
+                <li v-for="follower in followers" :key="follower.id" class="list-row items-center">
                     <div class="avatar">
                         <div class="rounded-full w-12 h-12">
                             <a :href="`/@${follower.username}`">
@@ -65,35 +72,23 @@ getFollowers();
                             </a>
                         </div>
                     </div>
-                </div>
-
-                <div class="list-col-grow">
-                    <a :href="`/@${follower.username}`">
-                        <h6 class="mb-0">
-                            {{ follower.displayName }}
-                        </h6>
-                        <p class="mb-0 opacity-75">@{{ follower.username }}</p>
-                    </a>
-                </div>
-                <button role="button" class="btn btn-sm btn-error" @click="removeUser(follower)">
-                    <UserMinus class="w-4 h-4" />
-                    {{ trans('settings.follower.delete') }}
+                    <div class="list-col-grow">
+                        <a :href="`/@${follower.username}`">
+                            <h6 class="mb-0">{{ follower.displayName }}</h6>
+                            <p class="mb-0 opacity-75">@{{ follower.username }}</p>
+                        </a>
+                    </div>
+                    <button role="button" class="btn btn-sm btn-error" @click="removeUser(follower)">
+                        <UserMinus class="w-4 h-4" />
+                        {{ trans('settings.follower.delete') }}
+                    </button>
+                </li>
+            </ul>
+            <div v-if="hasMorePages" class="text-center w-full mt-4">
+                <button class="btn" :disabled="loading" @click.prevent="getFollowers">
+                    {{ loading ? trans('menu.loading') : trans('menu.show-more') }}
                 </button>
-            </li>
-        </ul>
-        <div class="flex justify-center">
-            <span v-if="loading" class="my-4 loading loading-spinner text-primary">
-                {{ trans('menu.loading') }}
-            </span>
-            <span v-if="!loading && followers.length <= 0" class="my-4 text-error">
-                <UserRoundX class="size-5 inline" />
-                {{ trans('settings.follower.no-follower') }}
-            </span>
-        </div>
-        <div v-if="hasMorePages" class="text-center w-full mt-4">
-            <button class="btn" :disabled="loading" @click.prevent="getFollowers">
-                {{ loading ? trans('menu.loading') : trans('menu.show-more') }}
-            </button>
+            </div>
         </div>
     </SettingsLayout>
 </template>

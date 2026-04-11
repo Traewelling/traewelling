@@ -7,13 +7,17 @@ import EventList from '../pages/Events/EventList.vue';
 import Leaderboard from '../pages/Leaderboard/Leaderboard.vue';
 import MonthlyLeaderboard from '../pages/Leaderboard/MonthlyLeaderboard.vue';
 import Account from '../pages/Settings/Account/Account.vue';
+import Applications from '../pages/Settings/Applications/Applications.vue';
 import WebhookStats from '../pages/Settings/Applications/WebhookStats.vue';
+import Blocks from '../pages/Settings/Blocks/Blocks.vue';
 import Followers from '../pages/Settings/Followers/Followers.vue';
 import Followings from '../pages/Settings/Followers/Followings.vue';
 import FollowRequests from '../pages/Settings/Followers/FollowRequests.vue';
+import Mutes from '../pages/Settings/Mutes/Mutes.vue';
 import Privacy from '../pages/Settings/Privacy/Privacy.vue';
 import ProfileSettings from '../pages/Settings/Profile/Profile.vue';
 import Security from '../pages/Settings/Services/Security.vue';
+import Wellbeing from '../pages/Settings/Wellbeing/Wellbeing.vue';
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -33,6 +37,24 @@ const routes: Array<RouteRecordRaw> = [
         name: 'events-suggest',
         component: SuggestEvent,
         meta: { title: 'contribute.suggest_event.title' },
+    },
+    {
+        path: '/settings/blocks',
+        name: 'settings-blocks',
+        component: Blocks,
+        meta: { title: 'user.blocked.heading2' },
+    },
+    {
+        path: '/settings/mutes',
+        name: 'settings-mutes',
+        component: Mutes,
+        meta: { title: 'user.muted.heading2' },
+    },
+    {
+        path: '/settings/applications',
+        name: 'settings-applications',
+        component: Applications,
+        meta: { title: 'your-apps' },
     },
     {
         path: '/settings/applications/:clientId/webhook-stats',
@@ -83,6 +105,12 @@ const routes: Array<RouteRecordRaw> = [
         meta: { title: 'menu.privacy' },
     },
     {
+        path: '/settings/wellbeing',
+        name: 'settings-wellbeing',
+        component: Wellbeing,
+        meta: { title: 'settings.tab.wellbeing' },
+    },
+    {
         path: '/events',
         name: 'event-list',
         component: EventList,
@@ -104,6 +132,15 @@ const routes: Array<RouteRecordRaw> = [
         path: '/leaderboard/monthly/:month',
         name: 'leaderboard-monthly',
         component: MonthlyLeaderboard,
+    },
+    {
+        path: '/settings',
+        redirect: '/settings/profile',
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        name: 'not-found',
+        component: () => import('../pages/NotFound.vue'),
     },
 ];
 

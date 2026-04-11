@@ -30,5 +30,10 @@ function updateLikes(value: boolean) {
 </script>
 
 <template>
-    <SettingsToggleListRow :checked="profile.likesEnabled" :title="trans('user.likes-enabled')" @change="updateLikes" />
+    <SettingsToggleListRow
+        :checked="profile.likesEnabled"
+        :title="trans('user.likes-enabled')"
+        :description="trans('user.likes-enabled.description')"
+        @change="updateLikes"
+    />
 </template>

@@ -26,7 +26,12 @@ function updateUsername() {
 </script>
 
 <template>
-    <SettingsListRow :title="trans('user.username')" :badge="`@${profile.username}`" @click="modal?.showModal()" />
+    <SettingsListRow
+        :title="trans('user.username')"
+        :description="trans('user.username.description')"
+        :badge="`@${profile.username}`"
+        @click="modal?.showModal()"
+    />
     <dialog ref="modal" class="modal">
         <div class="modal-box">
             <h3 class="text-lg font-bold">{{ trans('user.username') }}</h3>

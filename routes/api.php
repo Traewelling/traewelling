@@ -67,6 +67,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
     Route::prefix('privacy-policies')->group(static function () {
         Route::get('current', [PrivacyPolicyController::class, 'getPrivacyPolicy'])->name('api.v1.getPrivacyPolicy');
         Route::put('{id}/acceptance', [PrivacyPolicyController::class, 'accept'])
+            ->middleware('auth:api')
             ->withoutMiddleware('privacy-policy');
     });
 
@@ -159,11 +160,11 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
                 ->middleware(['scope:write-settings-mail']);
             Route::post('email/verification', [SettingsController::class, 'resendMail'])
                 ->middleware(['scope:write-settings-mail']);
-            Route::put('password', [SettingsController::class, 'updatePassword']) // TODO: undocumented endpoint - document when stable
-                ->middleware(['scope:extra-write-password']);
+            Route::put('password', [SettingsController::class, 'updatePassword'])
+                ->middleware(['personal-token']);
 
             Route::delete('account', [UserController::class, 'deleteAccount'])
-                ->middleware(['scope:extra-delete'])
+                ->middleware(['personal-token'])
                 ->withoutMiddleware('privacy-policy');
         });
 
@@ -174,7 +175,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::group(['middleware' => ['scope:extra-terminate-sessions']], static function () {
                 Route::get('sessions', [SessionController::class, 'index']);
                 Route::delete('sessions', [SessionController::class, 'deleteAllSessions']);
-                Route::post('tokens', [TokenController::class, 'createToken']);
+                Route::post('tokens', [TokenController::class, 'createToken'])->middleware('personal-token');
                 Route::get('tokens', [TokenController::class, 'index']);
                 Route::delete('tokens', [TokenController::class, 'revokeAllTokens']);
                 Route::delete('tokens/{tokenId}', [TokenController::class, 'revokeToken']);
@@ -192,11 +193,18 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::get('applications/{clientId}/webhook-stats', [ApplicationController::class, 'webhookStats'])
             ->name('api.applications.webhook-stats');
 
+        Route::middleware('personal-token')->group(function () {
+            Route::get('applications', [ApplicationController::class, 'index'])->name('api.applications.index');
+            Route::post('applications', [ApplicationController::class, 'store'])->name('api.applications.store');
+            Route::put('applications/{clientId}', [ApplicationController::class, 'update'])->name('api.applications.update');
+            Route::delete('applications/{clientId}', [ApplicationController::class, 'destroy'])->name('api.applications.destroy');
+        });
+
         Route::apiResource('station', StationController::class); // TODO: rename to "stations" when stable
         Route::apiResource('stations', StationController::class);
         Route::put('station/{oldStationId}/merge/{newStationId}', [StationController::class, 'merge']); // currently admin/backend only
 
-        Route::group(['prefix' => 'user/self'], static function () {
+        Route::group(['prefix' => 'user/self'], static function () { // move new endpoints to users/self to comply api guidelines
             Route::group(['middleware' => ['scope:read-settings-followers']], static function () {
                 Route::get('followers', [FollowController::class, 'getFollowers']);
                 Route::get('follow-requests', [FollowController::class, 'getFollowRequests']);
@@ -209,6 +217,11 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             });
 
             Route::get('trusted-by', [TrustedUserController::class, 'indexTrustedBy']);
+        });
+
+        Route::group(['prefix' => 'users/self', 'middleware' => ['scope:write-blocks']], static function () {
+            Route::get('blocks', [UserController::class, 'getBlockedUsers']);
+            Route::get('mutes', [UserController::class, 'getMutedUsers']);
         });
 
         Route::apiResource('user.trusted', TrustedUserController::class)->only(['index', 'store', 'destroy']);

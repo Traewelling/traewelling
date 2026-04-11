@@ -1145,6 +1145,185 @@
                 ]
             }
         },
+        "/applications": {
+            "get": {
+                "tags": [
+                    "Applications"
+                ],
+                "summary": "List OAuth applications",
+                "description": "Returns all OAuth applications owned by the authenticated user. Requires a personal access token, third-party OAuth application tokens are not accepted.",
+                "operationId": "getApplications",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/OAuthClientResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Applications"
+                ],
+                "summary": "Create OAuth application",
+                "description": "Create a new OAuth application for the authenticated user. Requires a personal access token — third-party OAuth application tokens are not accepted.",
+                "operationId": "createApplication",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreOAuthClientRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/OAuthClientResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/applications/{clientId}": {
+            "put": {
+                "tags": [
+                    "Applications"
+                ],
+                "summary": "Update OAuth application",
+                "description": "Update an OAuth application owned by the authenticated user. Requires a personal access token, third-party OAuth application tokens are not accepted.",
+                "operationId": "updateApplication",
+                "parameters": [
+                    {
+                        "name": "clientId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreOAuthClientRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/OAuthClientResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Applications"
+                ],
+                "summary": "Delete OAuth application",
+                "description": "Delete an OAuth application owned by the authenticated user. Requires a personal access token, third-party OAuth application tokens are not accepted.",
+                "operationId": "deleteApplication",
+                "parameters": [
+                    {
+                        "name": "clientId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/applications/{clientId}/webhook-stats": {
             "get": {
                 "tags": [
@@ -3858,6 +4037,80 @@
                 ]
             }
         },
+        "/settings/password": {
+            "put": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Change password",
+                "description": "Change the current user's password.",
+                "operationId": "updatePassword",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "currentPassword": {
+                                        "description": "Current password (required if the account has a password set)",
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "minLength": 8
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Password changed successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserProfileSettingsResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/settings/profile-picture": {
             "post": {
                 "tags": [
@@ -6248,7 +6501,7 @@
                     "Security"
                 ],
                 "summary": "Create API token",
-                "description": "Create a new API token for the authenticated user",
+                "description": "Create a new API token for the authenticated user. Requires a personal access token, third-party OAuth application tokens are not accepted.",
                 "operationId": "createToken",
                 "responses": {
                     "201": {
@@ -6282,9 +6535,7 @@
                 },
                 "security": [
                     {
-                        "passport": [
-                            "scope:extra-terminate-sessions"
-                        ]
+                        "token": []
                     }
                 ]
             },
@@ -7264,24 +7515,22 @@
                     "200": {
                         "description": "successful operation"
                     },
-                    "409": {
-                        "description": "Conflict. This should not happen but it tries to prevent a 500."
-                    },
                     "400": {
-                        "description": "Bad request"
+                        "description": "Bad Request"
                     },
                     "401": {
-                        "description": "Not logged in"
+                        "description": "Unauthenticated"
                     },
                     "403": {
-                        "description": "User not authorized to do this action"
+                        "description": "Forbidden"
+                    },
+                    "409": {
+                        "description": "Conflict. This should not happen but it tries to prevent a 500."
                     }
                 },
                 "security": [
                     {
-                        "passport": [
-                            "extra-delete"
-                        ]
+                        "passport": []
                     },
                     {
                         "token": []
@@ -7716,6 +7965,92 @@
                     {
                         "passport": [
                             "write-block"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/users/self/blocks": {
+            "get": {
+                "tags": [
+                    "User/Hide and Block"
+                ],
+                "summary": "List blocked users",
+                "description": "Returns all users blocked by the authenticated user.",
+                "operationId": "getBlockedUsers",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/LightUserResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-blocks"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/users/self/mutes": {
+            "get": {
+                "tags": [
+                    "User/Hide and Block"
+                ],
+                "summary": "List muted users",
+                "description": "Returns all users muted by the authenticated user.",
+                "operationId": "getMutedUsers",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/LightUserResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-blocks"
                         ]
                     },
                     {
@@ -8959,6 +9294,42 @@
                 },
                 "type": "object"
             },
+            "StoreOAuthClientRequest": {
+                "title": "StoreOAuthClientRequest",
+                "required": [
+                    "name",
+                    "redirect"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "My App"
+                    },
+                    "redirect": {
+                        "type": "string",
+                        "example": "https://example.com/callback"
+                    },
+                    "confidential": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "webhooksEnabled": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "authorizedWebhookUrl": {
+                        "type": "string",
+                        "example": "https://example.com/webhook",
+                        "nullable": true
+                    },
+                    "privacyPolicyUrl": {
+                        "type": "string",
+                        "example": "https://example.com/privacy",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
             "UpdateProfileInformationRequest": {
                 "title": "UpdateProfileInformationRequest",
                 "description": "UpdateProfileInformationRequest",
@@ -10167,6 +10538,72 @@
                 },
                 "type": "object"
             },
+            "OAuthClientResource": {
+                "title": "OAuthClientResource",
+                "description": "OAuth application owned by the authenticated user",
+                "required": [
+                    "id",
+                    "name",
+                    "redirect",
+                    "confidential",
+                    "webhooksEnabled",
+                    "activeTokensCount",
+                    "hasWebhooks",
+                    "createdAt"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 42
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "My App"
+                    },
+                    "redirect": {
+                        "type": "string",
+                        "example": "https://example.com/callback"
+                    },
+                    "confidential": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "webhooksEnabled": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "authorizedWebhookUrl": {
+                        "type": "string",
+                        "example": "https://example.com/webhook",
+                        "nullable": true
+                    },
+                    "privacyPolicyUrl": {
+                        "type": "string",
+                        "example": "https://example.com/privacy",
+                        "nullable": true
+                    },
+                    "activeTokensCount": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "hasWebhooks": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "plainSecret": {
+                        "description": "Only present immediately after creation or secret regeneration",
+                        "type": "string",
+                        "example": "abc123",
+                        "nullable": true
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-01-01T00:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
             "OperatorIdentifierResource": {
                 "required": [
                     "type",
@@ -10266,25 +10703,47 @@
             },
             "Privacy Policy": {
                 "required": [
+                    "id",
                     "validFrom",
                     "de",
                     "en",
-                    "acceptedAt"
+                    "acceptedAt",
+                    "hasOldAcceptance"
                 ],
                 "properties": {
+                    "id": {
+                        "description": "UUID of the privacy policy",
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "00000000-0000-0000-0000-000000000000"
+                    },
                     "validFrom": {
+                        "description": "Date and time from which this privacy policy is valid",
+                        "type": "string",
+                        "format": "date-time",
                         "example": "2022-01-05T16:26:14.000000Z"
                     },
                     "en": {
+                        "description": "Privacy policy text in English (Markdown)",
+                        "type": "string",
                         "example": "This is the english privacy policy"
                     },
                     "de": {
+                        "description": "Privacy policy text in German (Markdown)",
+                        "type": "string",
                         "example": "Dies ist die deutsche Datenschutzerklärung"
                     },
                     "acceptedAt": {
-                        "description": "Has the current user already accepted this Privacy Policy?",
+                        "description": "When the current user accepted this privacy policy. Null if not yet accepted.",
+                        "type": "string",
+                        "format": "date-time",
                         "example": "2022-01-05T16:26:14.000000Z",
                         "nullable": true
+                    },
+                    "hasOldAcceptance": {
+                        "description": "True if the user has accepted a previous (now outdated) version of the privacy policy.",
+                        "type": "boolean",
+                        "example": false
                     }
                 },
                 "type": "object"

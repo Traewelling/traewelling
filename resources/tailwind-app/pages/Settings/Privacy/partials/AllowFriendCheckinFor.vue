@@ -60,6 +60,7 @@ function updateVisibility() {
 <template>
     <SettingsListRow
         :title="trans('settings.allow_friend_checkin_for')"
+        :description="trans('settings.friend_checkin.description')"
         :badge="getLabel(profile.friendCheckin)"
         @click.prevent="modal?.showModal()"
     />

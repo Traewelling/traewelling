@@ -731,6 +731,22 @@ export interface CheckinRequestBody {
   with?: number[] | null;
 }
 
+/** StoreOAuthClientRequest */
+export interface StoreOAuthClientRequest {
+  /** @example "My App" */
+  name: string;
+  /** @example "https://example.com/callback" */
+  redirect: string;
+  /** @example true */
+  confidential?: boolean;
+  /** @example false */
+  webhooksEnabled?: boolean;
+  /** @example "https://example.com/webhook" */
+  authorizedWebhookUrl?: string | null;
+  /** @example "https://example.com/privacy" */
+  privacyPolicyUrl?: string | null;
+}
+
 /**
  * UpdateProfileInformationRequest
  * UpdateProfileInformationRequest
@@ -1448,6 +1464,41 @@ export interface Links {
   next?: string | null;
 }
 
+/**
+ * OAuthClientResource
+ * OAuth application owned by the authenticated user
+ */
+export interface OAuthClientResource {
+  /** @example 42 */
+  id: number;
+  /** @example "My App" */
+  name: string;
+  /** @example "https://example.com/callback" */
+  redirect: string;
+  /** @example true */
+  confidential: boolean;
+  /** @example false */
+  webhooksEnabled: boolean;
+  /** @example "https://example.com/webhook" */
+  authorizedWebhookUrl?: string | null;
+  /** @example "https://example.com/privacy" */
+  privacyPolicyUrl?: string | null;
+  /** @example 3 */
+  activeTokensCount: number;
+  /** @example true */
+  hasWebhooks: boolean;
+  /**
+   * Only present immediately after creation or secret regeneration
+   * @example "abc123"
+   */
+  plainSecret?: string | null;
+  /**
+   * @format date-time
+   * @example "2026-01-01T00:00:00Z"
+   */
+  createdAt: string;
+}
+
 export interface OperatorIdentifierResource {
   /** @example "motis" */
   type: string;
@@ -1507,17 +1558,39 @@ export interface PaginationMeta {
 }
 
 export interface PrivacyPolicy {
-  /** @example "2022-01-05T16:26:14.000000Z" */
-  validFrom: any;
-  /** @example "This is the english privacy policy" */
-  en: any;
-  /** @example "Dies ist die deutsche Datenschutzerklärung" */
-  de: any;
   /**
-   * Has the current user already accepted this Privacy Policy?
+   * UUID of the privacy policy
+   * @format uuid
+   * @example "00000000-0000-0000-0000-000000000000"
+   */
+  id: string;
+  /**
+   * Date and time from which this privacy policy is valid
+   * @format date-time
    * @example "2022-01-05T16:26:14.000000Z"
    */
-  acceptedAt: any;
+  validFrom: string;
+  /**
+   * Privacy policy text in English (Markdown)
+   * @example "This is the english privacy policy"
+   */
+  en: string;
+  /**
+   * Privacy policy text in German (Markdown)
+   * @example "Dies ist die deutsche Datenschutzerklärung"
+   */
+  de: string;
+  /**
+   * When the current user accepted this privacy policy. Null if not yet accepted.
+   * @format date-time
+   * @example "2022-01-05T16:26:14.000000Z"
+   */
+  acceptedAt: string | null;
+  /**
+   * True if the user has accepted a previous (now outdated) version of the privacy policy.
+   * @example false
+   */
+  hasOldAcceptance: boolean;
 }
 
 /**
@@ -3279,6 +3352,105 @@ export class Api<
       }),
   };
   applications = {
+    /**
+     * @description Returns all OAuth applications owned by the authenticated user. Requires a personal access token, third-party OAuth application tokens are not accepted.
+     *
+     * @tags Applications
+     * @name GetApplications
+     * @summary List OAuth applications
+     * @request GET:/applications
+     * @secure
+     */
+    getApplications: (params: RequestParams = {}) =>
+      this.request<
+        {
+          data?: OAuthClientResource[];
+        },
+        void
+      >({
+        path: `/applications`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Create a new OAuth application for the authenticated user. Requires a personal access token — third-party OAuth application tokens are not accepted.
+     *
+     * @tags Applications
+     * @name CreateApplication
+     * @summary Create OAuth application
+     * @request POST:/applications
+     * @secure
+     */
+    createApplication: (
+      data: StoreOAuthClientRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          /** OAuth application owned by the authenticated user */
+          data?: OAuthClientResource;
+        },
+        void
+      >({
+        path: `/applications`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Update an OAuth application owned by the authenticated user. Requires a personal access token, third-party OAuth application tokens are not accepted.
+     *
+     * @tags Applications
+     * @name UpdateApplication
+     * @summary Update OAuth application
+     * @request PUT:/applications/{clientId}
+     * @secure
+     */
+    updateApplication: (
+      clientId: number,
+      data: StoreOAuthClientRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          /** OAuth application owned by the authenticated user */
+          data?: OAuthClientResource;
+        },
+        void
+      >({
+        path: `/applications/${clientId}`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Delete an OAuth application owned by the authenticated user. Requires a personal access token, third-party OAuth application tokens are not accepted.
+     *
+     * @tags Applications
+     * @name DeleteApplication
+     * @summary Delete OAuth application
+     * @request DELETE:/applications/{clientId}
+     * @secure
+     */
+    deleteApplication: (clientId: number, params: RequestParams = {}) =>
+      this.request<void, void>({
+        path: `/applications/${clientId}`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
     /**
      * @description Returns webhook call log statistics for the last 7 days for a given OAuth application. Only the application owner or admins can access it.
      *
@@ -5172,7 +5344,7 @@ export class Api<
       }),
 
     /**
-     * @description Create a new API token for the authenticated user
+     * @description Create a new API token for the authenticated user. Requires a personal access token, third-party OAuth application tokens are not accepted.
      *
      * @tags Security
      * @name CreateToken
@@ -5339,6 +5511,47 @@ export class Api<
         path: `/settings/email/verification`,
         method: "POST",
         secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Change the current user's password.
+     *
+     * @tags Settings
+     * @name UpdatePassword
+     * @summary Change password
+     * @request PUT:/settings/password
+     * @secure
+     */
+    updatePassword: (
+      data: {
+        /**
+         * Current password (required if the account has a password set)
+         * @format password
+         */
+        currentPassword?: string;
+        /**
+         * @format password
+         * @minLength 8
+         */
+        password: string;
+        /** @format password */
+        password_confirmation: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data?: UserProfileSettingsResource;
+        },
+        void
+      >({
+        path: `/settings/password`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
         ...params,
       }),
 
@@ -6586,6 +6799,53 @@ export class Api<
         body: data,
         secure: true,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+  };
+  users = {
+    /**
+     * @description Returns all users blocked by the authenticated user.
+     *
+     * @tags User/Hide and Block
+     * @name GetBlockedUsers
+     * @summary List blocked users
+     * @request GET:/users/self/blocks
+     * @secure
+     */
+    getBlockedUsers: (params: RequestParams = {}) =>
+      this.request<
+        {
+          data?: LightUserResource[];
+        },
+        void
+      >({
+        path: `/users/self/blocks`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Returns all users muted by the authenticated user.
+     *
+     * @tags User/Hide and Block
+     * @name GetMutedUsers
+     * @summary List muted users
+     * @request GET:/users/self/mutes
+     * @secure
+     */
+    getMutedUsers: (params: RequestParams = {}) =>
+      this.request<
+        {
+          data?: LightUserResource[];
+        },
+        void
+      >({
+        path: `/users/self/mutes`,
+        method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),

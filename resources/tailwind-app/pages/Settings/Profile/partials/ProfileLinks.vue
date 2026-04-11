@@ -79,7 +79,11 @@ function removeLink(): void {
 </script>
 
 <template>
-    <SettingsListRow :title="trans('settings.profile.links')" @click="modal?.showModal()" />
+    <SettingsListRow
+        :title="trans('settings.profile.links')"
+        :description="trans('settings.profile.links.description')"
+        @click="modal?.showModal()"
+    />
     <dialog ref="modal" class="modal">
         <div class="modal-box">
             <template v-if="selectedProvider === null">

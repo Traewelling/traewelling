@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
+use App\Dto\PrivacyPolicyWithAcceptance;
 use App\Exceptions\AcceptingOldPrivacyPolicyException;
 use App\Exceptions\AlreadyAcceptedException;
 use App\Models\PrivacyPolicy;
@@ -76,5 +79,24 @@ readonly class PrivacyPolicyService
     public function getLastAcceptedPolicy(User $user): ?PrivacyPolicyAcceptance
     {
         return $this->repository->getLastAcceptedPolicy($user);
+    }
+
+    /**
+     * Returns the current privacy policy together with the given user's acceptance status.
+     */
+    public function getPolicyWithAcceptanceStatus(?User $user): PrivacyPolicyWithAcceptance
+    {
+        $policy = $this->getPrivacyPolicy();
+        $acceptedAt = null;
+        $hasOldAcceptance = false;
+
+        if ($user !== null) {
+            $allAcceptances = $this->getUserAcceptance($user);
+            $ownAcceptance = $allAcceptances->firstWhere('privacy_policy_id', $policy->id);
+            $acceptedAt = $ownAcceptance?->accepted_at;
+            $hasOldAcceptance = $acceptedAt === null && $allAcceptances->isNotEmpty();
+        }
+
+        return new PrivacyPolicyWithAcceptance($policy, $acceptedAt, $hasOldAcceptance);
     }
 }

@@ -41,9 +41,9 @@ class TokenController extends Controller
     #[OA\Post(
         path: '/security/tokens',
         operationId: 'createToken',
-        description: 'Create a new API token for the authenticated user',
+        description: 'Create a new API token for the authenticated user. Requires a personal access token, third-party OAuth application tokens are not accepted.',
         summary: 'Create API token',
-        security: [['passport' => ['scope:extra-terminate-sessions']]],
+        security: [['token' => []]],
         tags: ['Security'],
         responses: [
             new OA\Response(

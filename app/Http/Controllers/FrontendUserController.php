@@ -2,17 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\AlreadyFollowingException;
 use App\Http\Controllers\Backend\UserController as UserControllerAlias;
-use App\Http\Controllers\UserController as UserBackend;
-use App\Models\Follow;
 use App\Models\User;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Support\Renderable;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -29,70 +23,6 @@ class FrontendUserController extends Controller
         return view('profile.profile', [
             'user' => $user,
         ]);
-    }
-
-    /**
-     * @deprecated
-     */
-    public function CreateFollow(Request $request): JsonResponse
-    {
-        $validated = $request->validate([
-            'follow_id' => ['required', 'exists:users,id'],
-        ]);
-
-        $userToFollow = User::find($validated['follow_id']);
-
-        try {
-            $this->authorize('create', Follow::class);
-            $createFollowResponse = UserBackend::createFollow(Auth::user(), $userToFollow);
-        } catch (AlreadyFollowingException) {
-            return response()->json(['message' => __('controller.user.follow-error')], 409);
-        } catch (AuthorizationException) {
-            return response()->json(['message' => __('profile.youre-blocked-text')], 403);
-        }
-        if (!$createFollowResponse) {
-            abort(409);
-        }
-
-        return response()->json(['message' => __('controller.user.follow-ok')], 201);
-    }
-
-    public function requestFollow(Request $request): JsonResponse
-    {
-        $validated = $request->validate([
-            'follow_id' => ['required', 'exists:users,id'],
-        ]);
-
-        $userToFollow = User::find($validated['follow_id']);
-
-        try {
-            $createFollowResponse = UserBackend::requestFollow(Auth::user(), $userToFollow);
-        } catch (AlreadyFollowingException) {
-            return response()->json(['message' => __('controller.user.follow-request-already-exists')], 409);
-        }
-        if ($createFollowResponse === false) {
-            abort(409);
-        }
-
-        return response()->json(['message' => __('controller.user.follow-request-ok')], 201);
-    }
-
-    /**
-     * @deprecated
-     */
-    public function destroyFollow(Request $request): JsonResponse
-    {
-        $validated = $request->validate([
-            'follow_id' => ['required', 'exists:users,id'],
-        ]);
-        $userToUnfollow = User::find($validated['follow_id']);
-
-        $destroyFollowResponse = UserBackend::destroyFollow(Auth::user(), $userToUnfollow);
-        if ($destroyFollowResponse === false) {
-            return response()->json(['message' => __('controller.user.follow-404')], 409);
-        }
-
-        return response()->json(['message' => __('controller.user.follow-destroyed')], 200);
     }
 
     public function searchUser(Request $request): Renderable|RedirectResponse

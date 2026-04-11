@@ -38,9 +38,11 @@ class PrivacyPolicyController extends Controller
             ),
         ],
     )]
-    public function getPrivacyPolicy(Request $request): PrivacyPolicyResource
+    public function getPrivacyPolicy(): PrivacyPolicyResource
     {
-        return new PrivacyPolicyResource($this->privacyPolicyService->getPrivacyPolicy());
+        return new PrivacyPolicyResource(
+            $this->privacyPolicyService->getPolicyWithAcceptanceStatus(auth()->user())
+        );
     }
 
     #[OA\Put(

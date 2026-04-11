@@ -31,29 +31,29 @@ class UserBlockTest extends ApiTestCase
 
     private function aliceBlocksBob(): void
     {
-        $this->actingAs($this->alice)
-            ->post(route('user.block'), ['user_id' => $this->bob->id]);
+        Passport::actingAs($this->alice, ['*']);
+        $this->postJson('/api/v1/user/' . $this->bob->id . '/block')->assertCreated();
 
         $this->assertEquals($this->bob->username, $this->alice->blockedUsers()->first()->username);
     }
 
     public function test_statuses_are_blocked(): void
     {
-        $this->actingAs($this->bob)
-            ->getJson('/api/v1/status/' . $this->checkin->status_id)
+        Passport::actingAs($this->bob, ['*']);
+        $this->getJson('/api/v1/status/' . $this->checkin->status_id)
             ->assertSee($this->alice->name);
 
         $this->aliceBlocksBob();
 
-        $this->actingAs($this->bob)
-            ->getJson('/api/v1/status/' . $this->checkin->status_id)
+        Passport::actingAs($this->bob, ['*']);
+        $this->getJson('/api/v1/status/' . $this->checkin->status_id)
             ->assertForbidden();
     }
 
     public function test_alices_status_is_hidden_from_bobs_active_journeys(): void
     {
-        $this->actingAs($this->bob)
-            ->getJson('/api/v1/statuses/')
+        Passport::actingAs($this->bob, ['*']);
+        $this->getJson('/api/v1/statuses/')
             ->assertOk()
             ->assertJsonFragment([
                 'id' => $this->checkin->status_id,
@@ -61,8 +61,8 @@ class UserBlockTest extends ApiTestCase
 
         $this->aliceBlocksBob();
 
-        $this->actingAs($this->bob)
-            ->getJson('/api/v1/statuses/')
+        Passport::actingAs($this->bob, ['*']);
+        $this->getJson('/api/v1/statuses/')
             ->assertOk()
             ->assertJsonMissing([
                 'id' => $this->checkin->status_id,
@@ -73,16 +73,16 @@ class UserBlockTest extends ApiTestCase
     {
         Checkin::factory(['user_id' => $this->bob->id])->create();
 
-        $this->actingAs($this->alice)
-            ->getJson('/api/v1/statuses/')
+        Passport::actingAs($this->alice, ['*']);
+        $this->getJson('/api/v1/statuses/')
             ->assertOk()
             ->assertJsonFragment(['username' => $this->bob->username])
             ->assertJsonFragment(['username' => $this->alice->username]);
 
         $this->aliceBlocksBob();
 
-        $this->actingAs($this->alice)
-            ->getJson('/api/v1/statuses/')
+        Passport::actingAs($this->alice, ['*']);
+        $this->getJson('/api/v1/statuses/')
             ->assertOk()
             ->assertJsonMissing(['username' => $this->bob->username])
             ->assertJsonFragment(['username' => $this->alice->username]);

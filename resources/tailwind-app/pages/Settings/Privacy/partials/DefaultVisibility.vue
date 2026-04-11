@@ -57,6 +57,7 @@ function updateVisibility() {
 <template>
     <SettingsListRow
         :title="trans('settings.visibility.default')"
+        :description="trans('settings.visibility.default.description')"
         :badge="getLabel(profile.defaultStatusVisibility)"
         @click.prevent="modal?.showModal()"
     />

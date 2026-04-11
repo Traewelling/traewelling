@@ -21,10 +21,14 @@ readonly class ApplicationService
 
     public function listForUser(User $user): Collection
     {
-        return $this->clientRepository
-            ->forUser($user)
-            ->filter(fn ($c) => !$c->personal_access_client && !$c->password_client) // exclude personal access and password clients
-            ->values();
+        return OAuthClient::query()
+            ->where('user_id', $user->id)
+            ->where('personal_access_client', false)
+            ->where('password_client', false)
+            ->where('revoked', false)
+            ->withCount(['tokens as active_tokens_count' => fn ($q) => $q->where('revoked', false)])
+            ->withExists('webhooks as has_webhooks')
+            ->get();
     }
 
     public function findForUserOrAdmin(int $clientId, User $user): ?OAuthClient

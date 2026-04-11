@@ -64,6 +64,7 @@ function updateVisibility() {
 <template>
     <SettingsListRow
         :title="trans('settings.mastodon.visibility')"
+        :description="trans('settings.mastodon.visibility.description')"
         :badge="getLabel(profile.mastodonVisibility)"
         @click.prevent="modal?.showModal()"
     />

@@ -18,11 +18,7 @@
                     </button>
                     <button type="submit" class="btn btn-primary">
                         <i class="fab fa-mastodon"></i>
-                        @if (Route::currentRouteName() !== 'settings')
-                            {{__('user.login')}}
-                        @else
-                            {{__('settings.connect')}}
-                        @endif
+                        {{__('user.login')}}
                     </button>
                 </div>
             </form>
