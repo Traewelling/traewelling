@@ -71,8 +71,6 @@ class UserRedirectionTest extends FeatureTestCase
             ->get('/dashboard');
         $response->assertStatus(302);
         $response->assertRedirect('/gdpr-intercept');
-        $this->followRedirects($response)
-            ->assertSee(__('privacy.not-signed-yet'), false);
 
         // Now the träwelling team puts up a new terms iteration:
         $policy1 = PrivacyPolicy::factory()->create(['valid_at' => Carbon::yesterday()->toIso8601String()]);
@@ -86,15 +84,15 @@ class UserRedirectionTest extends FeatureTestCase
             ->get('/dashboard');
         $response->assertStatus(302);
         $response->assertRedirect('/gdpr-intercept');
-        $this->followRedirects($response)
-            ->assertSee(__('privacy.we-changed'), false)
-            ->assertSee('<input type="hidden" name="id" value="' . $policy2->id . '"/>', false)
-            ->assertSee(__('privacy.sign.more'), true);
 
-        // At this point, we can sign the new agreement and get redirected again:
-        $response = $this->actingAs($user)
-            ->post('/gdpr-ack', ['id' => $policy2->id]);
-        $response->assertStatus(302);
-        $response->assertRedirect('/dashboard');
+        // At this point, they can accept via the API and continue:
+        $this->actingAs($user, 'api')
+            ->putJson('/api/v1/privacy-policies/' . $policy2->id . '/acceptance')
+            ->assertNoContent();
+
+        // Now they can access the dashboard again.
+        $this->actingAs($user)
+            ->get('/dashboard')
+            ->assertOk();
     }
 }

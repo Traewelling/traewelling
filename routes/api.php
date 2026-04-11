@@ -67,6 +67,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
     Route::prefix('privacy-policies')->group(static function () {
         Route::get('current', [PrivacyPolicyController::class, 'getPrivacyPolicy'])->name('api.v1.getPrivacyPolicy');
         Route::put('{id}/acceptance', [PrivacyPolicyController::class, 'accept'])
+            ->middleware('auth:api')
             ->withoutMiddleware('privacy-policy');
     });
 

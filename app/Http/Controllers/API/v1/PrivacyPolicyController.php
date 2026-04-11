@@ -38,9 +38,21 @@ class PrivacyPolicyController extends Controller
             ),
         ],
     )]
-    public function getPrivacyPolicy(Request $request): PrivacyPolicyResource
+    public function getPrivacyPolicy(): PrivacyPolicyResource
     {
-        return new PrivacyPolicyResource($this->privacyPolicyService->getPrivacyPolicy());
+        $policy = $this->privacyPolicyService->getPrivacyPolicy();
+        $user = auth()->user();
+        $acceptedAt = null;
+        $hasOldAcceptance = false;
+
+        if ($user !== null) {
+            $allAcceptances = $this->privacyPolicyService->getUserAcceptance($user);
+            $ownAcceptance = $allAcceptances->firstWhere('privacy_policy_id', $policy->id);
+            $acceptedAt = $ownAcceptance?->accepted_at;
+            $hasOldAcceptance = $acceptedAt === null && $allAcceptances->isNotEmpty();
+        }
+
+        return new PrivacyPolicyResource($policy, $acceptedAt, $hasOldAcceptance);
     }
 
     #[OA\Put(

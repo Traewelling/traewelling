@@ -1558,17 +1558,39 @@ export interface PaginationMeta {
 }
 
 export interface PrivacyPolicy {
-  /** @example "2022-01-05T16:26:14.000000Z" */
-  validFrom: any;
-  /** @example "This is the english privacy policy" */
-  en: any;
-  /** @example "Dies ist die deutsche Datenschutzerklärung" */
-  de: any;
   /**
-   * Has the current user already accepted this Privacy Policy?
+   * UUID of the privacy policy
+   * @format uuid
+   * @example "00000000-0000-0000-0000-000000000000"
+   */
+  id: string;
+  /**
+   * Date and time from which this privacy policy is valid
+   * @format date-time
    * @example "2022-01-05T16:26:14.000000Z"
    */
-  acceptedAt: any;
+  validFrom: string;
+  /**
+   * Privacy policy text in English (Markdown)
+   * @example "This is the english privacy policy"
+   */
+  en: string;
+  /**
+   * Privacy policy text in German (Markdown)
+   * @example "Dies ist die deutsche Datenschutzerklärung"
+   */
+  de: string;
+  /**
+   * When the current user accepted this privacy policy. Null if not yet accepted.
+   * @format date-time
+   * @example "2022-01-05T16:26:14.000000Z"
+   */
+  acceptedAt: string | null;
+  /**
+   * True if the user has accepted a previous (now outdated) version of the privacy policy.
+   * @example false
+   */
+  hasOldAcceptance: boolean;
 }
 
 /**

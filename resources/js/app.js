@@ -10,6 +10,7 @@ import { createApp } from 'vue';
 import ApiAlerts from '../vue/components/ApiAlerts.vue';
 import BaseAppLayout from '../vue/components/Layouts/BaseAppLayout.vue';
 import Leaderboard from '../vue/components/Leaderboard/Leaderboard.vue';
+import PrivacyIntercept from '../vue/components/PrivacyIntercept.vue';
 import FriendCheckinSettings from '../vue/components/Settings/FriendCheckinSettings.vue';
 import ProfileSettings from '../vue/components/Settings/ProfileSettings.vue';
 import WebhookSettings from '../vue/components/Settings/Webhooks.vue';
@@ -92,6 +93,13 @@ document.addEventListener('DOMContentLoaded', function () {
         app3.use(pinia);
         app3.use(i18nVue, i18nOptions);
         app3.mount('#station-board-new');
+    }
+
+    if (document.getElementById('vue-privacy-intercept')) {
+        const privacyApp = createApp({});
+        privacyApp.component('PrivacyIntercept', PrivacyIntercept);
+        privacyApp.use(i18nVue, i18nOptions);
+        privacyApp.mount('#vue-privacy-intercept');
     }
 
     if (document.getElementById('settings-friend-checkin')) {

@@ -10703,25 +10703,47 @@
             },
             "Privacy Policy": {
                 "required": [
+                    "id",
                     "validFrom",
                     "de",
                     "en",
-                    "acceptedAt"
+                    "acceptedAt",
+                    "hasOldAcceptance"
                 ],
                 "properties": {
+                    "id": {
+                        "description": "UUID of the privacy policy",
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "00000000-0000-0000-0000-000000000000"
+                    },
                     "validFrom": {
+                        "description": "Date and time from which this privacy policy is valid",
+                        "type": "string",
+                        "format": "date-time",
                         "example": "2022-01-05T16:26:14.000000Z"
                     },
                     "en": {
+                        "description": "Privacy policy text in English (Markdown)",
+                        "type": "string",
                         "example": "This is the english privacy policy"
                     },
                     "de": {
+                        "description": "Privacy policy text in German (Markdown)",
+                        "type": "string",
                         "example": "Dies ist die deutsche Datenschutzerklärung"
                     },
                     "acceptedAt": {
-                        "description": "Has the current user already accepted this Privacy Policy?",
+                        "description": "When the current user accepted this privacy policy. Null if not yet accepted.",
+                        "type": "string",
+                        "format": "date-time",
                         "example": "2022-01-05T16:26:14.000000Z",
                         "nullable": true
+                    },
+                    "hasOldAcceptance": {
+                        "description": "True if the user has accepted a previous (now outdated) version of the privacy policy.",
+                        "type": "boolean",
+                        "example": false
                     }
                 },
                 "type": "object"

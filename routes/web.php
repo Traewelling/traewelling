@@ -25,7 +25,6 @@ use App\Http\Controllers\Frontend\VueFrontendController;
 use App\Http\Controllers\Frontend\WebFingerController;
 use App\Http\Controllers\FrontendStatusController;
 use App\Http\Controllers\FrontendUserController;
-use App\Http\Controllers\PrivacyAgreementController;
 use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -43,8 +42,7 @@ Route::permanentRedirect('/about', 'https://help.traewelling.de/faq/');
 Route::prefix('legal')->group(function () {
     Route::view('/', 'legal.notice')
         ->name('legal.notice');
-    Route::get('/privacy-policy', [PrivacyAgreementController::class, 'intercept'])->name('legal.privacy');
-    Route::get('/privacy-policy/{id}', [PrivacyAgreementController::class, 'intercept']);
+    Route::view('/privacy-policy/{id?}', 'legal.privacy-interception')->name('legal.privacy');
 });
 
 Route::get('/@{username}', [FrontendUserController::class, 'getProfilePage'])
@@ -83,11 +81,8 @@ Route::get('/status/{id}', [FrontendStatusController::class, 'getStatus'])
 Route::middleware(['auth'])->group(function () {
     Route::personalDataExports('personal-data-exports');
 
-    Route::get('/gdpr-intercept', [PrivacyAgreementController::class, 'intercept'])
+    Route::view('/gdpr-intercept', 'legal.privacy-interception')
         ->name('gdpr.intercept');
-
-    Route::post('/gdpr-ack', [PrivacyAgreementController::class, 'ack'])
-        ->name('gdpr.ack');
 
 });
 
