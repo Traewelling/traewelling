@@ -26,7 +26,11 @@ function updateBio() {
 </script>
 
 <template>
-    <SettingsListRow :title="trans('profile.bio')" @click="modal?.showModal()" />
+    <SettingsListRow
+        :title="trans('profile.bio')"
+        :description="trans('profile.bio.description')"
+        @click="modal?.showModal()"
+    />
     <dialog ref="modal" class="modal">
         <div class="modal-box">
             <h3 class="text-lg font-bold">{{ trans('profile.bio') }}</h3>

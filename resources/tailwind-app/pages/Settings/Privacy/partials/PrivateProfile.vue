@@ -33,6 +33,7 @@ function updatePrivate(value: boolean) {
     <SettingsToggleListRow
         :checked="profile.privateProfile"
         :title="trans('user.private-profile')"
+        :description="trans('user.private-profile.description')"
         @change="updatePrivate"
     />
 </template>

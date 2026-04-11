@@ -33,6 +33,7 @@ function updatePoints(value: boolean) {
     <SettingsToggleListRow
         :checked="profile.pointsEnabled"
         :title="trans('user.points-enabled')"
+        :description="trans('user.points-enabled.description')"
         @change="updatePoints"
     />
 </template>

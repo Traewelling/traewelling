@@ -35,6 +35,7 @@ function closeModal() {
 <template>
     <SettingsListRow
         :title="profile.mastodon ? 'Mastodon' : trans('settings.connect-mastodon')"
+        :description="trans('settings.mastodon.description')"
         :badge="profile.mastodon"
         @click.prevent="modal?.showModal()"
     />

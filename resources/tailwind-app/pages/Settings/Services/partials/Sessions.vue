@@ -50,7 +50,11 @@ fetchSessions();
 </script>
 
 <template>
-    <SettingsListRow :title="trans('settings.title-sessions')" @click.prevent="modal?.showModal()" />
+    <SettingsListRow
+        :title="trans('settings.title-sessions')"
+        :description="trans('settings.sessions.description')"
+        @click.prevent="modal?.showModal()"
+    />
     <dialog ref="modal" class="modal">
         <div class="modal-box">
             <h3 class="text-lg font-bold">

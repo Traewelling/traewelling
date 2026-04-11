@@ -43,7 +43,11 @@ function openModal() {
 </script>
 
 <template>
-    <SettingsListRow :title="trans('settings.title-webhooks')" @click.prevent="openModal()" />
+    <SettingsListRow
+        :title="trans('settings.title-webhooks')"
+        :description="trans('settings.webhooks.description')"
+        @click.prevent="openModal()"
+    />
     <dialog ref="modal" class="modal">
         <div class="modal-box">
             <h3 class="text-lg font-bold mb-4">{{ trans('settings.title-webhooks') }}</h3>

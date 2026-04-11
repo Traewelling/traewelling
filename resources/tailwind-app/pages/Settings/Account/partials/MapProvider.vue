@@ -31,7 +31,11 @@ function updateTimezone() {
 </script>
 
 <template>
-    <SettingsListRow :title="trans('user.mapprovider')" @click="modal?.showModal()" />
+    <SettingsListRow
+        :title="trans('user.mapprovider')"
+        :description="trans('user.mapprovider.description')"
+        @click="modal?.showModal()"
+    />
     <dialog ref="modal" class="modal">
         <div class="modal-box">
             <h3 class="text-lg font-bold">{{ trans('user.mapprovider') }}</h3>
