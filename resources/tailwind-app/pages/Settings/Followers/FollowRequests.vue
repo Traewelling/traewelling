@@ -68,9 +68,16 @@ getFollowers();
 <template>
     <SettingsLayout>
         <FollowersSubMenu />
-        <ul v-if="requests" class="list bg-base-100 rounded-box shadow-md mt-2">
-            <li v-for="follower in requests" :key="follower.id" class="list-row items-center">
-                <div class="flex items-center gap-3">
+        <div class="mt-4">
+            <div v-if="loading && requests.length === 0" class="flex justify-center py-12">
+                <span class="loading loading-spinner loading-lg"></span>
+            </div>
+            <div v-else-if="!loading && requests.length === 0" class="text-center py-12 text-base-content/50">
+                <UserRoundX class="size-8 mx-auto mb-2" />
+                <p>{{ trans('settings.follower.no-requests') }}</p>
+            </div>
+            <ul v-else class="list bg-base-100 rounded-box shadow-md mt-2">
+                <li v-for="follower in requests" :key="follower.id" class="list-row items-center">
                     <div class="avatar">
                         <div class="rounded-full w-12 h-12">
                             <a :href="`/@${follower.username}`">
@@ -78,43 +85,27 @@ getFollowers();
                             </a>
                         </div>
                     </div>
-                </div>
-
-                <div class="list-col-grow">
-                    <a :href="`/@${follower.username}`">
-                        <h6 class="mb-0">
-                            {{ follower.displayName }}
-                        </h6>
-                        <p class="mb-0 opacity-75">@{{ follower.username }}</p>
-                    </a>
-                </div>
-                <button role="button" class="btn btn-sm btn-error" @click="rejectFollower(follower)">
-                    <UserMinus class="w-4 h-4" />
-                    <span class="hidden md:inline">
-                        {{ trans('settings.request.delete') }}
-                    </span>
+                    <div class="list-col-grow">
+                        <a :href="`/@${follower.username}`">
+                            <h6 class="mb-0">{{ follower.displayName }}</h6>
+                            <p class="mb-0 opacity-75">@{{ follower.username }}</p>
+                        </a>
+                    </div>
+                    <button role="button" class="btn btn-sm btn-error" @click="rejectFollower(follower)">
+                        <UserMinus class="w-4 h-4" />
+                        <span class="hidden md:inline">{{ trans('settings.request.delete') }}</span>
+                    </button>
+                    <button role="button" class="btn btn-sm btn-success me-2" @click="acceptFollower(follower)">
+                        <UserPlus class="w-4 h-4" />
+                        <span class="hidden md:inline">{{ trans('settings.request.accept') }}</span>
+                    </button>
+                </li>
+            </ul>
+            <div v-if="hasMorePages" class="text-center w-full mt-4">
+                <button class="btn" :disabled="loading" @click.prevent="getFollowers">
+                    {{ loading ? trans('menu.loading') : trans('menu.show-more') }}
                 </button>
-                <button role="button" class="btn btn-sm btn-success me-2" @click="acceptFollower(follower)">
-                    <UserPlus class="w-4 h-4" />
-                    <span class="hidden md:inline">
-                        {{ trans('settings.request.accept') }}
-                    </span>
-                </button>
-            </li>
-        </ul>
-        <div class="flex justify-center">
-            <span v-if="loading" class="my-4 loading loading-spinner text-primary">
-                {{ trans('menu.loading') }}
-            </span>
-            <span v-if="!loading && requests.length <= 0" class="my-4 text-error">
-                <UserRoundX class="size-5 inline" />
-                {{ trans('settings.follower.no-requests') }}
-            </span>
-        </div>
-        <div v-if="hasMorePages" class="text-center w-full mt-4">
-            <button class="btn" :disabled="loading" @click.prevent="getFollowers">
-                {{ loading ? trans('menu.loading') : trans('menu.show-more') }}
-            </button>
+            </div>
         </div>
     </SettingsLayout>
 </template>

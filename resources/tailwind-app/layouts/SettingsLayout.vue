@@ -1,21 +1,26 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
-import { LayoutGrid, Lock, ShieldUser, User, UserRoundKey, Users, UserX, VolumeOff } from 'lucide-vue-next';
+import { Activity, LayoutGrid, Lock, ShieldUser, User, UserRoundKey, Users } from 'lucide-vue-next';
 import AppLayout from './AppLayout.vue';
 
 const tabs = [
     { name: 'menu.profile', route: '/settings/profile', icon: User },
     {
-        name: 'settings.follower.manage',
+        name: 'settings.social.manage',
         route: '/settings/followers',
         icon: Users,
-        activeRoutes: ['/settings/followers', '/settings/follow-requests', '/settings/followings'],
+        activeRoutes: [
+            '/settings/followers',
+            '/settings/follow-requests',
+            '/settings/followings',
+            '/settings/blocks',
+            '/settings/mutes',
+        ],
     },
     { name: 'settings.tab.account', route: '/settings/account', icon: ShieldUser },
     { name: 'menu.privacy', route: '/settings/privacy', icon: Lock },
-    { name: 'settings.title-security', route: '/settings/security', icon: UserRoundKey },
-    { name: 'user.blocked.heading2', route: '/settings/blocks', icon: UserX },
-    { name: 'user.muted.heading2', route: '/settings/mutes', icon: VolumeOff },
+    { name: 'settings.tab.wellbeing', route: '/settings/wellbeing', icon: Activity },
+    { name: 'settings.title-services-and-security', route: '/settings/security', icon: UserRoundKey },
     {
         name: 'your-apps',
         route: '/settings/applications',

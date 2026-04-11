@@ -17,6 +17,7 @@ import Mutes from '../pages/Settings/Mutes/Mutes.vue';
 import Privacy from '../pages/Settings/Privacy/Privacy.vue';
 import ProfileSettings from '../pages/Settings/Profile/Profile.vue';
 import Security from '../pages/Settings/Services/Security.vue';
+import Wellbeing from '../pages/Settings/Wellbeing/Wellbeing.vue';
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -102,6 +103,12 @@ const routes: Array<RouteRecordRaw> = [
         name: 'settings-privacy',
         component: Privacy,
         meta: { title: 'menu.privacy' },
+    },
+    {
+        path: '/settings/wellbeing',
+        name: 'settings-wellbeing',
+        component: Wellbeing,
+        meta: { title: 'settings.tab.wellbeing' },
     },
     {
         path: '/events',

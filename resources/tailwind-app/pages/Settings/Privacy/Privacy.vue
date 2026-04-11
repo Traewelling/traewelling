@@ -12,8 +12,6 @@ import ManageFriends from './partials/ManageFriends.vue';
 import MastodonVisibility from './partials/MastodonVisibility.vue';
 import PrivateProfile from './partials/PrivateProfile.vue';
 import SearchEngineIndexing from './partials/SearchEngineIndexing.vue';
-import ShowLikes from './partials/ShowLikes.vue';
-import ShowPoints from './partials/ShowPoints.vue';
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 
@@ -76,8 +74,6 @@ getTrustedUsers();
         <ul v-if="!loading && profile" class="list bg-base-100 rounded-box shadow-md mt-2">
             <PrivateProfile :profile="profile" @profile-updated="updateProfile" @error="error" />
             <SearchEngineIndexing :profile="profile" @profile-updated="updateProfile" @error="error" />
-            <ShowLikes :profile="profile" @profile-updated="updateProfile" @error="error" />
-            <ShowPoints :profile="profile" @profile-updated="updateProfile" @error="error" />
             <DefaultVisibility :profile="profile" @profile-updated="updateProfile" @error="error" />
             <MastodonVisibility
                 v-if="profile.mastodon"
