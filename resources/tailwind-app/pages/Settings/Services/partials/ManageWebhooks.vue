@@ -28,7 +28,7 @@ function fetchWebhooks() {
         .getWebhooks()
         .then((response) => {
             response.json().then((data) => {
-                webhooks.value = data;
+                webhooks.value = data.data;
             });
         })
         .catch((error) => {
