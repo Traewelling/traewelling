@@ -41,10 +41,10 @@ class MotisLicenseRepository
     }
 
     #[ArrayShape(['country' => 'string', 'name' => 'string'])]
-    public function getCountryAndLicense(string $gtfsSource): array
+    public function getCountryAndLicense(string $source): array
     {
         $matches = [];
-        preg_match('/(?<name>(?<country>.*)_.*\.gtfs)/', $gtfsSource, $matches);
+        preg_match('/^(?<name>(?<country>[a-zA-Z]+)_.*?(?:\.gtfs|\.netex))(?:\.zip)?(?:\/.*)?$/', $source, $matches);
         $name = $matches['name'] ?? '';
         $country = $matches['country'] ?? '';
 
