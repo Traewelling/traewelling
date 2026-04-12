@@ -75,9 +75,9 @@ abstract class MastodonController extends Controller
     {
         try {
             $info = Mastodon::domain($domain)->createApp(
-                client_name: config('services.mastodon.client_name'), // TODO: why is client name required here?
+                client_name: config('services.mastodon.client_name'),
                 redirect_uris: config('services.mastodon.redirect'),
-                scopes: 'write read',
+                scopes: config('services.mastodon.scopes'),
                 website: config('app.url')
             );
 

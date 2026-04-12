@@ -48,7 +48,9 @@ class MastodonController extends Controller
         session(['mastodon_server' => $server]);
 
         try {
-            return Socialite::driver('mastodon')->redirect();
+            return Socialite::driver('mastodon')
+                ->setScopes(explode(' ', config('services.mastodon.scopes')))
+                ->redirect();
         } catch (Exception $exception) {
             report($exception);
 
