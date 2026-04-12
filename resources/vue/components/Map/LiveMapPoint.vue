@@ -12,7 +12,7 @@ const props = defineProps({
 
 const currentMarkerCoordinates = ref<[number, number] | null>(null);
 const startTime = Date.now();
-const arrivalTime = props.point.arrival ? new Date(props.point.arrival * 1000).getTime() : Date.now();
+const arrivalTime = props.point.arrival ? props.point.arrival * 1000 : Date.now();
 let animationFrameId: number | null = null;
 
 function getLivePointData(percentage: number = 1): boolean {
@@ -35,7 +35,18 @@ function getLivePointData(percentage: number = 1): boolean {
 
 function animateMarker() {
     const now = Date.now();
+
+    if (now >= arrivalTime) {
+        currentMarkerCoordinates.value = null;
+        return;
+    }
+
     const totalDuration = arrivalTime - startTime;
+    if (totalDuration <= 0) {
+        currentMarkerCoordinates.value = null;
+        return;
+    }
+
     const elapsed = now - startTime;
     const percentage = Math.min(elapsed / totalDuration, 1);
     if (!getLivePointData(percentage)) {
@@ -47,7 +58,10 @@ function animateMarker() {
 }
 
 onMounted(() => {
-    animateMarker();
+    // Only animate if the journey has not yet ended
+    if (Date.now() < arrivalTime) {
+        animateMarker();
+    }
 });
 
 onUnmounted(() => {
