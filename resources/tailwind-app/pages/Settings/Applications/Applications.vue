@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { trans } from 'laravel-vue-i18n';
+import { trans, transChoice } from 'laravel-vue-i18n';
 import { ChartBar, ExternalLink, Pencil, Plus, Trash2 } from 'lucide-vue-next';
 import { Notyf } from 'notyf';
 import { inject, ref } from 'vue';
@@ -149,7 +149,9 @@ fetchApps();
                     </div>
                     <p class="text-xs text-base-content/50 mt-1 truncate">{{ app.redirect }}</p>
                     <p class="text-xs text-base-content/40 mt-0.5">
-                        {{ trans('active-tokens-count', { count: app.activeTokensCount }, app.activeTokensCount) }}
+                        {{
+                            transChoice('active-tokens-count', app.activeTokensCount, { count: app.activeTokensCount })
+                        }}
                     </p>
                 </div>
 

@@ -45,6 +45,7 @@ respond to requests immediately.
 However, we welcome anyone who wants to contribute to the project!
 If you find a bug or have an idea for a new feature, please feel free to open an issue / discussion on GitHub.
 We also encourage you to help us out by fixing bugs and implementing new features yourself.
+You can also join our community on [Matrix (#space:traewelling.org)](https://matrix.to/#/#space:traewelling.org) to chat with other contributors and users.
 
 Please see the [contributing guidelines](docs/contributing) for more information.
 
