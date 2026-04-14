@@ -10,6 +10,7 @@ import EventView from '../pages/Events/EventView.vue';
 import Export from '../pages/Export/Export.vue';
 import Leaderboard from '../pages/Leaderboard/Leaderboard.vue';
 import MonthlyLeaderboard from '../pages/Leaderboard/MonthlyLeaderboard.vue';
+import Notifications from '../pages/Notifications/Notifications.vue';
 import UserProfile from '../pages/Profile/UserProfile.vue';
 import Search from '../pages/Search/Search.vue';
 import Account from '../pages/Settings/Account/Account.vue';
@@ -212,6 +213,12 @@ const routes: Array<RouteRecordRaw> = [
         path: '/event/:slug',
         name: 'event-view',
         component: EventView,
+    },
+    {
+        path: '/notifications',
+        name: 'notifications',
+        component: Notifications,
+        meta: { title: 'notifications.title' },
     },
     {
         path: '/search',

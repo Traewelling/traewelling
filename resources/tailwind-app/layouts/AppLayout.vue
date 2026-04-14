@@ -26,6 +26,20 @@
             </div>
 
             <div class="navbar-end">
+                <router-link
+                    v-if="user.authenticated"
+                    :to="{ name: 'notifications' }"
+                    class="btn btn-ghost btn-sm text-white flex mr-1"
+                >
+                    <div class="relative">
+                        <div class="indicator size-5">
+                            <Bell class="size-5" />
+                            <span v-if="notificationsStore.count > 0" class="badge indicator-item badge-info badge-xs">
+                                {{ notificationsStore.count < 99 ? notificationsStore.count : '99+' }}
+                            </span>
+                        </div>
+                    </div>
+                </router-link>
                 <div v-if="user.authenticated && user.user" class="dropdown dropdown-end hidden lg:flex">
                     <div tabindex="0" role="button" class="btn btn-sm m-1">
                         <User class="inline-block w-6 h-6" />
@@ -162,6 +176,7 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
 import {
+    Bell,
     ChartNoAxesCombined,
     House,
     LifeBuoy,
@@ -176,9 +191,10 @@ import {
     Ticket,
     User,
 } from 'lucide-vue-next';
-import { computed, FunctionalComponent } from 'vue';
+import { computed, FunctionalComponent, onMounted, onUnmounted } from 'vue';
 import { RouteLocationRaw } from 'vue-router';
 import { useConfigurationStore } from '../../vue/stores/configuration';
+import { useNotificationsStore } from '../../vue/stores/notifications';
 import { useUserStore } from '../../vue/stores/user';
 import DarkModeSelector from './Footer/DarkModeSelector.vue';
 import LanguageSelector from './Footer/LanguageSelector.vue';
@@ -199,6 +215,20 @@ user.fetchSettings();
 
 const config = useConfigurationStore();
 config.fetchData();
+
+const notificationsStore = useNotificationsStore();
+let pollInterval: ReturnType<typeof setInterval> | null = null;
+
+onMounted(() => {
+    notificationsStore.fetchCount();
+    pollInterval = setInterval(() => notificationsStore.fetchCount(), 30000);
+});
+
+onUnmounted(() => {
+    if (pollInterval) {
+        clearInterval(pollInterval);
+    }
+});
 
 const links: {
     name: string;

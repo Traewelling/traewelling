@@ -143,6 +143,8 @@ Route::middleware(['auth', 'privacy'])->group(function () {
         Route::get('/{any?}', fn () => view('vue.spa'))->where('any', '.*');
     });
 
+    Route::view('/notifications', 'vue.spa')->name('notifications');
+
     Route::view('/dashboard', 'vue.dashboard')
         ->name('dashboard');
 
