@@ -11,9 +11,6 @@ import ApiAlerts from '../vue/components/ApiAlerts.vue';
 import BaseAppLayout from '../vue/components/Layouts/BaseAppLayout.vue';
 import Leaderboard from '../vue/components/Leaderboard/Leaderboard.vue';
 import PrivacyIntercept from '../vue/components/PrivacyIntercept.vue';
-import FriendCheckinSettings from '../vue/components/Settings/FriendCheckinSettings.vue';
-import ProfileSettings from '../vue/components/Settings/ProfileSettings.vue';
-import WebhookSettings from '../vue/components/Settings/Webhooks.vue';
 import StationAutocomplete from '../vue/components/StationAutocomplete/StationAutocomplete.vue';
 import Stationboard from '../vue/components/Stationboard.vue';
 import StatsDashboard from '../vue/components/Stats/StatsDashboard.vue';
@@ -69,8 +66,6 @@ document.addEventListener('DOMContentLoaded', function () {
         fallbackLang = 'de';
     }
 
-    // TODO: As we add more vue components here, we should consider embedding them in a better way
-
     const i18nOptions = {
         fallbackLang: fallbackLang,
         fallbackMissingTranslations: true,
@@ -102,22 +97,6 @@ document.addEventListener('DOMContentLoaded', function () {
         privacyApp.mount('#vue-privacy-intercept');
     }
 
-    if (document.getElementById('settings-friend-checkin')) {
-        const app6 = createApp({});
-        app6.component('FriendCheckinSettings', FriendCheckinSettings);
-        app6.use(i18nVue, i18nOptions);
-        app6.use(pinia);
-        app6.mount('#settings-friend-checkin');
-    }
-
-    if (document.getElementById('settings-profile')) {
-        const app8 = createApp({});
-        app8.component('ProfileSettings', ProfileSettings);
-        app8.use(i18nVue, i18nOptions);
-        app8.use(pinia);
-        app8.mount('#settings-profile');
-    }
-
     if (document.getElementById('vue-user-profile')) {
         const app9 = createApp({});
         app9.component('Profile', Profile);
@@ -147,7 +126,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const contentApp = createApp({});
         contentApp.component('VueDashboard', Dashboard);
         contentApp.component('StatsDashboard', StatsDashboard);
-        contentApp.component('Webhooks', WebhookSettings);
         contentApp.component('TripCreationForm', TripCreationForm);
         contentApp.component('SingleStatus', SingleStatus);
         contentApp.component('ActiveJourneys', ActiveJourneys);
@@ -165,11 +143,7 @@ document.addEventListener('DOMContentLoaded', function () {
  * Once the page is loaded, we can load our frontend components.
  */
 window.addEventListener('load', () => {
-    import('./components/progressbar');
-    import('./components/settings');
-    import('./api/Status');
     import('./components/export');
-    import('./components/business-check-in');
     import('./appControls');
     import('bootstrap-cookie-alert/cookiealert');
     import('./components/tooltips');

@@ -19,20 +19,6 @@ export default class API {
         }
         return request;
     }
-
-    static handleDefaultResponse(response) {
-        if (!response.ok) {
-            return response.json().then(this.handleGenericError);
-        }
-
-        return response.json().then((data) => {
-            if (data && data.data && data.data.message) {
-                // eslint-disable-next-line no-undef
-                notyf.success(data.data.message);
-            }
-        });
-    }
-
     static handleGenericError(error) {
         console.error(error);
         let errorMessage = error?.message ?? error?.data?.message ?? 'An unknown error occured.';

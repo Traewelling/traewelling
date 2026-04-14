@@ -182,20 +182,6 @@
 
   $outline-grey: lighten(#495057, 10%);
 
-  .btn-outline-grey {
-    color: $outline-grey;
-    border-color: $outline-grey;
-  }
-
-  .btn-outline-grey:active,
-  .btn-check:active + .btn-outline-grey,
-  .btn-check:checked + .btn-outline-grey,
-  .btn-outline-grey.active,
-  .show > .btn-outline-grey.dropdown-toggle {
-    color: #fff;
-    background-color: $outline-grey;
-  }
-
   .modal {
     --bs-modal-bg: #{$dm-base-5};
   }
@@ -365,10 +351,6 @@
     i {
       color: hsl(195, 63%, 70%);
     }
-  }
-
-  #stationboard .stationboardDivider {
-    border-top-color: $dm-base-20;
   }
 
   // TODO: this is absolutely a hack
