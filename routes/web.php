@@ -169,6 +169,8 @@ Route::middleware(['auth', 'privacy'])->group(function () {
 
     Route::get('/search/', [FrontendUserController::class, 'searchUser'])->name('userSearch');
 
+    Route::get('/embed/search', [FrontendUserController::class, 'searchUser'])->name('embed.search');
+
 });
 
 Route::get('/sitemap.xml', [SitemapController::class, 'renderSitemap']);

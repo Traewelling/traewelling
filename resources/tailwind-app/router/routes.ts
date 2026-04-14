@@ -11,6 +11,7 @@ import Export from '../pages/Export/Export.vue';
 import Leaderboard from '../pages/Leaderboard/Leaderboard.vue';
 import MonthlyLeaderboard from '../pages/Leaderboard/MonthlyLeaderboard.vue';
 import UserProfile from '../pages/Profile/UserProfile.vue';
+import Search from '../pages/Search/Search.vue';
 import Account from '../pages/Settings/Account/Account.vue';
 import Applications from '../pages/Settings/Applications/Applications.vue';
 import WebhookStats from '../pages/Settings/Applications/WebhookStats.vue';
@@ -211,6 +212,12 @@ const routes: Array<RouteRecordRaw> = [
         path: '/event/:slug',
         name: 'event-view',
         component: EventView,
+    },
+    {
+        path: '/search',
+        name: 'search',
+        component: Search,
+        meta: { title: 'search-results' },
     },
     {
         path: '/settings',

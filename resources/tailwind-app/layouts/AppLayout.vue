@@ -158,6 +158,7 @@ import {
     Menu,
     MonitorCog,
     Save,
+    Search,
     Settings,
     Ticket,
     User,
@@ -224,6 +225,7 @@ const userLinks = computed<
     { name: 'menu.settings', icon: Settings, route: { name: 'settings-profile' }, legacy: false },
     { name: 'menu.about', icon: LifeBuoy, route: 'https://help.traewelling.de/faq/', legacy: true },
     { name: 'tickets.title', icon: Ticket, route: { name: 'tickets' }, legacy: false },
+    { name: 'stationboard.submit-search', icon: Search, route: { name: 'search' }, legacy: false },
     {
         name: 'menu.backend',
         icon: MonitorCog,

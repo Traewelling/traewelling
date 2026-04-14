@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends(request()->routeIs('embed.*') ? 'layouts.app-embed' : (!auth()->user()?->hasRole('open-beta') ? 'layouts.app' : 'layouts.tailwind-vue-layout'))
 
 @section('title', __('search-results'))
 
@@ -6,7 +6,27 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-7">
-                @if($users->count() === 0)
+                <form class="form-inline" action="/search">
+                    <div class="input-group md-form form-sm form-2 ps-0 m-0 mb-2">
+                        <input
+                            name="searchQuery"
+                            type="text"
+                            value="{{ request('searchQuery') }}"
+                            class="border border-white rounded-left form-control my-0 py-1"
+                            placeholder="{{__('stationboard.submit-search')}}"
+                            aria-label="{{__('stationboard.submit-search')}}"
+                            required
+                        />
+                        <button
+                            class="btn btn-primary"
+                            type="submit"
+                            aria-label="{{__('stationboard.submit-search')}}"
+                        >
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </form>
+                @if($users->count() === 0 && request('searchQuery'))
                     <div class="alert alert-danger" role="alert">
                         {{ __('user.no-user') }}
                     </div>
@@ -59,8 +79,10 @@
                 @endforeach
             </div>
         </div>
+        @if($users->count())
         <div class="row justify-content-center mt-5">
-            {{ $users->withQueryString()->links() }}
+            {{ $users?->withQueryString()?->links() }}
         </div>
+        @endif
     </div>
 @endsection
