@@ -61,7 +61,10 @@
         </div>
 
         <!-- Main content -->
-        <main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main
+            class="flex-1 w-full min-h-screen"
+            :class="{ 'px-4 sm:px-6 lg:px-8': !legacy, 'max-w-7xl mx-auto py-8': !fullscreen }"
+        >
             <slot></slot>
         </main>
 
@@ -156,6 +159,7 @@ import {
     MonitorCog,
     Save,
     Settings,
+    Ticket,
     User,
 } from 'lucide-vue-next';
 import { computed, FunctionalComponent } from 'vue';
@@ -164,6 +168,17 @@ import { useConfigurationStore } from '../../vue/stores/configuration';
 import { useUserStore } from '../../vue/stores/user';
 import DarkModeSelector from './Footer/DarkModeSelector.vue';
 import LanguageSelector from './Footer/LanguageSelector.vue';
+
+defineProps({
+    legacy: {
+        type: Boolean,
+        default: false,
+    },
+    fullscreen: {
+        type: Boolean,
+        default: false,
+    },
+});
 
 const user = useUserStore();
 user.fetchSettings();
@@ -178,7 +193,7 @@ const links: {
     legacy: boolean;
     condition?: boolean;
 }[] = [
-    { name: 'menu.dashboard', icon: House, route: '/dashboard', legacy: true },
+    { name: 'menu.dashboard', icon: House, route: { name: 'dashboard' }, legacy: false },
     {
         name: 'menu.leaderboard',
         icon: Medal,
@@ -186,17 +201,29 @@ const links: {
         legacy: false,
         condition: user.user?.pointsEnabled || false,
     },
-    { name: 'menu.active', icon: Map, route: '/statuses/active', legacy: true },
-    { name: 'stats', icon: ChartNoAxesCombined, route: '/statistics', legacy: true },
+    { name: 'menu.active', icon: Map, route: { name: 'active-journeys' }, legacy: false },
+    { name: 'stats', icon: ChartNoAxesCombined, route: { name: 'statistics' }, legacy: false },
 ];
 
 const userLinks = computed<
-    { name: string; icon: FunctionalComponent; route: string; legacy: boolean; condition?: boolean }[]
+    {
+        name: string;
+        icon: FunctionalComponent;
+        route: string | RouteLocationRaw;
+        legacy: boolean;
+        condition?: boolean;
+    }[]
 >(() => [
-    { name: 'menu.profile', icon: User, route: `/@${user.getUsername}`, legacy: true },
-    { name: 'menu.export', icon: Save, route: '/export', legacy: true },
-    { name: 'menu.settings', icon: Settings, route: '/settings/profile', legacy: false },
+    {
+        name: 'menu.profile',
+        icon: User,
+        route: { name: 'user-profile', params: { username: user.getUsername } },
+        legacy: false,
+    },
+    { name: 'menu.export', icon: Save, route: { name: 'export' }, legacy: false },
+    { name: 'menu.settings', icon: Settings, route: { name: 'settings-profile' }, legacy: false },
     { name: 'menu.about', icon: LifeBuoy, route: 'https://help.traewelling.de/faq/', legacy: true },
+    { name: 'tickets.title', icon: Ticket, route: { name: 'tickets' }, legacy: false },
     {
         name: 'menu.backend',
         icon: MonitorCog,

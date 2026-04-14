@@ -29,6 +29,7 @@ class DarkModeService {
     setMode(mode: DarkMode) {
         localStorage.setItem('darkMode', mode);
         this.updateTheme();
+        window.dispatchEvent(new CustomEvent('trwl:darkmode-change'));
     }
 
     private updateTheme() {
