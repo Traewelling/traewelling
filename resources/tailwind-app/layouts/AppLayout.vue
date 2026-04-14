@@ -50,6 +50,12 @@
                                 {{ trans(link.name) }}
                             </router-link>
                         </li>
+                        <li class="border-t border-base-300 mt-1 pt-1">
+                            <button @click="logout">
+                                <LogOut class="inline-block w-6 h-6 mr-2" />
+                                {{ trans('menu.logout') }}
+                            </button>
+                        </li>
                     </ul>
                 </div>
                 <div class="lg:hidden">
@@ -136,6 +142,12 @@
                         {{ trans(link.name) }}
                     </router-link>
                 </li>
+                <li class="border-t border-base-300 mt-1 pt-1">
+                    <button @click="logout">
+                        <LogOut class="inline-block w-6 h-6 mr-2" />
+                        {{ trans('menu.logout') }}
+                    </button>
+                </li>
                 <li class="p-0 mt-auto">
                     <DarkModeSelector />
                 </li>
@@ -153,6 +165,7 @@ import {
     ChartNoAxesCombined,
     House,
     LifeBuoy,
+    LogOut,
     Map,
     Medal,
     Menu,
@@ -205,6 +218,29 @@ const links: {
     { name: 'menu.active', icon: Map, route: { name: 'active-journeys' }, legacy: false },
     { name: 'stats', icon: ChartNoAxesCombined, route: { name: 'statistics' }, legacy: false },
 ];
+
+function logout() {
+    const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    if (!token) {
+        return;
+    }
+
+    user.invalidateUser();
+    fetch('/logout', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'multipart/form-data',
+            'X-CSRF-TOKEN': token,
+        },
+        body: JSON.stringify({}),
+    })
+        .then(() => {
+            window.location.href = '/';
+        })
+        .catch((error) => {
+            console.error('Error logging out:', error);
+        });
+}
 
 const userLinks = computed<
     {
