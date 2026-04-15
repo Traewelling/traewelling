@@ -180,13 +180,13 @@ const routes: Array<RouteRecordRaw> = [
         path: '/tickets',
         name: 'tickets',
         component: Tickets,
-        meta: { title: 'tickets.title' },
+        meta: { title: 'tickets.title', requiresClosedBeta: true },
     },
     {
         path: '/tickets/:id',
         name: 'ticket-detail',
         component: TicketDetail,
-        meta: { title: 'tickets.title' },
+        meta: { title: 'tickets.title', requiresClosedBeta: true },
     },
     {
         path: '/trip/create',

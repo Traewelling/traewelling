@@ -1,5 +1,6 @@
 import { getActiveLanguage, isLoaded, loadLanguageAsync, trans } from 'laravel-vue-i18n';
 import { createRouter, createWebHistory } from 'vue-router';
+import { useUserStore } from '../../vue/stores/user';
 import routes from './routes';
 
 const router = createRouter({
@@ -8,6 +9,15 @@ const router = createRouter({
 });
 
 const appName = document.title || 'Träwelling';
+
+router.beforeEach((to) => {
+    if (to.meta?.requiresClosedBeta) {
+        const user = useUserStore();
+        if (!user.isClosedBeta) {
+            return { name: 'dashboard' };
+        }
+    }
+});
 
 router.afterEach(async (to) => {
     const titleKey = to.meta?.title as string | undefined;
