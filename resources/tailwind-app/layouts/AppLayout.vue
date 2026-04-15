@@ -170,6 +170,7 @@
                 </li>
             </ul>
         </div>
+        <ActiveStatusCard />
     </div>
 </template>
 
@@ -196,6 +197,7 @@ import { RouteLocationRaw } from 'vue-router';
 import { useConfigurationStore } from '../../vue/stores/configuration';
 import { useNotificationsStore } from '../../vue/stores/notifications';
 import { useUserStore } from '../../vue/stores/user';
+import ActiveStatusCard from '../components/ActiveStatusCard.vue';
 import DarkModeSelector from './Footer/DarkModeSelector.vue';
 import LanguageSelector from './Footer/LanguageSelector.vue';
 

@@ -41,6 +41,7 @@
         /* Negative top margins are used to overlap with the navbar in the full layout.
            In the embed layout there is no navbar, so they push content above the viewport. */
         .mt-n4, .mt-n5 { margin-top: 0 !important; }
+        .fab-container { display: none !important; }
     </style>
 
     @yield('head')
