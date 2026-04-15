@@ -50,5 +50,8 @@ class StatisticsTest extends ApiTestCase
             ],
         ]);
         $this->assertNotNull($response->json('data.polylines'));
+
+        $statusId = $response->json('data.statuses.0.id');
+        $this->assertSame($statusId, $response->json('data.polylines.features.0.properties.statusId'));
     }
 }
