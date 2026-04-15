@@ -1,11 +1,18 @@
 import { RouteRecordRaw } from 'vue-router';
+import ActiveJourneys from '../pages/ActiveJourneys/ActiveJourneys.vue';
 import Changelog from '../pages/Changelog/Changelog.vue';
 import Index from '../pages/Contribute/Index.vue';
 import Profile from '../pages/Contribute/Profile.vue';
 import SuggestEvent from '../pages/Contribute/SuggestEvent.vue';
+import Dashboard from '../pages/Dashboard/Dashboard.vue';
 import EventList from '../pages/Events/EventList.vue';
+import EventView from '../pages/Events/EventView.vue';
+import Export from '../pages/Export/Export.vue';
 import Leaderboard from '../pages/Leaderboard/Leaderboard.vue';
 import MonthlyLeaderboard from '../pages/Leaderboard/MonthlyLeaderboard.vue';
+import Notifications from '../pages/Notifications/Notifications.vue';
+import UserProfile from '../pages/Profile/UserProfile.vue';
+import Search from '../pages/Search/Search.vue';
 import Account from '../pages/Settings/Account/Account.vue';
 import Applications from '../pages/Settings/Applications/Applications.vue';
 import WebhookStats from '../pages/Settings/Applications/WebhookStats.vue';
@@ -18,8 +25,21 @@ import Privacy from '../pages/Settings/Privacy/Privacy.vue';
 import ProfileSettings from '../pages/Settings/Profile/Profile.vue';
 import Security from '../pages/Settings/Services/Security.vue';
 import Wellbeing from '../pages/Settings/Wellbeing/Wellbeing.vue';
+import Stationboard from '../pages/Stationboard/Stationboard.vue';
+import DailyStats from '../pages/Statistics/DailyStats.vue';
+import Statistics from '../pages/Statistics/Statistics.vue';
+import SingleStatus from '../pages/Status/SingleStatus.vue';
+import TicketDetail from '../pages/Tickets/TicketDetail.vue';
+import Tickets from '../pages/Tickets/Tickets.vue';
+import TripCreation from '../pages/Trip/TripCreation.vue';
 
 const routes: Array<RouteRecordRaw> = [
+    {
+        path: '/dashboard',
+        name: 'dashboard',
+        component: Dashboard,
+        meta: { title: 'menu.dashboard' },
+    },
     {
         path: '/contribute',
         name: 'index',
@@ -132,6 +152,79 @@ const routes: Array<RouteRecordRaw> = [
         path: '/leaderboard/monthly/:month',
         name: 'leaderboard-monthly',
         component: MonthlyLeaderboard,
+    },
+    {
+        path: '/statuses/active',
+        name: 'active-journeys',
+        component: ActiveJourneys,
+        meta: { title: 'menu.active' },
+    },
+    {
+        path: '/statistics',
+        name: 'statistics',
+        component: Statistics,
+        meta: { title: 'stats' },
+    },
+    {
+        path: '/statistics/daily/:dateString',
+        name: 'stats-daily',
+        component: DailyStats,
+    },
+    {
+        path: '/stationboard',
+        name: 'stationboard',
+        component: Stationboard,
+        meta: { title: 'stationboard' },
+    },
+    {
+        path: '/tickets',
+        name: 'tickets',
+        component: Tickets,
+        meta: { title: 'tickets.title' },
+    },
+    {
+        path: '/tickets/:id',
+        name: 'ticket-detail',
+        component: TicketDetail,
+        meta: { title: 'tickets.title' },
+    },
+    {
+        path: '/trip/create',
+        name: 'trip-create',
+        component: TripCreation,
+    },
+    {
+        path: '/export',
+        name: 'export',
+        component: Export,
+        meta: { title: 'export.title' },
+    },
+    {
+        path: '/@:username',
+        name: 'user-profile',
+        component: UserProfile,
+    },
+    {
+        path: '/status/:id',
+        name: 'single-status',
+        component: SingleStatus,
+    },
+    {
+        path: '/event/:slug',
+        name: 'event-view',
+        component: EventView,
+    },
+    {
+        path: '/notifications',
+        name: 'notifications',
+        component: Notifications,
+        meta: { title: 'notifications.title' },
+    },
+    {
+        path: '/search',
+        name: 'search',
+        component: Search,
+        meta: { title: 'search-results' },
     },
     {
         path: '/settings',

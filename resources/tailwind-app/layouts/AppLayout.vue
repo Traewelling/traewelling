@@ -26,6 +26,20 @@
             </div>
 
             <div class="navbar-end">
+                <router-link
+                    v-if="user.authenticated"
+                    :to="{ name: 'notifications' }"
+                    class="btn btn-ghost btn-sm text-white flex mr-1"
+                >
+                    <div class="relative">
+                        <div class="indicator size-5">
+                            <Bell class="size-5" />
+                            <span v-if="notificationsStore.count > 0" class="badge indicator-item badge-info badge-xs">
+                                {{ notificationsStore.count < 99 ? notificationsStore.count : '99+' }}
+                            </span>
+                        </div>
+                    </div>
+                </router-link>
                 <div v-if="user.authenticated && user.user" class="dropdown dropdown-end hidden lg:flex">
                     <div tabindex="0" role="button" class="btn btn-sm m-1">
                         <User class="inline-block w-6 h-6" />
@@ -50,6 +64,12 @@
                                 {{ trans(link.name) }}
                             </router-link>
                         </li>
+                        <li class="border-t border-base-300 mt-1 pt-1">
+                            <button @click="logout">
+                                <LogOut class="inline-block w-6 h-6 mr-2" />
+                                {{ trans('menu.logout') }}
+                            </button>
+                        </li>
                     </ul>
                 </div>
                 <div class="lg:hidden">
@@ -61,7 +81,10 @@
         </div>
 
         <!-- Main content -->
-        <main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main
+            class="flex-1 w-full min-h-screen"
+            :class="{ 'px-4 sm:px-6 lg:px-8': !legacy, 'max-w-7xl mx-auto py-8': !fullscreen }"
+        >
             <slot></slot>
         </main>
 
@@ -133,6 +156,12 @@
                         {{ trans(link.name) }}
                     </router-link>
                 </li>
+                <li class="border-t border-base-300 mt-1 pt-1">
+                    <button @click="logout">
+                        <LogOut class="inline-block w-6 h-6 mr-2" />
+                        {{ trans('menu.logout') }}
+                    </button>
+                </li>
                 <li class="p-0 mt-auto">
                     <DarkModeSelector />
                 </li>
@@ -141,35 +170,67 @@
                 </li>
             </ul>
         </div>
+        <ActiveStatusCard />
     </div>
 </template>
 
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
 import {
+    Bell,
     ChartNoAxesCombined,
     House,
     LifeBuoy,
+    LogOut,
     Map,
     Medal,
     Menu,
     MonitorCog,
     Save,
+    Search,
     Settings,
+    Ticket,
     User,
 } from 'lucide-vue-next';
-import { computed, FunctionalComponent } from 'vue';
+import { computed, FunctionalComponent, onMounted, onUnmounted } from 'vue';
 import { RouteLocationRaw } from 'vue-router';
 import { useConfigurationStore } from '../../vue/stores/configuration';
+import { useNotificationsStore } from '../../vue/stores/notifications';
 import { useUserStore } from '../../vue/stores/user';
+import ActiveStatusCard from '../components/ActiveStatusCard.vue';
 import DarkModeSelector from './Footer/DarkModeSelector.vue';
 import LanguageSelector from './Footer/LanguageSelector.vue';
+
+defineProps({
+    legacy: {
+        type: Boolean,
+        default: false,
+    },
+    fullscreen: {
+        type: Boolean,
+        default: false,
+    },
+});
 
 const user = useUserStore();
 user.fetchSettings();
 
 const config = useConfigurationStore();
 config.fetchData();
+
+const notificationsStore = useNotificationsStore();
+let pollInterval: ReturnType<typeof setInterval> | null = null;
+
+onMounted(() => {
+    notificationsStore.fetchCount();
+    pollInterval = setInterval(() => notificationsStore.fetchCount(), 30000);
+});
+
+onUnmounted(() => {
+    if (pollInterval) {
+        clearInterval(pollInterval);
+    }
+});
 
 const links: {
     name: string;
@@ -178,7 +239,7 @@ const links: {
     legacy: boolean;
     condition?: boolean;
 }[] = [
-    { name: 'menu.dashboard', icon: House, route: '/dashboard', legacy: true },
+    { name: 'menu.dashboard', icon: House, route: { name: 'dashboard' }, legacy: false },
     {
         name: 'menu.leaderboard',
         icon: Medal,
@@ -186,17 +247,53 @@ const links: {
         legacy: false,
         condition: user.user?.pointsEnabled || false,
     },
-    { name: 'menu.active', icon: Map, route: '/statuses/active', legacy: true },
-    { name: 'stats', icon: ChartNoAxesCombined, route: '/statistics', legacy: true },
+    { name: 'menu.active', icon: Map, route: { name: 'active-journeys' }, legacy: false },
+    { name: 'stats', icon: ChartNoAxesCombined, route: { name: 'statistics' }, legacy: false },
 ];
 
+function logout() {
+    const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    if (!token) {
+        return;
+    }
+
+    user.invalidateUser();
+    fetch('/logout', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'multipart/form-data',
+            'X-CSRF-TOKEN': token,
+        },
+        body: JSON.stringify({}),
+    })
+        .then(() => {
+            window.location.href = '/';
+        })
+        .catch((error) => {
+            console.error('Error logging out:', error);
+        });
+}
+
 const userLinks = computed<
-    { name: string; icon: FunctionalComponent; route: string; legacy: boolean; condition?: boolean }[]
+    {
+        name: string;
+        icon: FunctionalComponent;
+        route: string | RouteLocationRaw;
+        legacy: boolean;
+        condition?: boolean;
+    }[]
 >(() => [
-    { name: 'menu.profile', icon: User, route: `/@${user.getUsername}`, legacy: true },
-    { name: 'menu.export', icon: Save, route: '/export', legacy: true },
-    { name: 'menu.settings', icon: Settings, route: '/settings/profile', legacy: false },
+    {
+        name: 'menu.profile',
+        icon: User,
+        route: { name: 'user-profile', params: { username: user.getUsername } },
+        legacy: false,
+    },
+    { name: 'menu.export', icon: Save, route: { name: 'export' }, legacy: false },
+    { name: 'menu.settings', icon: Settings, route: { name: 'settings-profile' }, legacy: false },
     { name: 'menu.about', icon: LifeBuoy, route: 'https://help.traewelling.de/faq/', legacy: true },
+    { name: 'tickets.title', icon: Ticket, route: { name: 'tickets' }, legacy: false },
+    { name: 'stationboard.submit-search', icon: Search, route: { name: 'search' }, legacy: false },
     {
         name: 'menu.backend',
         icon: MonitorCog,

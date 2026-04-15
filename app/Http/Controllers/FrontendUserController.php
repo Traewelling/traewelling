@@ -27,6 +27,9 @@ class FrontendUserController extends Controller
 
     public function searchUser(Request $request): Renderable|RedirectResponse
     {
+        if (empty($request->searchQuery)) {
+            return view('search', ['users' => collect()]);
+        }
         try {
             $users = UserControllerAlias::searchUser($request['searchQuery']);
             if ($users->count() === 1) {

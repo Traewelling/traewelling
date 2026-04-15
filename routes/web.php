@@ -48,6 +48,9 @@ Route::prefix('legal')->group(function () {
 Route::get('/@{username}', [FrontendUserController::class, 'getProfilePage'])
     ->name('profile');
 
+Route::get('/embed/profile/{username}', [FrontendUserController::class, 'getProfilePage'])
+    ->name('embed.profile');
+
 Route::view('/leaderboard', 'vue.leaderboard')
     ->name('leaderboard');
 
@@ -57,8 +60,14 @@ Route::get('/leaderboard/{date}', [LeaderboardController::class, 'renderMonthlyL
 Route::view('/statuses/active', 'vue.active-journeys')
     ->name('statuses.active');
 
+Route::view('/embed/active', 'vue.active-journeys')
+    ->name('embed.active');
+
 Route::get('/event/{slug}', [FrontendStatusController::class, 'statusesByEvent'])
     ->name('event');
+
+Route::get('/embed/event/{slug}', [FrontendStatusController::class, 'statusesByEvent'])
+    ->name('embed.event');
 
 Route::get('/events', [EventController::class, 'renderEventOverview'])
     ->name('events');
@@ -74,6 +83,10 @@ Route::get('/callback/mastodon', [MastodonController::class, 'callback']);
 Route::get('/status/{id}', [FrontendStatusController::class, 'getStatus'])
     ->whereNumber('id')
     ->name('status');
+
+Route::get('/embed/status/{id}', [FrontendStatusController::class, 'getStatus'])
+    ->whereNumber('id')
+    ->name('embed.status');
 
 /**
  * These routes can be used by logged in users although they have not signed the privacy policy yet.
@@ -113,6 +126,13 @@ Route::middleware(['auth', 'privacy'])->group(function () {
             ->name('stats.daily');
     });
 
+    Route::prefix('embed/statistics')->group(static function () {
+        Route::get('/', [VueFrontendController::class, 'statsDashboard'])
+            ->name('embed.stats');
+        Route::get('/daily/{dateString}', [DailyStatsController::class, 'renderDailyStats'])
+            ->name('embed.stats.daily');
+    });
+
     Route::prefix('contribute')->group(function () {
         Route::get('/{any?}', function () {
             return view('vue.spa');
@@ -123,22 +143,35 @@ Route::middleware(['auth', 'privacy'])->group(function () {
         Route::get('/{any?}', fn () => view('vue.spa'))->where('any', '.*');
     });
 
+    Route::view('/notifications', 'vue.spa')->name('notifications');
+
     Route::view('/dashboard', 'vue.dashboard')
         ->name('dashboard');
+
+    Route::view('/embed/dashboard', 'vue.dashboard')
+        ->name('embed.dashboard');
 
     Route::post('/status/update', [StatusController::class, 'updateStatus'])
         ->name('status.update'); // TODO: Replace with API Endpoint
 
     Route::view('/export', 'export')->name('export');
+    Route::view('/embed/export', 'export')->name('embed.export');
 
     Route::view('/tickets', 'vue.tickets')->name('tickets');
     Route::view('/tickets/{id}', 'vue.ticket-detail')->name('tickets.detail');
+    Route::view('/embed/tickets', 'vue.tickets')->name('embed.tickets');
+    Route::view('/embed/tickets/{id}', 'vue.ticket-detail')->name('embed.tickets.detail');
 
     Route::get('/stationboard', [VueFrontendController::class, 'stationBoard'])->name('stationboard');
+    Route::get('/embed/stationboard', [VueFrontendController::class, 'stationBoard'])->name('embed.stationboard');
+
+    Route::view('/embed/trip/create', 'beta.trip-creation')->name('embed.trip.create');
 
     Route::redirect('/trains/stationboard', '/stationboard')->name('trains.stationboard');
 
     Route::get('/search/', [FrontendUserController::class, 'searchUser'])->name('userSearch');
+
+    Route::get('/embed/search', [FrontendUserController::class, 'searchUser'])->name('embed.search');
 
 });
 
