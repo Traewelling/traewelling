@@ -157,10 +157,8 @@ Route::middleware(['auth', 'privacy'])->group(function () {
     Route::view('/export', 'export')->name('export');
     Route::view('/embed/export', 'export')->name('embed.export');
 
-    Route::view('/tickets', 'vue.tickets')->name('tickets');
-    Route::view('/tickets/{id}', 'vue.ticket-detail')->name('tickets.detail');
-    Route::view('/embed/tickets', 'vue.tickets')->name('embed.tickets');
-    Route::view('/embed/tickets/{id}', 'vue.ticket-detail')->name('embed.tickets.detail');
+    Route::view('/tickets', 'vue.spa')->name('tickets');
+    Route::view('/tickets/{id}', 'vue.spa')->name('tickets.detail');
 
     Route::get('/stationboard', [VueFrontendController::class, 'stationBoard'])->name('stationboard');
     Route::get('/embed/stationboard', [VueFrontendController::class, 'stationBoard'])->name('embed.stationboard');
