@@ -1,4 +1,4 @@
-@extends(!auth()->user()?->hasRole('open-beta') ? 'layouts.app' : 'layouts.tailwind-vue-layout')
+@extends(app_layout())
 
 @section('title', __('events.live'))
 @section('canonical', route('events'))
