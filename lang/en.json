@@ -1269,5 +1269,7 @@
   "user.blocked.noBlockedUsers": "You have not blocked any users.",
   "user.muted.noMutedUsers": "You have not muted any users.",
   "stats.from": "From",
-  "stats.to": "To"
+  "stats.to": "To",
+  "beta.banner.text": "You are viewing a new design that is still under development. You may encounter occasional errors. You can disable experimental features in your",
+  "beta.banner.settings": "settings."
 }

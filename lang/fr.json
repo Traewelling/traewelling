@@ -1225,5 +1225,7 @@
   "user.blocked.noBlockedUsers": "Tu n'as bloqué aucun utilisateur.",
   "user.muted.noMutedUsers": "Tu n'as mis aucun utilisateur en sourdine.",
   "stats.from": "Du",
-  "stats.to": "Au"
+  "stats.to": "Au",
+  "beta.banner.text": "Tu consultes un nouveau design encore en cours de developpement. Des erreurs peuvent survenir. Tu peux desactiver les fonctionnalites experimentales dans tes",
+  "beta.banner.settings": "parametres."
 }

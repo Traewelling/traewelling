@@ -1265,5 +1265,7 @@
   "user.blocked.noBlockedUsers": "Du hast keine Nutzer blockiert.",
   "user.muted.noMutedUsers": "Du hast keine Nutzer stummgeschaltet.",
   "stats.from": "Von",
-  "stats.to": "Bis"
+  "stats.to": "Bis",
+  "beta.banner.text": "Du siehst gerade ein neues Design, das sich noch in der Entwicklung befindet. Es kann hier und da zu Fehlern kommen. Du kannst die experimentellen Features in deinen",
+  "beta.banner.settings": "Einstellungen deaktivieren."
 }
