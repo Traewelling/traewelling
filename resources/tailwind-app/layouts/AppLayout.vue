@@ -98,10 +98,7 @@
         </div>
 
         <!-- Main content -->
-        <main
-            class="flex-1 w-full min-h-screen"
-            :class="{ 'px-4 sm:px-6 lg:px-8': !legacy, 'max-w-7xl mx-auto py-8': !fullscreen }"
-        >
+        <main class="flex-1 w-full" :class="{ 'px-4 sm:px-6 lg:px-8': !legacy, 'max-w-7xl mx-auto py-8': !fullscreen }">
             <slot></slot>
         </main>
 

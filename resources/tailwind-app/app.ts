@@ -1,4 +1,5 @@
 import { i18nVue } from 'laravel-vue-i18n';
+import 'maplibre-gl/dist/maplibre-gl.css';
 import { INotyfOptions, Notyf } from 'notyf';
 import { createPinia } from 'pinia';
 import piniaPluginPersistedState from 'pinia-plugin-persistedstate';

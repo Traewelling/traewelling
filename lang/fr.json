@@ -771,6 +771,8 @@
   "tag.title.trwl:vehicle_number": "Numéro de la rame",
   "tag.title.trwl:wagon": "Voiture",
   "tag.title.trwl:wagon_class": "Classe de la voiture",
+  "tag.key": "Type",
+  "tag.value": "Valeur",
   "tickets.add": "Ajouter un billet",
   "tickets.assign": "Attribuer",
   "tickets.assign-ticket": "Attribuer un billet",
