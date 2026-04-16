@@ -520,7 +520,7 @@
     "settings.deleteallsessions": "Smazat všechny relace",
     "settings.disconnect": "Odpojit",
     "settings.experimental": "Experimentální funkce",
-    "settings.experimental.description": "Experimentální funkce ještě nejsou připraveny a mohou obsahovat chyby. Toto se nedoporučuje pro každodenní používání.",
+    "settings.experimental.description": "Odemkne nové funkce, které jsou momentálně v beta verzi. Buďte mezi prvními, kdo je vyzkouší, a poskytněte zpětnou vazbu, ale stále mohou mít nedostatky.",
     "settings.expires": "Platnost vyprší",
     "settings.find-users": "Najít uživatele",
     "settings.follower.delete": "Odebrat sledujícího",
@@ -1232,5 +1232,11 @@
     "oauth.delete-confirm": "Opravdu chcete smazat aplikaci \":name\"? Všechny její přidružené tokeny budou zneplatněny.",
     "oauth.enable-webhooks": "Povolit webhooky",
     "oauth.privacy-policy": "Zásady ochrany osobních údajů",
-    "oauth.redirect": "URL přesměrování"
+    "oauth.redirect": "URL přesměrování",
+    "user.muted.noMutedUsers": "Nevypnuli jste žádné uživatele.",
+    "oauth.confidential-change-warning": "Změnou tohoto nastavení se otočí tajný klíč klienta.",
+    "oauth.secret-confirmed": "Zabezpečení nstaveno",
+    "oauth.secret-once": "Tajný klíč klienta pro „:name“ se zobrazuje pouze jednou. Uložte si ho prosím nyní.",
+    "settings.friend_checkin.description": "Umožnit vybraným uživatelům, aby vás přihlásili na sdílenou cestu.",
+    "settings.mastodon.description": "Propojte svůj účet Mastodon pro automatické sdílení cest. Oficiálně je podporován pouze Mastodon; jiné implementace Fediverse nemusí fungovat."
 }
