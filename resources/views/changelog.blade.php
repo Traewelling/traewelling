@@ -1,7 +1,7 @@
 @props([
 'changelog' => []
 ])
-@extends(!auth()->user()?->hasRole('open-beta') ? 'layouts.app' : 'layouts.tailwind-vue-layout')
+@extends(app_layout())
 
 @section('title', __('changelog'))
 @section('canonical', route('changelog'))

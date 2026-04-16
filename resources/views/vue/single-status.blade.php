@@ -1,4 +1,4 @@
-@extends(request()->routeIs('embed.*') ? 'layouts.app-embed' : (!auth()->user()?->hasRole('open-beta') ? 'layouts.app' : 'layouts.tailwind-vue-layout'))
+@extends(app_layout())
 
 @section('title', $username ? __('status.ogp-title', ['name' => $username]) : 'Träwelling')
 
