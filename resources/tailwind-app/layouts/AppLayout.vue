@@ -80,6 +80,23 @@
             </div>
         </div>
 
+        <!-- Beta banner -->
+        <div
+            v-if="showBetaBanner"
+            role="alert"
+            class="alert alert-warning rounded-none py-2 px-4 flex items-center justify-between gap-2"
+        >
+            <span class="text-sm">
+                {{ trans('beta.banner.text') }}
+                <a href="/settings/account" class="link link-hover font-semibold">{{
+                    trans('beta.banner.settings')
+                }}</a>
+            </span>
+            <button class="btn btn-ghost btn-xs" @click="dismissBanner">
+                <X class="w-4 h-4" />
+            </button>
+        </div>
+
         <!-- Main content -->
         <main
             class="flex-1 w-full min-h-screen"
@@ -191,8 +208,9 @@ import {
     Settings,
     Ticket,
     User,
+    X,
 } from 'lucide-vue-next';
-import { computed, FunctionalComponent, onMounted, onUnmounted } from 'vue';
+import { computed, FunctionalComponent, onMounted, onUnmounted, ref } from 'vue';
 import { RouteLocationRaw } from 'vue-router';
 import { useConfigurationStore } from '../../vue/stores/configuration';
 import { useNotificationsStore } from '../../vue/stores/notifications';
@@ -217,6 +235,13 @@ user.fetchSettings();
 
 const config = useConfigurationStore();
 config.fetchData();
+
+const showBetaBanner = ref(localStorage.getItem('trwl:beta-banner-dismissed') !== '1');
+
+function dismissBanner() {
+    localStorage.setItem('trwl:beta-banner-dismissed', '1');
+    showBetaBanner.value = false;
+}
 
 const notificationsStore = useNotificationsStore();
 let pollInterval: ReturnType<typeof setInterval> | null = null;
