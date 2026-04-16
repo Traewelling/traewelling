@@ -121,10 +121,10 @@ class MotisHydrator
         $identifier = $this->stationRepository->getStationIdentifierByIdentifier($rawStop['stopId'], $source);
 
         $isCancelled = (bool) ($rawStop['cancelled'] ?? false);
-        $departurePlanned = isset($rawStop['scheduledDeparture']) ? Carbon::parse($rawStop['scheduledDeparture']) : null;
-        $departureReal = isset($rawStop['departure']) ? Carbon::parse($rawStop['departure']) : null;
-        $arrivalPlanned = isset($rawStop['scheduledArrival']) ? Carbon::parse($rawStop['scheduledArrival']) : null;
-        $arrivalReal = isset($rawStop['arrival']) ? Carbon::parse($rawStop['arrival']) : null;
+        $departurePlanned = isset($rawStop['scheduledDeparture']) ? Carbon::parse($rawStop['scheduledDeparture'])->utc() : null;
+        $departureReal = isset($rawStop['departure']) ? Carbon::parse($rawStop['departure'])->utc() : null;
+        $arrivalPlanned = isset($rawStop['scheduledArrival']) ? Carbon::parse($rawStop['scheduledArrival'])->utc() : null;
+        $arrivalReal = isset($rawStop['arrival']) ? Carbon::parse($rawStop['arrival'])->utc() : null;
         // new API does not differ between departure and arrival platform
         $platformPlanned = $rawStop['scheduledTrack'] ?? null;
         $platformReal = $rawStop['track'] ?? $platformPlanned;
@@ -165,8 +165,8 @@ class MotisHydrator
         $destinationStation = $this->stationRepository->getStationsByIdentifiers($leg['to']['stopId'], $source)->first()
                               ?? $this->stationRepository->updateOrCreateByIfopt($leg['to']['stopId'], $source)
                                  ?? $this->stationRepository->createMotisStationIdentifier($leg['to'], $source);
-        $departure = isset($leg['from']['departure']) ? Carbon::parse($leg['from']['departure']) : null;
-        $arrival = isset($leg['to']['arrival']) ? Carbon::parse($leg['to']['arrival']) : null;
+        $departure = isset($leg['from']['departure']) ? Carbon::parse($leg['from']['departure'])->utc() : null;
+        $arrival = isset($leg['to']['arrival']) ? Carbon::parse($leg['to']['arrival'])->utc() : null;
         $mode = $this->getCategoryFromLeg($leg);
         $category = $mode->getHTT()->value;
         $tripLineName = !empty($leg['displayName']) ? $leg['displayName'] : $lineName;
@@ -272,8 +272,8 @@ class MotisHydrator
 
             $departure = new Departure(
                 station: $departureStation,
-                plannedDeparture: Carbon::parse($rawDepartureStation['scheduledDeparture']),
-                realDeparture: !$isCancelled && !empty($rawDeparture['realTime']) ? Carbon::parse($rawDepartureStation['departure']) : null,
+                plannedDeparture: Carbon::parse($rawDepartureStation['scheduledDeparture'])->utc(),
+                realDeparture: !$isCancelled && !empty($rawDeparture['realTime']) ? Carbon::parse($rawDepartureStation['departure'])->utc() : null,
                 trip: new BahnTrip(
                     tripId: $tripId,
                     direction: $rawDeparture['headsign'],
