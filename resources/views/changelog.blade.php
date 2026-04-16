@@ -1,7 +1,7 @@
 @props([
 'changelog' => []
 ])
-@extends(app_layout())
+@extends(appLayout())
 
 @section('title', __('changelog'))
 @section('canonical', route('changelog'))

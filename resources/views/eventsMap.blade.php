@@ -1,4 +1,4 @@
-@extends(app_layout())
+@extends(appLayout())
 
 @section('title', $event->name)
 @section('canonical', route('event', ['slug' => $event->slug]))

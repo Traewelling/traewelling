@@ -106,7 +106,7 @@ function errorMessage(Exception|Error $exception, ?string $text = null): array|n
     return $text . ' ' . __('messages.exception.reference', ['reference' => $exception->reference]);
 }
 
-function app_layout(): string
+function appLayout(): string
 {
     if (request()->routeIs('embed.*')) {
         return 'layouts.app-embed';

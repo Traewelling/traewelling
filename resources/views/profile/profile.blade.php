@@ -1,4 +1,4 @@
-@extends(app_layout())
+@extends(appLayout())
 
 @section('title', $user->name)
 @section('canonical', route('profile', ['username' => $user->username]))
