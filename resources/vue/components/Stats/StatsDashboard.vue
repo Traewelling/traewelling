@@ -22,11 +22,17 @@ const from = ref(new Date(new Date().setMonth(new Date().getMonth() - 3)) as Dat
 const globalFrom = ref(null as Date | null);
 const globalUntil = ref(null as Date | null);
 
+function getDateString(date: Date) {
+    return date.toISOString().split('T')[0];
+}
+
+const fromStr = computed(() => getDateString(from.value));
+const untilStr = computed(() => getDateString(until.value));
+
 function getQueryParameters() {
-    // Get Query Parameters
     const urlParams = new URLSearchParams(window.location.search);
     const fromUrlString = urlParams.get('from');
-    if (fromUrlString && fromUrlString !== fromStr.value) {
+    if (fromUrlString) {
         const fromDate = new Date(fromUrlString);
         if (!isNaN(fromDate.getTime())) {
             from.value = fromDate;
@@ -34,7 +40,7 @@ function getQueryParameters() {
     }
 
     const untilUrlString = urlParams.get('until');
-    if (untilUrlString && untilUrlString !== untilStr.value) {
+    if (untilUrlString) {
         const untilDate = new Date(untilUrlString);
         if (!isNaN(untilDate.getTime())) {
             until.value = untilDate;
@@ -43,12 +49,6 @@ function getQueryParameters() {
 }
 
 getQueryParameters();
-
-const fromStr = computed(() => getDateString(from.value));
-const untilStr = computed(() => getDateString(until.value));
-function getDateString(date: Date) {
-    return date.toISOString().split('T')[0];
-}
 
 const data = ref({ purpose: [], categories: [], operators: [], time: [] });
 const globalStats = ref({});

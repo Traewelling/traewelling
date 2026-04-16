@@ -1223,5 +1223,7 @@
   "your-access-token.ask": "Chez Träwelling, nous ne te demanderons jamais ton jeton d'accès. Si on te le demande, il s'agit probablement d'une usurpation d'identité.",
   "your-apps": "Tes applications",
   "user.blocked.noBlockedUsers": "Tu n'as bloqué aucun utilisateur.",
-  "user.muted.noMutedUsers": "Tu n'as mis aucun utilisateur en sourdine."
+  "user.muted.noMutedUsers": "Tu n'as mis aucun utilisateur en sourdine.",
+  "stats.from": "Du",
+  "stats.to": "Au"
 }

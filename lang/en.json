@@ -1267,5 +1267,7 @@
   "your-access-token.ask": "We at Träwelling will never ask you for your AccessToken. If you are asked for it, it is probably a scam.",
   "your-apps": "Your applications",
   "user.blocked.noBlockedUsers": "You have not blocked any users.",
-  "user.muted.noMutedUsers": "You have not muted any users."
+  "user.muted.noMutedUsers": "You have not muted any users.",
+  "stats.from": "From",
+  "stats.to": "To"
 }
