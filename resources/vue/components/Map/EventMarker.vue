@@ -25,18 +25,24 @@ defineProps({
             </div>
         </template>
         <mgl-popup>
-            <strong
-                ><a target="_blank" :href="event.url">{{ event.name }}</a></strong
-            ><br />
-            <i class="fa fa-user-clock" /> {{ event.host }}<br />
-            <i class="fa fa-calendar-day" />
-            {{ DtmRange.fromISO(event.begin, event.end).toLocaleDateString() }}<br />
-            <a :href="`/event/${event.slug}`">{{ trans('events.show-all-for-event') }}</a>
+            <div class="event-popup-content">
+                <strong><a target="_blank" :href="event.url">{{ event.name }}</a></strong><br />
+                <i class="fa fa-user-clock" /> {{ event.host }}<br />
+                <i class="fa fa-calendar-day" />
+                {{ DtmRange.fromISO(event.begin, event.end).toLocaleDateString() }}<br />
+                <a :href="`/event/${event.slug}`">{{ trans('events.show-all-for-event') }}</a>
+            </div>
         </mgl-popup>
     </mgl-marker>
 </template>
 
 <style scoped>
+.maplibregl-popup .event-popup-content,
+.maplibregl-popup .event-popup-content a,
+.maplibregl-popup .event-popup-content strong {
+    color: #000;
+}
+
 .event-map-marker {
     width: 34px;
     height: 34px;
