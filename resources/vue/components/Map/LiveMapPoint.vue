@@ -74,28 +74,41 @@ onUnmounted(() => {
 <template>
     <mgl-marker v-if="currentMarkerCoordinates" :coordinates="currentMarkerCoordinates">
         <template #marker>
-            <img
-                class="img-thumbnail rounded-circle img-fluid"
-                style="width: 20px; padding: 1px"
-                :src="point.status.user.profilePictureUrl"
-                :alt="point.status.user.username"
-            />
+            <img class="live-map-avatar" :src="point.status.user.profilePictureUrl" :alt="point.status.user.username" />
         </template>
         <mgl-popup ref="popup">
-            <div>
-                <strong>{{ point.lineName }}</strong
-                ><br />
+            <div class="live-popup">
+                <a :href="`/@${point.status.user.username}`" class="live-popup-link">@{{ point.status.user.username }}</a>
+                <a :href="`/status/${point.status.id}`" class="live-popup-link">Status →</a>
             </div>
         </mgl-popup>
     </mgl-marker>
 </template>
 
 <style scoped>
-.img-thumbnail {
-    border: none;
+.live-map-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    object-fit: cover;
 }
 
-.rounded-circle {
-    border-radius: 50%;
+.live-popup {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.live-popup-link {
+    font-size: 0.85rem;
+    color: #000 !important;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.live-popup-link:hover {
+    text-decoration: underline;
 }
 </style>
