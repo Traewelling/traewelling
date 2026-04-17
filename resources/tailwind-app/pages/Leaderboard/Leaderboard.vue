@@ -85,7 +85,7 @@ onMounted(fetchData);
 
 <template>
     <AppLayout>
-        <div class="container mx-auto md:px-4 py-2 md:py-24 min-h-screen">
+        <div class="container mx-auto md:px-4 py-4 min-h-screen">
             <div class="flex justify-between">
                 <h1 class="font-bold text-xl mb-1">
                     <Medal class="size-8 inline-block" />
