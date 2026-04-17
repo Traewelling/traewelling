@@ -14,6 +14,15 @@ class LeaderboardController extends Controller
         private readonly LeaderboardBackend $leaderboardBackend,
     ) {}
 
+    public function renderBetaMonthlyLeaderboard(string $month): Renderable|RedirectResponse
+    {
+        if (auth()->user()?->hasRole('open-beta')) {
+            return view('vue.spa');
+        }
+
+        return redirect()->route('leaderboard.month', ['date' => $month]);
+    }
+
     public function renderMonthlyLeaderboard(string $date): Renderable|RedirectResponse
     {
         if (auth()->user()?->points_enabled === false) {

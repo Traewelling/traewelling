@@ -57,6 +57,9 @@ Route::view('/leaderboard', 'vue.leaderboard')
 Route::get('/leaderboard/{date}', [LeaderboardController::class, 'renderMonthlyLeaderboard'])
     ->name('leaderboard.month');
 
+Route::get('/leaderboard/monthly/{month}', [LeaderboardController::class, 'renderBetaMonthlyLeaderboard'])
+    ->name('leaderboard.monthly');
+
 Route::view('/statuses/active', 'vue.active-journeys')
     ->name('statuses.active');
 
