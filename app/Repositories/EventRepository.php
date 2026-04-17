@@ -40,15 +40,15 @@ class EventRepository
     public function paginateForAdminCursor(?string $search, ?string $status): CursorPaginator
     {
         $today = today()->toDateString();
-        $query = Event::with(['station'])->orderBy('checkin_start');
+        $query = Event::with(['station']);
 
         if ($search !== null && $search !== '') {
             $query->where('name', 'LIKE', '%' . strip_tags($search) . '%');
         }
 
         match ($status) {
-            'future' => $query->where('checkin_start', '>', $today),
-            'current' => $query->where('checkin_start', '<=', $today)->where('checkin_end', '>=', $today),
+            'future' => $query->where('checkin_start', '>', $today)->orderBy('checkin_start', 'asc'),
+            'current' => $query->where('checkin_start', '<=', $today)->where('checkin_end', '>=', $today)->orderBy('checkin_start', 'asc'),
             'past' => $query->where('checkin_end', '<', $today)->orderByDesc('checkin_start'),
             default => null,
         };
