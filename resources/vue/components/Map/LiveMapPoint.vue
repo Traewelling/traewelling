@@ -89,3 +89,13 @@ onUnmounted(() => {
         </mgl-popup>
     </mgl-marker>
 </template>
+
+<style scoped>
+.img-thumbnail {
+    border: none;
+}
+
+.rounded-circle {
+    border-radius: 50%;
+}
+</style>

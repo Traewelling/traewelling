@@ -1,8 +1,8 @@
 {
-    "admin.checkins": "Checkin-Inoj",
-    "admin.greeting": "Saluton",
-    "admin.statuses": "statuso",
-    "admin.usage": "uzo",
-    "admin.usage-board": "Uzotaksado",
-    "controller.status.like-ok": "Ŝatas!"
+  "admin.checkins": "Checkin-Inoj",
+  "admin.greeting": "Saluton",
+  "admin.statuses": "statuso",
+  "admin.usage": "uzo",
+  "admin.usage-board": "Uzotaksado",
+  "controller.status.like-ok": "Ŝatas!"
 }

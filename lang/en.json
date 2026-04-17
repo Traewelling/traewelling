@@ -806,6 +806,8 @@
   "tag.title.trwl:vehicle_number": "Vehicle number",
   "tag.title.trwl:wagon": "Carriage",
   "tag.title.trwl:wagon_class": "Wagon class",
+  "tag.key": "Type",
+  "tag.value": "Value",
   "tag.value.trwl:social_status.do_not_disturb": "🚫 Do not disturb",
   "tag.value.trwl:social_status.open": "👋 Open to chat",
   "tag.value.trwl:social_status.open_find_me": "🕵️ Come find me",

@@ -8,7 +8,6 @@ import Error403 from '../components/Errors/403.vue';
 import Error404 from '../components/Errors/404.vue';
 import LoadingSkeletonRows from '../components/Loader/LoadingSkeletonRows.vue';
 import CoPassengers from '../components/Status/CoPassengers.vue';
-import StatusTicket from '../components/Status/Partials/StatusTicket.vue';
 import StatusCard from '../components/Status/StatusCard.vue';
 import TagHelper from '../components/TagHelper.vue';
 import { getDepartureForStatus } from '../helpers/DateTimeHelper';
@@ -22,9 +21,7 @@ const user = useUserStore();
 const pageError = ref<'403' | '404' | null>(null);
 const stopovers = ref<StopoverResource[]>([]);
 const hasCoPassengers = ref(false);
-const hasRightColumn = computed(
-    () => hasCoPassengers.value || (!!user.user && status.value?.userDetails.id === user.user.id && user.isClosedBeta),
-);
+const hasRightColumn = computed(() => hasCoPassengers.value);
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 
@@ -178,15 +175,6 @@ fetchLikes();
             </div>
 
             <div class="col-md-8 col-lg-5 mt-3 mt-lg-0">
-                <StatusTicket
-                    v-if="user.user?.id === status.userDetails.id && user.isClosedBeta"
-                    :status-id="status.id"
-                    :ticket="status.ticket ?? null"
-                    :departure-planned="status.checkin.origin.departurePlanned"
-                    :trip-distance="status.checkin.distance"
-                    :trip-duration="status.checkin.duration"
-                    @ticket-changed="status.ticket = $event"
-                />
                 <CoPassengers
                     :trip-id="status.checkin.trip"
                     :current-status-id="status.id"
