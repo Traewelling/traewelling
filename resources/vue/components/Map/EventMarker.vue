@@ -26,7 +26,9 @@ defineProps({
         </template>
         <mgl-popup>
             <div class="event-popup-content">
-                <strong><a target="_blank" :href="event.url">{{ event.name }}</a></strong><br />
+                <strong
+                    ><a target="_blank" :href="event.url">{{ event.name }}</a></strong
+                ><br />
                 <i class="fa fa-user-clock" /> {{ event.host }}<br />
                 <i class="fa fa-calendar-day" />
                 {{ DtmRange.fromISO(event.begin, event.end).toLocaleDateString() }}<br />

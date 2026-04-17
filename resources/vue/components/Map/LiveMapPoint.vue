@@ -78,7 +78,9 @@ onUnmounted(() => {
         </template>
         <mgl-popup ref="popup">
             <div class="live-popup">
-                <a :href="`/@${point.status.user.username}`" class="live-popup-link">@{{ point.status.user.username }}</a>
+                <a :href="`/@${point.status.user.username}`" class="live-popup-link"
+                    >@{{ point.status.user.username }}</a
+                >
                 <a :href="`/status/${point.status.id}`" class="live-popup-link">Status →</a>
             </div>
         </mgl-popup>
