@@ -800,20 +800,20 @@ export interface AdminStatusResource {
   visibility: number;
   /** @example 0 */
   business: number;
-  moderation_notes: string | null;
-  lock_visibility: boolean;
-  hide_body: boolean;
-  event_id: number | null;
+  moderationNotes: string | null;
+  lockVisibility: boolean;
+  hideBody: boolean;
+  eventId: number | null;
   /** User model with just basic information */
   user: LightUserResource;
   checkin: TransportResource | null;
   stopovers: StopoverResource[] | null;
   /** @format date-time */
-  created_at: string;
+  createdAt: string;
   /** @format date-time */
-  updated_at: string;
+  updatedAt: string;
   client: ClientResource | null;
-  created_by: LightUserResource | null;
+  createdBy: LightUserResource | null;
 }
 
 export interface AlertResource {
@@ -3152,12 +3152,12 @@ export class Api<
         body?: string | null;
         visibility: number;
         business?: number | null;
-        event_id?: number | null;
+        eventId?: number | null;
         points?: number | null;
         /** @maxLength 255 */
-        moderation_notes?: string | null;
-        lock_visibility?: boolean | null;
-        hide_body?: boolean | null;
+        moderationNotes?: string | null;
+        lockVisibility?: boolean | null;
+        hideBody?: boolean | null;
       },
       params: RequestParams = {},
     ) =>

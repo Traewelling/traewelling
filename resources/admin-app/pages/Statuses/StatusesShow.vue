@@ -22,11 +22,11 @@ const form = ref({
     body: '',
     visibility: 0,
     business: 0,
-    event_id: null as number | null,
+    eventId: null as number | null,
     points: null as number | null,
-    moderation_notes: '',
-    lock_visibility: false,
-    hide_body: false,
+    moderationNotes: '',
+    lockVisibility: false,
+    hideBody: false,
 });
 
 async function fetchStatus(): Promise<void> {
@@ -42,11 +42,11 @@ async function fetchStatus(): Promise<void> {
                 body: status.value.body ?? '',
                 visibility: status.value.visibility ?? 0,
                 business: status.value.business ?? 0,
-                event_id: status.value.event_id ?? null,
+                eventId: status.value.eventId ?? null,
                 points: status.value.checkin?.points ?? null,
-                moderation_notes: status.value.moderation_notes ?? '',
-                lock_visibility: status.value.lock_visibility ?? false,
-                hide_body: status.value.hide_body ?? false,
+                moderationNotes: status.value.moderationNotes ?? '',
+                lockVisibility: status.value.lockVisibility ?? false,
+                hideBody: status.value.hideBody ?? false,
             };
         }
     } catch (e) {
@@ -67,11 +67,11 @@ async function save(): Promise<void> {
             body: form.value.body || null,
             visibility: form.value.visibility,
             business: form.value.business,
-            event_id: form.value.event_id,
+            eventId: form.value.eventId,
             points: form.value.points,
-            moderation_notes: form.value.moderation_notes || null,
-            lock_visibility: form.value.lock_visibility,
-            hide_body: form.value.hide_body,
+            moderationNotes: form.value.moderationNotes || null,
+            lockVisibility: form.value.lockVisibility,
+            hideBody: form.value.hideBody,
         });
         status.value = res.data.data ?? null;
         successMessage.value = 'Status updated successfully.';
@@ -216,7 +216,7 @@ onMounted(() => fetchStatus());
                                         </tr>
                                         <tr class="hover:bg-base-300">
                                             <td class="text-base-content/60">Created by</td>
-                                            <td v-if="status.created_by">
+                                            <td v-if="status.createdBy">
                                                 <a :href="`/admin/users/${status.user.id}`" class="link">
                                                     {{ status.user.displayName }}
                                                     <span class="text-base-content/50"
@@ -228,11 +228,11 @@ onMounted(() => fetchStatus());
                                         </tr>
                                         <tr class="hover:bg-base-300">
                                             <td class="text-base-content/60">Created</td>
-                                            <td>{{ formatDate(status.created_at) }}</td>
+                                            <td>{{ formatDate(status.createdAt) }}</td>
                                         </tr>
                                         <tr class="hover:bg-base-300">
                                             <td class="text-base-content/60">Updated</td>
-                                            <td>{{ formatDate(status.updated_at) }}</td>
+                                            <td>{{ formatDate(status.updatedAt) }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -335,7 +335,7 @@ onMounted(() => fetchStatus());
                                 <fieldset class="fieldset">
                                     <legend class="fieldset-legend text-xs">Event ID</legend>
                                     <input
-                                        v-model.number="form.event_id"
+                                        v-model.number="form.eventId"
                                         type="number"
                                         class="input input-bordered input-sm w-full"
                                         placeholder="empty = none"
@@ -363,7 +363,7 @@ onMounted(() => fetchStatus());
                                 <fieldset class="fieldset">
                                     <legend class="fieldset-legend text-xs">Moderation Notes</legend>
                                     <textarea
-                                        v-model="form.moderation_notes"
+                                        v-model="form.moderationNotes"
                                         class="textarea textarea-bordered w-full"
                                         rows="2"
                                         maxlength="255"
@@ -374,7 +374,7 @@ onMounted(() => fetchStatus());
                                     <fieldset class="fieldset">
                                         <legend class="fieldset-legend text-xs">Lock Visibility?</legend>
                                         <select
-                                            v-model="form.lock_visibility"
+                                            v-model="form.lockVisibility"
                                             class="select select-bordered select-sm w-full"
                                         >
                                             <option :value="false">No</option>
@@ -384,10 +384,7 @@ onMounted(() => fetchStatus());
 
                                     <fieldset class="fieldset">
                                         <legend class="fieldset-legend text-xs">Hide Body from Public?</legend>
-                                        <select
-                                            v-model="form.hide_body"
-                                            class="select select-bordered select-sm w-full"
-                                        >
+                                        <select v-model="form.hideBody" class="select select-bordered select-sm w-full">
                                             <option :value="false">No</option>
                                             <option :value="true">Yes</option>
                                         </select>

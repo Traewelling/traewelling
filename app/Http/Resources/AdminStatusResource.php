@@ -10,16 +10,16 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(
     title: 'AdminStatusResource',
-    required: ['id', 'body', 'visibility', 'business', 'moderation_notes', 'lock_visibility', 'hide_body', 'event_id', 'user', 'checkin', 'stopovers', 'created_at', 'updated_at', 'client', 'created_by'],
+    required: ['id', 'body', 'visibility', 'business', 'moderationNotes', 'lockVisibility', 'hideBody', 'eventId', 'user', 'checkin', 'stopovers', 'createdAt', 'updatedAt', 'client', 'createdBy'],
     properties: [
         new OA\Property(property: 'id', type: 'integer', example: 12345),
         new OA\Property(property: 'body', type: 'string', nullable: true),
         new OA\Property(property: 'visibility', type: 'integer', example: 0),
         new OA\Property(property: 'business', type: 'integer', example: 0),
-        new OA\Property(property: 'moderation_notes', type: 'string', nullable: true),
-        new OA\Property(property: 'lock_visibility', type: 'boolean'),
-        new OA\Property(property: 'hide_body', type: 'boolean'),
-        new OA\Property(property: 'event_id', type: 'integer', nullable: true),
+        new OA\Property(property: 'moderationNotes', type: 'string', nullable: true),
+        new OA\Property(property: 'lockVisibility', type: 'boolean'),
+        new OA\Property(property: 'hideBody', type: 'boolean'),
+        new OA\Property(property: 'eventId', type: 'integer', nullable: true),
         new OA\Property(property: 'user', ref: LightUserResource::class),
         new OA\Property(property: 'checkin', ref: TransportResource::class, nullable: true),
         new OA\Property(
@@ -28,14 +28,14 @@ use OpenApi\Attributes as OA;
             items: new OA\Items(ref: StopoverResource::class),
             nullable: true,
         ),
-        new OA\Property(property: 'created_at', type: 'string', format: 'date-time'),
-        new OA\Property(property: 'updated_at', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'createdAt', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'updatedAt', type: 'string', format: 'date-time'),
         new OA\Property(
             property: 'client',
             ref: ClientResource::class,
             nullable: true,
         ),
-        new OA\Property(property: 'created_by', ref: LightUserResource::class, nullable: true),
+        new OA\Property(property: 'createdBy', ref: LightUserResource::class, nullable: true),
     ],
 )]
 class AdminStatusResource extends JsonResource
@@ -48,17 +48,17 @@ class AdminStatusResource extends JsonResource
             'body' => $this->body,
             'visibility' => (int) $this->visibility->value,
             'business' => (int) $this->business->value,
-            'moderation_notes' => $this->moderation_notes,
-            'lock_visibility' => (bool) $this->lock_visibility,
-            'hide_body' => (bool) $this->hide_body,
-            'event_id' => $this->event_id,
+            'moderationNotes' => $this->moderation_notes,
+            'lockVisibility' => (bool) $this->lock_visibility,
+            'hideBody' => (bool) $this->hide_body,
+            'eventId' => $this->event_id,
             'user' => new LightUserResource($this->user),
             'checkin' => $this->checkin ? new TransportResource($this->checkin) : null,
             'stopovers' => $this->checkin?->trip ? StopoverResource::collection($this->checkin->trip->stopovers) : [],
-            'created_at' => $this->created_at?->toIso8601String(),
-            'updated_at' => $this->updated_at?->toIso8601String(),
+            'createdAt' => $this->created_at?->toIso8601String(),
+            'updatedAt' => $this->updated_at?->toIso8601String(),
             'client' => new ClientResource($this->whenLoaded('client')),
-            'created_by' => new LightUserResource($this->whenLoaded('createdByUser')),
+            'createdBy' => new LightUserResource($this->whenLoaded('createdByUser')),
         ];
     }
 }

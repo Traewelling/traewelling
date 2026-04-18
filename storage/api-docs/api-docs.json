@@ -738,7 +738,7 @@
                                         "type": "integer",
                                         "nullable": true
                                     },
-                                    "event_id": {
+                                    "eventId": {
                                         "type": "integer",
                                         "nullable": true
                                     },
@@ -746,16 +746,16 @@
                                         "type": "integer",
                                         "nullable": true
                                     },
-                                    "moderation_notes": {
+                                    "moderationNotes": {
                                         "type": "string",
                                         "nullable": true,
                                         "maxLength": 255
                                     },
-                                    "lock_visibility": {
+                                    "lockVisibility": {
                                         "type": "boolean",
                                         "nullable": true
                                     },
-                                    "hide_body": {
+                                    "hideBody": {
                                         "type": "boolean",
                                         "nullable": true
                                     }
@@ -9466,17 +9466,17 @@
                     "body",
                     "visibility",
                     "business",
-                    "moderation_notes",
-                    "lock_visibility",
-                    "hide_body",
-                    "event_id",
+                    "moderationNotes",
+                    "lockVisibility",
+                    "hideBody",
+                    "eventId",
                     "user",
                     "checkin",
                     "stopovers",
-                    "created_at",
-                    "updated_at",
+                    "createdAt",
+                    "updatedAt",
                     "client",
-                    "created_by"
+                    "createdBy"
                 ],
                 "properties": {
                     "id": {
@@ -9495,17 +9495,17 @@
                         "type": "integer",
                         "example": 0
                     },
-                    "moderation_notes": {
+                    "moderationNotes": {
                         "type": "string",
                         "nullable": true
                     },
-                    "lock_visibility": {
+                    "lockVisibility": {
                         "type": "boolean"
                     },
-                    "hide_body": {
+                    "hideBody": {
                         "type": "boolean"
                     },
-                    "event_id": {
+                    "eventId": {
                         "type": "integer",
                         "nullable": true
                     },
@@ -9527,11 +9527,11 @@
                         },
                         "nullable": true
                     },
-                    "created_at": {
+                    "createdAt": {
                         "type": "string",
                         "format": "date-time"
                     },
-                    "updated_at": {
+                    "updatedAt": {
                         "type": "string",
                         "format": "date-time"
                     },
@@ -9543,7 +9543,7 @@
                         ],
                         "nullable": true
                     },
-                    "created_by": {
+                    "createdBy": {
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/LightUserResource"

@@ -142,7 +142,7 @@ onMounted(() => fetchStatuses());
                                 <span class="badge badge-sm badge-ghost">{{ businessLabel(status.business) }}</span>
                             </td>
                             <td class="text-xs text-base-content/60 whitespace-nowrap">
-                                {{ formatDate(status.created_at) }}
+                                {{ formatDate(status.createdAt) }}
                             </td>
                         </tr>
                     </tbody>

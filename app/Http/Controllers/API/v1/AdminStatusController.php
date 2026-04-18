@@ -127,11 +127,11 @@ class AdminStatusController extends Controller
                     new OA\Property(property: 'body', type: 'string', nullable: true, maxLength: 280),
                     new OA\Property(property: 'visibility', type: 'integer'),
                     new OA\Property(property: 'business', type: 'integer', nullable: true),
-                    new OA\Property(property: 'event_id', type: 'integer', nullable: true),
+                    new OA\Property(property: 'eventId', type: 'integer', nullable: true),
                     new OA\Property(property: 'points', type: 'integer', nullable: true),
-                    new OA\Property(property: 'moderation_notes', type: 'string', nullable: true, maxLength: 255),
-                    new OA\Property(property: 'lock_visibility', type: 'boolean', nullable: true),
-                    new OA\Property(property: 'hide_body', type: 'boolean', nullable: true),
+                    new OA\Property(property: 'moderationNotes', type: 'string', nullable: true, maxLength: 255),
+                    new OA\Property(property: 'lockVisibility', type: 'boolean', nullable: true),
+                    new OA\Property(property: 'hideBody', type: 'boolean', nullable: true),
                 ],
             ),
         ),
@@ -164,11 +164,11 @@ class AdminStatusController extends Controller
             'body' => ['nullable', 'string', 'max:280'],
             'visibility' => ['required', new Enum(StatusVisibility::class)],
             'business' => ['nullable', new Enum(Business::class)],
-            'event_id' => ['nullable', 'integer', 'exists:events,id'],
+            'eventId' => ['nullable', 'integer', 'exists:events,id'],
             'points' => ['nullable', 'integer', 'gte:0'],
-            'moderation_notes' => ['nullable', 'string', 'max:255'],
-            'lock_visibility' => ['nullable', 'boolean'],
-            'hide_body' => ['nullable', 'boolean'],
+            'moderationNotes' => ['nullable', 'string', 'max:255'],
+            'lockVisibility' => ['nullable', 'boolean'],
+            'hideBody' => ['nullable', 'boolean'],
         ]);
 
         $originStation = Station::findOrFail($validated['origin']);
@@ -209,8 +209,8 @@ class AdminStatusController extends Controller
 
         $payload = [
             'visibility' => $validated['visibility'],
-            'event_id' => $validated['event_id'] ?? null,
-            'moderation_notes' => $validated['moderation_notes'] ?? null,
+            'event_id' => $validated['eventId'] ?? null,
+            'moderation_notes' => $validated['moderationNotes'] ?? null,
         ];
 
         if (array_key_exists('body', $validated)) {
@@ -219,11 +219,11 @@ class AdminStatusController extends Controller
         if (array_key_exists('business', $validated) && $validated['business'] !== null) {
             $payload['business'] = $validated['business'];
         }
-        if (array_key_exists('lock_visibility', $validated)) {
-            $payload['lock_visibility'] = $validated['lock_visibility'] ?? false;
+        if (array_key_exists('lockVisibility', $validated)) {
+            $payload['lock_visibility'] = $validated['lockVisibility'] ?? false;
         }
-        if (array_key_exists('hide_body', $validated)) {
-            $payload['hide_body'] = $validated['hide_body'] ?? false;
+        if (array_key_exists('hideBody', $validated)) {
+            $payload['hide_body'] = $validated['hideBody'] ?? false;
         }
 
         $status->update($payload);

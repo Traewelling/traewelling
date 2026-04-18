@@ -41,6 +41,10 @@ Check back here regularly to stay ahead of removals.
 
 ---
 
+# 2026-04-18
+Admin-status-endpoints now adhere to our standard API conventions and use camelCase and components.
+No backwards compatibility will be kept for the old endpoints, so please update your code accordingly.
+
 # 2026-04-11
 
 **New endpoints:**
