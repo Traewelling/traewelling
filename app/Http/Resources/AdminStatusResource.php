@@ -10,6 +10,7 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(
     title: 'AdminStatusResource',
+    required: ['id', 'body', 'visibility', 'business', 'moderation_notes', 'lock_visibility', 'hide_body', 'event_id', 'user', 'checkin', 'stopovers', 'created_at', 'updated_at', 'client', 'created_by'],
     properties: [
         new OA\Property(property: 'id', type: 'integer', example: 12345),
         new OA\Property(property: 'body', type: 'string', nullable: true),
@@ -21,6 +22,7 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'event_id', type: 'integer', nullable: true),
         new OA\Property(
             property: 'user',
+            required: ['id', 'name', 'username'],
             properties: [
                 new OA\Property(property: 'id', type: 'integer'),
                 new OA\Property(property: 'name', type: 'string'),
@@ -30,6 +32,7 @@ use OpenApi\Attributes as OA;
         ),
         new OA\Property(
             property: 'checkin',
+            required: ['id', 'origin_station_id', 'origin_station_name', 'destination_station_id', 'destination_station_name', 'departure', 'arrival', 'distance', 'points', 'trip_id', 'linename'],
             properties: [
                 new OA\Property(property: 'id', type: 'integer'),
                 new OA\Property(property: 'origin_station_id', type: 'integer', nullable: true),
@@ -50,6 +53,7 @@ use OpenApi\Attributes as OA;
             property: 'stopovers',
             type: 'array',
             items: new OA\Items(
+                required: ['station_id', 'station_name', 'arrival_planned', 'departure_planned'],
                 properties: [
                     new OA\Property(property: 'station_id', type: 'integer'),
                     new OA\Property(property: 'station_name', type: 'string'),
@@ -61,6 +65,27 @@ use OpenApi\Attributes as OA;
         ),
         new OA\Property(property: 'created_at', type: 'string', format: 'date-time'),
         new OA\Property(property: 'updated_at', type: 'string', format: 'date-time'),
+        new OA\Property(
+            property: 'client',
+            required: ['id', 'name', 'username'],
+            properties: [
+                new OA\Property(property: 'id', type: 'integer'),
+                new OA\Property(property: 'name', type: 'string', nullable: true),
+            ],
+            nullable: true,
+            type: 'object',
+        ),
+        new OA\Property(
+            property: 'created_by',
+            required: ['id', 'name', 'username'],
+            properties: [
+                new OA\Property(property: 'id', type: 'integer'),
+                new OA\Property(property: 'name', type: 'string', nullable: true),
+                new OA\Property(property: 'username', type: 'string', nullable: true),
+            ],
+            nullable: true,
+            type: 'object',
+        ),
     ],
 )]
 class AdminStatusResource extends JsonResource
@@ -106,6 +131,15 @@ class AdminStatusResource extends JsonResource
             ),
             'created_at' => $this->created_at?->toIso8601String(),
             'updated_at' => $this->updated_at?->toIso8601String(),
+            'client' => $this->client ? [
+                'id' => $this->client->id,
+                'name' => $this->client->name,
+            ] : null,
+            'created_by' => $this->createdByUser ? [
+                'id' => $this->createdByUser->id,
+                'name' => $this->createdByUser->name,
+                'username' => $this->createdByUser->username,
+            ] : null,
         ];
     }
 }

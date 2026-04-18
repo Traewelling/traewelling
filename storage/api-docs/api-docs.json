@@ -606,6 +606,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -659,6 +662,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/AdminStatusResource"
@@ -765,6 +771,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/AdminStatusResource"
@@ -9452,6 +9461,23 @@
             },
             "AdminStatusResource": {
                 "title": "AdminStatusResource",
+                "required": [
+                    "id",
+                    "body",
+                    "visibility",
+                    "business",
+                    "moderation_notes",
+                    "lock_visibility",
+                    "hide_body",
+                    "event_id",
+                    "user",
+                    "checkin",
+                    "stopovers",
+                    "created_at",
+                    "updated_at",
+                    "client",
+                    "created_by"
+                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -9484,6 +9510,11 @@
                         "nullable": true
                     },
                     "user": {
+                        "required": [
+                            "id",
+                            "name",
+                            "username"
+                        ],
                         "properties": {
                             "id": {
                                 "type": "integer"
@@ -9498,6 +9529,19 @@
                         "type": "object"
                     },
                     "checkin": {
+                        "required": [
+                            "id",
+                            "origin_station_id",
+                            "origin_station_name",
+                            "destination_station_id",
+                            "destination_station_name",
+                            "departure",
+                            "arrival",
+                            "distance",
+                            "points",
+                            "trip_id",
+                            "linename"
+                        ],
                         "properties": {
                             "id": {
                                 "type": "integer"
@@ -9548,6 +9592,12 @@
                     "stopovers": {
                         "type": "array",
                         "items": {
+                            "required": [
+                                "station_id",
+                                "station_name",
+                                "arrival_planned",
+                                "departure_planned"
+                            ],
                             "properties": {
                                 "station_id": {
                                     "type": "integer"
@@ -9577,6 +9627,46 @@
                     "updated_at": {
                         "type": "string",
                         "format": "date-time"
+                    },
+                    "client": {
+                        "required": [
+                            "id",
+                            "name",
+                            "username"
+                        ],
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "name": {
+                                "type": "string",
+                                "nullable": true
+                            }
+                        },
+                        "type": "object",
+                        "nullable": true
+                    },
+                    "created_by": {
+                        "required": [
+                            "id",
+                            "name",
+                            "username"
+                        ],
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "name": {
+                                "type": "string",
+                                "nullable": true
+                            },
+                            "username": {
+                                "type": "string",
+                                "nullable": true
+                            }
+                        },
+                        "type": "object",
+                        "nullable": true
                     }
                 },
                 "type": "object"

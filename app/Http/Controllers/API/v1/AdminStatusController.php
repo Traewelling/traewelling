@@ -36,8 +36,9 @@ class AdminStatusController extends Controller
                 response: 200,
                 description: 'Paginated list of statuses.',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
-                        new OA\Property(property: 'data', type: 'array', items: new OA\Items(ref: '#/components/schemas/AdminStatusResource')),
+                        new OA\Property(property: 'data', type: 'array', items: new OA\Items(ref: AdminStatusResource::class)),
                     ],
                 ),
             ),
@@ -81,7 +82,14 @@ class AdminStatusController extends Controller
             new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Status details.', content: new OA\JsonContent(properties: [new OA\Property(property: 'data', ref: '#/components/schemas/AdminStatusResource')])),
+            new OA\Response(
+                response: 200,
+                description: 'Status details.',
+                content: new OA\JsonContent(
+                    required: ['data'],
+                    properties: [new OA\Property(property: 'data', ref: AdminStatusResource::class)]
+                )
+            ),
             new OA\Response(response: 403, description: 'Forbidden.'),
             new OA\Response(response: 404, description: 'Not found.'),
         ],
@@ -132,7 +140,14 @@ class AdminStatusController extends Controller
             new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Updated status.', content: new OA\JsonContent(properties: [new OA\Property(property: 'data', ref: '#/components/schemas/AdminStatusResource')])),
+            new OA\Response(
+                response: 200,
+                description: 'Updated status.',
+                content: new OA\JsonContent(
+                    required: ['data'],
+                    properties: [new OA\Property(property: 'data', ref: AdminStatusResource::class)]
+                )
+            ),
             new OA\Response(response: 403, description: 'Forbidden.'),
             new OA\Response(response: 404, description: 'Not found.'),
             new OA\Response(response: 422, description: 'Validation error.'),

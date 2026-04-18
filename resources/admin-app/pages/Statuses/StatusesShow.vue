@@ -2,7 +2,7 @@
 import { ArrowLeft, Save } from 'lucide-vue-next';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import { Api, type AdminStatusResource } from '../../../types/Api.gen';
+import { type AdminStatusResource, Api } from '../../../types/Api.gen';
 import BackendLayout from '../../layouts/BackendLayout.vue';
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
@@ -141,48 +141,87 @@ onMounted(() => fetchStatus());
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <!-- Details card -->
                 <div class="card bg-base-100 shadow">
-                    <div class="card-body">
-                        <h2 class="card-title text-base">Details</h2>
+                    <div class="card-body px-0">
+                        <h2 class="card-title text-base px-5">Details</h2>
 
                         <div class="space-y-2 text-sm">
-                            <div class="flex justify-between">
-                                <span class="text-base-content/60">User</span>
-                                <span class="font-medium"
-                                    >{{ status.user?.name }}
-                                    <span class="text-base-content/50">@{{ status.user?.username }}</span>
-                                </span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-base-content/60">Trip</span>
-                                <span>{{ status.checkin?.linename ?? '—' }}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-base-content/60">Departure</span>
-                                <span>{{ formatDate(status.checkin?.departure) }}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-base-content/60">Arrival</span>
-                                <span>{{ formatDate(status.checkin?.arrival) }}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-base-content/60">Distance</span>
-                                <span>{{
-                                    status.checkin?.distance ? (status.checkin.distance / 1000).toFixed(1) + ' km' : '—'
-                                }}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-base-content/60">Created</span>
-                                <span>{{ formatDate(status.created_at) }}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-base-content/60">Updated</span>
-                                <span>{{ formatDate(status.updated_at) }}</span>
-                            </div>
-                            <div v-if="status.checkin?.trip_id" class="flex justify-between">
-                                <span class="text-base-content/60">Trip ID</span>
-                                <a :href="`/admin/trips/${status.checkin.trip_id}`" class="link link-primary">
-                                    #{{ status.checkin.trip_id }}
-                                </a>
+                            <div class="overflow-x-auto">
+                                <table class="table table-zebra">
+                                    <!-- head -->
+                                    <thead>
+                                        <tr class="hover:bg-base-300">
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="hover:bg-base-300">
+                                            <td class="text-base-content/60">User</td>
+                                            <td>
+                                                <a :href="`/admin/users/${status.user.id}`" class="link">
+                                                    {{ status.user.name }}
+                                                    <span class="text-base-content/50"
+                                                        >@{{ status.user.username }}</span
+                                                    >
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr class="hover:bg-base-300">
+                                            <td class="text-base-content/60">Trip</td>
+                                            <td>{{ status.checkin.linename ?? '—' }}</td>
+                                        </tr>
+                                        <tr class="hover:bg-base-300">
+                                            <td class="text-base-content/60">Trip ID</td>
+                                            <td>
+                                                <a :href="`/admin/trips/${status.checkin.trip_id}`" class="link">
+                                                    #{{ status.checkin.trip_id }}
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr class="hover:bg-base-300">
+                                            <td class="text-base-content/60">Departure</td>
+                                            <td>{{ formatDate(status.checkin?.departure) }}</td>
+                                        </tr>
+                                        <tr class="hover:bg-base-300">
+                                            <td class="text-base-content/60">Arrival</td>
+                                            <td>{{ formatDate(status.checkin?.arrival) }}</td>
+                                        </tr>
+                                        <tr class="hover:bg-base-300">
+                                            <td class="text-base-content/60">Distance</td>
+                                            <td>
+                                                {{
+                                                    status.checkin.distance
+                                                        ? (status.checkin.distance / 1000).toFixed(1) + ' km'
+                                                        : '—'
+                                                }}
+                                            </td>
+                                        </tr>
+                                        <tr class="hover:bg-base-300">
+                                            <td class="text-base-content/60">Client</td>
+                                            <td>{{ status.client ? status.client.name : '–' }}</td>
+                                        </tr>
+                                        <tr class="hover:bg-base-300">
+                                            <td class="text-base-content/60">Created by</td>
+                                            <td v-if="status.created_by">
+                                                <a :href="`/admin/users/${status.user.id}`" class="link">
+                                                    {{ status.user.name }}
+                                                    <span class="text-base-content/50"
+                                                        >@{{ status.user.username }}</span
+                                                    >
+                                                </a>
+                                            </td>
+                                            <td v-else>–</td>
+                                        </tr>
+                                        <tr class="hover:bg-base-300">
+                                            <td class="text-base-content/60">Created</td>
+                                            <td>{{ formatDate(status.created_at) }}</td>
+                                        </tr>
+                                        <tr class="hover:bg-base-300">
+                                            <td class="text-base-content/60">Updated</td>
+                                            <td>{{ formatDate(status.updated_at) }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
