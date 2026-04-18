@@ -9510,113 +9510,20 @@
                         "nullable": true
                     },
                     "user": {
-                        "required": [
-                            "id",
-                            "name",
-                            "username"
-                        ],
-                        "properties": {
-                            "id": {
-                                "type": "integer"
-                            },
-                            "name": {
-                                "type": "string"
-                            },
-                            "username": {
-                                "type": "string"
-                            }
-                        },
-                        "type": "object"
+                        "$ref": "#/components/schemas/LightUserResource"
                     },
                     "checkin": {
-                        "required": [
-                            "id",
-                            "origin_station_id",
-                            "origin_station_name",
-                            "destination_station_id",
-                            "destination_station_name",
-                            "departure",
-                            "arrival",
-                            "distance",
-                            "points",
-                            "trip_id",
-                            "linename"
-                        ],
-                        "properties": {
-                            "id": {
-                                "type": "integer"
-                            },
-                            "origin_station_id": {
-                                "type": "integer",
-                                "nullable": true
-                            },
-                            "origin_station_name": {
-                                "type": "string",
-                                "nullable": true
-                            },
-                            "destination_station_id": {
-                                "type": "integer",
-                                "nullable": true
-                            },
-                            "destination_station_name": {
-                                "type": "string",
-                                "nullable": true
-                            },
-                            "departure": {
-                                "type": "string",
-                                "format": "date-time",
-                                "nullable": true
-                            },
-                            "arrival": {
-                                "type": "string",
-                                "format": "date-time",
-                                "nullable": true
-                            },
-                            "distance": {
-                                "type": "integer"
-                            },
-                            "points": {
-                                "type": "integer"
-                            },
-                            "trip_id": {
-                                "type": "integer"
-                            },
-                            "linename": {
-                                "type": "string",
-                                "nullable": true
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/TransportResource"
                             }
-                        },
-                        "type": "object",
+                        ],
                         "nullable": true
                     },
                     "stopovers": {
                         "type": "array",
                         "items": {
-                            "required": [
-                                "station_id",
-                                "station_name",
-                                "arrival_planned",
-                                "departure_planned"
-                            ],
-                            "properties": {
-                                "station_id": {
-                                    "type": "integer"
-                                },
-                                "station_name": {
-                                    "type": "string"
-                                },
-                                "arrival_planned": {
-                                    "type": "string",
-                                    "format": "date-time",
-                                    "nullable": true
-                                },
-                                "departure_planned": {
-                                    "type": "string",
-                                    "format": "date-time",
-                                    "nullable": true
-                                }
-                            },
-                            "type": "object"
+                            "$ref": "#/components/schemas/StopoverResource"
                         },
                         "nullable": true
                     },
@@ -9629,43 +9536,19 @@
                         "format": "date-time"
                     },
                     "client": {
-                        "required": [
-                            "id",
-                            "name",
-                            "username"
-                        ],
-                        "properties": {
-                            "id": {
-                                "type": "integer"
-                            },
-                            "name": {
-                                "type": "string",
-                                "nullable": true
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/ClientResource"
                             }
-                        },
-                        "type": "object",
+                        ],
                         "nullable": true
                     },
                     "created_by": {
-                        "required": [
-                            "id",
-                            "name",
-                            "username"
-                        ],
-                        "properties": {
-                            "id": {
-                                "type": "integer"
-                            },
-                            "name": {
-                                "type": "string",
-                                "nullable": true
-                            },
-                            "username": {
-                                "type": "string",
-                                "nullable": true
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/LightUserResource"
                             }
-                        },
-                        "type": "object",
+                        ],
                         "nullable": true
                     }
                 },

@@ -804,47 +804,16 @@ export interface AdminStatusResource {
   lock_visibility: boolean;
   hide_body: boolean;
   event_id: number | null;
-  user: {
-    id: number;
-    name: string;
-    username: string;
-  };
-  checkin: {
-    id: number;
-    origin_station_id: number | null;
-    origin_station_name: string | null;
-    destination_station_id: number | null;
-    destination_station_name: string | null;
-    /** @format date-time */
-    departure: string | null;
-    /** @format date-time */
-    arrival: string | null;
-    distance: number;
-    points: number;
-    trip_id: number;
-    linename: string | null;
-  };
-  stopovers: {
-    station_id: number;
-    station_name: string;
-    /** @format date-time */
-    arrival_planned: string | null;
-    /** @format date-time */
-    departure_planned: string | null;
-  }[];
+  /** User model with just basic information */
+  user: LightUserResource;
+  checkin: TransportResource | null;
+  stopovers: StopoverResource[] | null;
   /** @format date-time */
   created_at: string;
   /** @format date-time */
   updated_at: string;
-  client: {
-    id: number;
-    name: string | null;
-  };
-  created_by: {
-    id: number;
-    name: string | null;
-    username: string | null;
-  };
+  client: ClientResource | null;
+  created_by: LightUserResource | null;
 }
 
 export interface AlertResource {

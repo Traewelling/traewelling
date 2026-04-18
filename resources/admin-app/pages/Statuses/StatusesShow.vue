@@ -37,8 +37,8 @@ async function fetchStatus(): Promise<void> {
         status.value = res.data.data ?? null;
         if (status.value) {
             form.value = {
-                origin: status.value.checkin?.origin_station_id ?? 0,
-                destination: status.value.checkin?.destination_station_id ?? 0,
+                origin: status.value.checkin?.origin.id ?? 0,
+                destination: status.value.checkin?.destination.id ?? 0,
                 body: status.value.body ?? '',
                 visibility: status.value.visibility ?? 0,
                 business: status.value.business ?? 0,
@@ -159,7 +159,7 @@ onMounted(() => fetchStatus());
                                             <td class="text-base-content/60">User</td>
                                             <td>
                                                 <a :href="`/admin/users/${status.user.id}`" class="link">
-                                                    {{ status.user.name }}
+                                                    {{ status.user.displayName }}
                                                     <span class="text-base-content/50"
                                                         >@{{ status.user.username }}</span
                                                     >
@@ -168,30 +168,44 @@ onMounted(() => fetchStatus());
                                         </tr>
                                         <tr class="hover:bg-base-300">
                                             <td class="text-base-content/60">Trip</td>
-                                            <td>{{ status.checkin.linename ?? '—' }}</td>
+                                            <td>{{ status.checkin?.lineName ?? '—' }}</td>
                                         </tr>
                                         <tr class="hover:bg-base-300">
                                             <td class="text-base-content/60">Trip ID</td>
                                             <td>
-                                                <a :href="`/admin/trips/${status.checkin.trip_id}`" class="link">
-                                                    #{{ status.checkin.trip_id }}
+                                                <a :href="`/admin/trips/${status.checkin?.trip}`" class="link">
+                                                    #{{ status.checkin?.trip }}
                                                 </a>
                                             </td>
                                         </tr>
                                         <tr class="hover:bg-base-300">
                                             <td class="text-base-content/60">Departure</td>
-                                            <td>{{ formatDate(status.checkin?.departure) }}</td>
+                                            <td>
+                                                {{
+                                                    formatDate(
+                                                        status.checkin?.origin.departureReal ??
+                                                            status.checkin?.origin.departurePlanned,
+                                                    )
+                                                }}
+                                            </td>
                                         </tr>
                                         <tr class="hover:bg-base-300">
                                             <td class="text-base-content/60">Arrival</td>
-                                            <td>{{ formatDate(status.checkin?.arrival) }}</td>
+                                            <td>
+                                                {{
+                                                    formatDate(
+                                                        status.checkin?.destination.arrivalReal ??
+                                                            status.checkin?.destination.arrivalPlanned,
+                                                    )
+                                                }}
+                                            </td>
                                         </tr>
                                         <tr class="hover:bg-base-300">
                                             <td class="text-base-content/60">Distance</td>
                                             <td>
                                                 {{
-                                                    status.checkin.distance
-                                                        ? (status.checkin.distance / 1000).toFixed(1) + ' km'
+                                                    status.checkin?.distance
+                                                        ? (status.checkin?.distance / 1000).toFixed(1) + ' km'
                                                         : '—'
                                                 }}
                                             </td>
@@ -204,7 +218,7 @@ onMounted(() => fetchStatus());
                                             <td class="text-base-content/60">Created by</td>
                                             <td v-if="status.created_by">
                                                 <a :href="`/admin/users/${status.user.id}`" class="link">
-                                                    {{ status.user.name }}
+                                                    {{ status.user.displayName }}
                                                     <span class="text-base-content/50"
                                                         >@{{ status.user.username }}</span
                                                     >
@@ -242,16 +256,12 @@ onMounted(() => fetchStatus());
                                         required
                                     >
                                         <option :value="0" disabled>Select origin...</option>
-                                        <option
-                                            v-for="s in status.stopovers ?? []"
-                                            :key="s.station_id"
-                                            :value="s.station_id"
-                                        >
-                                            {{ s.station_name }}
+                                        <option v-for="s in status.stopovers ?? []" :key="s.id" :value="s.id">
+                                            {{ s.name }}
                                             (D:
                                             {{
-                                                s.departure_planned
-                                                    ? new Date(s.departure_planned).toLocaleTimeString([], {
+                                                s.departurePlanned
+                                                    ? new Date(s.departurePlanned).toLocaleTimeString([], {
                                                           hour: '2-digit',
                                                           minute: '2-digit',
                                                       })
@@ -269,16 +279,12 @@ onMounted(() => fetchStatus());
                                         required
                                     >
                                         <option :value="0" disabled>Select destination...</option>
-                                        <option
-                                            v-for="s in status.stopovers ?? []"
-                                            :key="s.station_id"
-                                            :value="s.station_id"
-                                        >
-                                            {{ s.station_name }}
+                                        <option v-for="s in status.stopovers ?? []" :key="s.id" :value="s.id">
+                                            {{ s.name }}
                                             (A:
                                             {{
-                                                s.arrival_planned
-                                                    ? new Date(s.arrival_planned).toLocaleTimeString([], {
+                                                s.arrivalPlanned
+                                                    ? new Date(s.arrivalPlanned).toLocaleTimeString([], {
                                                           hour: '2-digit',
                                                           minute: '2-digit',
                                                       })
