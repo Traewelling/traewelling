@@ -19,6 +19,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Str;
 use OpenApi\Attributes as OA;
 
 class TripController extends Controller
@@ -150,9 +151,10 @@ class TripController extends Controller
                     );
 
                 if (isset($validated['operatorId'])) {
-                    $operator = Operator::where('id', $validated['operatorId'])
-                        ->orWhere('legacy_id', $validated['operatorId'])
-                        ->firstOrFail();
+                    $operatorId = $validated['operatorId'];
+                    $operator = Str::isUuid($operatorId) // TODO: remove this catch after legacy id is removed (after 2026-09)
+                        ? Operator::where('id', $operatorId)->firstOrFail()
+                        : Operator::where('legacy_id', $operatorId)->firstOrFail();
                     $creator->setOperator($operator);
                 }
 
