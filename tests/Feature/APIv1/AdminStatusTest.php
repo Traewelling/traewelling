@@ -77,7 +77,7 @@ class AdminStatusTest extends ApiTestCase
         $res->assertJsonPath('data.id', $status->id);
         $res->assertJsonStructure(['data' => [
             'id', 'body', 'visibility', 'business',
-            'moderation_notes', 'lock_visibility', 'hide_body',
+            'moderationNotes', 'lockVisibility', 'hideBody',
             'user', 'checkin', 'stopovers',
         ]]);
     }
@@ -131,9 +131,9 @@ class AdminStatusTest extends ApiTestCase
             'body' => 'Updated body',
             'visibility' => StatusVisibility::PRIVATE->value,
             'business' => 0,
-            'moderation_notes' => 'Test moderation note',
-            'lock_visibility' => true,
-            'hide_body' => false,
+            'moderationNotes' => 'Test moderation note',
+            'lockVisibility' => true,
+            'hideBody' => false,
         ]);
 
         $res->assertOk();
