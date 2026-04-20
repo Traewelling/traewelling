@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue';
-import { Api, type AdminStatusResource } from '../../../types/Api.gen';
+import { type AdminStatusResource, Api } from '../../../types/Api.gen';
 import BackendLayout from '../../layouts/BackendLayout.vue';
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
@@ -125,15 +125,15 @@ onMounted(() => fetchStatuses());
                         >
                             <td class="font-mono text-xs">{{ status.id }}</td>
                             <td class="text-sm">
-                                <span class="font-medium">{{ status.user?.name }}</span>
+                                <span class="font-medium">{{ status.user?.displayName }}</span>
                                 <span class="text-base-content/50 ml-1">@{{ status.user?.username }}</span>
                             </td>
-                            <td class="text-sm max-w-36 truncate">{{ status.checkin?.origin_station_name ?? '—' }}</td>
+                            <td class="text-sm max-w-36 truncate">{{ status.checkin?.origin.name ?? '—' }}</td>
                             <td class="text-sm max-w-36 truncate">
-                                {{ status.checkin?.destination_station_name ?? '—' }}
+                                {{ status.checkin?.destination.name ?? '—' }}
                             </td>
                             <td class="text-xs text-base-content/60 whitespace-nowrap">
-                                {{ formatDate(status.checkin?.departure) }}
+                                {{ formatDate(status.checkin?.destination.name) }}
                             </td>
                             <td>
                                 <span class="badge badge-sm badge-ghost">{{ visibilityLabel(status.visibility) }}</span>
@@ -142,7 +142,7 @@ onMounted(() => fetchStatuses());
                                 <span class="badge badge-sm badge-ghost">{{ businessLabel(status.business) }}</span>
                             </td>
                             <td class="text-xs text-base-content/60 whitespace-nowrap">
-                                {{ formatDate(status.created_at) }}
+                                {{ formatDate(status.createdAt) }}
                             </td>
                         </tr>
                     </tbody>

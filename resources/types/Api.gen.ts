@@ -794,48 +794,26 @@ export interface UpdateProfileInformationRequest {
 /** AdminStatusResource */
 export interface AdminStatusResource {
   /** @example 12345 */
-  id?: number;
-  body?: string | null;
+  id: number;
+  body: string | null;
   /** @example 0 */
-  visibility?: number;
+  visibility: number;
   /** @example 0 */
-  business?: number;
-  moderation_notes?: string | null;
-  lock_visibility?: boolean;
-  hide_body?: boolean;
-  event_id?: number | null;
-  user?: {
-    id?: number;
-    name?: string;
-    username?: string;
-  };
-  checkin?: {
-    id?: number;
-    origin_station_id?: number | null;
-    origin_station_name?: string | null;
-    destination_station_id?: number | null;
-    destination_station_name?: string | null;
-    /** @format date-time */
-    departure?: string | null;
-    /** @format date-time */
-    arrival?: string | null;
-    distance?: number;
-    points?: number;
-    trip_id?: number;
-    linename?: string | null;
-  };
-  stopovers?: {
-    station_id?: number;
-    station_name?: string;
-    /** @format date-time */
-    arrival_planned?: string | null;
-    /** @format date-time */
-    departure_planned?: string | null;
-  }[];
+  business: number;
+  moderationNotes: string | null;
+  lockVisibility: boolean;
+  hideBody: boolean;
+  eventId: number | null;
+  /** User model with just basic information */
+  user: LightUserResource;
+  checkin: TransportResource | null;
+  stopovers: StopoverResource[] | null;
   /** @format date-time */
-  created_at?: string;
+  createdAt: string;
   /** @format date-time */
-  updated_at?: string;
+  updatedAt: string;
+  client: ClientResource | null;
+  createdBy: LightUserResource | null;
 }
 
 export interface AlertResource {
@@ -3119,7 +3097,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: AdminStatusResource[];
+          data: AdminStatusResource[];
         },
         void
       >({
@@ -3143,7 +3121,7 @@ export class Api<
     getAdminStatus: (id: number, params: RequestParams = {}) =>
       this.request<
         {
-          data?: AdminStatusResource;
+          data: AdminStatusResource;
         },
         void
       >({
@@ -3174,18 +3152,18 @@ export class Api<
         body?: string | null;
         visibility: number;
         business?: number | null;
-        event_id?: number | null;
+        eventId?: number | null;
         points?: number | null;
         /** @maxLength 255 */
-        moderation_notes?: string | null;
-        lock_visibility?: boolean | null;
-        hide_body?: boolean | null;
+        moderationNotes?: string | null;
+        lockVisibility?: boolean | null;
+        hideBody?: boolean | null;
       },
       params: RequestParams = {},
     ) =>
       this.request<
         {
-          data?: AdminStatusResource;
+          data: AdminStatusResource;
         },
         void
       >({
