@@ -272,7 +272,7 @@ export default {
                 return mapped;
             });
             this.form.category = this.selectedCategory.value;
-            this.form.operatorId = this.selectedOperator ? this.selectedOperator.id : null;
+            this.form.operatorId = this.selectedOperator ? this.selectedOperator.uuid : null;
 
             api.trips
                 .createTrip(this.form)
