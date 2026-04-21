@@ -48,13 +48,13 @@ class EventRepository
 
         $query = match ($status) {
             // Show upcoming events in chronological order (earliest first)
-            'future' => $query->where('checkin_start', '>', $today)->orderBy('checkin_start', 'asc'),
+            'future' => $query->where('checkin_start', '>', $today)->orderBy('checkin_start'),
             // Show current events in chronological order (earliest first)
-            'current' => $query->where('checkin_start', '<=', $today)->where('checkin_end', '>=', $today)->orderBy('checkin_start', 'asc'),
+            'current' => $query->where('checkin_start', '<=', $today)->where('checkin_end', '>=', $today)->orderBy('checkin_start'),
             // Show past events in reverse chronological order (most recent first)
             'past' => $query->where('checkin_end', '<', $today)->orderByDesc('checkin_start'),
             // Default ordering for unspecified status
-            default => $query->orderBy('checkin_start', 'asc'),
+            default => $query->orderBy('checkin_start'),
         };
 
         return $query->cursorPaginate(25);
