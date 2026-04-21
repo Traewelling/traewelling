@@ -43,12 +43,18 @@ defineProps<{
                     </small>
                 </span>
                 <div
-                    v-if="authUser.authenticated && userInvisibleReason !== ViewUserForbiddenReason.YOU_ARE_BLOCKED"
+                    v-if="authUser.authenticated"
                     class="d-flex py-3 flex-row justify-content-md-start align-items-md-center gap-1"
                 >
-                    <FollowButton :user-data="userData" />
+                    <FollowButton
+                        v-if="userInvisibleReason !== ViewUserForbiddenReason.YOU_ARE_BLOCKED"
+                        :user-data="userData"
+                    />
                     <template v-if="userData.id !== authUser.getId">
-                        <MuteButton :user-data="userData" />
+                        <MuteButton
+                            v-if="userInvisibleReason !== ViewUserForbiddenReason.YOU_ARE_BLOCKED"
+                            :user-data="userData"
+                        />
                         <BlockButton :user-data="userData" />
                         <button
                             class="btn btn-sm btn-outline-light"
