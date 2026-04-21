@@ -2,7 +2,7 @@
 import { ArrowLeft, Save } from 'lucide-vue-next';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import { Api, type AdminStatusResource } from '../../../types/Api.gen';
+import { type AdminStatusResource, Api } from '../../../types/Api.gen';
 import BackendLayout from '../../layouts/BackendLayout.vue';
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
@@ -22,11 +22,11 @@ const form = ref({
     body: '',
     visibility: 0,
     business: 0,
-    event_id: null as number | null,
+    eventId: null as number | null,
     points: null as number | null,
-    moderation_notes: '',
-    lock_visibility: false,
-    hide_body: false,
+    moderationNotes: '',
+    lockVisibility: false,
+    hideBody: false,
 });
 
 async function fetchStatus(): Promise<void> {
@@ -37,16 +37,16 @@ async function fetchStatus(): Promise<void> {
         status.value = res.data.data ?? null;
         if (status.value) {
             form.value = {
-                origin: status.value.checkin?.origin_station_id ?? 0,
-                destination: status.value.checkin?.destination_station_id ?? 0,
+                origin: status.value.checkin?.origin.id ?? 0,
+                destination: status.value.checkin?.destination.id ?? 0,
                 body: status.value.body ?? '',
                 visibility: status.value.visibility ?? 0,
                 business: status.value.business ?? 0,
-                event_id: status.value.event_id ?? null,
+                eventId: status.value.eventId ?? null,
                 points: status.value.checkin?.points ?? null,
-                moderation_notes: status.value.moderation_notes ?? '',
-                lock_visibility: status.value.lock_visibility ?? false,
-                hide_body: status.value.hide_body ?? false,
+                moderationNotes: status.value.moderationNotes ?? '',
+                lockVisibility: status.value.lockVisibility ?? false,
+                hideBody: status.value.hideBody ?? false,
             };
         }
     } catch (e) {
@@ -67,11 +67,11 @@ async function save(): Promise<void> {
             body: form.value.body || null,
             visibility: form.value.visibility,
             business: form.value.business,
-            event_id: form.value.event_id,
+            eventId: form.value.eventId,
             points: form.value.points,
-            moderation_notes: form.value.moderation_notes || null,
-            lock_visibility: form.value.lock_visibility,
-            hide_body: form.value.hide_body,
+            moderationNotes: form.value.moderationNotes || null,
+            lockVisibility: form.value.lockVisibility,
+            hideBody: form.value.hideBody,
         });
         status.value = res.data.data ?? null;
         successMessage.value = 'Status updated successfully.';
@@ -141,48 +141,101 @@ onMounted(() => fetchStatus());
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <!-- Details card -->
                 <div class="card bg-base-100 shadow">
-                    <div class="card-body">
-                        <h2 class="card-title text-base">Details</h2>
+                    <div class="card-body px-0">
+                        <h2 class="card-title text-base px-5">Details</h2>
 
                         <div class="space-y-2 text-sm">
-                            <div class="flex justify-between">
-                                <span class="text-base-content/60">User</span>
-                                <span class="font-medium"
-                                    >{{ status.user?.name }}
-                                    <span class="text-base-content/50">@{{ status.user?.username }}</span>
-                                </span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-base-content/60">Trip</span>
-                                <span>{{ status.checkin?.linename ?? '—' }}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-base-content/60">Departure</span>
-                                <span>{{ formatDate(status.checkin?.departure) }}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-base-content/60">Arrival</span>
-                                <span>{{ formatDate(status.checkin?.arrival) }}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-base-content/60">Distance</span>
-                                <span>{{
-                                    status.checkin?.distance ? (status.checkin.distance / 1000).toFixed(1) + ' km' : '—'
-                                }}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-base-content/60">Created</span>
-                                <span>{{ formatDate(status.created_at) }}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-base-content/60">Updated</span>
-                                <span>{{ formatDate(status.updated_at) }}</span>
-                            </div>
-                            <div v-if="status.checkin?.trip_id" class="flex justify-between">
-                                <span class="text-base-content/60">Trip ID</span>
-                                <a :href="`/admin/trips/${status.checkin.trip_id}`" class="link link-primary">
-                                    #{{ status.checkin.trip_id }}
-                                </a>
+                            <div class="overflow-x-auto">
+                                <table class="table table-zebra">
+                                    <!-- head -->
+                                    <thead>
+                                        <tr class="hover:bg-base-300">
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="hover:bg-base-300">
+                                            <td class="text-base-content/60">User</td>
+                                            <td>
+                                                <a :href="`/admin/users/${status.user.id}`" class="link">
+                                                    {{ status.user.displayName }}
+                                                    <span class="text-base-content/50"
+                                                        >@{{ status.user.username }}</span
+                                                    >
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr class="hover:bg-base-300">
+                                            <td class="text-base-content/60">Trip</td>
+                                            <td>{{ status.checkin?.lineName ?? '—' }}</td>
+                                        </tr>
+                                        <tr class="hover:bg-base-300">
+                                            <td class="text-base-content/60">Trip ID</td>
+                                            <td>
+                                                <a :href="`/admin/trips/${status.checkin?.trip}`" class="link">
+                                                    #{{ status.checkin?.trip }}
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr class="hover:bg-base-300">
+                                            <td class="text-base-content/60">Departure</td>
+                                            <td>
+                                                {{
+                                                    formatDate(
+                                                        status.checkin?.origin.departureReal ??
+                                                            status.checkin?.origin.departurePlanned,
+                                                    )
+                                                }}
+                                            </td>
+                                        </tr>
+                                        <tr class="hover:bg-base-300">
+                                            <td class="text-base-content/60">Arrival</td>
+                                            <td>
+                                                {{
+                                                    formatDate(
+                                                        status.checkin?.destination.arrivalReal ??
+                                                            status.checkin?.destination.arrivalPlanned,
+                                                    )
+                                                }}
+                                            </td>
+                                        </tr>
+                                        <tr class="hover:bg-base-300">
+                                            <td class="text-base-content/60">Distance</td>
+                                            <td>
+                                                {{
+                                                    status.checkin?.distance
+                                                        ? (status.checkin?.distance / 1000).toFixed(1) + ' km'
+                                                        : '—'
+                                                }}
+                                            </td>
+                                        </tr>
+                                        <tr class="hover:bg-base-300">
+                                            <td class="text-base-content/60">Client</td>
+                                            <td>{{ status.client ? status.client.name : '–' }}</td>
+                                        </tr>
+                                        <tr class="hover:bg-base-300">
+                                            <td class="text-base-content/60">Created by</td>
+                                            <td v-if="status.createdBy">
+                                                <a :href="`/admin/users/${status.user.id}`" class="link">
+                                                    {{ status.user.displayName }}
+                                                    <span class="text-base-content/50"
+                                                        >@{{ status.user.username }}</span
+                                                    >
+                                                </a>
+                                            </td>
+                                            <td v-else>–</td>
+                                        </tr>
+                                        <tr class="hover:bg-base-300">
+                                            <td class="text-base-content/60">Created</td>
+                                            <td>{{ formatDate(status.createdAt) }}</td>
+                                        </tr>
+                                        <tr class="hover:bg-base-300">
+                                            <td class="text-base-content/60">Updated</td>
+                                            <td>{{ formatDate(status.updatedAt) }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -203,16 +256,12 @@ onMounted(() => fetchStatus());
                                         required
                                     >
                                         <option :value="0" disabled>Select origin...</option>
-                                        <option
-                                            v-for="s in status.stopovers ?? []"
-                                            :key="s.station_id"
-                                            :value="s.station_id"
-                                        >
-                                            {{ s.station_name }}
+                                        <option v-for="s in status.stopovers ?? []" :key="s.id" :value="s.id">
+                                            {{ s.name }}
                                             (D:
                                             {{
-                                                s.departure_planned
-                                                    ? new Date(s.departure_planned).toLocaleTimeString([], {
+                                                s.departurePlanned
+                                                    ? new Date(s.departurePlanned).toLocaleTimeString([], {
                                                           hour: '2-digit',
                                                           minute: '2-digit',
                                                       })
@@ -230,16 +279,12 @@ onMounted(() => fetchStatus());
                                         required
                                     >
                                         <option :value="0" disabled>Select destination...</option>
-                                        <option
-                                            v-for="s in status.stopovers ?? []"
-                                            :key="s.station_id"
-                                            :value="s.station_id"
-                                        >
-                                            {{ s.station_name }}
+                                        <option v-for="s in status.stopovers ?? []" :key="s.id" :value="s.id">
+                                            {{ s.name }}
                                             (A:
                                             {{
-                                                s.arrival_planned
-                                                    ? new Date(s.arrival_planned).toLocaleTimeString([], {
+                                                s.arrivalPlanned
+                                                    ? new Date(s.arrivalPlanned).toLocaleTimeString([], {
                                                           hour: '2-digit',
                                                           minute: '2-digit',
                                                       })
@@ -290,7 +335,7 @@ onMounted(() => fetchStatus());
                                 <fieldset class="fieldset">
                                     <legend class="fieldset-legend text-xs">Event ID</legend>
                                     <input
-                                        v-model.number="form.event_id"
+                                        v-model.number="form.eventId"
                                         type="number"
                                         class="input input-bordered input-sm w-full"
                                         placeholder="empty = none"
@@ -318,7 +363,7 @@ onMounted(() => fetchStatus());
                                 <fieldset class="fieldset">
                                     <legend class="fieldset-legend text-xs">Moderation Notes</legend>
                                     <textarea
-                                        v-model="form.moderation_notes"
+                                        v-model="form.moderationNotes"
                                         class="textarea textarea-bordered w-full"
                                         rows="2"
                                         maxlength="255"
@@ -329,7 +374,7 @@ onMounted(() => fetchStatus());
                                     <fieldset class="fieldset">
                                         <legend class="fieldset-legend text-xs">Lock Visibility?</legend>
                                         <select
-                                            v-model="form.lock_visibility"
+                                            v-model="form.lockVisibility"
                                             class="select select-bordered select-sm w-full"
                                         >
                                             <option :value="false">No</option>
@@ -339,10 +384,7 @@ onMounted(() => fetchStatus());
 
                                     <fieldset class="fieldset">
                                         <legend class="fieldset-legend text-xs">Hide Body from Public?</legend>
-                                        <select
-                                            v-model="form.hide_body"
-                                            class="select select-bordered select-sm w-full"
-                                        >
+                                        <select v-model="form.hideBody" class="select select-bordered select-sm w-full">
                                             <option :value="false">No</option>
                                             <option :value="true">Yes</option>
                                         </select>

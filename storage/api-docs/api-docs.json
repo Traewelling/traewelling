@@ -606,6 +606,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -659,6 +662,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/AdminStatusResource"
@@ -732,7 +738,7 @@
                                         "type": "integer",
                                         "nullable": true
                                     },
-                                    "event_id": {
+                                    "eventId": {
                                         "type": "integer",
                                         "nullable": true
                                     },
@@ -740,16 +746,16 @@
                                         "type": "integer",
                                         "nullable": true
                                     },
-                                    "moderation_notes": {
+                                    "moderationNotes": {
                                         "type": "string",
                                         "nullable": true,
                                         "maxLength": 255
                                     },
-                                    "lock_visibility": {
+                                    "lockVisibility": {
                                         "type": "boolean",
                                         "nullable": true
                                     },
-                                    "hide_body": {
+                                    "hideBody": {
                                         "type": "boolean",
                                         "nullable": true
                                     }
@@ -765,6 +771,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/AdminStatusResource"
@@ -9452,6 +9461,23 @@
             },
             "AdminStatusResource": {
                 "title": "AdminStatusResource",
+                "required": [
+                    "id",
+                    "body",
+                    "visibility",
+                    "business",
+                    "moderationNotes",
+                    "lockVisibility",
+                    "hideBody",
+                    "eventId",
+                    "user",
+                    "checkin",
+                    "stopovers",
+                    "createdAt",
+                    "updatedAt",
+                    "client",
+                    "createdBy"
+                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -9469,114 +9495,61 @@
                         "type": "integer",
                         "example": 0
                     },
-                    "moderation_notes": {
+                    "moderationNotes": {
                         "type": "string",
                         "nullable": true
                     },
-                    "lock_visibility": {
+                    "lockVisibility": {
                         "type": "boolean"
                     },
-                    "hide_body": {
+                    "hideBody": {
                         "type": "boolean"
                     },
-                    "event_id": {
+                    "eventId": {
                         "type": "integer",
                         "nullable": true
                     },
                     "user": {
-                        "properties": {
-                            "id": {
-                                "type": "integer"
-                            },
-                            "name": {
-                                "type": "string"
-                            },
-                            "username": {
-                                "type": "string"
-                            }
-                        },
-                        "type": "object"
+                        "$ref": "#/components/schemas/LightUserResource"
                     },
                     "checkin": {
-                        "properties": {
-                            "id": {
-                                "type": "integer"
-                            },
-                            "origin_station_id": {
-                                "type": "integer",
-                                "nullable": true
-                            },
-                            "origin_station_name": {
-                                "type": "string",
-                                "nullable": true
-                            },
-                            "destination_station_id": {
-                                "type": "integer",
-                                "nullable": true
-                            },
-                            "destination_station_name": {
-                                "type": "string",
-                                "nullable": true
-                            },
-                            "departure": {
-                                "type": "string",
-                                "format": "date-time",
-                                "nullable": true
-                            },
-                            "arrival": {
-                                "type": "string",
-                                "format": "date-time",
-                                "nullable": true
-                            },
-                            "distance": {
-                                "type": "integer"
-                            },
-                            "points": {
-                                "type": "integer"
-                            },
-                            "trip_id": {
-                                "type": "integer"
-                            },
-                            "linename": {
-                                "type": "string",
-                                "nullable": true
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/TransportResource"
                             }
-                        },
-                        "type": "object",
+                        ],
                         "nullable": true
                     },
                     "stopovers": {
                         "type": "array",
                         "items": {
-                            "properties": {
-                                "station_id": {
-                                    "type": "integer"
-                                },
-                                "station_name": {
-                                    "type": "string"
-                                },
-                                "arrival_planned": {
-                                    "type": "string",
-                                    "format": "date-time",
-                                    "nullable": true
-                                },
-                                "departure_planned": {
-                                    "type": "string",
-                                    "format": "date-time",
-                                    "nullable": true
-                                }
-                            },
-                            "type": "object"
+                            "$ref": "#/components/schemas/StopoverResource"
                         },
                         "nullable": true
                     },
-                    "created_at": {
+                    "createdAt": {
                         "type": "string",
                         "format": "date-time"
                     },
-                    "updated_at": {
+                    "updatedAt": {
                         "type": "string",
                         "format": "date-time"
+                    },
+                    "client": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/ClientResource"
+                            }
+                        ],
+                        "nullable": true
+                    },
+                    "createdBy": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/LightUserResource"
+                            }
+                        ],
+                        "nullable": true
                     }
                 },
                 "type": "object"
