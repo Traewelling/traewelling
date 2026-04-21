@@ -40,17 +40,21 @@ class EventRepository
     public function paginateForAdminCursor(?string $search, ?string $status): CursorPaginator
     {
         $today = today()->toDateString();
-        $query = Event::with(['station'])->orderBy('checkin_start');
+        $query = Event::with(['station']);
 
         if ($search !== null && $search !== '') {
             $query->where('name', 'LIKE', '%' . strip_tags($search) . '%');
         }
 
-        match ($status) {
-            'future' => $query->where('checkin_start', '>', $today),
-            'current' => $query->where('checkin_start', '<=', $today)->where('checkin_end', '>=', $today),
+        $query = match ($status) {
+            // Show upcoming events in chronological order (earliest first)
+            'future' => $query->where('checkin_start', '>', $today)->orderBy('checkin_start'),
+            // Show current events in chronological order (earliest first)
+            'current' => $query->where('checkin_start', '<=', $today)->where('checkin_end', '>=', $today)->orderBy('checkin_start'),
+            // Show past events in reverse chronological order (most recent first)
             'past' => $query->where('checkin_end', '<', $today)->orderByDesc('checkin_start'),
-            default => null,
+            // Default ordering for unspecified status
+            default => $query->orderBy('checkin_start'),
         };
 
         return $query->cursorPaginate(25);
