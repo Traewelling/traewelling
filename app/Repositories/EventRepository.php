@@ -38,28 +38,27 @@ class EventRepository
     }
 
     public function paginateForAdminCursor(?string $search, ?string $status): CursorPaginator
-{
-    $today = today()->toDateString();
-    $query = Event::with(['station']);
+    {
+        $today = today()->toDateString();
+        $query = Event::with(['station']);
 
-    if ($search !== null && $search !== '') {
-        $query->where('name', 'LIKE', '%' . strip_tags($search) . '%');
+        if ($search !== null && $search !== '') {
+            $query->where('name', 'LIKE', '%' . strip_tags($search) . '%');
+        }
+
+        $query = match ($status) {
+            // Show upcoming events in chronological order (earliest first)
+            'future' => $query->where('checkin_start', '>', $today)->orderBy('checkin_start', 'asc'),
+            // Show current events in chronological order (earliest first)
+            'current' => $query->where('checkin_start', '<=', $today)->where('checkin_end', '>=', $today)->orderBy('checkin_start', 'asc'),
+            // Show past events in reverse chronological order (most recent first)
+            'past' => $query->where('checkin_end', '<', $today)->orderByDesc('checkin_start'),
+            // Default ordering for unspecified status
+            default => $query->orderBy('checkin_start', 'asc'),
+        };
+
+        return $query->cursorPaginate(25);
     }
-
-    $query = match ($status) {
-        // Show upcoming events in chronological order (earliest first)
-        'future' => $query->where('checkin_start', '>', $today)->orderBy('checkin_start', 'asc'),
-        // Show current events in chronological order (earliest first)
-        'current' => $query->where('checkin_start', '<=', $today)->where('checkin_end', '>=', $today)->orderBy('checkin_start', 'asc'),
-        // Show past events in reverse chronological order (most recent first)
-        'past' => $query->where('checkin_end', '<', $today)->orderByDesc('checkin_start'),
-        // Default ordering for unspecified status
-        default => $query->orderBy('checkin_start', 'asc'),
-    };
-
-    return $query->cursorPaginate(25);
-}
-
 
     public function paginateOpenSuggestions(): CursorPaginator
     {
