@@ -181,7 +181,7 @@ class MotisHydrator
             'number' => $tripLineName,
             'linename' => $tripLineName,
             'route_color' => $leg['routeColor'] ?? null,
-            'route_text_color' => $leg['routeTextColor'] ?? null,
+            'route_text_color' => $this->ensureReadableTextColor($leg['routeColor'] ?? null, $leg['routeTextColor'] ?? null),
             'operator_id' => $operator?->id,
             'origin_id' => $originStation->id,
             'destination_id' => $destinationStation->id,
@@ -283,7 +283,7 @@ class MotisHydrator
                     journeyNumber: $tripShortName,
                     operator: $this->parseOperator($rawDeparture, $source),
                     routeColor: $rawDeparture['routeColor'] ?? null,
-                    routeTextColor: $rawDeparture['routeTextColor'] ?? null,
+                    routeTextColor: $this->ensureReadableTextColor($rawDeparture['routeColor'] ?? null, $rawDeparture['routeTextColor'] ?? null),
                     mode: $mode
                 ),
                 plannedPlatform: $platformPlanned,
@@ -295,5 +295,49 @@ class MotisHydrator
         }
 
         return new FilteredDepartures($departures, collect(array_values($removedEntries)), $removedCount);
+    }
+
+    private function ensureReadableTextColor(?string $bgHex, ?string $textHex): ?string
+    {
+        if ($bgHex === null) {
+            return $textHex;
+        }
+
+        $bgLuminance = $this->relativeLuminance($bgHex);
+
+        if ($textHex !== null) {
+            $textLuminance = $this->relativeLuminance($textHex);
+            $lighter = max($bgLuminance, $textLuminance);
+            $darker = min($bgLuminance, $textLuminance);
+            $contrast = ($lighter + 0.05) / ($darker + 0.05);
+
+            if ($contrast >= 4.5) {
+                return $textHex;
+            }
+        }
+
+        // WCAG: pick black or white based on which has better contrast against the background
+        $contrastWithBlack = ($bgLuminance + 0.05) / 0.05;
+        $contrastWithWhite = 1.05 / ($bgLuminance + 0.05);
+
+        return $contrastWithBlack >= $contrastWithWhite ? '000000' : 'ffffff';
+    }
+
+    private function relativeLuminance(string $hexColor): float
+    {
+        $hex = ltrim($hexColor, '#');
+        if (strlen($hex) === 3) {
+            $hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
+        }
+
+        $r = hexdec(substr($hex, 0, 2)) / 255;
+        $g = hexdec(substr($hex, 2, 2)) / 255;
+        $b = hexdec(substr($hex, 4, 2)) / 255;
+
+        $toLinear = static fn (float $c): float => $c <= 0.04045
+            ? $c / 12.92
+            : (($c + 0.055) / 1.055) ** 2.4;
+
+        return 0.2126 * $toLinear($r) + 0.7152 * $toLinear($g) + 0.0722 * $toLinear($b);
     }
 }

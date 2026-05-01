@@ -28,7 +28,7 @@ async function fetchStopovers(items: StatusResource[]): Promise<void> {
     const tripIds = items.map((s) => s.checkin.trip.toString());
     try {
         const res = await api.stopovers.getStopOvers(tripIds.join(','));
-        const data = res.data?.data ?? (await res.json()).data;
+        const data = res.data?.data;
         for (const tripId in data) {
             stopovers.value[tripId] = data[tripId];
         }
@@ -45,15 +45,14 @@ async function fetchStatuses(page = 1, append = false): Promise<void> {
     }
     try {
         const res = await api.dashboard.getDashboard({ page });
-        const json = await res.json();
-        const items: StatusResource[] = json.data ?? [];
+        const items: StatusResource[] = res.data?.data ?? [];
         if (append) {
             statuses.value.push(...items);
         } else {
             statuses.value = items;
         }
-        showMore.value = !!json.links?.next;
-        currentPage.value = json.meta?.current_page ?? page;
+        showMore.value = !!res.data?.links?.next;
+        currentPage.value = res.data?.meta?.current_page ?? page;
         await fetchStopovers(items);
     } catch (e: unknown) {
         notyf.error(e instanceof Error ? e.message : trans('generic.error'));
@@ -66,8 +65,7 @@ async function fetchStatuses(page = 1, append = false): Promise<void> {
 async function fetchFutureStatuses(): Promise<void> {
     try {
         const res = await api.dashboard.getFutureDashboard();
-        const json = await res.json();
-        futureStatuses.value = json.data ?? [];
+        futureStatuses.value = res.data?.data ?? [];
     } catch {
         // future statuses are best-effort
     }
