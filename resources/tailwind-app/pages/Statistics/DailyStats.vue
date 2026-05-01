@@ -6,6 +6,7 @@ import { computed, inject, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { Api, type StatusResource } from '../../../types/Api.gen';
 import GenericMap from '../../../vue/components/Map/GenericMap.vue';
+import { useUserStore } from '../../../vue/stores/user';
 import StatusCard from '../../components/Status/StatusCard.vue';
 import AppLayout from '../../layouts/AppLayout.vue';
 
@@ -14,6 +15,8 @@ const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 const route = useRoute();
 const router = useRouter();
 const notyf = inject('notyf') as Notyf;
+const userStore = useUserStore();
+const showPoints = computed(() => userStore.user?.pointsEnabled ?? true);
 
 type DailyData = {
     statuses: StatusResource[];
@@ -140,7 +143,7 @@ onUnmounted(() => {
 
         <template v-else>
             <!-- Stats summary bar -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+            <div :class="showPoints ? 'grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6' : 'grid grid-cols-3 gap-3 mb-6'">
                 <div class="card bg-base-100">
                     <div class="card-body items-center text-center py-3">
                         <Train class="w-5 h-5 text-primary mb-1" />
@@ -164,7 +167,7 @@ onUnmounted(() => {
                         <span class="text-xs text-base-content/60">{{ trans('time.duration') }}</span>
                     </div>
                 </div>
-                <div class="card bg-base-100">
+                <div v-if="showPoints" class="card bg-base-100">
                     <div class="card-body items-center text-center py-3">
                         <Dices class="w-5 h-5 text-primary mb-1" />
                         <span class="text-2xl font-bold">{{ dayData.totalPoints }}</span>
