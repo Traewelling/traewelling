@@ -6,6 +6,8 @@ import { computed, inject, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { Api, type StatusResource } from '../../../types/Api.gen';
 import GenericMap from '../../../vue/components/Map/GenericMap.vue';
+import { useUserStore } from '../../../vue/stores/user';
+import StatusCard from '../../components/Status/StatusCard.vue';
 import AppLayout from '../../layouts/AppLayout.vue';
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
@@ -13,6 +15,8 @@ const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 const route = useRoute();
 const router = useRouter();
 const notyf = inject('notyf') as Notyf;
+const userStore = useUserStore();
+const showPoints = computed(() => userStore.user?.pointsEnabled ?? true);
 
 type DailyData = {
     statuses: StatusResource[];
@@ -95,15 +99,6 @@ onMounted(() => {
 onUnmounted(() => {
     window.removeEventListener('keydown', onKeyDown);
 });
-
-function formatTime(iso: string | null | undefined): string {
-    if (!iso) return '?';
-    return new Date(iso).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
-}
-
-function formatKm(meters: number): string {
-    return (meters / 1000).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 });
-}
 </script>
 
 <template>
@@ -122,7 +117,6 @@ function formatKm(meters: number): string {
 
             <div class="text-center">
                 <h1 class="text-xl font-bold">{{ formattedDate }}</h1>
-                <p class="text-xs text-base-content/40 mt-0.5">{{ trans('keyboard-hint', {}, '') || '← →' }}</p>
             </div>
 
             <button
@@ -149,7 +143,7 @@ function formatKm(meters: number): string {
 
         <template v-else>
             <!-- Stats summary bar -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+            <div :class="showPoints ? 'grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6' : 'grid grid-cols-3 gap-3 mb-6'">
                 <div class="card bg-base-100">
                     <div class="card-body items-center text-center py-3">
                         <Train class="w-5 h-5 text-primary mb-1" />
@@ -173,7 +167,7 @@ function formatKm(meters: number): string {
                         <span class="text-xs text-base-content/60">{{ trans('time.duration') }}</span>
                     </div>
                 </div>
-                <div class="card bg-base-100">
+                <div v-if="showPoints" class="card bg-base-100">
                     <div class="card-body items-center text-center py-3">
                         <Dices class="w-5 h-5 text-primary mb-1" />
                         <span class="text-2xl font-bold">{{ dayData.totalPoints }}</span>
@@ -199,62 +193,7 @@ function formatKm(meters: number): string {
 
                 <!-- Status list -->
                 <div class="flex flex-col gap-3">
-                    <div
-                        v-for="status in dayData.statuses"
-                        :key="status.id"
-                        class="card bg-base-100 hover:bg-base-200 transition-colors"
-                    >
-                        <div class="card-body py-3 px-4">
-                            <div class="flex items-start justify-between gap-2">
-                                <!-- Line badge + name -->
-                                <div class="flex items-center gap-2 min-w-0">
-                                    <span
-                                        class="badge badge-sm font-mono shrink-0"
-                                        :style="
-                                            status.checkin.routeColor
-                                                ? {
-                                                      backgroundColor: '#' + status.checkin.routeColor,
-                                                      color: status.checkin.routeTextColor
-                                                          ? '#' + status.checkin.routeTextColor
-                                                          : '#fff',
-                                                  }
-                                                : {}
-                                        "
-                                    >
-                                        {{ status.checkin.lineName }}
-                                    </span>
-                                    <span class="text-sm font-medium truncate">
-                                        {{ status.checkin.origin.name }}
-                                        <ChevronRight class="inline w-3 h-3 text-base-content/40" />
-                                        {{ status.checkin.destination.name }}
-                                    </span>
-                                </div>
-
-                                <!-- Time -->
-                                <span class="text-xs text-base-content/50 shrink-0">
-                                    {{
-                                        formatTime(
-                                            status.checkin.manualDeparture ??
-                                                status.checkin.origin.departure ??
-                                                status.checkin.origin.arrival,
-                                        )
-                                    }}
-                                </span>
-                            </div>
-
-                            <!-- Stats row -->
-                            <div class="flex gap-4 text-xs text-base-content/50 mt-1">
-                                <span>{{ formatKm(status.checkin.distance) }} km</span>
-                                <span>{{ status.checkin.duration }} min</span>
-                                <span>{{ status.checkin.points }} {{ trans('profile.points-abbr') }}</span>
-                            </div>
-
-                            <!-- Body -->
-                            <p v-if="status.body" class="text-sm text-base-content/70 mt-1 truncate">
-                                {{ status.body }}
-                            </p>
-                        </div>
-                    </div>
+                    <StatusCard v-for="status in dayData.statuses" :key="status.id" :status="status" />
                 </div>
             </div>
         </template>

@@ -13,6 +13,33 @@ import { computed, PropType } from 'vue';
 import { LivePointDto, MapProvider } from '../../../types/Api.gen';
 import LiveMapPoint from './LiveMapPoint.vue';
 
+const DEFAULT_BOUNDS = LngLatBounds.fromLngLat(new LngLat(9.902056, 49.843), 100000);
+
+function withPadding(bounds: LngLatBounds, padding = 0.1): LngLatBounds {
+    const sw = bounds.getSouthWest();
+    const ne = bounds.getNorthEast();
+    const latPad = (ne.lat - sw.lat) * padding;
+    const lngPad = (ne.lng - sw.lng) * padding;
+    return new LngLatBounds([sw.lng - lngPad, sw.lat - latPad], [ne.lng + lngPad, ne.lat + latPad]);
+}
+
+function boundsFromPolylines(features: GeoJSONFeature[], padding = 0.1): LngLatBounds | undefined {
+    const bounds = new LngLatBounds();
+    for (const feature of features) {
+        const geom = feature.geometry as { type: string; coordinates: unknown } | undefined;
+        if (!geom) continue;
+        const pairs: number[][] =
+            geom.type === 'MultiLineString'
+                ? (geom.coordinates as number[][][]).flat()
+                : (geom.coordinates as number[][]);
+        for (const [lng, lat] of pairs) {
+            bounds.extend([lng, lat]);
+        }
+    }
+    if (bounds.isEmpty()) return undefined;
+    return withPadding(bounds, padding);
+}
+
 const props = defineProps({
     polyLines: {
         type: Array as PropType<GeoJSONFeature[]>,
@@ -21,7 +48,7 @@ const props = defineProps({
     },
     bounds: {
         type: Object as PropType<LngLatBounds>,
-        default: LngLatBounds.fromLngLat(new LngLat(9.902056, 49.843), 100000),
+        default: undefined,
     },
     lineColor: {
         type: String,
@@ -87,6 +114,10 @@ const baseTiles: string[] = isDarkMode
 
 const showOrmLayer = computed(() => props.mapProvider === MapProvider.OpenRailwayMap);
 
+const effectiveBounds = computed(
+    () => (props.polyLines.length ? boundsFromPolylines(props.polyLines) : undefined) ?? props.bounds ?? DEFAULT_BOUNDS,
+);
+
 const style: StyleSpecification = {
     version: 8,
     projection: { type: 'globe' },
@@ -96,7 +127,13 @@ const style: StyleSpecification = {
 </script>
 
 <template>
-    <mgl-map :map-style="style" :max-zoom="18" :bounds="bounds" height="45vh" :attribution-control="{ compact: true }">
+    <mgl-map
+        :map-style="style"
+        :max-zoom="18"
+        :bounds="effectiveBounds"
+        height="45vh"
+        :attribution-control="{ compact: true }"
+    >
         <mgl-navigation-control position="top-right" :show-zoom="false" :show-compass="true" />
         <mgl-geolocate-control />
 
