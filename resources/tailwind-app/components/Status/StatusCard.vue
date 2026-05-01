@@ -51,6 +51,7 @@ import {
     getDepartureForStopover,
     StopoverTimeType,
 } from '../../../vue/helpers/DateTimeHelper';
+import { useActiveCheckin } from '../../../vue/stores/activeCheckin';
 import { useUserStore } from '../../../vue/stores/user';
 
 const props = defineProps<{
@@ -69,6 +70,7 @@ const emit = defineEmits<{
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 const notyf = inject('notyf') as Notyf;
 const userStore = useUserStore();
+const activeCheckin = useActiveCheckin();
 
 const statusObject = ref<StatusResource>(props.status);
 const deleted = ref(false);
@@ -323,6 +325,9 @@ function executeDelete() {
         .then(() => {
             deleted.value = true;
             emit('status-deleted', statusObject.value.id);
+            if (activeCheckin.status?.id === statusObject.value.id) {
+                activeCheckin.reset();
+            }
         })
         .catch((e) => {
             deleting.value = false;
@@ -378,18 +383,21 @@ function share() {
     }
 }
 
-function rideAlongUrl(): string {
+function rideAlongRoute() {
     const t = statusObject.value.train;
-    const params = new URLSearchParams({
-        tripId: t.trip.toString(),
-        lineName: t.lineName,
-        start: t.origin.id.toString(),
-        destination: t.destination.id.toString(),
-        departure: t.origin.departurePlanned ?? t.origin.departure ?? '',
-        idType: 'trwl',
-        category: t.category,
-    });
-    return `/stationboard/?${params.toString()}`;
+    return {
+        name: 'checkin',
+        query: {
+            tripId: t.trip.toString(),
+            lineName: t.lineName,
+            start: t.origin.id.toString(),
+            destination: t.destination.id.toString(),
+            departure: t.origin.departurePlanned ?? t.origin.departure ?? '',
+            originName: t.origin.name,
+            destinationName: t.destination.name,
+            category: t.category,
+        },
+    };
 }
 
 async function handleMute() {
@@ -463,7 +471,16 @@ const distanceStr = computed(() => {
     return d < 1000 ? `${d} m` : `${(d / 1000).toFixed(0)} km`;
 });
 
-const durationMin = computed(() => statusObject.value.train.duration ?? 0);
+const durationStr = computed(() => {
+    const total = statusObject.value.train.duration ?? 0;
+    if (total <= 0) return null;
+    const days = Math.floor(total / (60 * 24));
+    const hours = Math.floor((total % (60 * 24)) / 60);
+    const mins = total % 60;
+    if (days > 0) return `${days}d ${hours}h ${mins}min`;
+    if (hours > 0) return `${hours}h ${mins}min`;
+    return `${mins}min`;
+});
 </script>
 
 <template>
@@ -502,8 +519,14 @@ const durationMin = computed(() => statusObject.value.train.duration ?? 0);
                         <!-- Origin -->
                         <div>
                             <div class="flex items-baseline justify-between gap-2">
-                                <a
-                                    :href="`/stationboard?stationId=${statusObject.train.origin.id}&stationName=${statusObject.train.origin.name}`"
+                                <router-link
+                                    :to="{
+                                        name: 'stationboard',
+                                        query: {
+                                            stationId: statusObject.train.origin.id,
+                                            stationName: statusObject.train.origin.name,
+                                        },
+                                    }"
                                     class="font-medium link link-hover leading-tight"
                                     :class="{ 'line-through text-error': statusObject.train.origin.cancelled }"
                                 >
@@ -514,7 +537,7 @@ const durationMin = computed(() => statusObject.value.train.duration ?? 0);
                                     >
                                         {{ trans('stationboard.stop-cancelled') }}
                                     </span>
-                                </a>
+                                </router-link>
                                 <div class="text-sm tabular-nums shrink-0 text-right">
                                     <span v-if="departure.originalTime" class="line-through text-base-content/40 mr-1">
                                         {{ fmtTime(departure.originalTime) }}
@@ -559,9 +582,9 @@ const durationMin = computed(() => statusObject.value.train.duration ?? 0);
                                     <Route class="w-4 h-4" />
                                     {{ distanceStr }}
                                 </span>
-                                <span class="flex items-center gap-0.5">
+                                <span v-if="durationStr" class="flex items-center gap-0.5">
                                     <Clock class="w-4 h-4" />
-                                    {{ durationMin }} min
+                                    {{ durationStr }}
                                 </span>
                                 <span
                                     v-if="statusObject.business === Business.Value1"
@@ -620,20 +643,29 @@ const durationMin = computed(() => statusObject.value.train.duration ?? 0);
                         <p v-if="nextStop && inProgress" class="text-sm text-base-content/50 flex items-center gap-1">
                             <ArrowRight class="w-3 h-3 shrink-0" />
                             {{ isAtStop ? trans('stationboard.current-stop') : trans('stationboard.next-stop') }}
-                            <a
-                                :href="`/stationboard?stationId=${nextStop.id}&stationName=${nextStop.name}`"
+                            <router-link
+                                :to="{
+                                    name: 'stationboard',
+                                    query: { stationId: nextStop.id, stationName: nextStop.name },
+                                }"
                                 class="link link-hover font-medium"
                             >
                                 {{ nextStop.name }}
                                 ({{ fmtTime(getArrivalForStopover(nextStop)) }})
-                            </a>
+                            </router-link>
                         </p>
 
                         <!-- Destination -->
                         <div>
                             <div class="flex items-baseline justify-between gap-2">
-                                <a
-                                    :href="`/stationboard?stationId=${statusObject.train.destination.id}&stationName=${statusObject.train.destination.name}`"
+                                <router-link
+                                    :to="{
+                                        name: 'stationboard',
+                                        query: {
+                                            stationId: statusObject.train.destination.id,
+                                            stationName: statusObject.train.destination.name,
+                                        },
+                                    }"
                                     class="font-medium link link-hover leading-tight"
                                     :class="{ 'line-through text-error': statusObject.train.destination.cancelled }"
                                 >
@@ -644,7 +676,7 @@ const durationMin = computed(() => statusObject.value.train.duration ?? 0);
                                     >
                                         {{ trans('stationboard.stop-cancelled') }}
                                     </span>
-                                </a>
+                                </router-link>
                                 <div class="text-sm tabular-nums shrink-0 text-right">
                                     <span v-if="arrival.originalTime" class="line-through text-base-content/40 mr-1">
                                         {{ fmtTime(arrival.originalTime) }}
@@ -753,10 +785,10 @@ const durationMin = computed(() => statusObject.value.train.duration ?? 0);
                             </template>
                             <template v-else>
                                 <li>
-                                    <a :href="rideAlongUrl()">
+                                    <router-link :to="rideAlongRoute()">
                                         <UserPlus class="w-4 h-4" />
                                         {{ trans('status.join') }}
-                                    </a>
+                                    </router-link>
                                 </li>
                                 <li>
                                     <button :disabled="busyMute" @click="handleMute">

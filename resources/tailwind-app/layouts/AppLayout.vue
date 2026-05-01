@@ -4,10 +4,10 @@
         <!-- Navigation -->
         <div class="navbar bg-primary shadow-lg drawer-content">
             <div class="navbar-start">
-                <a href="/" class="btn btn-ghost text-xl text-white">
+                <router-link :to="{ name: 'dashboard' }" class="btn btn-ghost text-xl text-white">
                     <img src="/images/icons/logo.svg" alt="Träwelling Logo" class="w-10 h-10 mr-2" />
                     Träwelling
-                </a>
+                </router-link>
             </div>
 
             <div class="navbar-center hidden text-white lg:flex">

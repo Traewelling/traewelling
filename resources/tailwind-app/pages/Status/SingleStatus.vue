@@ -5,13 +5,16 @@ import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import {
     Api,
+    CheckinSuccessResource,
     StatusResource,
     StopoverResource,
     TicketResource,
     UserAuthResource,
     UserResource,
 } from '../../../types/Api.gen';
+import { checkinSuccessStore } from '../../../vue/stores/checkinSuccess';
 import { useUserStore } from '../../../vue/stores/user';
+import CheckinSuccessBanner from '../../components/Checkin/CheckinSuccessBanner.vue';
 import StatusCard from '../../components/Status/StatusCard.vue';
 import StatusTags from '../../components/Status/StatusTags.vue';
 import StatusTicket from '../../components/Status/StatusTicket.vue';
@@ -20,6 +23,7 @@ import AppLayout from '../../layouts/AppLayout.vue';
 const route = useRoute();
 const router = useRouter();
 const userStore = useUserStore();
+const checkinSuccess = checkinSuccessStore();
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 
 const statusId = computed(() => Number(route.params.id));
@@ -29,6 +33,7 @@ const status = ref<StatusResource | null>(null);
 const stopovers = ref<StopoverResource[]>([]);
 const likedBy = ref<UserResource[]>([]);
 const pageError = ref<'403' | '404' | null>(null);
+const checkinResult = ref<CheckinSuccessResource | null>(null);
 
 const formattedDate = computed(() => {
     if (!status.value) return '';
@@ -49,6 +54,11 @@ async function fetchStatus() {
         const res = await api.status.getSingleStatus(statusId.value);
         const json = await res.json();
         status.value = json.data as StatusResource;
+        const stored = checkinSuccess.checkinResponse;
+        if (stored?.status?.id === status.value.id) {
+            checkinResult.value = stored;
+            checkinSuccess.reset();
+        }
         await fetchStopovers();
     } catch (e: unknown) {
         const err = e as { status?: number };
@@ -134,6 +144,9 @@ onMounted(() => {
 
         <!-- Status page -->
         <template v-else-if="status">
+            <!-- Checkin success banner -->
+            <CheckinSuccessBanner v-if="checkinResult" :data="checkinResult" class="max-w-5xl mx-auto" />
+
             <!-- Date heading -->
             <h2 class="text-base font-semibold text-base-content/60 mb-3 max-w-5xl mx-auto">
                 {{ formattedDate }}
