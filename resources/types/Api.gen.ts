@@ -6564,7 +6564,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: TripResource[];
+          data?: TripResource;
         },
         void
       >({

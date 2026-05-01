@@ -6791,10 +6791,7 @@
                                 "schema": {
                                     "properties": {
                                         "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/TripResource"
-                                            }
+                                            "$ref": "#/components/schemas/TripResource"
                                         }
                                     },
                                     "type": "object"

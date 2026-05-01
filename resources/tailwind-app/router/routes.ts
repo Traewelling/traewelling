@@ -1,6 +1,7 @@
 import { RouteRecordRaw } from 'vue-router';
 import ActiveJourneys from '../pages/ActiveJourneys/ActiveJourneys.vue';
 import Changelog from '../pages/Changelog/Changelog.vue';
+import CheckinPage from '../pages/Checkin/CheckinPage.vue';
 import Index from '../pages/Contribute/Index.vue';
 import Profile from '../pages/Contribute/Profile.vue';
 import SuggestEvent from '../pages/Contribute/SuggestEvent.vue';
@@ -175,6 +176,12 @@ const routes: Array<RouteRecordRaw> = [
         name: 'stationboard',
         component: Stationboard,
         meta: { title: 'stationboard' },
+    },
+    {
+        path: '/checkin',
+        name: 'checkin',
+        component: CheckinPage,
+        meta: { title: 'stationboard.btn-checkin' },
     },
     {
         path: '/tickets',

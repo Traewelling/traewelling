@@ -237,8 +237,7 @@ class TransportController extends Controller
                     properties: [
                         new OA\Property(
                             property: 'data',
-                            type: 'array',
-                            items: new OA\Items(ref: TripResource::class),
+                            ref: TripResource::class,
                         ),
                     ],
                 ),
