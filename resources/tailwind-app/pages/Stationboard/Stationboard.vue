@@ -121,6 +121,25 @@ const minDateTimeLocal = computed(() =>
     DateTime.now().setZone('local').minus({ hours: 24 }).toFormat("yyyy-MM-dd'T'HH:mm"),
 );
 
+function effectiveDepartureTime(item: DepartureResource): string {
+    return item.when ?? item.plannedWhen ?? '';
+}
+
+function departureDate(item: DepartureResource): string {
+    return DateTime.fromISO(effectiveDepartureTime(item)).toLocal().toISODate() ?? '';
+}
+
+function showDateSeparator(index: number): boolean {
+    if (index === 0) {
+        return departureDate(departures.value[0]) !== fetchTime.value.toLocal().toISODate();
+    }
+    return departureDate(departures.value[index]) !== departureDate(departures.value[index - 1]);
+}
+
+function getDateLabel(item: DepartureResource): string {
+    return DateTime.fromISO(effectiveDepartureTime(item)).toLocal().toLocaleString(DateTime.DATE_HUGE);
+}
+
 function onTravelTypeChange(): void {
     fetchDepartures();
 }
@@ -264,13 +283,20 @@ onMounted(() => {
                 </div>
 
                 <!-- Departure list -->
-                <DepartureEntry
-                    v-for="item in departures"
-                    :key="item.tripId + item.plannedWhen"
-                    :item="item"
-                    :station-name="stationName"
-                    @click="openModal(item)"
-                />
+                <template v-for="(item, index) in departures" :key="item.tripId + item.plannedWhen">
+                    <div
+                        v-if="showDateSeparator(index)"
+                        class="flex items-center gap-3 my-2"
+                        :class="index > 0 ? 'mt-4' : ''"
+                    >
+                        <div class="flex-1 h-px bg-base-300" />
+                        <span class="text-xs font-medium text-base-content/50 shrink-0">
+                            {{ getDateLabel(item) }}
+                        </span>
+                        <div class="flex-1 h-px bg-base-300" />
+                    </div>
+                    <DepartureEntry :item="item" :station-name="stationName" @click="openModal(item)" />
+                </template>
             </template>
 
             <!-- Next / Prev bottom nav -->
