@@ -228,5 +228,7 @@
     "error.429": "Memia bleras dumondas",
     "error.500": "sbagl intern dal server",
     "error.bad-request": "La dumonda è nunvalaivla.",
-    "events.host": "organisatur"
+    "events.host": "organisatur",
+    "export.title.journey_type": "Categoria",
+    "export.title.line_name": "Lingia"
 }
