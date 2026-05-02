@@ -17,6 +17,7 @@ import {
     PlaneTakeoff,
     Route,
     Share2,
+    Shield,
     Trash2,
     User,
     UserCheck,
@@ -437,6 +438,8 @@ const visibilityIcon = computed(() => {
             return Lock;
         case StatusVisibility.Value4:
             return UserCheck;
+        case StatusVisibility.Value5:
+            return Shield;
         default:
             return Eye;
     }
@@ -944,7 +947,8 @@ const durationStr = computed(() => {
                         <Eye v-else-if="editVisibility === StatusVisibility.Value1" class="w-4 h-4" />
                         <UserCheck v-else-if="editVisibility === StatusVisibility.Value2" class="w-4 h-4" />
                         <Lock v-else-if="editVisibility === StatusVisibility.Value3" class="w-4 h-4" />
-                        <UserCheck v-else class="w-4 h-4" />
+                        <UserCheck v-else-if="editVisibility === StatusVisibility.Value4" class="w-4 h-4" />
+                        <Shield v-else class="w-4 h-4" />
                         {{ trans('status.visibility.' + editVisibility) }}
                     </button>
                     <ul
@@ -952,7 +956,7 @@ const durationStr = computed(() => {
                         class="dropdown-content menu bg-base-100 rounded-box z-10 w-72 p-2 shadow-lg border border-base-200"
                     >
                         <li
-                            v-for="v in [0, 1, 2, 3, 4]"
+                            v-for="v in [0, 1, 2, 3, 4, 5]"
                             :key="v"
                             @click="
                                 editVisibility = v as StatusVisibility;
@@ -964,7 +968,8 @@ const durationStr = computed(() => {
                                 <Eye v-else-if="v === 1" class="w-4 h-4 shrink-0" />
                                 <UserCheck v-else-if="v === 2" class="w-4 h-4 shrink-0" />
                                 <Lock v-else-if="v === 3" class="w-4 h-4 shrink-0" />
-                                <UserCheck v-else class="w-4 h-4 shrink-0" />
+                                <UserCheck v-else-if="v === 4" class="w-4 h-4 shrink-0" />
+                                <Shield v-else class="w-4 h-4 shrink-0" />
                                 <span>
                                     {{ trans('status.visibility.' + v) }}
                                     <span class="block text-xs text-base-content/50">{{

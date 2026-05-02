@@ -51,6 +51,7 @@ const visibilityOptions = computed(() => [
     { value: 2, label: trans('status.visibility.2') },
     { value: 3, label: trans('status.visibility.3') },
     { value: 4, label: trans('status.visibility.4') },
+    { value: 5, label: trans('status.visibility.5') },
 ]);
 
 const businessOptions = computed(() => [

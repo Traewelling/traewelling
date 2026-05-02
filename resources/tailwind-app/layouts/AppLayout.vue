@@ -26,10 +26,10 @@
             </div>
 
             <div class="navbar-end">
-                <router-link
+                <button
                     v-if="user.authenticated"
-                    :to="{ name: 'notifications' }"
                     class="btn btn-ghost btn-sm text-white flex mr-1"
+                    @click="notificationsModal?.open()"
                 >
                     <div class="relative">
                         <div class="indicator size-5">
@@ -39,7 +39,7 @@
                             </span>
                         </div>
                     </div>
-                </router-link>
+                </button>
                 <div v-if="user.authenticated && user.user" class="dropdown dropdown-end hidden lg:flex">
                     <div tabindex="0" role="button" class="btn btn-sm m-1">
                         <User class="inline-block w-6 h-6" />
@@ -185,6 +185,7 @@
             </ul>
         </div>
         <ActiveStatusCard />
+        <NotificationsModal ref="notificationsModal" />
     </div>
 </template>
 
@@ -207,12 +208,13 @@ import {
     User,
     X,
 } from 'lucide-vue-next';
-import { computed, FunctionalComponent, onMounted, onUnmounted, ref } from 'vue';
+import { computed, FunctionalComponent, onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
 import { RouteLocationRaw } from 'vue-router';
 import { useConfigurationStore } from '../../vue/stores/configuration';
 import { useNotificationsStore } from '../../vue/stores/notifications';
 import { useUserStore } from '../../vue/stores/user';
 import ActiveStatusCard from '../components/ActiveStatusCard.vue';
+import NotificationsModal from '../components/Notifications/NotificationsModal.vue';
 import DarkModeSelector from './Footer/DarkModeSelector.vue';
 import LanguageSelector from './Footer/LanguageSelector.vue';
 
@@ -241,6 +243,7 @@ function dismissBanner() {
 }
 
 const notificationsStore = useNotificationsStore();
+const notificationsModal = useTemplateRef('notificationsModal');
 let pollInterval: ReturnType<typeof setInterval> | null = null;
 
 onMounted(() => {
