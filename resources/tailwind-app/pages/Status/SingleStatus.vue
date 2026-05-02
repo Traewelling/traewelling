@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
 import { DateTime as LuxonDateTime } from 'luxon';
-import { computed, onMounted, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import {
     Api,
@@ -15,6 +15,7 @@ import {
 import { checkinSuccessStore } from '../../../vue/stores/checkinSuccess';
 import { useUserStore } from '../../../vue/stores/user';
 import CheckinSuccessBanner from '../../components/Checkin/CheckinSuccessBanner.vue';
+import CoPassengers from '../../components/Status/CoPassengers.vue';
 import StatusCard from '../../components/Status/StatusCard.vue';
 import StatusTags from '../../components/Status/StatusTags.vue';
 import StatusTicket from '../../components/Status/StatusTicket.vue';
@@ -34,6 +35,12 @@ const stopovers = ref<StopoverResource[]>([]);
 const likedBy = ref<UserResource[]>([]);
 const pageError = ref<'403' | '404' | null>(null);
 const checkinResult = ref<CheckinSuccessResource | null>(null);
+const hasCoPassengers = ref(false);
+
+const ticketVisible = computed(
+    () => !!status.value && userStore.isClosedBeta && status.value.userDetails.id === userStore.user?.id,
+);
+const hasRightColumn = computed(() => hasCoPassengers.value || ticketVisible.value);
 
 const formattedDate = computed(() => {
     if (!status.value) return '';
@@ -112,10 +119,20 @@ function onStatusDeleted() {
     router.push('/dashboard');
 }
 
-onMounted(() => {
-    fetchStatus();
-    fetchLikes();
-});
+watch(
+    statusId,
+    () => {
+        status.value = null;
+        stopovers.value = [];
+        likedBy.value = [];
+        checkinResult.value = null;
+        hasCoPassengers.value = false;
+        pageError.value = null;
+        fetchStatus();
+        fetchLikes();
+    },
+    { immediate: true },
+);
 </script>
 
 <template>
@@ -154,14 +171,7 @@ onMounted(() => {
 
             <div class="max-w-5xl mx-auto flex flex-col lg:flex-row gap-4 items-start">
                 <!-- Left: status card + attribution + likes -->
-                <div
-                    class="w-full min-w-0"
-                    :class="
-                        userStore.isClosedBeta && status.userDetails.id === userStore.user?.id
-                            ? 'lg:flex-1'
-                            : 'lg:max-w-2xl lg:mx-auto'
-                    "
-                >
+                <div class="w-full min-w-0" :class="hasRightColumn ? 'lg:flex-1' : 'lg:max-w-2xl lg:mx-auto'">
                     <StatusCard
                         :status="status"
                         :stopovers="stopovers"
@@ -222,12 +232,17 @@ onMounted(() => {
                     </div>
                 </div>
 
-                <!-- Right: ticket card (closed-beta only, own status only) -->
-                <div
-                    v-if="userStore.isClosedBeta && status.userDetails.id === userStore.user?.id"
-                    class="w-full lg:w-80 shrink-0"
-                >
+                <!-- Right: co-passengers + ticket (closed-beta only, own status only) -->
+                <div class="w-full space-y-4" :class="hasRightColumn ? 'lg:w-80 shrink-0' : ''">
+                    <CoPassengers
+                        :trip-id="status.checkin.trip"
+                        :current-status-id="status.id"
+                        :departure-planned="status.checkin.origin.departurePlanned"
+                        :arrival-planned="status.checkin.destination.arrivalPlanned"
+                        @has-co-passengers="hasCoPassengers = $event"
+                    />
                     <StatusTicket
+                        v-if="ticketVisible"
                         :status-id="status.id"
                         :ticket="(status.ticket as TicketResource | null) ?? null"
                         :departure-planned="status.checkin.origin.departurePlanned"

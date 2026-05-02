@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { getActiveLanguage, trans, transChoice } from 'laravel-vue-i18n';
-import { ArrowLeft, ChevronDown, ChevronUp, TriangleAlert } from 'lucide-vue-next';
+import { ArrowLeft, ChevronDown, ChevronUp, Plus, TriangleAlert } from 'lucide-vue-next';
 import { DateTime } from 'luxon';
 import { Notyf } from 'notyf';
 import { computed, inject, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { Api, DepartureResource, StopoverResource, TravelType } from '../../../types/Api.gen';
 import LineIndicator from '../../../vue/components/LineIndicator.vue';
+import { useUserStore } from '../../../vue/stores/user';
 import CheckinForm from '../../components/Checkin/CheckinForm.vue';
 import LineRun from '../../components/Checkin/LineRun.vue';
 import DepartureEntry from '../../components/Stationboard/DepartureEntry.vue';
@@ -16,6 +17,7 @@ import AppLayout from '../../layouts/AppLayout.vue';
 const route = useRoute();
 const router = useRouter();
 const notyf = inject('notyf') as Notyf;
+const userStore = useUserStore();
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 
 type DepartureMeta = {
@@ -309,6 +311,15 @@ onMounted(() => {
                     {{ trans('time.later') }}
                     <ChevronDown class="w-4 h-4" />
                 </button>
+            </div>
+
+            <!-- Manual trip creation -->
+            <div v-if="!loading && userStore.user" class="flex flex-col items-center gap-2 mt-4">
+                <p class="text-sm text-base-content/50">{{ trans('missing-journey') }}</p>
+                <router-link :to="{ name: 'trip-create' }" class="btn btn-outline btn-sm gap-2">
+                    <Plus class="w-4 h-4" />
+                    {{ trans('create-journey') }}
+                </router-link>
             </div>
         </div>
 
