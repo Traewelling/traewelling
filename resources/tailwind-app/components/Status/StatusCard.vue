@@ -40,7 +40,7 @@ import {
     UserResource,
 } from '../../../types/Api.gen';
 import LineIndicator from '../../../vue/components/LineIndicator.vue';
-import Map from '../../../vue/components/Map/Map.vue';
+import TrwMap from '../../../vue/components/Map/Map.vue';
 import ProductIcon from '../../../vue/components/ProductIcon.vue';
 import { Dtm } from '../../../vue/helpers/DateTime';
 import {
@@ -504,7 +504,7 @@ const durationStr = computed(() => {
                 v-if="showMap"
                 class="[&_canvas]:[border-top-left-radius:var(--rounded-box)] [&_canvas]:[border-top-right-radius:var(--rounded-box)]"
             >
-                <Map :statuses="[statusObject]" />
+                <TrwMap :statuses="[statusObject]" />
             </div>
 
             <div class="card-body p-4 pb-2">
