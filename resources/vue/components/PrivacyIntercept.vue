@@ -2,12 +2,14 @@
 import DOMPurify from 'dompurify';
 import { trans } from 'laravel-vue-i18n';
 import { marked } from 'marked';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { Api } from '../../types/Api.gen';
 
-defineProps<{
+const props = defineProps<{
     username: string;
 }>();
+
+const isLoggedIn = computed(() => !!props.username);
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 
@@ -17,6 +19,8 @@ const hasUserSigned = ref(false);
 const policyHtml = ref('');
 const loading = ref(true);
 
+const showActions = computed(() => isLoggedIn.value && !hasUserSigned.value);
+
 const modal = ref<HTMLDialogElement>();
 const deleteStep = ref<1 | 2>(1);
 const confirmation = ref('');
@@ -24,6 +28,18 @@ const loadingAccept = ref(false);
 const loadingDelete = ref(false);
 
 onMounted(async () => {
+    if (!isLoggedIn.value) {
+        const policyResponse = await api.privacyPolicies.appHttpControllersApiV1PrivacyPolicyController();
+        if (policyResponse.ok) {
+            const policy = policyResponse.data.data;
+            const locale = document.documentElement.lang ?? 'en';
+            const markdown = locale.startsWith('de') ? policy.de : policy.en;
+            policyHtml.value = DOMPurify.sanitize(await marked.parse(markdown));
+        }
+        loading.value = false;
+        return;
+    }
+
     const policyResponse = await api.privacyPolicies.appHttpControllersApiV1PrivacyPolicyController();
 
     if (policyResponse.ok) {
@@ -102,17 +118,17 @@ async function deleteAccount() {
 
     <template v-else>
         <!-- Info card: policy changed or not signed yet -->
-        <div v-if="policyChanged" class="card mb-3">
+        <div v-if="isLoggedIn && policyChanged" class="card mb-3">
             <!-- eslint-disable-next-line vue/no-v-html -->
             <p class="card-body mb-0" v-html="trans('privacy.we-changed')"></p>
         </div>
-        <div v-else-if="!hasUserSigned" class="card mb-3">
+        <div v-else-if="isLoggedIn && !hasUserSigned" class="card mb-3">
             <!-- eslint-disable-next-line vue/no-v-html -->
             <p class="card-body mb-0" v-html="trans('privacy.not-signed-yet')"></p>
         </div>
 
         <!-- Action buttons (top) -->
-        <div v-if="!hasUserSigned" class="d-flex justify-content-between align-items-center mb-4">
+        <div v-if="showActions" class="d-flex justify-content-between align-items-center mb-4">
             <button type="button" class="btn btn-outline-secondary btn-sm" @click="openDeleteModal">
                 {{ trans('settings.delete-account.more') }}
             </button>
@@ -126,7 +142,7 @@ async function deleteAccount() {
         <div class="privacy" v-html="policyHtml"></div>
 
         <!-- Action buttons (bottom, repeated for convenience after reading) -->
-        <div v-if="!hasUserSigned" class="d-flex justify-content-between align-items-center mt-4 mb-5">
+        <div v-if="showActions" class="d-flex justify-content-between align-items-center mt-4 mb-5">
             <button type="button" class="btn btn-outline-secondary btn-sm" @click="openDeleteModal">
                 {{ trans('settings.delete-account.more') }}
             </button>
