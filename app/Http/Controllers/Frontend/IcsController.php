@@ -21,13 +21,12 @@ class IcsController extends Controller
             'from' => ['nullable', 'date'],
             'until' => ['nullable', 'date'],
             'emojis' => ['nullable', 'boolean'],
-            'realtime' => ['nullable', 'boolean'],
         ]);
 
         $user = User::where('id', $validated['user_id'])->firstOrFail();
 
         try {
-            $service = new IcsExportService($user, $validated['emojis'] ?? true, $validated['realtime'] ?? true);
+            $service = new IcsExportService($user, $validated['emojis'] ?? true);
             $calendar = $service->generateIcsCalendar(
                 token: $validated['token'],
                 limit: $validated['limit'] ?? 1000,

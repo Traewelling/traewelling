@@ -49,8 +49,6 @@ class CacheKey
 
     private const string ICS_USER_MONTHLY = 'IcsUserMonthly_%s_%s';
 
-    private const string ICS_USER_CALCULATING = 'IcsUserMonthlyCalculating_%s_%s';
-
     private const string REROUTE_POLYLINE_JOB = 'ReroutePolylineJob_%s';
 
     // formatting keys
@@ -153,16 +151,6 @@ class CacheKey
     public static function getIcsUserMonthlyKey(User $user, Carbon $date): string
     {
         return sprintf(self::ICS_USER_MONTHLY, $user->id, $date->format('Y-m'));
-    }
-
-    public static function getIcsUserMonthlyTtlKey(User $user, Carbon $date): string
-    {
-        return sprintf(self::ICS_USER_MONTHLY, $user->id, $date->format('Y-m') . '-ttl');
-    }
-
-    public static function getIcsUserMonthlyCalculatingKey(User $user, Carbon $date): string
-    {
-        return sprintf(self::ICS_USER_CALCULATING, $user->id, $date);
     }
 
     public static function increment(string $key): void
