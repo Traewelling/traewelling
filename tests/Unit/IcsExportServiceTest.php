@@ -7,27 +7,13 @@ namespace Tests\Unit;
 use App\Dto\Internal\IcsExportStatus;
 use App\Models\Checkin;
 use App\Models\User;
-use App\Services\IcsExportService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use ReflectionMethod;
 use Tests\TestCase;
 
 class IcsExportServiceTest extends TestCase
 {
     use RefreshDatabase;
-
-    private function callGetEventDto(IcsExportService $service, Checkin $checkin): IcsExportStatus
-    {
-        $method = new ReflectionMethod(IcsExportService::class, 'getEventDto');
-
-        return $method->invoke($service, $checkin);
-    }
-
-    private function makeService(User $user): IcsExportService
-    {
-        return new IcsExportService($user);
-    }
 
     public function test_ics_uses_planned_times_when_no_real_or_manual(): void
     {
@@ -41,17 +27,11 @@ class IcsExportServiceTest extends TestCase
             'manual_departure' => null,
             'manual_arrival' => null,
         ]);
-        $checkin->originStopover->update([
-            'departure_planned' => $departure,
-            'departure_real' => null,
-        ]);
-        $checkin->destinationStopover->update([
-            'arrival_planned' => $arrival,
-            'arrival_real' => null,
-        ]);
+        $checkin->originStopover->update(['departure_planned' => $departure, 'departure_real' => null]);
+        $checkin->destinationStopover->update(['arrival_planned' => $arrival, 'arrival_real' => null]);
         $checkin->refresh();
 
-        $dto = $this->callGetEventDto($this->makeService($user), $checkin);
+        $dto = IcsExportStatus::fromCheckin($checkin);
 
         $this->assertEquals($departure->toIso8601ZuluString(), $dto->departure);
         $this->assertEquals($arrival->toIso8601ZuluString(), $dto->arrival);
@@ -71,17 +51,11 @@ class IcsExportServiceTest extends TestCase
             'manual_departure' => null,
             'manual_arrival' => null,
         ]);
-        $checkin->originStopover->update([
-            'departure_planned' => $plannedDeparture,
-            'departure_real' => $realDeparture,
-        ]);
-        $checkin->destinationStopover->update([
-            'arrival_planned' => $plannedArrival,
-            'arrival_real' => $realArrival,
-        ]);
+        $checkin->originStopover->update(['departure_planned' => $plannedDeparture, 'departure_real' => $realDeparture]);
+        $checkin->destinationStopover->update(['arrival_planned' => $plannedArrival, 'arrival_real' => $realArrival]);
         $checkin->refresh();
 
-        $dto = $this->callGetEventDto($this->makeService($user), $checkin);
+        $dto = IcsExportStatus::fromCheckin($checkin);
 
         $this->assertEquals($realDeparture->toIso8601ZuluString(), $dto->departure);
         $this->assertEquals($realArrival->toIso8601ZuluString(), $dto->arrival);
@@ -105,17 +79,11 @@ class IcsExportServiceTest extends TestCase
             'manual_departure' => $manualDeparture,
             'manual_arrival' => $manualArrival,
         ]);
-        $checkin->originStopover->update([
-            'departure_planned' => $plannedDeparture,
-            'departure_real' => $realDeparture,
-        ]);
-        $checkin->destinationStopover->update([
-            'arrival_planned' => $plannedArrival,
-            'arrival_real' => $realArrival,
-        ]);
+        $checkin->originStopover->update(['departure_planned' => $plannedDeparture, 'departure_real' => $realDeparture]);
+        $checkin->destinationStopover->update(['arrival_planned' => $plannedArrival, 'arrival_real' => $realArrival]);
         $checkin->refresh();
 
-        $dto = $this->callGetEventDto($this->makeService($user), $checkin);
+        $dto = IcsExportStatus::fromCheckin($checkin);
 
         $this->assertEquals($manualDeparture->toIso8601ZuluString(), $dto->departure);
         $this->assertEquals($manualArrival->toIso8601ZuluString(), $dto->arrival);
