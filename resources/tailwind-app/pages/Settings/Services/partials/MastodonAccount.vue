@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
-import { ref } from 'vue';
+import { Notyf } from 'notyf';
+import { inject, ref } from 'vue';
 import { Api, UserProfileSettingsResource } from '../../../../../types/Api.gen';
 import SettingsListRow from '../../SettingsListRow.vue';
 
-const emits = defineEmits(['mastodon-removed', 'error']);
+const emits = defineEmits(['mastodon-removed', 'profile-picture-updated']);
 
 const modal = ref<HTMLDialogElement>();
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const notyf = inject('notyf') as Notyf;
 const input = ref<string>('');
+const importingPicture = ref(false);
 
 const props = defineProps<{
     profile: UserProfileSettingsResource;
@@ -24,6 +27,23 @@ function linkMastodon() {
         window.location.href =
             window.location.origin + '/auth/redirect/mastodon?domain=' + encodeURIComponent(input.value);
     }
+}
+
+function importProfilePicture() {
+    importingPicture.value = true;
+    api.settings
+        .importProfilePictureFromMastodon()
+        .then(() => {
+            notyf.success(trans('settings.saved'));
+            emits('profile-picture-updated');
+            closeModal();
+        })
+        .catch(() => {
+            notyf.error(trans('messages.exception.general'));
+        })
+        .finally(() => {
+            importingPicture.value = false;
+        });
 }
 
 function closeModal() {
@@ -53,6 +73,16 @@ function closeModal() {
                     :placeholder="trans('user.mastodon-instance-url')"
                     required
                 />
+                <div v-if="profile.mastodon" class="mt-4">
+                    <button
+                        type="button"
+                        class="btn btn-outline btn-sm"
+                        :disabled="importingPicture"
+                        @click.prevent="importProfilePicture"
+                    >
+                        {{ trans('settings.mastodon.import-profile-picture') }}
+                    </button>
+                </div>
                 <div class="modal-action">
                     <form method="dialog">
                         <button class="btn me-2" @click="closeModal()">{{ trans('menu.close') }}</button>

@@ -5600,6 +5600,23 @@ export class Api<
       }),
 
     /**
+     * @description Import the profile picture from the connected Mastodon account
+     *
+     * @tags Settings
+     * @name ImportProfilePictureFromMastodon
+     * @summary Import profile picture from Mastodon
+     * @request POST:/settings/profile-picture/mastodon
+     * @secure
+     */
+    importProfilePictureFromMastodon: (params: RequestParams = {}) =>
+      this.request<void, void>({
+        path: `/settings/profile-picture/mastodon`,
+        method: "POST",
+        secure: true,
+        ...params,
+      }),
+
+    /**
      * @description Deletes the Account for the user and all posts created by it
      *
      * @tags Settings
