@@ -2,6 +2,7 @@ import tailwindcss from '@tailwindcss/vite';
 import vue from '@vitejs/plugin-vue';
 import laravel from 'laravel-vite-plugin';
 import i18n from 'laravel-vue-i18n/vite';
+import { resolve } from 'path';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
@@ -36,11 +37,12 @@ export default defineConfig({
         i18n(),
     ],
     resolve: {
-        alias: {
+        alias: [
             // we need the runtime template compiler for the notification bell
             // we might want to migrate that, so we don't need to bundle the compiler at runtime
-            vue: 'vue/dist/vue.esm-bundler.js',
-        },
+            { find: 'vue', replacement: 'vue/dist/vue.esm-bundler.js' },
+            { find: /^daisyui$/, replacement: resolve('./node_modules/daisyui/index.js') },
+        ],
     },
     build: {
         sourcemap: true,
