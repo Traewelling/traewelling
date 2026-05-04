@@ -156,6 +156,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
                 ->middleware(['scope:write-settings-profile-picture']);
             Route::post('profile-picture', [SettingsController::class, 'uploadProfilePicture'])
                 ->middleware(['scope:write-settings-profile-picture']);
+            Route::post('profile-picture/mastodon', [SettingsController::class, 'importProfilePictureFromMastodon'])
+                ->middleware(['scope:write-settings-profile-picture']);
             Route::put('email', [SettingsController::class, 'updateMail'])
                 ->middleware(['scope:write-settings-mail']);
             Route::post('email/verification', [SettingsController::class, 'resendMail'])

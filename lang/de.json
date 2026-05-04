@@ -647,6 +647,8 @@
   "settings.language.set": "Sprache ändern",
   "settings.last-accessed": "Zuletzt zugegriffen",
   "settings.lastactivity": "Letzte Aktivität",
+  "settings.mastodon.import-profile-picture": "Profilbild von Mastodon übernehmen",
+  "settings.mastodon.no-profile-picture": "Dein Mastodon-Account hat kein Profilbild.",
   "settings.mastodon.visibility": "Sichtbarkeit von Mastodon-Postings",
   "settings.mastodon.visibility.description": "Mit welcher Sichtbarkeit zukünftige Check-ins auf Mastodon geteilt werden.",
   "settings.mastodon.visibility.0": "Öffentlich",

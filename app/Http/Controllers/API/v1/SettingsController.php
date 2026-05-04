@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Exceptions\Mastodon\NoAvatarException;
+use App\Exceptions\NotConnectedException;
 use App\Exceptions\RateLimitExceededException;
 use App\Http\Controllers\Backend\SettingsController as BackendSettingsController;
 use App\Http\Requests\UpdateProfileInformationRequest;
 use App\Http\Resources\UserProfileSettingsResource;
+use App\Services\Mastodon\AvatarImportService;
 use App\Services\ProfilePictureService;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -16,7 +20,10 @@ use OpenApi\Attributes as OA;
 
 class SettingsController extends Controller
 {
-    public function __construct(private readonly ProfilePictureService $profilePictureService) {}
+    public function __construct(
+        private readonly ProfilePictureService $profilePictureService,
+        private readonly AvatarImportService $avatarImportService,
+    ) {}
 
     #[OA\Get(
         path: '/settings/profile',
@@ -342,5 +349,45 @@ class SettingsController extends Controller
         }
 
         return $this->sendError('', 400);
+    }
+
+    #[OA\Post(
+        path: '/settings/profile-picture/mastodon',
+        operationId: 'importProfilePictureFromMastodon',
+        description: 'Import the profile picture from the connected Mastodon account',
+        summary: 'Import profile picture from Mastodon',
+        security: [new OA\SecurityScheme(
+            securityScheme: 'passport',
+            type: 'oauth2',
+        )],
+        tags: ['Settings'],
+        responses: [
+            new OA\Response(response: 204, description: Controller::OA_DESC_NO_CONTENT),
+            new OA\Response(response: 400, description: 'Bad Request'),
+            new OA\Response(response: 401, description: 'Unauthorized'),
+            new OA\Response(response: 404, description: 'No Mastodon account connected'),
+        ]
+    )]
+    public function importProfilePictureFromMastodon(): JsonResponse
+    {
+        $user = auth()->user();
+
+        if ($user->can('disallow-social-interaction')) {
+            return response()->json(null, 403);
+        }
+
+        try {
+            $this->avatarImportService->importFromMastodon($user);
+        } catch (NotConnectedException) {
+            return $this->sendError(__('controller.social.delete-never-connected'), 404);
+        } catch (NoAvatarException) {
+            return $this->sendError(__('settings.mastodon.no-profile-picture'), 400);
+        } catch (GuzzleException $e) {
+            report($e);
+
+            return $this->sendError(__('messages.exception.general'), 400);
+        }
+
+        return $this->sendResponse(null, 204);
     }
 }

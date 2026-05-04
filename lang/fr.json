@@ -613,6 +613,8 @@
     "settings.language.set": "Changer de langue",
     "settings.last-accessed": "Dernier accès",
     "settings.lastactivity": "Dernière activité",
+    "settings.mastodon.import-profile-picture": "Importer la photo de profil depuis Mastodon",
+    "settings.mastodon.no-profile-picture": "Ton compte Mastodon n'a pas de photo de profil.",
     "settings.mastodon.visibility": "Visibilité des messages Mastodon",
     "settings.mastodon.visibility.description": "Définit avec quelle visibilité les prochains check-ins seront partagés sur Mastodon.",
     "settings.mastodon.visibility.0": "Public",
