@@ -7179,6 +7179,75 @@
                 ]
             }
         },
+        "/trips/route-preview": {
+            "post": {
+                "tags": [
+                    "Trips"
+                ],
+                "summary": "Preview the routing for a manual trip before creating it.",
+                "description": "Routes between the given stations using the appropriate BRouter profile for the category. Falls back to straight-line segments if BRouter cannot route a segment (e.g. no railway near that station). Returns a GeoJSON LineString feature.",
+                "operationId": "routePreviewTrip",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "category",
+                                    "stationIds"
+                                ],
+                                "properties": {
+                                    "category": {
+                                        "$ref": "#/components/schemas/HafasTravelType"
+                                    },
+                                    "stationIds": {
+                                        "description": "Ordered list of station IDs (origin first, destination last).",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer",
+                                            "example": 8000105
+                                        },
+                                        "minItems": 2
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "GeoJSON Feature with a LineString geometry. The `properties.routed` flag indicates whether BRouter was used for at least one segment (false means straight-line fallback).",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "description": "GeoJSON Feature (LineString)",
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/trips": {
             "post": {
                 "tags": [
@@ -11793,6 +11862,11 @@
                     "id": {
                         "type": "integer",
                         "example": 1
+                    },
+                    "tripId": {
+                        "description": "Internal trip identifier (use this for the checkin flow)",
+                        "type": "string",
+                        "example": "00000000-0000-0000-0000-000000000000"
                     },
                     "category": {
                         "$ref": "#/components/schemas/HafasTravelType"

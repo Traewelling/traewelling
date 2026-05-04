@@ -2176,6 +2176,11 @@ export interface TransportResource {
 export interface TripResource {
   /** @example 1 */
   id?: number;
+  /**
+   * Internal trip identifier (use this for the checkin flow)
+   * @example "00000000-0000-0000-0000-000000000000"
+   */
+  tripId?: string;
   /** Category of transport. */
   category?: HafasTravelType;
   mode?: MotisCategory | null;
@@ -6709,6 +6714,43 @@ export class Api<
         path: `/trips/${id}/statuses`,
         method: "GET",
         secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Routes between the given stations using the appropriate BRouter profile for the category. Falls back to straight-line segments if BRouter cannot route a segment (e.g. no railway near that station). Returns a GeoJSON LineString feature.
+     *
+     * @tags Trips
+     * @name RoutePreviewTrip
+     * @summary Preview the routing for a manual trip before creating it.
+     * @request POST:/trips/route-preview
+     * @secure
+     */
+    routePreviewTrip: (
+      data: {
+        /** Category of transport. */
+        category: HafasTravelType;
+        /**
+         * Ordered list of station IDs (origin first, destination last).
+         * @minItems 2
+         */
+        stationIds: number[];
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          /** GeoJSON Feature (LineString) */
+          data?: object;
+        },
+        void
+      >({
+        path: `/trips/route-preview`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),

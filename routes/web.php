@@ -149,8 +149,6 @@ Route::middleware(['auth', 'privacy'])->group(function () {
     Route::get('/stationboard', [VueFrontendController::class, 'stationBoard'])->name('stationboard');
     Route::get('/embed/stationboard', [VueFrontendController::class, 'stationBoard'])->name('embed.stationboard');
 
-    Route::view('/embed/trip/create', 'beta.trip-creation')->name('embed.trip.create');
-
     Route::redirect('/trains/stationboard', '/stationboard')->name('trains.stationboard');
 
     Route::get('/search/', [FrontendUserController::class, 'searchUser'])->name('userSearch');

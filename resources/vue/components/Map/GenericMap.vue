@@ -4,6 +4,7 @@ import {
     MglGeolocateControl,
     MglLineLayer,
     MglMap,
+    MglMarker,
     MglNavigationControl,
     MglRasterLayer,
     MglRasterSource,
@@ -63,13 +64,22 @@ const props = defineProps({
         type: String as PropType<MapProvider>,
         default: MapProvider.Cargo,
     },
+    previewPolyline: {
+        type: Object as PropType<GeoJSONFeature | null>,
+        default: null,
+    },
+    previewMarkers: {
+        type: Array as PropType<{ id: string; lat: number; lng: number; color: string; title?: string }[]>,
+        default: () => [],
+    },
 });
 
 const isDarkMode = document.documentElement.dataset.bsTheme === 'dark';
 
 const cartoAttribution =
-    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attribution">CARTO</a>';
-const ormAttribution = '<a href="https://openrailwaymap.org" target="_blank">OpenRailwayMap</a>';
+    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | &copy; <a href="https://carto.com/attribution">CARTO</a>';
+const ormAttribution = '&copy; <a href="https://openrailwaymap.org" target="_blank">OpenRailwayMap</a>';
+const brouterAttribution = '&copy; <a href="https://brouter.de" target="_blank">BRouter</a>';
 
 const cartoVoyagerTiles = [
     'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
@@ -159,6 +169,7 @@ const style: StyleSpecification = {
                 features: polyLines,
             }"
             source-id="polylines"
+            :attribution="brouterAttribution"
         >
             <!-- Dark casing underneath for contrast on all base maps -->
             <mgl-line-layer
@@ -191,6 +202,40 @@ const style: StyleSpecification = {
                 }"
             />
         </mgl-geo-json-source>
+        <mgl-geo-json-source
+            v-if="previewPolyline"
+            source-id="preview-polyline"
+            :data="{ type: 'FeatureCollection', features: [previewPolyline] }"
+            attribution="&copy; <a href='https://brouter.de' target='_blank'>BRouter</a>"
+        >
+            <mgl-line-layer
+                layer-id="preview-casing"
+                source-id="preview-polyline"
+                :layout="{ 'line-cap': 'round', 'line-join': 'round' }"
+                :paint="{ 'line-color': '#1e1e1e', 'line-width': 5, 'line-opacity': 0.25 }"
+            />
+            <mgl-line-layer
+                layer-id="preview-line"
+                source-id="preview-polyline"
+                :layout="{ 'line-cap': 'round', 'line-join': 'round' }"
+                :paint="{
+                    'line-color': previewPolyline?.properties?.routed ? '#2563eb' : '#9ca3af',
+                    'line-width': 3,
+                    'line-dasharray': previewPolyline?.properties?.routed ? [1] : [2, 2],
+                }"
+            />
+        </mgl-geo-json-source>
+
+        <mgl-marker v-for="m in previewMarkers" :key="m.id" :coordinates="[m.lng, m.lat]">
+            <template #marker>
+                <div
+                    class="w-3.5 h-3.5 rounded-full border-2 border-white shadow-md"
+                    :style="{ backgroundColor: m.color }"
+                    :title="m.title"
+                />
+            </template>
+        </mgl-marker>
+
         <slot />
         <LiveMapPoint v-for="point in livePositions" :key="point.statusId" :point="point" />
     </mgl-map>

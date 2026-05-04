@@ -269,6 +269,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::get('status/{id}', [StatusController::class, 'show']);
             Route::get('status/{id}/likes', [LikesController::class, 'show']);
             Route::post('trips', [TripController::class, 'createTrip'])->middleware('scope:write-statuses');
+            Route::post('trips/route-preview', [TripController::class, 'routePreview'])->middleware('scope:write-statuses');
             Route::get('trips/{id}/statuses', [TripController::class, 'statuses'])->whereNumber('id');
             Route::get('status/{statusId}/tags', [StatusTagController::class, 'index']);
             Route::get('statuses/{statusIds}/tags', [StatusTagController::class, 'indexForMultiple']);
