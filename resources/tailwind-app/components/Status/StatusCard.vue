@@ -205,8 +205,14 @@ function fmtTime(dtm: Dtm | null): string {
     return dtm.dateTime.toFormat('HH:mm');
 }
 
-function isDelayed(type: StopoverTimeType): boolean {
-    return type === StopoverTimeType.Realtime;
+function delayClass(stopoverTime: { time: Dtm | null; originalTime: Dtm | null; type: StopoverTimeType }): string {
+    if (stopoverTime.type === StopoverTimeType.Planned) return '';
+    const minutes = stopoverTime.originalTime
+        ? ((stopoverTime.time?.dateTime.toMillis() ?? 0) - stopoverTime.originalTime.dateTime.toMillis()) / 60000
+        : 0;
+    if (minutes <= 0) return 'text-success';
+    if (minutes < 6) return 'text-warning font-medium';
+    return 'text-error font-medium';
 }
 
 function calculateProgress(): number {
@@ -545,7 +551,7 @@ const durationStr = computed(() => {
                                     <span v-if="departure.originalTime" class="line-through text-base-content/40 mr-1">
                                         {{ fmtTime(departure.originalTime) }}
                                     </span>
-                                    <span :class="isDelayed(departure.type) ? 'text-error font-medium' : ''">
+                                    <span :class="delayClass(departure)">
                                         {{ fmtTime(departure.time) }}
                                     </span>
                                 </div>
@@ -684,7 +690,7 @@ const durationStr = computed(() => {
                                     <span v-if="arrival.originalTime" class="line-through text-base-content/40 mr-1">
                                         {{ fmtTime(arrival.originalTime) }}
                                     </span>
-                                    <span :class="isDelayed(arrival.type) ? 'text-error font-medium' : ''">
+                                    <span :class="delayClass(arrival)">
                                         {{ fmtTime(arrival.time) }}
                                     </span>
                                 </div>
