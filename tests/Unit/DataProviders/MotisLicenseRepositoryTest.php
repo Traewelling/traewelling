@@ -38,6 +38,21 @@ class MotisLicenseRepositoryTest extends UnitTestCase
                 'it',
                 'it_trenitalia.netex',
             ],
+            'gtfs with subdivision country code and path' => [
+                'us-ca_sfmta.gtfs/agency:0',
+                'us-ca',
+                'us-ca_sfmta.gtfs',
+            ],
+            'gtfs with subdivision country code and hyphenated name' => [
+                'us-ca_511-sfmarin.gtfs/route:6514',
+                'us-ca',
+                'us-ca_511-sfmarin.gtfs',
+            ],
+            'gtfs zip with subdivision country code' => [
+                'au-nsw_Transport-for-New-South-Wales-GSBC007.gtfs.zip',
+                'au-nsw',
+                'au-nsw_Transport-for-New-South-Wales-GSBC007.gtfs',
+            ],
             'unknown format returns empty' => [
                 'something_without_known_extension',
                 '',

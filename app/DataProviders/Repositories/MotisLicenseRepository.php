@@ -44,7 +44,7 @@ class MotisLicenseRepository
     public function getCountryAndLicense(string $source): array
     {
         $matches = [];
-        preg_match('/^(?<name>(?<country>[a-zA-Z]+)_.*?(?:\.gtfs|\.netex))(?:\.zip)?(?:\/.*)?$/', $source, $matches);
+        preg_match('/^(?<name>(?<country>[a-zA-Z]+(?:-[a-zA-Z0-9]+)*)_.*?(?:\.gtfs|\.netex))(?:\.zip)?(?:\/.*)?$/', $source, $matches);
         $name = $matches['name'] ?? '';
         $country = $matches['country'] ?? '';
 
