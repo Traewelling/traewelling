@@ -114,17 +114,13 @@
                             <div class="row justify-content-center">
                                 <div class="col-md-8 col-lg-7">
                                     <form method="GET" action="{{ url('/auth/redirect/mastodon') }}">
-                                        <div class="row">
-                                            <div class="form-group col-md-6">
-                                                <div class="md-form input-group mt-2">
-                                                    <input type="url" name="domain" class="form-control"
-                                                           placeholder="{{__('user.mastodon-instance-url')}}"
-                                                           aria-describedby="button-addon4" required>
-                                                    <button class="btn btn-md btn-primary m-0 px-3" type="submit"><i
-                                                            class="fab fa-mastodon"></i> Mastodon
-                                                    </button>
-                                                </div>
-                                            </div>
+                                        <div class="input-group mt-2">
+                                            <input type="text" name="domain" class="form-control"
+                                                   placeholder="{{__('user.mastodon-instance-url')}}"
+                                                   aria-describedby="button-addon4" required>
+                                            <button class="btn btn-md btn-primary m-0 px-3" type="submit"><i
+                                                    class="fab fa-mastodon"></i> Mastodon
+                                            </button>
                                         </div>
                                     </form>
                                 </div>

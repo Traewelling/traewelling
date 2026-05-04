@@ -80,24 +80,21 @@
                         <hr>
                         <div class="row justify-content-center">
                             <div class="col-md-8 col-lg-7">
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <a
-                                            href="#"
-                                            class="btn btn-md btn-primary m-0 px-3"
-                                            data-bs-target="#mastodon-auth"
-                                            data-bs-toggle="modal"
-                                        >
+                                <form method="GET" action="{{ url('/auth/redirect/mastodon') }}">
+                                    <div class="input-group mt-2">
+                                        <input type="text" name="domain" class="form-control"
+                                               placeholder="{{ __('user.mastodon-instance-url') }}"
+                                               required>
+                                        <button class="btn btn-md btn-primary m-0 px-3" type="submit">
                                             <i class="fab fa-mastodon"></i> Mastodon
-                                        </a>
+                                        </button>
                                     </div>
-                                </div>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        @include('includes.modals.mastodon-auth')
     </div>
 @endsection
