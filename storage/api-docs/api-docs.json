@@ -7217,45 +7217,13 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "GeoJSON LineString feature with optional routing metadata.",
+                        "description": "GeoJSON Feature with a LineString geometry. The `properties.routed` flag indicates whether BRouter was used for at least one segment (false means straight-line fallback).",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "data": {
-                                            "properties": {
-                                                "type": {
-                                                    "type": "string",
-                                                    "example": "Feature"
-                                                },
-                                                "geometry": {
-                                                    "properties": {
-                                                        "type": {
-                                                            "type": "string",
-                                                            "example": "LineString"
-                                                        },
-                                                        "coordinates": {
-                                                            "type": "array",
-                                                            "items": {
-                                                                "type": "array",
-                                                                "items": {
-                                                                    "type": "number"
-                                                                }
-                                                            }
-                                                        }
-                                                    },
-                                                    "type": "object"
-                                                },
-                                                "properties": {
-                                                    "properties": {
-                                                        "routed": {
-                                                            "description": "true if at least one segment was routed via BRouter",
-                                                            "type": "boolean"
-                                                        }
-                                                    },
-                                                    "type": "object"
-                                                }
-                                            },
+                                            "description": "GeoJSON Feature (LineString)",
                                             "type": "object"
                                         }
                                     },

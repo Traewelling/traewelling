@@ -6741,19 +6741,8 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: {
-            /** @example "Feature" */
-            type?: string;
-            geometry?: {
-              /** @example "LineString" */
-              type?: string;
-              coordinates?: number[][];
-            };
-            properties?: {
-              /** true if at least one segment was routed via BRouter */
-              routed?: boolean;
-            };
-          };
+          /** GeoJSON Feature (LineString) */
+          data?: object;
         },
         void
       >({
