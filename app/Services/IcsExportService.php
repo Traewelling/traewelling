@@ -153,8 +153,8 @@ class IcsExportService extends Controller
             $checkin->created_at?->toIso8601ZuluString(),
             (string) $checkin->trip->journey_number ?? '',
             $checkin->trip->linename,
-            ($this->useRealTime ? $checkin->originStopover->departure : $checkin->originStopover->departure_planned)?->toIso8601ZuluString(),
-            ($this->useRealTime ? $checkin->destinationStopover->arrival : $checkin->destinationStopover->arrival_planned)?->toIso8601ZuluString(),
+            $checkin->display_departure->time?->toIso8601ZuluString(),
+            $checkin->display_arrival->time?->toIso8601ZuluString(),
             $tags,
             $checkin->status->body,
             $this->useEmojis ? $checkin?->trip?->category?->getEmoji() : null
