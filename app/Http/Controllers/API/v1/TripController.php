@@ -14,8 +14,10 @@ use App\Models\Checkin;
 use App\Models\Operator;
 use App\Models\Station;
 use App\Models\Trip;
+use App\Services\Trip\RoutePreviewService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -74,6 +76,64 @@ class TripController extends Controller
             ->values();
 
         return StatusResource::collection($statuses);
+    }
+
+    #[OA\Post(
+        path: '/trips/route-preview',
+        operationId: 'routePreviewTrip',
+        description: 'Routes between the given stations using the appropriate BRouter profile for the category. Falls back to straight-line segments if BRouter cannot route a segment (e.g. no railway near that station). Returns a GeoJSON LineString feature.',
+        summary: 'Preview the routing for a manual trip before creating it.',
+        security: [['passport' => ['write-statuses']], ['token' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['category', 'stationIds'],
+                properties: [
+                    new OA\Property(property: 'category', ref: HafasTravelType::class),
+                    new OA\Property(
+                        property: 'stationIds',
+                        description: 'Ordered list of station IDs (origin first, destination last).',
+                        type: 'array',
+                        items: new OA\Items(type: 'integer', example: 8000105),
+                        minItems: 2,
+                    ),
+                ],
+            ),
+        ),
+        tags: ['Trips'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'GeoJSON Feature with a LineString geometry. The `properties.routed` flag indicates whether BRouter was used for at least one segment (false means straight-line fallback).',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'data', description: 'GeoJSON Feature (LineString)', type: 'object'),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 422, description: 'Validation error'),
+        ],
+    )]
+    public function routePreview(Request $request, RoutePreviewService $service): JsonResponse
+    {
+        $validated = $request->validate([
+            'category' => ['required', 'string'],
+            'stationIds' => ['required', 'array', 'min:2'],
+            'stationIds.*' => ['required', 'integer'],
+        ]);
+
+        $category = HafasTravelType::tryFrom($validated['category']);
+        if ($category === null) {
+            return response()->json(['message' => 'Unknown category.'], 422);
+        }
+
+        try {
+            $feature = $service->build($validated['stationIds'], $category);
+        } catch (\InvalidArgumentException $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        }
+
+        return response()->json(['data' => $feature]);
     }
 
     #[OA\Post(

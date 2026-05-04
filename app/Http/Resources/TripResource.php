@@ -11,6 +11,7 @@ use OpenApi\Attributes as OA;
     title: 'TripResource',
     properties: [
         new OA\Property(property: 'id', type: 'int', example: 1),
+        new OA\Property(property: 'tripId', description: 'Internal trip identifier (use this for the checkin flow)', type: 'string', example: '00000000-0000-0000-0000-000000000000'),
         new OA\Property(property: 'category', ref: '#/components/schemas/HafasTravelType'),
         new OA\Property(property: 'mode', ref: '#/components/schemas/MotisCategory', nullable: true),
         new OA\Property(property: 'number', type: 'string', example: '4-a6s4-4'),
@@ -42,6 +43,7 @@ class TripResource extends JsonResource
         /** @var Trip $this */
         return [
             'id' => $this->id,
+            'tripId' => $this->trip_id,
             'category' => $this->category->value,
             'mode' => $this->mode ? $this->mode->value : null,
             'number' => $this->number,

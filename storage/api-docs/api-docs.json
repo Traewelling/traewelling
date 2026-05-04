@@ -7179,6 +7179,107 @@
                 ]
             }
         },
+        "/trips/route-preview": {
+            "post": {
+                "tags": [
+                    "Trips"
+                ],
+                "summary": "Preview the routing for a manual trip before creating it.",
+                "description": "Routes between the given stations using the appropriate BRouter profile for the category. Falls back to straight-line segments if BRouter cannot route a segment (e.g. no railway near that station). Returns a GeoJSON LineString feature.",
+                "operationId": "routePreviewTrip",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "category",
+                                    "stationIds"
+                                ],
+                                "properties": {
+                                    "category": {
+                                        "$ref": "#/components/schemas/HafasTravelType"
+                                    },
+                                    "stationIds": {
+                                        "description": "Ordered list of station IDs (origin first, destination last).",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer",
+                                            "example": 8000105
+                                        },
+                                        "minItems": 2
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "GeoJSON LineString feature with optional routing metadata.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "type": {
+                                                    "type": "string",
+                                                    "example": "Feature"
+                                                },
+                                                "geometry": {
+                                                    "properties": {
+                                                        "type": {
+                                                            "type": "string",
+                                                            "example": "LineString"
+                                                        },
+                                                        "coordinates": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "number"
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "properties": {
+                                                    "properties": {
+                                                        "routed": {
+                                                            "description": "true if at least one segment was routed via BRouter",
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/trips": {
             "post": {
                 "tags": [
@@ -11793,6 +11894,11 @@
                     "id": {
                         "type": "integer",
                         "example": 1
+                    },
+                    "tripId": {
+                        "description": "Internal trip identifier (use this for the checkin flow)",
+                        "type": "string",
+                        "example": "00000000-0000-0000-0000-000000000000"
                     },
                     "category": {
                         "$ref": "#/components/schemas/HafasTravelType"
