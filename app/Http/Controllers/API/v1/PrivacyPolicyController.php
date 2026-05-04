@@ -40,8 +40,10 @@ class PrivacyPolicyController extends Controller
     )]
     public function getPrivacyPolicy(): PrivacyPolicyResource
     {
+        $user = auth()->guard('api')->user() ?? auth()->guard('web')->user();
+
         return new PrivacyPolicyResource(
-            $this->privacyPolicyService->getPolicyWithAcceptanceStatus(auth()->user())
+            $this->privacyPolicyService->getPolicyWithAcceptanceStatus($user)
         );
     }
 

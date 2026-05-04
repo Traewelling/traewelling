@@ -13,11 +13,9 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-7">
-                @auth
-                    <div id="vue-privacy-intercept">
-                        <privacy-intercept username="{{ auth()->user()->username }}"></privacy-intercept>
-                    </div>
-                @endauth
+                <div id="vue-privacy-intercept">
+                    <privacy-intercept username="{{ auth()->user()?->username ?? '' }}"></privacy-intercept>
+                </div>
             </div>
         </div>
     </div>
