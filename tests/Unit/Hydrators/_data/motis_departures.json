@@ -61,5 +61,26 @@
     "tripId": "20250501_23:25_de-VBN_416428221",
     "displayName": "RE 345",
     "source": "de_DISALLOWED.gtfs.zip/stop_times.txt:1243896:1243906"
+  },
+  {
+    "place": {
+      "name": "Dresden Hbf (Strehlener Str.)",
+      "stopId": "de-DELFI_de:14612:36:0",
+      "lat": 51.03868,
+      "lon": 13.73394,
+      "level": 0,
+      "departure": "2025-05-01T21:33:00Z",
+      "scheduledDeparture": "2025-05-01T21:33:00Z",
+      "vertexType": "TRANSIT"
+    },
+    "mode": "OTHER",
+    "realTime": true,
+    "headsign": "Dresden S-Bf. Plauen",
+    "agencyId": "?",
+    "agencyName": "",
+    "agencyUrl": "",
+    "tripId": "20250501_21:33_de-DELFI_##VDV##COMPOSED;RT_EXAMPLE",
+    "displayName": "?",
+    "source": "RT:0:0"
   }
 ]

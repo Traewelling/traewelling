@@ -28,11 +28,13 @@ class MotisHydratorTest extends UnitTestCase
 
         return [
             'no license' => [
-                'expected' => 0,
+                // RT:0:0 entry always passes through, 3 GTFS entries are filtered
+                'expected' => 1,
                 'license' => null,
             ],
             'with license' => [
-                'expected' => 3,
+                // RT:0:0 entry always passes through + 3 GTFS entries with active license
+                'expected' => 4,
                 'license' => $license,
             ],
         ];

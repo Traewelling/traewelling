@@ -211,7 +211,11 @@ class MotisHydrator
     private function checkLicenseData($rawDeparture, DataProvider $source, array &$removedEntries, int &$removedCount): bool
     {
         if (config('trwl.motis.filter_licenses')) {
-            // Check if the source is licensed under an acceptable license
+            if (str_starts_with($rawDeparture['source'], 'RT:')) {
+                // Real-time composed trips (e.g. "RT:0:0") have no GTFS file source -> pass through
+                return false;
+            }
+
             $license = $this->motisRepository->getLicense($rawDeparture['source'], $source);
             if (empty($license) || !$license->active) {
                 [$country, $name] = $this->motisRepository->getCountryAndLicense($rawDeparture['source']);
