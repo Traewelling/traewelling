@@ -1606,14 +1606,16 @@ export interface ReportResource {
   reporter: LightUserResource | null;
   /** @format date-time */
   created_at: string;
-  activities?: {
-    id?: number;
-    description?: string;
-    causer?: LightUserResource | null;
-    properties?: object | null;
-    /** @format date-time */
-    created_at?: string;
-  }[];
+  activities?:
+    | {
+        id?: number;
+        description?: string;
+        causer?: LightUserResource | null;
+        properties?: object | null;
+        /** @format date-time */
+        created_at?: string;
+      }[]
+    | null;
 }
 
 /** RouteSegmentResource */
@@ -2383,7 +2385,7 @@ export interface UserResource {
    * URL to the Mastodon profile of the user
    * @example "https://chaos.social/@traewelling"
    */
-  mastodonUrl: any;
+  mastodonUrl: any | null;
   /**
    * is this profile set to private?
    * @example false
@@ -6791,20 +6793,22 @@ export class Api<
          * @example "2025-01-01T12:00:00Z"
          */
         destinationArrivalPlanned: string;
-        stopovers?: {
-          /** @example 8000240 */
-          stationId?: number;
-          /**
-           * @format date-time
-           * @example "2025-01-01T11:00:00Z"
-           */
-          arrival?: string | null;
-          /**
-           * @format date-time
-           * @example "2025-01-01T11:02:00Z"
-           */
-          departure?: string | null;
-        }[];
+        stopovers?:
+          | {
+              /** @example 8000240 */
+              stationId?: number;
+              /**
+               * @format date-time
+               * @example "2025-01-01T11:00:00Z"
+               */
+              arrival?: string | null;
+              /**
+               * @format date-time
+               * @example "2025-01-01T11:02:00Z"
+               */
+              departure?: string | null;
+            }[]
+          | null;
       },
       params: RequestParams = {},
     ) =>
