@@ -179,7 +179,7 @@ configured to automatically delete cookies when you close the program. Disabling
 functionality of our website.
 
 The setting of cookies, which are necessary for the exercise of electronic communication processes or the provision of
-certain functions desired by you (e.g.shopping cart), is based on Art. 6 para. 1 lit. f DSGVO. As the operator of this
+certain functions desired by you, is based on Art. 6 para. 1 lit. f DSGVO. As the operator of this
 website, we have a legitimate interest in the
 storage of cookies for the technically error-free and smooth provision of our services. Insofar as the setting of other
 cookies (e.g. for
