@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Backend\Export\Format;
 
 use App\Exceptions\DataOverflowException;
 use App\Http\Controllers\Backend\Export\ExportController;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\StatusExportResource;
+use App\Http\Resources\Export\ExportStatusResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Carbon\Carbon;
@@ -32,7 +34,7 @@ abstract class JsonExportController extends Controller
                 'to' => $timestampTo->toIso8601String(),
                 'exportedAt' => Carbon::now()->toIso8601String(),
             ],
-            'data' => StatusExportResource::collection($preparedData),
+            'data' => ExportStatusResource::collection($preparedData),
         ];
     }
 }

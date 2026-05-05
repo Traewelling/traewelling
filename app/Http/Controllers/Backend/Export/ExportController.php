@@ -26,12 +26,11 @@ abstract class ExportController extends Controller
     public static function getExportableStatuses(User $user, Carbon $timestampFrom, Carbon $timestampTo): Collection
     {
         $statuses = Status::with([
-            // 'checkin.trip.stopovers', TODO: This eager load is doing weird things. Some Trips aren't loaded and this throws some http 500. Loading this manually is working.
             'checkin.originStopover.station.stationIdentifiers',
             'checkin.destinationStopover.station.stationIdentifiers',
             'checkin.trip.originStation.stationIdentifiers',
             'checkin.trip.destinationStation.stationIdentifiers',
-            'checkin.trip.stopovers.station.stationIdentifiers',
+            'checkin.trip.stopovers.station',
         ])
             ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
             ->where('statuses.user_id', $user->id)
