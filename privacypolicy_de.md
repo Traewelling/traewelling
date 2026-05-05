@@ -153,7 +153,8 @@ Gründe.
 ## Löschen des Accounts
 
 Nutzer können ihren Account jederzeit sofort und vollständig selbst in den Einstellungen löschen. Dabei werden alle
-personenbezogenen Daten unwiderruflich gelöscht.
+personenbezogenen Daten unmittelbar aus dem Live-System entfernt. Aufgrund technischer Backups können diese Daten noch
+bis zu 14 Tage in Sicherungskopien vorhanden sein, bevor sie auch dort vollständig gelöscht werden.
 
 Accounts, bei denen in den letzten 365 Tagen weder ein Login noch ein Checkin stattgefunden hat, gelten als inaktiv und
 werden automatisch gelöscht. Sofern eine E-Mail-Adresse hinterlegt ist, kann einige Wochen vor der Löschung eine

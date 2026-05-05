@@ -149,7 +149,8 @@ circumstance of the GDPR applies, in particular one of the reasons listed in Art
 ## Deleting your account
 
 Users can delete their account at any time, immediately and completely, via the account settings. All personal data will
-be irreversibly deleted in the process.
+be removed from the live system immediately. Due to technical backups, this data may remain in backup copies for up to
+14 days before being permanently deleted there as well.
 
 Accounts for which no login or check-in has taken place within the last 365 days are considered inactive and will be
 deleted automatically. If an e-mail address is stored, a reminder may be sent by e-mail a few weeks before deletion.
