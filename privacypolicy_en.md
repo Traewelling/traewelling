@@ -51,12 +51,12 @@ Contact details of the State Data Protection Commissioner:
 > Postfach 10 29 32<br>
 > 70025 Stuttgart<br>
 >
-> oder:
+> or:
 >
 > Heilbronner Straße 35<br>
 > 70191 Stuttgart<br>
 >
-> Telefon: 0711/61 55 41-0<br>
+> Phone: 0711/61 55 41-0<br>
 >
 > <https://www.baden-wuerttemberg.datenschutz.de/kontakt-aufnehmen/>
 
@@ -199,7 +199,7 @@ Art. 6 para. 1 lit. c DSGVO.
 
 ## Single sign-on
 
-Single sign-on" or "signle sign-on logon"/"authentication" refers to processes that allow users to log on to our online
+"Single sign-on" or "single sign-on logon"/"authentication" refers to processes that allow users to log on to our online
 service using an account with a provider or service provider for single sign-on procedures (e.g., a social network). The
 prerequisite for this is that the users are registered with the respective provider and are already logged in with the
 single sign-on provider and confirm the single sign-on registration via a button.
@@ -234,7 +234,7 @@ If users wish to delete their data from us, they must cancel their registration 
 
 ## Services used and service providers:
 
-- Mastodon Signle-Sign-On: Authentication service; Service provider: This is dependent on the domain you specify. For
+- Mastodon Single-Sign-On: Authentication service; Service provider: This is dependent on the domain you specify. For
   more information on service provider, privacy policy and opt-out of federated Mastodon servers, please contact your
   Mastodon provider.
 

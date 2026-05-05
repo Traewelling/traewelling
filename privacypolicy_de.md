@@ -41,7 +41,7 @@ Rechtmäßigkeit der bis zum Widerruf erfolgten Datenverarbeitung bleibt vom Wid
 ### Recht auf Beschwerde bei der zuständigen Aufsichtsbehörde
 
 Als Betroffene*r steht Ihnen im Falle eines datenschutzrechtlichen Verstoßes ein Beschwerderecht bei einer
-Aufsichtsbehörde zu. Sie können sich an jde Datenschutzaufsichtsbehörde wenden. Zuständige Aufsichtsbehörde bezüglich
+Aufsichtsbehörde zu. Sie können sich an jede Datenschutzaufsichtsbehörde wenden. Zuständige Aufsichtsbehörde bezüglich
 datenschutzrechtlicher Fragen ist der Landesdatenschutzbeauftragte des Bundeslandes Baden-Württemberg.
 
 Kontaktdaten des Landesdatenschutzbeauftragten:
@@ -197,16 +197,16 @@ bereitzustellen, werden alle Reisedaten (Checkins) automatisch an den vom Nutzer
 weitergeleitet und dort veröffentlicht. Träwelling kann Dritte mit der Erhebung, Speicherung und
 Nutzung von personenbezogenen Daten beauftragen (Auftragsverarbeitung). In diesem Fall bleibt Träwelling weiterhin
 verantwortliche Stelle. Diese Dritten unterliegen denselben Datenschutzbestimmungen wie Träwelling. Diese Übermittlungen
-erfolgt auf der Grundalge Ihrer Einwilligung im Sinne des Art. 6 Abs. 1 lit. a DSGVO.
+erfolgt auf der Grundlage Ihrer Einwilligung im Sinne des Art. 6 Abs. 1 lit. a DSGVO.
 Des weiteren gibt Träwelling personenbezogene Daten an Behörden, andere staatliche Stellen oder Privatpersonen weiter,
 wenn dazu auf Grund von gesetzlichen Bestimmungen, Gerichtsentscheidungen oder behördlichen Anordnungen eine
-Verpflichtung besteht. Hierzu besteht mit Art. 6 Abs. 1 lit. c DSGVO eine rechtliche Grundalge.
+Verpflichtung besteht. Hierzu besteht mit Art. 6 Abs. 1 lit. c DSGVO eine rechtliche Grundlage.
 
 ## Single-Sign-On-Anmeldung
 
-Als "Single-Sign-On" bzw. "Signle-Sign-On-Anmeldung"/"-Authentifizierung" werden Vorgänge bezeichnet, die es Nutzern
+Als "Single-Sign-On" bzw. "Single-Sign-On-Anmeldung"/"-Authentifizierung" werden Vorgänge bezeichnet, die es Nutzern
 erlauben, sich mit Hilfe eines Kontos bei einem Anbieter bzw. Dienstleister für Single-Sign-On-Verfahren (bspw. ein
-soziales Netzwerk), auch bei unserem Onlineangebot anzumeld3en. Voraussetzung hierfür ist, dass die Nutzer beim
+soziales Netzwerk), auch bei unserem Onlineangebot anzumelden. Voraussetzung hierfür ist, dass die Nutzer beim
 jeweiligen Anbieter registriert sind und bei dem Single-Sign-On-Anbieter bereits angemeldet sind und die
 Single-Sign-On-Anmeldung über eine Schaltfläche bestätigen.
 
@@ -243,7 +243,7 @@ löschen, müssen sie ihre Registrierung bei uns kündigen.
 
 ## Eingesetzte Dienste und Diensteanbieter:
 
-- Mastodon Signle-Sign-On: Authentifizierungsdienst; Dienstanbieter: Dieser ist abhängig zur von Ihnen angegebenen
+- Mastodon Single-Sign-On: Authentifizierungsdienst; Dienstanbieter: Dieser ist abhängig zur von Ihnen angegebenen
   Domain. Für weitere Informationen zu Dienstanbieter, Datenschutzerklärung und Widerspruchsmöglichkeit federierter
   Mastodon-Server, wenden Sie sich bitte an Ihren Mastodon-Anbieter.
 
