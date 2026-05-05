@@ -129,7 +129,6 @@
                             {{__('export.submit')}} JSON
                         </h2>
 
-                        {{__('export.json.description')}}
                         {{__('export.json.description2')}}
                         {{__('export.json.description3')}}
 
