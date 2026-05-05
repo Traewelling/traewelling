@@ -68,7 +68,7 @@ to third parties. The data will be provided in a machine-readable format. If you
 directly to another
 responsible party, this will only be done insofar as it is technically feasible.
 
-Currently, it is possible to export the statuses you have created directly in a machine-readable format. For further
+You can export your data at any time in a machine-readable format at <https://traewelling.de/export>. For further
 requests, please contact us directly.
 
 ### Right to information, correction, blocking, deletion
@@ -111,23 +111,15 @@ of our services.
 
 ## Registration on this website
 
-To use certain functions, you can register on our website. The transmitted data is used exclusively for the purpose of
-using the respective offer or service. Mandatory information requested during registration must be provided in full.
-Otherwise, we will reject the registration.
+Public content such as other users' statuses can be viewed without registration. For active use of Träwelling —
+in particular creating check-ins — registration is required. You can register either with an e-mail address and
+password, or via single sign-on with Mastodon. When registering via Mastodon, no e-mail address is transmitted; an e-mail address is not
+mandatory.
 
-In the event of important changes, for example for technical reasons, we will inform you by e-mail. The e-mail will be
-sent to the address given during registration.
+If an e-mail address is provided, we use it for important notifications regarding your account.
 
-The processing of the data entered during registration is based on your consent (Art. 6 para. 1 lit. a DSGVO). A
-revocation of your
-already given consent is possible at any time. An informal communication by e-mail is sufficient for the revocation. The
-legality of the data processing already
-data processing remains unaffected by the revocation.
-
-We store the data collected during registration for the period that you are registered on our website. Your data will be
-deleted when the user account is deleted. Legal retention periods or rights remain unaffected; your data may therefore
-be processed for longer than specified or a request for deletion cannot be complied with if an exceptional circumstance
-of the DS-GVO applies, in particular one of the reasons listed in Art. 17 (3) DS-GVO.
+The processing of data entered during registration is based on your consent (Art. 6 para. 1 lit. a DSGVO). For
+information on storage periods and account deletion, please refer to the "Deleting your account" section.
 
 ## Storage period of contributions and comments
 

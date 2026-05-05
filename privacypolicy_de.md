@@ -68,8 +68,8 @@ aushändigen zu lassen. Die Bereitstellung erfolgt in einem maschinenlesbaren Fo
 der Daten an einen anderen
 Verantwortlichen verlangen, erfolgt dies nur, soweit es technisch machbar ist.
 
-Derzeit besteht die Möglichkeit, die von Ihnen erstellten Status direkt maschinenlesbar zu exportieren. Für weitere
-Anfragen, wenden Sie sich bitte direkt an uns.
+Ihre Daten können Sie jederzeit unter <https://traewelling.de/export> automatisiert und maschinenlesbar exportieren.
+Für weitere Anfragen wenden Sie sich bitte direkt an uns.
 
 ### Recht auf Auskunft, Berichtigung, Sperrung, Löschung
 
@@ -111,24 +111,18 @@ technisch fehlerfreien und reibungslosen Bereitstellung unserer Dienste.
 
 ## Registrierung auf dieser Website
 
-Zur Nutzung bestimmter Funktionen können Sie sich auf unserer Website registrieren. Die übermittelten Daten dienen
-ausschließlich zum Zwecke der Nutzung des jeweiligen Angebotes oder Dienstes. Bei der Registrierung abgefragte
-Pflichtangaben sind vollständig anzugeben. Andernfalls werden wir die Registrierung ablehnen.
+Öffentliche Inhalte wie Status anderer Nutzer können ohne Registrierung eingesehen werden. Für die aktive Nutzung von
+Träwelling — insbesondere das Erstellen von Checkins — ist eine Registrierung erforderlich. Die Registrierung ist
+entweder mit einer E-Mail-Adresse und einem Passwort oder über Single-Sign-On mit Mastodon möglich.
+Bei einer Registrierung über Mastodon wird keine E-Mail-Adresse übermittelt;
+eine E-Mail-Adresse ist nicht verpflichtend.
 
-Im Falle wichtiger Änderungen, etwa aus technischen Gründen, informieren wir Sie per E-Mail. Die E-Mail wird an die
-Adresse versendet, die bei der Registrierung angegeben wurde.
+Sofern eine E-Mail-Adresse hinterlegt ist, nutzen wir diese für wichtige Benachrichtigungen, die Ihren Account
+betreffen.
 
 Die Verarbeitung der bei der Registrierung eingegebenen Daten erfolgt auf Grundlage Ihrer Einwilligung (Art. 6 Abs. 1
-lit. a DSGVO). Ein Widerruf Ihrer
-bereits erteilten Einwilligung ist jederzeit möglich. Für den Widerruf genügt eine formlose Mitteilung per E-Mail. Die
-Rechtmäßigkeit der bereits erfolgten
-Datenverarbeitung bleibt vom Widerruf unberührt.
-
-Wir speichern die bei der Registrierung erfassten Daten während des Zeitraums, den Sie auf unserer Website registriert
-sind. Ihre Daten werden bei Löschen des Benutzerkontos gelöscht. Gesetzliche Aufbewahrungsfristen oder -rechte bleiben
-unberührt; Ihre Daten werden daher möglicherweise länger als angegeben verarbeitet bzw. einem Löschungsverlangen kann
-nicht entsprochen werden, sofern ein Ausnahmetatbestand der DS-GVO zutrifft, insbesondere einer der in Art. 17 Abs. 3
-DS-GVO aufgeführten Gründe.
+lit. a DSGVO). Informationen zur Speicherdauer und Löschung Ihres Accounts finden Sie im Abschnitt
+„Löschen des Accounts".
 
 ## Speicherdauer von Beiträgen und Kommentaren
 
@@ -190,7 +184,8 @@ Analyse-Funktionen) erfolgt, werden diese in dieser Datenschutzerklärung separa
 ## Übermittlung von Daten an Dritte
 
 Träwelling bietet die Möglichkeit, Reisedaten (Checkins) auf Wunsch des Nutzers an Mastodon weiterzuleiten und dort zu
-veröffentlichen. Dies geschieht ausschließlich, wenn der Nutzer dies beim jeweiligen Checkin explizit auswählt. Träwelling kann Dritte mit der Erhebung, Speicherung und
+veröffentlichen. Dies geschieht ausschließlich, wenn der Nutzer dies beim jeweiligen Checkin explizit auswählt.
+Träwelling kann Dritte mit der Erhebung, Speicherung und
 Nutzung von personenbezogenen Daten beauftragen (Auftragsverarbeitung). In diesem Fall bleibt Träwelling weiterhin
 verantwortliche Stelle. Diese Dritten unterliegen denselben Datenschutzbestimmungen wie Träwelling. Diese Übermittlungen
 erfolgt auf der Grundlage Ihrer Einwilligung im Sinne des Art. 6 Abs. 1 lit. a DSGVO.
