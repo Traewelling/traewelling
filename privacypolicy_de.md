@@ -150,6 +150,16 @@ Ihre Daten werden möglicherweise länger als angegeben verarbeitet bzw. einem L
 werden, sofern ein Ausnahmetatbestand der DS-GVO zutrifft, insbesondere einer der in Art. 17 Abs. 3 DS-GVO aufgeführten
 Gründe.
 
+## Löschen des Accounts
+
+Nutzer können ihren Account jederzeit sofort und vollständig selbst in den Einstellungen löschen. Dabei werden alle
+personenbezogenen Daten unwiderruflich gelöscht.
+
+Accounts, bei denen in den letzten 365 Tagen weder ein Login noch ein Checkin stattgefunden hat, gelten als inaktiv und
+werden automatisch gelöscht. Sofern eine E-Mail-Adresse hinterlegt ist, kann einige Wochen vor der Löschung eine
+Erinnerung per E-Mail versendet werden. Eine Ankündigung ist jedoch nicht garantiert; die Löschung kann auch ohne
+vorherige Benachrichtigung erfolgen.
+
 ## Öffentliche Sichtbarkeit
 
 Ihre Beiträge und Kommentare sowie Teile der erhobenen Daten sind in der Regel öffentlich einsehbar. Sie haben aber die
@@ -158,7 +168,6 @@ machen. Sofern andere User einem solchen privaten Profil folgen, sind die Profil
 entscheiden aber selbst, wer Ihrem privaten Profil folgen kann. Diese Datenverarbeitung erfolgt auf der Grundlage Ihrer
 erteilten Einwilligung im Sinne des Art. 6 Abs. 1 lit. a DSGVO. Hinsichtlich des Widerrufs und der Speicherdauer
 verweisen wir auf die vorherigen Ausführungen.
-
 
 ## Cookies
 

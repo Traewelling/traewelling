@@ -146,6 +146,15 @@ The legality of data processing operations that have already taken place remains
 Your data may be processed for longer than specified or a request for deletion cannot be complied with if an exceptional
 circumstance of the GDPR applies, in particular one of the reasons listed in Art. 17 (3) GDPR.
 
+## Deleting your account
+
+Users can delete their account at any time, immediately and completely, via the account settings. All personal data will
+be irreversibly deleted in the process.
+
+Accounts for which no login or check-in has taken place within the last 365 days are considered inactive and will be
+deleted automatically. If an e-mail address is stored, a reminder may be sent by e-mail a few weeks before deletion.
+However, prior notice is not guaranteed; deletion may also occur without prior notification.
+
 ## Public visibility
 
 Your posts and comments as well as parts of the collected data are usually publicly visible. However, you have the
@@ -153,7 +162,6 @@ possibility to decide within the status and profile settings not to make certain
 follow such a private profile, the profile data is visible to these users. However, you decide yourself who can follow
 your private profile. This data processing takes place on the basis of your granted consent within the meaning of Art. 6
 para. 1 lit. a DSGVO. Regarding the revocation and the storage period, we refer to the previous explanations.
-
 
 ## Cookies
 
