@@ -4,10 +4,10 @@
 
 Die verantwortliche Stelle für die Datenverarbeitung auf dieser Website ist:
 
-> Träwelling<br>
-> Str<br>
-> Ort<br>
-> support@traewelling.de
+> Träwelling e.V. (i.Gr.)<br>
+> Nuitsstr. 12<br>
+> 76185 Karlsruhe<br>
+> support@traewelling.org
 
 Die verantwortliche Stelle entscheidet allein oder gemeinsam mit anderen über die Zwecke und Mittel der Verarbeitung von
 personenbezogenen Daten (z.B. Namen, Kontaktdaten o. Ä.).
