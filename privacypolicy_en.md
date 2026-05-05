@@ -232,10 +232,6 @@ If users wish to delete their data from us, they must cancel their registration 
 
 ## Services used and service providers:
 
-- GitHub single sign-on: authentication service; service provider: GitHub Inc, 88 Colin P Kelly Jr St, San Francisco, CA
-  94107, USA; website: <https://github.com>; privacy
-  policy: <https://help.github.com/en/github/site-policy/github-privacy-statement>;
-  opt-out: <https://github.com/settings/applications>.
 - Mastodon Signle-Sign-On: Authentication service; Service provider: This is dependent on the domain you specify. For
   more information on service provider, privacy policy and opt-out of federated Mastodon servers, please contact your
   Mastodon provider.

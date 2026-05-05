@@ -243,10 +243,6 @@ löschen, müssen sie ihre Registrierung bei uns kündigen.
 
 ## Eingesetzte Dienste und Diensteanbieter:
 
-- GitHub Single-Sign-On: Authentifizierungsdienst; Dienstanbieter: GitHub Inc., 88 Colin P Kelly Jr St, San Francisco,
-  CA 94107, USA; Website: <https://github.com>;
-  Datenschutzerklärung: <https://help.github.com/en/github/site-policy/github-privacy-statement>;
-  Widerspruchsmöglichkeit (Opt-Out): <https://github.com/settings/applications>.
 - Mastodon Signle-Sign-On: Authentifizierungsdienst; Dienstanbieter: Dieser ist abhängig zur von Ihnen angegebenen
   Domain. Für weitere Informationen zu Dienstanbieter, Datenschutzerklärung und Widerspruchsmöglichkeit federierter
   Mastodon-Server, wenden Sie sich bitte an Ihren Mastodon-Anbieter.
