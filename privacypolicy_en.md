@@ -79,9 +79,6 @@ a right to correction, blocking or deletion of this data.
 
 Explicitly _not_ deleted: Toots that have been shared on external platforms.
 
-If you decide not to delete the statuses when deleting your account, they will continue to exist anonymously and cannot
-be traced back to you. A subsequent deletion of the statuses is no longer possible after deletion of the account.
-
 In this regard and also for further questions on the subject of personal data, you can contact us at any time via the
 contact options listed in the imprint.
 
@@ -187,8 +184,8 @@ analysis functions) takes place, these will be treated separately in this data p
 
 ## Transmission of data to third parties
 
-As it is the central function of Träwelling to provide data published on Träwelling on other social networks, all travel
-data (checkins) are automatically forwarded to the service provider selected by the user (Mastodon) and published there.
+Träwelling offers the option to forward travel data (check-ins) to Mastodon and publish them there at the user's
+request. This only occurs when the user explicitly selects this option during the respective check-in.
 Träwelling may commission third parties with the collection, storage and use of personal data (
 commissioned processing). In this case, Träwelling remains the responsible party. These third parties are subject to the
 same data protection provisions as Träwelling. These transfers are made on the basis of your consent within the meaning

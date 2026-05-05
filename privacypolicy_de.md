@@ -79,10 +79,6 @@ ein Recht auf Berichtigung, Sperrung oder Löschung dieser Daten.
 
 Ausdrücklich _nicht_ gelöscht werden: Toots, die auf externen Plattformen geteilt wurden.
 
-Sofern Sie sich beim Löschen Ihres Accounts entscheiden, die Status nicht zu löschen, bestehen diese anonymisiert fort
-und sind nicht weiter auf Sie zurückzuführen. Ein Nachträgliches Löschen der Status ist nach Löschen des Accounts nicht
-mehr möglich.
-
 Diesbezüglich und auch zu weiteren Fragen zum Thema personenbezogene Daten können Sie sich jederzeit über die im
 Impressum aufgeführten Kontaktmöglichkeiten an uns wenden.
 
@@ -193,9 +189,8 @@ Analyse-Funktionen) erfolgt, werden diese in dieser Datenschutzerklärung separa
 
 ## Übermittlung von Daten an Dritte
 
-Da es die zentrale Funktion von Träwelling ist, auf Träwelling veröffentlichte Daten auf anderen Sozialen Netzwerken
-bereitzustellen, werden alle Reisedaten (Checkins) automatisch an den vom Nutzer ausgewählten Dienstleister (Mastodon)
-weitergeleitet und dort veröffentlicht. Träwelling kann Dritte mit der Erhebung, Speicherung und
+Träwelling bietet die Möglichkeit, Reisedaten (Checkins) auf Wunsch des Nutzers an Mastodon weiterzuleiten und dort zu
+veröffentlichen. Dies geschieht ausschließlich, wenn der Nutzer dies beim jeweiligen Checkin explizit auswählt. Träwelling kann Dritte mit der Erhebung, Speicherung und
 Nutzung von personenbezogenen Daten beauftragen (Auftragsverarbeitung). In diesem Fall bleibt Träwelling weiterhin
 verantwortliche Stelle. Diese Dritten unterliegen denselben Datenschutzbestimmungen wie Träwelling. Diese Übermittlungen
 erfolgt auf der Grundlage Ihrer Einwilligung im Sinne des Art. 6 Abs. 1 lit. a DSGVO.
