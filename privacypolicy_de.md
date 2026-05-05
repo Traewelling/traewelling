@@ -159,15 +159,6 @@ entscheiden aber selbst, wer Ihrem privaten Profil folgen kann. Diese Datenverar
 erteilten Einwilligung im Sinne des Art. 6 Abs. 1 lit. a DSGVO. Hinsichtlich des Widerrufs und der Speicherdauer
 verweisen wir auf die vorherigen Ausführungen.
 
-## Abonnieren von Beiträgen und Kommentaren
-
-Sie können als Nutzer unserer Website nach erfolgter Anmeldung Beiträge und Kommentare abonnieren. Mit einer
-Bestätigungs-E-Mail prüfen wir, ob Sie der
-Inhaber der angegebenen E-Mail-Adresse sind. Sie können die Abo-Funktion für Beiträge jederzeit über einen Link, der
-sich auf der Profilseite des Urhebers
-befindet, abbestellen. Zur Einrichtung des Abonnements eingegebene Daten werden im Falle der Abmeldung gelöscht. Sollten
-diese Daten für andere Zwecke und an anderer Stelle an uns übermittelt worden sein, verbleiben diese weiterhin bei uns.
-Rechtsgrundlage für die Verarbeitung dieser Daten ist Ihre Einwilligung im Sinne des Art. 6 Abs. 1 lit. a DSGVO.
 
 ## Cookies
 

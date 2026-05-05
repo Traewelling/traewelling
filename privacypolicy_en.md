@@ -154,15 +154,6 @@ follow such a private profile, the profile data is visible to these users. Howev
 your private profile. This data processing takes place on the basis of your granted consent within the meaning of Art. 6
 para. 1 lit. a DSGVO. Regarding the revocation and the storage period, we refer to the previous explanations.
 
-## Subscribing to posts and comments
-
-As a user of our website, you can subscribe to posts and comments after registration. With a confirmation e-mail, we
-check whether you are the
-owner of the specified e-mail address. You can cancel the subscription function for contributions at any time via a link
-on the author's profile page.
-on the profile page of the author. Data entered to set up the subscription will be deleted in case of unsubscription. If
-this data has been transmitted to us for other purposes and elsewhere, it will still remain with us. The legal basis for
-the processing of this data is your consent within the meaning of Art. 6 (1) lit. a DSGVO.
 
 ## Cookies
 
