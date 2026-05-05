@@ -188,7 +188,8 @@ analysis functions) takes place, these will be treated separately in this data p
 ## Transmission of data to third parties
 
 As it is the central function of Träwelling to provide data published on Träwelling on other social networks, all travel
-data (checkins) are automatically forwarded to the service provider selected by the user (Mastodon) and published there. Träwelling may commission third parties with the collection, storage and use of personal data (
+data (checkins) are automatically forwarded to the service provider selected by the user (Mastodon) and published there.
+Träwelling may commission third parties with the collection, storage and use of personal data (
 commissioned processing). In this case, Träwelling remains the responsible party. These third parties are subject to the
 same data protection provisions as Träwelling. These transfers are made on the basis of your consent within the meaning
 of Art. 6 para. 1 lit. a DSGVO.
@@ -205,7 +206,8 @@ single sign-on provider and confirm the single sign-on registration via a button
 
 Authentication takes place directly with the respective single sign-on provider. In the course of such authentication,
 we receive a user ID with the information that the user is registered with the respective provider under this user ID
-and an ID that cannot be used by us for other purposes (so-called "user handle"). As well as, in the case of Mastodon, tokens that allow us to publish, read, manipulate and delete statuses in the respective social network.
+and an ID that cannot be used by us for other purposes (so-called "user handle"). As well as, in the case of Mastodon,
+tokens that allow us to publish, read, manipulate and delete statuses in the respective social network.
 Whether additional data is transmitted to us depends on the single sign-on procedure used, on the data releases selected
 as part of the authentication process and also on which data users have released in the privacy or other settings of the
 user account with the single sign-on provider. Depending on the single sign-on provider and the user's choice, this can
@@ -252,3 +254,15 @@ To display map content, we use the map service [Carto](https://carto.com/). Trä
 map tiles to load. The map service can be reached at the following address: CARTO, Attention: Legal, 201 Moore Street,
 Brooklyn, NY 11206, United States of America, privacyshield@carto.com. For more information, please see the provider's
 privacy policy: <https://carto.com/privacy/>.
+
+### OpenRailwayMap
+
+This site uses map tiles from [OpenRailwayMap](https://www.openrailwaymap.org/) to display railway infrastructure. When
+loading map tiles, your IP address is transmitted to the provider's server. For further information on data processing,
+please see the provider's imprint: <https://www.openrailwaymap.org/en/imprint>
+
+### OpenFreeMap
+
+This site uses map tiles from [OpenFreeMap](https://openfreemap.org/) to display map content. When loading map tiles,
+your IP address is transmitted to the provider's server. For further information on data processing, please see the
+provider's privacy policy: <https://openfreemap.org/privacy/>

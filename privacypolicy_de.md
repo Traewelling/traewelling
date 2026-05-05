@@ -263,3 +263,16 @@ Um Karten-Inhalte darzustellen, verwenden wir den Kartendienst [Carto](https://c
 Kartendienst, welche Kartenkacheln geladen werden sollen. Der Kartendienst ist über folgende Adresse erreichbar: CARTO,
 Attention: Legal, 201 Moore Street, Brooklyn, NY 11206, United States of America, privacyshield@carto.com. Weitere
 Informationen entnehmen Sie der Datenschutzerklärung des Anbieters: <https://carto.com/privacy/>
+
+### OpenRailwayMap
+
+Diese Seite nutzt Kartenkacheln von [OpenRailwayMap](https://www.openrailwaymap.org/) zur Darstellung von
+Eisenbahninfrastruktur. Beim Laden von Kartenkacheln wird Ihre IP-Adresse an den Server des Anbieters übertragen.
+Weitere Informationen zur Datenverarbeitung entnehmen Sie dem Impressum des
+Anbieters: <https://www.openrailwaymap.org/imprint-de.html>
+
+### OpenFreeMap
+
+Diese Seite nutzt Kartenkacheln von [OpenFreeMap](https://openfreemap.org/) zur Darstellung von Kartenmaterial.
+Beim Laden von Kartenkacheln wird Ihre IP-Adresse an den Server des Anbieters übertragen. Weitere Informationen zur
+Datenverarbeitung entnehmen Sie der Datenschutzerklärung des Anbieters: <https://openfreemap.org/privacy/>
