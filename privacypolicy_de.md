@@ -53,11 +53,10 @@ Kontaktdaten des Landesdatenschutzbeauftragten:
 >
 > oder:
 >
-> Königstraße 10a<br>
-> 70173 Stuttgart<br>
+> Heilbronner Straße 35<br>
+> 70191 Stuttgart<br>
 >
-> Telefon: 07 11/61 55 41-0<br>
-> Telefax: 07 11/61 55 41-15<br>
+> Telefon: 0711/61 55 41-0<br>
 >
 > <https://www.baden-wuerttemberg.datenschutz.de/kontakt-aufnehmen/>
 
@@ -78,7 +77,7 @@ Sie haben jederzeit im Rahmen der geltenden gesetzlichen Bestimmungen das Recht 
 gespeicherten personenbezogenen Daten, Herkunft der Daten, deren Empfänger und den Zweck der Datenverarbeitung und ggf.
 ein Recht auf Berichtigung, Sperrung oder Löschung dieser Daten.
 
-Ausdrücklich _nicht_ gelöscht werden: Tweets und Toots, die auf externen Plattformen geteilt wurden.
+Ausdrücklich _nicht_ gelöscht werden: Toots, die auf externen Plattformen geteilt wurden.
 
 Sofern Sie sich beim Löschen Ihres Accounts entscheiden, die Status nicht zu löschen, bestehen diese anonymisiert fort
 und sind nicht weiter auf Sie zurückzuführen. Ein Nachträgliches Löschen der Status ist nach Löschen des Accounts nicht
@@ -194,8 +193,8 @@ Analyse-Funktionen) erfolgt, werden diese in dieser Datenschutzerklärung separa
 ## Übermittlung von Daten an Dritte
 
 Da es die zentrale Funktion von Träwelling ist, auf Träwelling veröffentlichte Daten auf anderen Sozialen Netzwerken
-bereitzustellen, werden alle Reisedaten (Checkins) automatisch an den vom Nutzer ausgewählten Dienstleister (Mastodon
-und/oder Twitter) weitergeleitet und dort veröffentlicht. Träwelling kann Dritte mit der Erhebung, Speicherung und
+bereitzustellen, werden alle Reisedaten (Checkins) automatisch an den vom Nutzer ausgewählten Dienstleister (Mastodon)
+weitergeleitet und dort veröffentlicht. Träwelling kann Dritte mit der Erhebung, Speicherung und
 Nutzung von personenbezogenen Daten beauftragen (Auftragsverarbeitung). In diesem Fall bleibt Träwelling weiterhin
 verantwortliche Stelle. Diese Dritten unterliegen denselben Datenschutzbestimmungen wie Träwelling. Diese Übermittlungen
 erfolgt auf der Grundalge Ihrer Einwilligung im Sinne des Art. 6 Abs. 1 lit. a DSGVO.
@@ -213,8 +212,8 @@ Single-Sign-On-Anmeldung über eine Schaltfläche bestätigen.
 
 Die Authentifikation erfolgt direkt beim jeweiligen Single-Sign-On-Anbieter. Im Rahmen einer solchen Authentifikation
 erhalten wir eine Nutzer-ID mit der Information, dass der Nutzer unter dieser Nutzer-ID beim jeweiligen Anbieter
-angemeldet ist und eine für uns für andere Zwecke nicht weiter nutzbare ID (sog "User Handle“). Sowie in den Fällen von
-Mastodon und Twitter Tokens, welche uns ermöglichen, Status im jeweiligen sozialen Netzwerk zu veröffentlichen, lesen,
+angemeldet ist und eine für uns für andere Zwecke nicht weiter nutzbare ID (sog "User Handle“). Sowie im Fall von
+Mastodon Tokens, welche uns ermöglichen, Status im jeweiligen sozialen Netzwerk zu veröffentlichen, lesen,
 manipulieren und löschen. Ob uns zusätzliche Daten übermittelt werden, hängt von dem genutzten Single-Sign-On-Verfahren
 ab, von den gewählten Datenfreigaben im Rahmen der Authentifizierung und zudem davon, welche Daten Nutzer in den
 Privatsphäre- oder sonstigen Einstellungen des Nutzerkontos beim Single-Sign-On-Anbieter freigegeben haben. Es können je
@@ -244,11 +243,6 @@ löschen, müssen sie ihre Registrierung bei uns kündigen.
 
 ## Eingesetzte Dienste und Diensteanbieter:
 
-- Twitter Single-Sign-On: Authentifizierungsdienst; Dienstanbieter: Twitter Inc., 1355 Market Street, Suite 900, San
-  Francisco, CA 94103, USA; Website: <https://twitter.com>; Datenschutzerklärung: <https://twitter.com/de/privacy>;
-  Privacy Shield (Gewährleistung Datenschutzniveau bei Verarbeitung von Daten in den
-  USA): <https://www.privacyshield.gov/participant?id=a2zt0000000TORzAAO>; Widerspruchsmöglichkeit (
-  Opt-Out): <https://twitter.com/personalization>.
 - GitHub Single-Sign-On: Authentifizierungsdienst; Dienstanbieter: GitHub Inc., 88 Colin P Kelly Jr St, San Francisco,
   CA 94107, USA; Website: <https://github.com>;
   Datenschutzerklärung: <https://help.github.com/en/github/site-policy/github-privacy-statement>;

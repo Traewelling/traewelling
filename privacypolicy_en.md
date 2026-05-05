@@ -53,11 +53,10 @@ Contact details of the State Data Protection Commissioner:
 >
 > oder:
 >
-> Königstraße 10a<br>
-> 70173 Stuttgart<br>
+> Heilbronner Straße 35<br>
+> 70191 Stuttgart<br>
 >
-> Telefon: 07 11/61 55 41-0<br>
-> Telefax: 07 11/61 55 41-15<br>
+> Telefon: 0711/61 55 41-0<br>
 >
 > <https://www.baden-wuerttemberg.datenschutz.de/kontakt-aufnehmen/>
 
@@ -78,7 +77,7 @@ Within the framework of the applicable legal provisions, you have the right at a
 stored personal data, the origin of the data, its recipients and the purpose of the data processing and, if applicable,
 a right to correction, blocking or deletion of this data.
 
-Explicitly _not_ deleted: Tweets and Toots that have been shared on external platforms.
+Explicitly _not_ deleted: Toots that have been shared on external platforms.
 
 If you decide not to delete the statuses when deleting your account, they will continue to exist anonymously and cannot
 be traced back to you. A subsequent deletion of the statuses is no longer possible after deletion of the account.
@@ -189,8 +188,7 @@ analysis functions) takes place, these will be treated separately in this data p
 ## Transmission of data to third parties
 
 As it is the central function of Träwelling to provide data published on Träwelling on other social networks, all travel
-data (checkins) are automatically forwarded to the service provider selected by the user (Mastodon and/or Twitter) and
-published there. Träwelling may commission third parties with the collection, storage and use of personal data (
+data (checkins) are automatically forwarded to the service provider selected by the user (Mastodon) and published there. Träwelling may commission third parties with the collection, storage and use of personal data (
 commissioned processing). In this case, Träwelling remains the responsible party. These third parties are subject to the
 same data protection provisions as Träwelling. These transfers are made on the basis of your consent within the meaning
 of Art. 6 para. 1 lit. a DSGVO.
@@ -207,8 +205,7 @@ single sign-on provider and confirm the single sign-on registration via a button
 
 Authentication takes place directly with the respective single sign-on provider. In the course of such authentication,
 we receive a user ID with the information that the user is registered with the respective provider under this user ID
-and an ID that cannot be used by us for other purposes (so-called "user handle"). As well as, in the cases of Mastodon
-and Twitter, tokens that allow us to publish, read, manipulate and delete statuses in the respective social network.
+and an ID that cannot be used by us for other purposes (so-called "user handle"). As well as, in the case of Mastodon, tokens that allow us to publish, read, manipulate and delete statuses in the respective social network.
 Whether additional data is transmitted to us depends on the single sign-on procedure used, on the data releases selected
 as part of the authentication process and also on which data users have released in the privacy or other settings of the
 user account with the single sign-on provider. Depending on the single sign-on provider and the user's choice, this can
@@ -235,11 +232,6 @@ If users wish to delete their data from us, they must cancel their registration 
 
 ## Services used and service providers:
 
-- Twitter single sign-on: authentication service; service provider: Twitter Inc, 1355 Market Street, Suite 900, San
-  Francisco, CA 94103, USA; website: <https://twitter.com>; privacy policy: <https://twitter.com/de/privacy>; Privacy
-  Shield (ensuring level of data protection when processing data in the
-  USA): <https://www.privacyshield.gov/participant?id=a2zt0000000TORzAAO>;
-  opt-out: <https://twitter.com/personalization>.
 - GitHub single sign-on: authentication service; service provider: GitHub Inc, 88 Colin P Kelly Jr St, San Francisco, CA
   94107, USA; website: <https://github.com>; privacy
   policy: <https://help.github.com/en/github/site-policy/github-privacy-statement>;
