@@ -18,41 +18,52 @@ class WebhookCallLogRepository
      */
     public function getStats(int $clientId, Carbon $since): array
     {
-        $logs = WebhookCallLog::where('oauth_client_id', $clientId)
-            ->where('created_at', '>=', $since)
-            ->get(['created_at', 'event', 'response_code']);
+        $base = WebhookCallLog::where('oauth_client_id', $clientId)
+            ->where('created_at', '>=', $since);
 
-        $byDay = $logs
-            ->groupBy(fn ($log) => $log->created_at->toDateString())
-            ->map(fn ($group, $date) => new WebhookDayStatsDto(
-                date: $date,
-                total: $group->count(),
-                success: $group->filter(fn ($l) => $l->response_code >= 200 && $l->response_code < 300)->count(),
-                failed: $group->filter(fn ($l) => $l->response_code === null || $l->response_code < 200 || $l->response_code >= 300)->count(),
+        $total = (clone $base)->count();
+
+        $byDay = (clone $base)
+            ->selectRaw(
+                'DATE(created_at) as date, COUNT(*) as total,'
+                . ' SUM(CASE WHEN response_code >= 200 AND response_code < 300 THEN 1 ELSE 0 END) as success,'
+                . ' SUM(CASE WHEN response_code IS NULL OR response_code < 200 OR response_code >= 300 THEN 1 ELSE 0 END) as failed'
+            )
+            ->groupByRaw('DATE(created_at)')
+            ->orderBy('date')
+            ->get()
+            ->map(fn ($row) => new WebhookDayStatsDto(
+                date: $row->date,
+                total: (int) $row->total,
+                success: (int) $row->success,
+                failed: (int) $row->failed,
             ))
-            ->sortKeys()
             ->values();
 
-        $byEvent = $logs
+        $byEvent = (clone $base)
+            ->selectRaw('event, COUNT(*) as total')
             ->groupBy('event')
-            ->map(fn ($group, $event) => new WebhookEventStatsDto(
-                event: $event,
-                total: $group->count(),
+            ->orderByDesc('total')
+            ->get()
+            ->map(fn ($row) => new WebhookEventStatsDto(
+                event: $row->event,
+                total: (int) $row->total,
             ))
-            ->sortByDesc('total')
             ->values();
 
-        $byResponseCode = $logs
-            ->groupBy(fn ($l) => $l->response_code ?? 'timeout')
-            ->map(fn ($group, $key) => new WebhookResponseCodeStatsDto(
-                responseCode: is_numeric($key) ? (int) $key : null,
-                total: $group->count(),
+        $byResponseCode = (clone $base)
+            ->selectRaw('response_code, COUNT(*) as total')
+            ->groupBy('response_code')
+            ->orderByDesc('total')
+            ->get()
+            ->map(fn ($row) => new WebhookResponseCodeStatsDto(
+                responseCode: $row->response_code !== null ? (int) $row->response_code : null,
+                total: (int) $row->total,
             ))
-            ->sortByDesc('total')
             ->values();
 
         return [
-            'total' => $logs->count(),
+            'total' => $total,
             'by_day' => $byDay,
             'by_event' => $byEvent,
             'by_response_code' => $byResponseCode,
