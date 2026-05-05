@@ -892,5 +892,13 @@
     "contribute.view_profile": "Ver mi perfil",
     "copy": "Copiar",
     "dashboard-end-seven-days": "El panel de control solo muestra los registros de la última semana.",
-    "dates.Today": "Hoy"
+    "dates.Today": "Hoy",
+    "map.vector-tiles.consent.title": "¿Cargar teselas vectoriales desde OpenFreeMap?",
+    "map.vector-tiles.consent.description": "Los mosaicos vectoriales son proporcionados por OpenFreeMap. Su dirección IP se compartirá con OpenFreeMap al cargar el mapa.",
+    "map.vector-tiles.consent.decline": "No, gracias",
+    "map.consent.load": "Cargar mapa",
+    "map.consent.notice": "Este mapa carga imágenes de mosaicos desde servidores externos (Carto / OpenStreetMap). Su dirección IP se compartirá con estos proveedores.",
+    "map.consent.remember": "Recuerda mi elección",
+    "map.layer-switcher.title": "Cambiar capa del mapa",
+    "map.vector-tiles.consent.accept": "Habilitar mosaicos vectoriales"
 }
