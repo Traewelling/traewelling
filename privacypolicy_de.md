@@ -247,22 +247,11 @@ löschen, müssen sie ihre Registrierung bei uns kündigen.
   Domain. Für weitere Informationen zu Dienstanbieter, Datenschutzerklärung und Widerspruchsmöglichkeit federierter
   Mastodon-Server, wenden Sie sich bitte an Ihren Mastodon-Anbieter.
 
-### OpenStreetMap/Carto
+### Carto
 
-Diese Seite nutzt über eine API das Open-Source-Mapping-Werkzeug „OpenStreetMap“ (OSM). Anbieter ist
-die [OpenStreetMap Foundation](https://wiki.osmfoundation.org/wiki/Main_Page). Zur Nutzung der Funktionen von
-OpenStreetMap ist es notwendig, Ihre IP Adresse zu speichern. Diese Informationen werden in der Regel an einen Server
-von OpenStreetMap übertragen und dort gespeichert. Der Anbieter dieser Seite hat keinen Einfluss auf diese
-Datenübertragung. Die Nutzung von OpenStreetMap erfolgt im Interesse einer ansprechenden Darstellung unserer
-Online-Angebote und an einer leichten Auffindbarkeit der von uns auf der Website angegebenen Orte. Dies stellt ein
-berechtigtes Interesse im Sinne von Art. 6 Abs. 1 lit. f DSGVO dar. Mehr Informationen zum Umgang mit Nutzerdaten finden
-Sie in der [Datenschutzseite von OpenStreetMap](https://wiki.openstreetmap.org/wiki/Privacy_Policy) und
-hier <http://wiki.openstreetmap.org/wiki/Legal_FAQ>.
-
-Um Karten-Inhalte darzustellen, verwenden wir den Kartendienst [Carto](https://carto.com/). Träwelling teilt mit dem
-Kartendienst, welche Kartenkacheln geladen werden sollen. Der Kartendienst ist über folgende Adresse erreichbar: CARTO,
-Attention: Legal, 201 Moore Street, Brooklyn, NY 11206, United States of America, privacyshield@carto.com. Weitere
-Informationen entnehmen Sie der Datenschutzerklärung des Anbieters: <https://carto.com/privacy/>
+Diese Seite nutzt Kartenkacheln von [Carto](https://carto.com/) zur Darstellung von Kartenmaterial. Beim Laden von
+Kartenkacheln wird Ihre IP-Adresse an den Server des Anbieters übertragen. Weitere Informationen zur Datenverarbeitung
+entnehmen Sie der Datenschutzerklärung des Anbieters: <https://carto.com/privacy/>
 
 ### OpenRailwayMap
 

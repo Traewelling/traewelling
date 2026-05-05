@@ -238,22 +238,11 @@ If users wish to delete their data from us, they must cancel their registration 
   more information on service provider, privacy policy and opt-out of federated Mastodon servers, please contact your
   Mastodon provider.
 
-### OpenStreetMap/Carto
+### Carto
 
-This site uses the open source mapping tool "OpenStreetMap" (OSM) via an API. The provider is
-the [OpenStreetMap Foundation](https://wiki.osmfoundation.org/wiki/Main_Page). To use the functions of OpenStreetMap, it
-is necessary to store your IP address. This information is usually transferred to a server of OpenStreetMap and stored
-there. The provider of this site has no influence on this data transmission. The use of OpenStreetMap is in the interest
-of an appealing presentation of our online offers and an easy location of the places indicated by us on the website.
-This represents a legitimate interest within the meaning of Art. 6 para. 1 lit. f DSGVO. More information on the
-handling of user data can be found in
-the [privacy page of OpenStreetMap](https://wiki.openstreetmap.org/wiki/Privacy_Policy) and
-here <http://wiki.openstreetmap.org/wiki/Legal_FAQ>.
-
-To display map content, we use the map service [Carto](https://carto.com/). Träwelling shares with the map service which
-map tiles to load. The map service can be reached at the following address: CARTO, Attention: Legal, 201 Moore Street,
-Brooklyn, NY 11206, United States of America, privacyshield@carto.com. For more information, please see the provider's
-privacy policy: <https://carto.com/privacy/>.
+This site uses map tiles from [Carto](https://carto.com/) to display map content. When loading map tiles, your IP
+address is transmitted to the provider's server. For further information on data processing, please see the provider's
+privacy policy: <https://carto.com/privacy/>
 
 ### OpenRailwayMap
 
