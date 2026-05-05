@@ -2,6 +2,7 @@
 import { VueDatePicker } from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import axios from 'axios';
+import { Tooltip } from 'bootstrap';
 import { trans } from 'laravel-vue-i18n';
 import _ from 'lodash';
 import { DateTime } from 'luxon';
@@ -49,15 +50,16 @@ export default {
             selectedType: null,
             fetchingGps: false,
             fetchingTextInput: false,
+            filterTooltip: null,
             travelTypes: [
-                { value: 'express', color: 'rgba(197,199,196,0.5)', icon: 'fa-train', contrast: true },
-                { value: 'regional', color: 'rgba(193,18,28,0.5)', icon: 'fa-train' },
+                { value: 'express', color: 'rgba(120,122,120,0.7)', icon: 'fa-train', contrast: true },
+                { value: 'regional', color: 'rgba(193,18,28,0.75)', icon: 'fa-train' },
                 { value: 'suburban', color: 'rgba(0,111,53,0.5)', icon: 'fa-train', image: '/img/suburban.svg' },
                 { value: 'subway', color: 'rgba(21,106,184,0.5)', icon: 'fa-subway', image: '/img/subway.svg' },
                 { value: 'tram', color: 'rgba(217,34,42,0.5)', icon: 'fa-tram', image: '/img/tram.svg' },
                 { value: 'bus', color: 'rgba(163,0,124,0.5)', icon: 'fa-bus', image: '/img/bus.svg' },
-                { value: 'ferry', color: 'rgba(21,106,184,0.5)', icon: 'fa-ship' },
-                { value: 'taxi', color: 'rgb(255,237,74,0.5)', icon: 'fa-taxi', contrast: true },
+                { value: 'ferry', color: 'rgba(21,106,184,0.75)', icon: 'fa-ship' },
+                { value: 'taxi', color: 'rgba(200,180,0,0.75)', icon: 'fa-taxi', contrast: true },
             ],
         };
     },
@@ -88,6 +90,18 @@ export default {
         this.stationInput = this.stationName ? this.stationName : '';
         this.selectedStation = this.station;
         this.getRecent();
+        this.$nextTick(() => {
+            if (this.$refs.filterGroup) {
+                this.filterTooltip = new Tooltip(this.$refs.filterGroup, {
+                    selector: '[data-bs-toggle="tooltip"]',
+                    trigger: 'hover focus',
+                    container: 'body',
+                });
+            }
+        });
+    },
+    beforeUnmount() {
+        this.filterTooltip?.dispose();
     },
     methods: {
         trans,
@@ -390,16 +404,25 @@ export default {
 
                 <div class="d-flex justify-content-center">
                     <Transition name="slide-fade">
-                        <div v-show="showFilter" class="flex-wrap" role="group">
+                        <div
+                            v-show="showFilter"
+                            ref="filterGroup"
+                            class="flex-wrap"
+                            :class="{ 'has-active-filter': selectedType !== null }"
+                            role="group"
+                        >
                             <button
                                 v-for="travelType in travelTypes"
                                 :key="travelType.value"
                                 type="button"
-                                class="btn btn-primary btn-sm btn-rounded text-center me-1"
+                                class="btn btn-primary btn-sm btn-rounded text-center me-1 filter-btn"
                                 :class="{
                                     active: selectedType === travelType.value,
                                     'better-contrast': travelType.contrast ?? false,
                                 }"
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="top"
+                                :title="trans('transport_types.' + travelType.value)"
                                 value="travelType"
                                 :style="{ backgroundColor: travelType.color }"
                                 @click="setTravelType(travelType)"
@@ -463,6 +486,26 @@ export default {
     color: #212529;
 }
 
+.filter-btn {
+    border: 2px solid transparent;
+    transition:
+        opacity 0.15s,
+        box-shadow 0.15s;
+
+    i.fa {
+        text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+    }
+}
+
+.has-active-filter .filter-btn:not(.active) {
+    opacity: 0.4;
+}
+
+.filter-btn.active {
+    border-color: rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.25);
+}
+
 :root.dark {
     .better-contrast {
         color: #fff;
@@ -470,6 +513,11 @@ export default {
 
     .better-contrast:hover {
         color: #fff;
+    }
+
+    .filter-btn.active {
+        border-color: rgba(255, 255, 255, 0.7);
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
     }
 }
 
