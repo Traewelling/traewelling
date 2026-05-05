@@ -9,6 +9,7 @@ use App\Dto\Wikidata\WikidataEntity;
 use App\Enum\StationIdentifierType;
 use App\Exceptions\Wikidata\FetchException;
 use App\Models\Station;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class WikidataImportService
@@ -47,7 +48,8 @@ class WikidataImportService
         'Q1478783', // Fährhafen
         'Q4303352', // passenger ship terminal
         'Q55678', // railway stop, Haltepunkt, Haltestelle
-        'Q494829', // bus station
+        'Q494829', // bus station,
+        'Q1793804', // S-Bahn-Station
     ];
 
     public static function importStation(string $qId): Station
@@ -176,7 +178,39 @@ class WikidataImportService
             }
         }
 
-        return false;
+        return self::isTypeSupportedViaSubclassHierarchy($entity);
+    }
+
+    /**
+     * Fallback: checks if any P31 type is a subclass (P279+) of a supported type via SPARQL.
+     * Handles cases like Q110977521 (Bahnhof der S-Bahn Berlin) which is a subclass of Q1793804 (S-Bahn-Station).
+     */
+    private static function isTypeSupportedViaSubclassHierarchy(WikidataEntity $entity): bool
+    {
+        $typesString = implode(' ', array_map(fn (string $t) => "wd:{$t}", self::SUPPORTED_TYPES));
+
+        $sparqlQuery = <<<SPARQL
+            SELECT ?supportedType WHERE {
+                VALUES ?supportedType { {$typesString} }
+                wd:{$entity->qId} wdt:P31/wdt:P279+ ?supportedType .
+            }
+            LIMIT 1
+        SPARQL;
+
+        try {
+            $response = Http::withUserAgent(config('services.user_agent'))
+                ->withHeaders(['Accept' => 'application/sparql-results+json'])
+                ->get('https://query.wikidata.org/sparql', [
+                    'query' => $sparqlQuery,
+                    'format' => 'json',
+                ]);
+
+            return !empty($response->json('results.bindings'));
+        } catch (\Throwable $e) {
+            Log::warning('Wikidata subclass hierarchy check failed for ' . $entity->qId . ': ' . $e->getMessage());
+
+            return false;
+        }
     }
 
     public static function getCoordinates(WikidataEntity $entity): ?Coordinate
