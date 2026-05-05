@@ -52,6 +52,32 @@ class WikidataImportServiceTest extends UnitTestCase
     }
 
     /**
+     * Minimal entity response for Q800504 (Kölner Hauptbahnhof S-Bahn station).
+     * P31 = Q110977521, which is NOT directly in SUPPORTED_TYPES but is a subclass of Q1793804 (S-Bahn-Station).
+     */
+    private function stationWithSubclassTypeData(): array
+    {
+        return [
+            'entities' => [
+                'Q800504' => [
+                    'labels' => [
+                        'de' => ['language' => 'de', 'value' => 'Köln Hauptbahnhof'],
+                    ],
+                    'descriptions' => [],
+                    'aliases' => [],
+                    'claims' => [
+                        'P31' => [
+                            self::wikidataItemClaim('P31', 'Q110977521', 110977521), // subclass of Q1793804
+                        ],
+                        'P625' => [self::coordinateClaim(50.943, 6.959)],
+                        'P1448' => [self::monolingualClaim('P1448', 'Köln Hbf', 'de')],
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
      * Minimal entity response for Q124398332 (Träwelling).
      * P31 values are Q1130645 and Q4420972, neither of which is in SUPPORTED_TYPES.
      */
@@ -88,10 +114,31 @@ class WikidataImportServiceTest extends UnitTestCase
         $this->assertTrue(WikidataImportService::isTypeSupported($entity));
     }
 
+    public function test_is_type_supported_returns_true_for_subclass_type(): void
+    {
+        Http::fake([
+            '*/Special:EntityData/Q800504.json' => Http::response($this->stationWithSubclassTypeData()),
+            '*query.wikidata.org/sparql*' => Http::response([
+                'results' => [
+                    'bindings' => [
+                        ['supportedType' => ['type' => 'uri', 'value' => 'http://www.wikidata.org/entity/Q1793804']],
+                    ],
+                ],
+            ]),
+        ]);
+
+        $entity = WikidataEntity::fetch('Q800504');
+
+        $this->assertTrue(WikidataImportService::isTypeSupported($entity));
+    }
+
     public function test_is_type_supported_returns_false_for_software(): void
     {
         Http::fake([
             '*/Special:EntityData/Q124398332.json' => Http::response($this->traewellingEntityData()),
+            '*query.wikidata.org/sparql*' => Http::response([
+                'results' => ['bindings' => []],
+            ]),
         ]);
 
         $entity = WikidataEntity::fetch('Q124398332');
@@ -111,6 +158,9 @@ class WikidataImportServiceTest extends UnitTestCase
                         'claims' => [], // no P31
                     ],
                 ],
+            ]),
+            '*query.wikidata.org/sparql*' => Http::response([
+                'results' => ['bindings' => []],
             ]),
         ]);
 
@@ -225,6 +275,9 @@ class WikidataImportServiceTest extends UnitTestCase
     {
         Http::fake([
             '*/Special:EntityData/Q124398332.json' => Http::response($this->traewellingEntityData()),
+            '*query.wikidata.org/sparql*' => Http::response([
+                'results' => ['bindings' => []],
+            ]),
         ]);
 
         $this->expectException(\InvalidArgumentException::class);
