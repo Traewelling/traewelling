@@ -13,6 +13,7 @@ use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\StopoverResource;
+use App\Models\Checkin;
 use App\Models\Status;
 use App\Models\Stopover;
 use App\Models\Ticket;
@@ -167,6 +168,103 @@ class StatusController extends Controller
     public static function getFutureCheckins(): AnonymousResourceCollection
     {
         return StatusResource::collection(StatusBackend::getFutureCheckins());
+    }
+
+    #[OA\Schema(
+        schema: 'DuplicateCheckinGroup',
+        title: 'DuplicateCheckinGroup',
+        description: 'A group of check-ins with the same trip and origin stopover (duplicates)',
+        properties: [
+            new OA\Property(
+                property: 'statuses',
+                type: 'array',
+                items: new OA\Items(ref: StatusResource::class),
+            ),
+        ],
+    )]
+    #[OA\Get(
+        path: '/statuses/duplicates',
+        operationId: 'getDuplicateCheckins',
+        description: 'Temporary cleanup endpoint: returns groups of check-ins the authenticated user has checked in more than once for the same trip and origin stopover. Will be removed after 2026-05-31.',
+        summary: '[Deprecated] Get duplicate check-ins of the authenticated user',
+        security: [['passport' => ['read-statuses']], ['token' => []]],
+        tags: ['Status'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/DuplicateCheckinGroup'),
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 401, description: 'Not logged in'),
+        ],
+        deprecated: true,
+    )]
+    public function getDuplicateCheckins(): JsonResponse
+    {
+        // TODO: remove endpoint after 2026-05-31
+        $userId = Auth::id();
+
+        $duplicatePairs = DB::table('train_checkins')
+            ->select('trip_id', 'origin_stopover_id')
+            ->where('user_id', $userId)
+            ->whereNotNull('origin_stopover_id')
+            ->groupBy('trip_id', 'origin_stopover_id')
+            ->havingRaw('COUNT(*) > 1');
+
+        $checkinRows = DB::table('train_checkins')
+            ->joinSub($duplicatePairs, 'dup_pairs', function ($join): void {
+                $join->on('train_checkins.trip_id', '=', 'dup_pairs.trip_id')
+                    ->on('train_checkins.origin_stopover_id', '=', 'dup_pairs.origin_stopover_id');
+            })
+            ->where('train_checkins.user_id', $userId)
+            ->select('train_checkins.status_id', 'train_checkins.trip_id', 'train_checkins.origin_stopover_id')
+            ->orderBy('train_checkins.trip_id')
+            ->orderBy('train_checkins.origin_stopover_id')
+            ->orderBy('train_checkins.id')
+            ->get();
+
+        if ($checkinRows->isEmpty()) {
+            return response()->json(['data' => []]);
+        }
+
+        $statuses = Status::with([
+            'event',
+            'likes',
+            'user',
+            'createdByUser',
+            'checkin.originStopover.station',
+            'checkin.destinationStopover.station',
+            'checkin.trip.operator',
+            'checkin.trip.motisSourceLicense',
+            'checkin.statusTags',
+            'tags',
+            'mentions.mentioned',
+            'ticket',
+            'client',
+        ])
+            ->whereIn('id', $checkinRows->pluck('status_id'))
+            ->get()
+            ->keyBy('id');
+
+        $groups = $checkinRows
+            ->groupBy(fn ($row) => $row->trip_id . ':' . $row->origin_stopover_id)
+            ->map(fn ($rows) => [
+                'statuses' => $rows
+                    ->map(fn ($row) => new StatusResource($statuses->get($row->status_id)))
+                    ->filter()
+                    ->values(),
+            ])
+            ->values();
+
+        return response()->json(['data' => $groups]);
     }
 
     #[OA\Get(
