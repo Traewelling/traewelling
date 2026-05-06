@@ -1,4 +1,5 @@
 import { RouteRecordRaw } from 'vue-router';
+import ErrorPage from '../components/ErrorPage.vue';
 import ActiveJourneys from '../pages/ActiveJourneys/ActiveJourneys.vue';
 import Changelog from '../pages/Changelog/Changelog.vue';
 import CheckinPage from '../pages/Checkin/CheckinPage.vue';
@@ -240,7 +241,9 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: '/:pathMatch(.*)*',
         name: 'not-found',
-        component: () => import('../pages/NotFound.vue'),
+        component: ErrorPage,
+        props: { code: 404, standalone: true },
+        meta: { title: 'error.404' },
     },
 ];
 

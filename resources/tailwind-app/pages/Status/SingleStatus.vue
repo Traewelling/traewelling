@@ -15,6 +15,7 @@ import {
 import { checkinSuccessStore } from '../../../vue/stores/checkinSuccess';
 import { useUserStore } from '../../../vue/stores/user';
 import CheckinSuccessBanner from '../../components/Checkin/CheckinSuccessBanner.vue';
+import ErrorPage from '../../components/ErrorPage.vue';
 import CoPassengers from '../../components/Status/CoPassengers.vue';
 import StatusCard from '../../components/Status/StatusCard.vue';
 import StatusTags from '../../components/Status/StatusTags.vue';
@@ -147,16 +148,7 @@ watch(
 
         <!-- Error states -->
         <template v-else-if="pageError">
-            <div class="max-w-2xl mx-auto text-center py-16">
-                <template v-if="pageError === '403'">
-                    <p class="text-4xl font-bold text-base-content/20 mb-4">403</p>
-                    <p class="text-base-content/60">{{ trans('error.403.description') }}</p>
-                </template>
-                <template v-else>
-                    <p class="text-4xl font-bold text-base-content/20 mb-4">404</p>
-                    <p class="text-base-content/60">{{ trans('error.404.description') }}</p>
-                </template>
-            </div>
+            <ErrorPage :code="pageError" />
         </template>
 
         <!-- Status page -->
