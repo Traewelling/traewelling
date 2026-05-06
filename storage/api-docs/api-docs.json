@@ -8818,6 +8818,15 @@
                         "type": "string",
                         "example": "RK",
                         "nullable": true
+                    },
+                    "identifiers": {
+                        "title": "identifiers",
+                        "description": "List of external station identifiers (IBNR, RIL100, IFOPT, Wikidata, MOTIS). Null when not loaded.",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StationIdentifierResource"
+                        },
+                        "nullable": true
                     }
                 },
                 "type": "object",

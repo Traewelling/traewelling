@@ -730,6 +730,7 @@
   "stationboard.timezone": "Nous avons détecté que ton fuseau horaire est différent de celui de cette station. Les heures indiquées ici sont affichées avec le fuseau horaire que tu as défini <i>:timezone</i>.",
   "stationboard.timezone.settings": "Si tu le souhaites, tu peux le modifier dans les <a href=\":url\">paramètres</a>.",
   "stationboard.to": "à",
+  "station.technical-details": "Détails techniques",
   "stationboard.where-are-you": "Où es-tu ?",
   "stats": "Statistiques",
   "stats-day": "Tes trajets le :date",

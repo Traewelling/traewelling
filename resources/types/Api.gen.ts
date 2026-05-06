@@ -419,6 +419,11 @@ export interface Station {
    * @example "RK"
    */
   rilIdentifier?: string | null;
+  /**
+   * identifiers
+   * List of external station identifiers (IBNR, RIL100, IFOPT, Wikidata, MOTIS). Null when not loaded.
+   */
+  identifiers?: StationIdentifierResource[] | null;
 }
 
 /** WebhookDayStatsDto */

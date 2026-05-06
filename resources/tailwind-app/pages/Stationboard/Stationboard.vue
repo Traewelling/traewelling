@@ -5,12 +5,13 @@ import { DateTime } from 'luxon';
 import { Notyf } from 'notyf';
 import { computed, inject, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { Api, DepartureResource, StopoverResource, TravelType } from '../../../types/Api.gen';
+import { Api, DepartureResource, Station, StopoverResource, TravelType } from '../../../types/Api.gen';
 import LineIndicator from '../../../vue/components/LineIndicator.vue';
 import { useUserStore } from '../../../vue/stores/user';
 import CheckinForm from '../../components/Checkin/CheckinForm.vue';
 import LineRun from '../../components/Checkin/LineRun.vue';
 import DepartureEntry from '../../components/Stationboard/DepartureEntry.vue';
+import StationTechnicalDetails from '../../components/Stationboard/StationTechnicalDetails.vue';
 import TransportIcon from '../../components/TransportIcon.vue';
 import AppLayout from '../../layouts/AppLayout.vue';
 
@@ -21,7 +22,7 @@ const userStore = useUserStore();
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 
 type DepartureMeta = {
-    station?: { id: number; name: string };
+    station?: Station;
     times?: { prev: string; now: string; next: string };
     removedLicenses?: { licenseName?: string }[];
 };
@@ -183,9 +184,12 @@ onMounted(() => {
             <div class="card bg-base-100 mb-4">
                 <div class="card-body py-3 px-4 gap-2">
                     <div class="flex items-center justify-between gap-2">
-                        <h2 class="font-semibold text-lg truncate">
-                            {{ stationName ?? '…' }}
-                        </h2>
+                        <div class="flex items-center gap-1 min-w-0">
+                            <h2 class="font-semibold text-lg truncate">
+                                {{ stationName ?? '…' }}
+                            </h2>
+                            <StationTechnicalDetails v-if="meta.station" :station="meta.station" />
+                        </div>
                         <!-- Travel type filter -->
                         <select
                             v-model="travelType"
