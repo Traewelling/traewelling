@@ -650,6 +650,8 @@
     "settings.something-wrong": "Ça n’a pas marché. :(",
     "settings.tab.account": "Compte",
     "settings.tab.wellbeing": "Bien-être numérique",
+    "settings.password-min-length": "Au moins :min caractères",
+    "settings.password-mismatch": "Les mots de passe ne correspondent pas.",
     "settings.title-change-password": "Changer de mot de passe",
     "settings.title-set-password": "Définir un mot de passe",
     "settings.warning-no-email": "Facultatif, mais recommandé. Sans adresse e-mail, vous ne pouvez pas récupérer votre compte si vous perdez l'accès à votre fournisseur SSO.",

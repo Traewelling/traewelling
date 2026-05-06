@@ -684,6 +684,8 @@
   "settings.something-wrong": "Etwas ist schief gelaufen :(",
   "settings.tab.account": "Account",
   "settings.tab.wellbeing": "Digital Wellbeing",
+  "settings.password-min-length": "Mindestens :min Zeichen",
+  "settings.password-mismatch": "Die Passwörter stimmen nicht überein.",
   "settings.title-change-password": "Passwort ändern",
   "settings.title-set-password": "Passwort festlegen",
   "settings.warning-no-email": "Optional, aber empfohlen. Ohne E-Mail-Adresse kannst du deinen Account nicht wiederherstellen, falls du deinen SSO-Zugang verlierst.",
