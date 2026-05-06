@@ -3989,6 +3989,9 @@
                     "content": {
                         "application/json": {
                             "schema": {
+                                "required": [
+                                    "email"
+                                ],
                                 "properties": {
                                     "email": {
                                         "type": "string",
@@ -3996,9 +3999,11 @@
                                         "example": "mail@example.com"
                                     },
                                     "password": {
+                                        "description": "Required only if the account already has a password set.",
                                         "type": "string",
                                         "format": "password",
-                                        "example": "thisisnotasecurepassword123"
+                                        "example": "thisisnotasecurepassword123",
+                                        "nullable": true
                                     }
                                 },
                                 "type": "object"
@@ -9461,7 +9466,7 @@
             },
             "UpdateProfileInformationRequest": {
                 "title": "UpdateProfileInformationRequest",
-                "description": "UpdateProfileInformationRequest",
+                "description": "All fields are optional. Only send what you want to change.",
                 "properties": {
                     "username": {
                         "type": "string",

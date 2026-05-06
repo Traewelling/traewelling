@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
 import { ref, watch } from 'vue';
-import { Api, UpdateProfileInformationRequest, UserProfileSettingsResource } from '../../../../../types/Api.gen';
+import { Api, UserProfileSettingsResource } from '../../../../../types/Api.gen';
 import SettingsListRow from '../../SettingsListRow.vue';
 
 const props = defineProps<{
@@ -20,9 +20,7 @@ timezones.value = Intl.supportedValuesOf('timeZone').map((timezone) => {
 });
 
 function updateTimezone() {
-    const data = props.profile as UpdateProfileInformationRequest;
-    data.timezone = input.value;
-    api.settings.updateProfileSettings(data).then((response) => {
+    api.settings.updateProfileSettings({ timezone: input.value }).then((response) => {
         response.json().then((data) => {
             emits('profile-updated', data.data);
         });

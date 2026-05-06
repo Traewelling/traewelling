@@ -13,14 +13,14 @@ const notyf = inject('notyf') as Notyf;
 
 const modal = ref<HTMLDialogElement>();
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
-const input = ref<string>(props.profile.email);
+const input = ref<string>(props.profile.email ?? '');
 const password = ref<string>('');
 
 function updateEmail() {
     api.settings
         .updateEmail({
             email: input.value,
-            password: password.value,
+            password: props.profile.password ? password.value : undefined,
         })
         .then((response) => {
             response.json().then((data) => {
@@ -39,15 +39,11 @@ function updateEmail() {
 function resendMail() {
     api.settings
         .resendVerificationEmail()
-        .then((response) => {
-            if (response.ok) {
-                notyf.success(trans('user.fresh-link'));
-            } else {
-                notyf.error(trans('email.verification.too-many-requests'));
-            }
+        .then(() => {
+            notyf.success(trans('user.fresh-link'));
         })
-        .catch((error) => {
-            notyf.error(error);
+        .catch(() => {
+            notyf.error(trans('email.verification.too-many-requests'));
         });
 }
 </script>
@@ -55,14 +51,16 @@ function resendMail() {
 <template>
     <SettingsListRow
         :title="trans('user.email')"
+        :description="!profile.email ? trans('settings.warning-no-email') : undefined"
         :badge="profile.email"
         :badge-class="!profile.emailVerified ? 'badge-warning' : ''"
+        :warning="!profile.email"
         @click.prevent="modal?.showModal()"
     />
     <dialog ref="modal" class="modal">
         <div class="modal-box">
             <h3 class="text-lg font-bold">{{ trans('user.email') }}</h3>
-            <div v-if="!profile.emailVerified" class="alert alert-warning mt-4">
+            <div v-if="profile.email && !profile.emailVerified" class="alert alert-warning mt-4">
                 <span>{{ trans('user.email-verify') }}</span>
                 <button type="button" class="btn btn-sm btn-warning" @click.prevent="resendMail">
                     {{ trans('controller.status.email-resend-mail') }}
@@ -70,12 +68,14 @@ function resendMail() {
             </div>
             <form @submit.prevent="updateEmail">
                 <input
+                    v-if="profile.password"
                     v-model="password"
                     type="password"
                     class="input input-bordered w-full mt-4"
                     :placeholder="trans('settings.current-password')"
+                    required
                 />
-                <input v-model="input" type="email" class="input input-bordered w-full mt-4" />
+                <input v-model="input" type="email" class="input input-bordered w-full mt-4" required />
                 <div class="modal-action">
                     <form method="dialog">
                         <button class="btn me-2">{{ trans('menu.abort') }}</button>

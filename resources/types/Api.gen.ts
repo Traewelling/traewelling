@@ -749,7 +749,7 @@ export interface StoreOAuthClientRequest {
 
 /**
  * UpdateProfileInformationRequest
- * UpdateProfileInformationRequest
+ * All fields are optional. Only send what you want to change.
  */
 export interface UpdateProfileInformationRequest {
   /**
@@ -5458,12 +5458,13 @@ export class Api<
          * @format email
          * @example "mail@example.com"
          */
-        email?: string;
+        email: string;
         /**
+         * Required only if the account already has a password set.
          * @format password
          * @example "thisisnotasecurepassword123"
          */
-        password?: string;
+        password?: string | null;
       },
       params: RequestParams = {},
     ) =>

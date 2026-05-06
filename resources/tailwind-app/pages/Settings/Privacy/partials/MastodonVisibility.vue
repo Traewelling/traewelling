@@ -1,12 +1,7 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
 import { ref } from 'vue';
-import {
-    Api,
-    MastodonVisibility,
-    UpdateProfileInformationRequest,
-    UserProfileSettingsResource,
-} from '../../../../../types/Api.gen';
+import { Api, MastodonVisibility, UserProfileSettingsResource } from '../../../../../types/Api.gen';
 import SettingsListRow from '../../SettingsListRow.vue';
 
 const props = defineProps<{
@@ -43,11 +38,8 @@ function getLabel(visibility: MastodonVisibility): string {
 }
 
 function updateVisibility() {
-    const data = props.profile as UpdateProfileInformationRequest;
-    data.mastodonVisibility = input.value;
-
     api.settings
-        .updateProfileSettings(data)
+        .updateProfileSettings({ mastodonVisibility: input.value })
         .then((response) => {
             response.json().then((data) => {
                 emits('profile-updated', data.data);

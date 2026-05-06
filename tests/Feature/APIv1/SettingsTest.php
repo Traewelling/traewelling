@@ -59,7 +59,6 @@ class SettingsTest extends ApiTestCase
             data: [
                 'username' => 'new',
                 'displayName' => 'new',
-                'email' => 'no-reply@traewelling.de',
                 'timezone' => 'Europe/Berlin',
                 'privateProfile' => true,
                 'preventIndex' => true,
@@ -87,5 +86,36 @@ class SettingsTest extends ApiTestCase
         $this->assertFalse($user->likes_enabled);
         $this->assertFalse($user->points_enabled);
         $this->assertEquals(FriendCheckinSetting::FRIENDS, $user->friend_checkin);
+    }
+
+    public function test_set_email_without_prior_email_or_password(): void
+    {
+        $user = User::factory(['email' => null, 'email_verified_at' => null, 'password' => null])->create();
+        Passport::actingAs($user, ['*']);
+
+        $response = $this->putJson(
+            uri: '/api/v1/settings/email',
+            data: ['email' => 'new@gmail.com'],
+        );
+        $response->assertOk();
+
+        $this->assertEquals('new@gmail.com', $user->refresh()->email);
+    }
+
+    public function test_update_profile_settings_partial(): void
+    {
+        $user = User::factory(['username' => 'unchanged', 'name' => 'unchanged'])->create();
+        Passport::actingAs($user, ['*']);
+
+        $response = $this->putJson(
+            uri: '/api/v1/settings/profile',
+            data: ['mastodonVisibility' => MastodonVisibility::PUBLIC->value],
+        );
+        $response->assertOk();
+
+        $user = $user->refresh();
+        $this->assertEquals('unchanged', $user->username);
+        $this->assertEquals('unchanged', $user->name);
+        $this->assertEquals(MastodonVisibility::PUBLIC, $user->socialProfile->mastodon_visibility);
     }
 }

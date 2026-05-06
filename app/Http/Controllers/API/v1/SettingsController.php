@@ -70,6 +70,7 @@ class SettingsController extends Controller
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
+                required: ['email'],
                 properties: [
                     new OA\Property(
                         property: 'email',
@@ -79,9 +80,11 @@ class SettingsController extends Controller
                     ),
                     new OA\Property(
                         property: 'password',
+                        description: 'Required only if the account already has a password set.',
                         type: 'string',
                         format: 'password',
                         example: 'thisisnotasecurepassword123',
+                        nullable: true,
                     ),
                 ]
             )
@@ -108,16 +111,14 @@ class SettingsController extends Controller
     )]
     public function updateMail(Request $request): UserProfileSettingsResource|JsonResponse
     {
+        $userHasPassword = auth()->user()->password !== null;
+
         $validated = $request->validate([
-            'email' => ['required',
-                'string',
-                'email:rfc,dns',
-                'max:255',
-                'unique:users',
-            ],
-            'password' => ['required', 'string'],
+            'email' => ['required', 'string', 'email:rfc,dns', 'max:255', 'unique:users'],
+            'password' => [Rule::requiredIf($userHasPassword), 'nullable', 'string'],
         ]);
-        if (!Hash::check($validated['password'], auth()->user()->password)) {
+
+        if ($userHasPassword && !Hash::check($validated['password'], auth()->user()->password)) {
             throw ValidationException::withMessages([__('auth.password')]);
         }
         unset($validated['password']);

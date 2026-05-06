@@ -20,6 +20,13 @@ const loading = ref(true);
 
 const notyf = inject('notyf') as Notyf;
 
+const params = new URLSearchParams(window.location.search);
+const emailVerified = params.has('verified');
+const emailAlreadyVerified = params.has('already_verified');
+if (emailVerified || emailAlreadyVerified) {
+    window.history.replaceState({}, '', window.location.pathname);
+}
+
 function getUserProfile() {
     api.settings.getProfileSettings().then((response) => {
         response.json().then((data) => {
@@ -45,12 +52,18 @@ getUserProfile();
 <template>
     <SettingsLayout>
         <h2 class="text-xl font-bold">{{ trans('settings.heading.account') }}</h2>
+        <div v-if="emailVerified" class="alert alert-success mt-2">
+            <span>{{ trans('email.verification.success') }}</span>
+        </div>
+        <div v-if="emailAlreadyVerified" class="alert alert-warning mt-2">
+            <span>{{ trans('email.verification.already-verified') }}</span>
+        </div>
         <ul v-if="!loading && profile" class="list bg-base-100 rounded-box shadow-md mt-2">
-            <Timezone :profile @profile-updated="updateProfile" />
             <Email :profile="profile" @profile-updated="updateProfile" @error="error" />
+            <Password :profile="profile" @profile-updated="updateProfile" />
             <MapProvider :profile="profile" @profile-updated="updateProfile" />
             <ExperimentalFeatures :profile="profile" @profile-updated="updateProfile" />
-            <Password :profile="profile" @profile-updated="updateProfile" />
+            <Timezone :profile @profile-updated="updateProfile" />
         </ul>
         <DeleteAccount v-if="!loading && profile" :profile="profile" />
     </SettingsLayout>

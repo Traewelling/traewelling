@@ -23,12 +23,6 @@ abstract class SettingsController extends Controller
             $user = auth()->user();
         }
 
-        // todo: remove, once new mail endpoint is implemented everywhere
-        if (in_array('email', $fields) && $fields['email'] !== $user->email) {
-            self::updateMail($fields['email'], $user);
-        }
-        unset($fields['email']);
-
         if (array_key_exists('experimental', $fields)) {
             if ($fields['experimental'] && !$user->hasRole('open-beta')) {
                 auth()->user()->assignRole('open-beta');
@@ -81,7 +75,9 @@ abstract class SettingsController extends Controller
             'new_email' => $newMail,
         ]);
 
-        SendEmailChangedMail::dispatch($user, $change);
+        if ($change->old_email !== null) {
+            SendEmailChangedMail::dispatch($user, $change);
+        }
 
         $user->email = $newMail;
         $user->email_verified_at = null;

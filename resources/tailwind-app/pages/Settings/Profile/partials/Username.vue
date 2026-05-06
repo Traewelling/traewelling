@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
 import { ref } from 'vue';
-import { Api, UpdateProfileInformationRequest, UserProfileSettingsResource } from '../../../../../types/Api.gen';
+import { Api, UserProfileSettingsResource } from '../../../../../types/Api.gen';
 import SettingsListRow from '../../SettingsListRow.vue';
 
 const props = defineProps<{
@@ -14,9 +14,7 @@ const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 const input = ref<string>(props.profile.username);
 
 function updateUsername() {
-    const data = props.profile as UpdateProfileInformationRequest;
-    data.username = input.value;
-    api.settings.updateProfileSettings(data).then((response) => {
+    api.settings.updateProfileSettings({ username: input.value }).then((response) => {
         response.json().then((data) => {
             emits('profile-updated', data.data);
         });

@@ -41,6 +41,14 @@ Check back here regularly to stay ahead of removals.
 
 ---
 
+# 2026-05-06
+
+**`PUT /api/v1/settings/profile` now supports partial updates:**
+All fields are now optional. Only the fields present in the request body will be updated, omitted fields are left unchanged.
+The `email` field is no longer accepted by this endpoint.
+Use `PUT /api/v1/settings/email` to update the email address.
+`password` is only required when the account already has one set.
+
 # 2026-04-18
 Admin-status-endpoints now adhere to our standard API conventions and use camelCase and components.
 No backwards compatibility will be kept for the old endpoints, so please update your code accordingly.
