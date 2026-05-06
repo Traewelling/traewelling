@@ -194,6 +194,7 @@ import { trans } from 'laravel-vue-i18n';
 import {
     Bell,
     ChartNoAxesCombined,
+    Copy,
     House,
     LifeBuoy,
     LogOut,
@@ -316,6 +317,7 @@ const userLinks = computed<
     },
     { name: 'menu.export', icon: Save, route: { name: 'export' }, legacy: false },
     { name: 'menu.settings', icon: Settings, route: { name: 'settings-profile' }, legacy: false },
+    { name: 'checkin.duplicates.title', icon: Copy, route: { name: 'statuses-duplicates' }, legacy: false },
     { name: 'menu.about', icon: LifeBuoy, route: 'https://help.traewelling.de/faq/', legacy: true },
     { name: 'tickets.title', icon: Ticket, route: { name: 'tickets' }, legacy: false, condition: user.isClosedBeta },
     { name: 'stationboard.submit-search', icon: Search, route: { name: 'search' }, legacy: false },

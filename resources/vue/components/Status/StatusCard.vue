@@ -110,6 +110,7 @@ function deleteSelf() {
         activeCheckin.$reset();
     }
     deleted.value = true;
+    emit('status-deleted');
     if (props.showMap) {
         window.location.href = '/dashboard';
     }
