@@ -281,8 +281,18 @@ class ReRoutingService
             }
             if (str_contains($e->getMessage(), 'no track found')) {
                 Log::debug('RerouteStops: BRouter found no track, skipping segment', [
-                    'from' => $start->station?->name,
-                    'to' => $end->station?->name,
+                    'from' => $start->station?->only('id', 'name'),
+                    'to' => $end->station?->only('id', 'name'),
+                    'error' => $e->getMessage(),
+                ]);
+
+                return;
+            }
+            if (str_contains($e->getMessage(), 'from requested start') || str_contains($e->getMessage(), 'from requested end')) {
+                // BRouter snapped to a route that is outside the endpoint tolerance, only debug logging.
+                Log::debug('RerouteStops: BRouter route endpoint too far from waypoint, skipping segment', [
+                    'from' => $start->station?->only('id', 'name'),
+                    'to' => $end->station?->only('id', 'name'),
                     'error' => $e->getMessage(),
                 ]);
 
