@@ -12,7 +12,7 @@ return new class() extends Migration
     public function up(): void
     {
         Schema::table('operator_identifiers', function (Blueprint $table) {
-            $table->char('operator_uuid', 36)->nullable()->after('operator_id');
+            $table->uuid('operator_uuid')->nullable()->after('operator_id');
         });
 
         DB::statement('
