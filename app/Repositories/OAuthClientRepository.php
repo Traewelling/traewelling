@@ -95,7 +95,7 @@ class OAuthClientRepository
             ->first();
     }
 
-    public function find(int $id): OAuthClient
+    public function find(int $id): ?OAuthClient
     {
         $client = Passport::client();
 
