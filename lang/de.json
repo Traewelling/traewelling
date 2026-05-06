@@ -764,6 +764,7 @@
   "stationboard.timezone": "Wir haben festgestellt, dass deine Zeitzone von der dieser Station abweicht. Die hier dargestellten Zeiten werden mit deiner eingestellten Zeitzone <i>:timezone</i> dargestellt.",
   "stationboard.timezone.settings": "Wenn du möchtest, kannst du sie in den <a href=\":url\">Einstellungen</a> ändern.",
   "stationboard.to": "nach",
+  "station.technical-details": "Technische Daten",
   "stationboard.where-are-you": "Wo bist Du?",
   "stats": "Statistiken",
   "stats-day": "Deine Fahrten am :date",

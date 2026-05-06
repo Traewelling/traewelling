@@ -164,6 +164,7 @@ class TransportController extends Controller
 
         $timestamp = isset($validated['when']) ? Carbon::parse($validated['when']) : now();
         $station = Station::findOrFail($stationId);
+        $station->loadMissing('stationIdentifiers');
 
         try {
             $filtered = $this->dataProvider->getFilteredDepartures(

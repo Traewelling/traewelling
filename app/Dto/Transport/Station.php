@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Dto\Transport;
 
+use App\Http\Resources\StationIdentifierResource;
 use OpenApi\Attributes as OA;
 
 #[OA\Schema(title: 'Station', description: 'train station model', xml: new OA\Xml(name: 'Station'))]
@@ -29,6 +32,15 @@ class Station
         nullable: true,
     )]
     public readonly ?string $rilIdentifier;
+
+    #[OA\Property(
+        title: 'identifiers',
+        description: 'List of external station identifiers (IBNR, RIL100, IFOPT, Wikidata, MOTIS). Null when not loaded.',
+        type: 'array',
+        items: new OA\Items(ref: StationIdentifierResource::class),
+        nullable: true,
+    )]
+    public readonly ?array $identifiers;
 
     public function setId(int $id): self
     {
@@ -72,15 +84,27 @@ class Station
         return $this;
     }
 
+    public function setIdentifiers(?array $identifiers): self
+    {
+        $this->identifiers = $identifiers;
+
+        return $this;
+    }
+
     public static function fromModel(\App\Models\Station $station): self
     {
+        $identifiers = $station->relationLoaded('stationIdentifiers')
+            ? StationIdentifierResource::collection($station->stationIdentifiers)->resolve()
+            : null;
+
         $dto = new self();
         $dto->setId($station->id)
             ->setName($station->name)
             ->setIbnr(null) // TODO: Kann das hier mittelfristig raus? Wo wird das noch über dieses DTO genutzt?
             ->setLatitude($station->latitude)
             ->setLongitude($station->longitude)
-            ->setRilIdentifier(null); // TODO: Kann das hier mittelfristig raus? Wo wird das noch über dieses DTO genutzt?
+            ->setRilIdentifier(null) // TODO: Kann das hier mittelfristig raus? Wo wird das noch über dieses DTO genutzt?
+            ->setIdentifiers($identifiers);
 
         return $dto;
     }

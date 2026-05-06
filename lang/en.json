@@ -764,6 +764,7 @@
   "stationboard.timezone": "We have detected that your time zone is different from that of this station. The times shown here are displayed with your set timezone <i>:timezone</i>.",
   "stationboard.timezone.settings": "If you want, you can change it in the <a href=\":url\">settings</a>.",
   "stationboard.to": "to",
+  "station.technical-details": "Technical details",
   "stationboard.where-are-you": "Where are you?",
   "stats": "Statistics",
   "stats-day": "Your journeys at :date",
