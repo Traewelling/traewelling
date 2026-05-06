@@ -38,6 +38,13 @@ use OpenApi\Attributes as OA;
 )]
 class UpdateProfileInformationRequest extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('bio') && $this->bio !== null) {
+            $this->merge(['bio' => strip_tags($this->bio)]);
+        }
+    }
+
     public function rules(): array
     {
         return [
