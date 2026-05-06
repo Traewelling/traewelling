@@ -622,7 +622,7 @@ const durationStr = computed(() => {
                         <!-- eslint-disable-next-line vue/no-v-html -->
                         <p
                             v-if="statusObject.body"
-                            class="text-base text-base-content/80 italic whitespace-pre-wrap break-words"
+                            class="text-base text-base-content/80 italic whitespace-pre-wrap break-words [font-synthesis:none]"
                             v-html="enrichedBody"
                         />
 
