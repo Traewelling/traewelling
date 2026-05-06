@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Exceptions\RateLimitExceededException;
 use App\Http\Controllers\Controller;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Auth\VerifiesEmails;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -24,10 +26,28 @@ class VerificationController extends Controller
 
     use VerifiesEmails;
 
-    /**
-     * Where to redirect users after verification.
-     */
-    protected string $redirectTo = '/dashboard';
+    protected string $redirectTo = '/settings/account';
+
+    public function verify(Request $request): JsonResponse|RedirectResponse
+    {
+        if (!hash_equals((string) $request->route('id'), (string) $request->user()->getKey())) {
+            throw new AuthorizationException();
+        }
+
+        if (!hash_equals((string) $request->route('hash'), sha1($request->user()->getEmailForVerification()))) {
+            throw new AuthorizationException();
+        }
+
+        if ($request->user()->hasVerifiedEmail()) {
+            return redirect('/settings/account?already_verified=1');
+        }
+
+        if ($request->user()->markEmailAsVerified()) {
+            event(new Verified($request->user()));
+        }
+
+        return redirect('/settings/account?verified=1');
+    }
 
     /**
      * Create a new controller instance.

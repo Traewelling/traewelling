@@ -1,12 +1,7 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
 import { ref } from 'vue';
-import {
-    Api,
-    StatusVisibility,
-    UpdateProfileInformationRequest,
-    UserProfileSettingsResource,
-} from '../../../../../types/Api.gen';
+import { Api, StatusVisibility, UserProfileSettingsResource } from '../../../../../types/Api.gen';
 import { useProfileSettingsStore } from '../../../../../vue/stores/profileSettings';
 import SettingsListRow from '../../SettingsListRow.vue';
 
@@ -35,11 +30,8 @@ function getLabel(visibility: StatusVisibility): string {
 }
 
 function updateVisibility() {
-    const data = props.profile as UpdateProfileInformationRequest;
-    data.defaultStatusVisibility = input.value;
-
     api.settings
-        .updateProfileSettings(data)
+        .updateProfileSettings({ defaultStatusVisibility: input.value })
         .then((response) => {
             response.json().then((data) => {
                 profileStore.updateDefaultStatusVisibility(input.value);

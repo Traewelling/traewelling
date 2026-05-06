@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
 import { ref } from 'vue';
-import { Api, UpdateProfileInformationRequest, UserProfileSettingsResource } from '../../../../../types/Api.gen';
+import { Api, UserProfileSettingsResource } from '../../../../../types/Api.gen';
 import SettingsListRow from '../../SettingsListRow.vue';
 
 const props = defineProps<{
@@ -31,19 +31,15 @@ const providerOptions: ProviderOption[] = [
 ];
 
 function saveLink() {
-    const data = props.profile as UpdateProfileInformationRequest;
-    data.profileLinks = data.profileLinks || [];
-    const existingLinkIndex = data.profileLinks.findIndex((link) => link.name === selectedProvider.value?.value);
+    const links = [...(props.profile.profileLinks ?? [])];
+    const existingLinkIndex = links.findIndex((link) => link.name === selectedProvider.value?.value);
     if (existingLinkIndex !== -1) {
-        data.profileLinks[existingLinkIndex].url = input.value;
+        links[existingLinkIndex] = { ...links[existingLinkIndex], url: input.value };
     } else {
-        data.profileLinks.push({
-            name: selectedProvider.value!.value,
-            url: input.value,
-        });
+        links.push({ name: selectedProvider.value!.value, url: input.value });
     }
 
-    api.settings.updateProfileSettings(data).then((response) => {
+    api.settings.updateProfileSettings({ profileLinks: links }).then((response) => {
         response.json().then((data) => {
             selectedProvider.value = null;
             emits('profile-updated', data.data);
@@ -63,11 +59,9 @@ function getCurrentLink(providerValue: string): string {
 }
 
 function removeLink(): void {
-    const data = props.profile as UpdateProfileInformationRequest;
-    data.profileLinks = data.profileLinks || [];
-    data.profileLinks = data.profileLinks.filter((link) => link.name !== selectedProvider.value?.value);
+    const links = (props.profile.profileLinks ?? []).filter((link) => link.name !== selectedProvider.value?.value);
 
-    api.settings.updateProfileSettings(data).then((response) => {
+    api.settings.updateProfileSettings({ profileLinks: links }).then((response) => {
         response.json().then((data) => {
             selectedProvider.value = null;
             input.value = '';

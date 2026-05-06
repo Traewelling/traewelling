@@ -47,11 +47,22 @@ async function updatePassword() {
 </script>
 
 <template>
-    <SettingsListRow :title="trans('settings.title-change-password')" @click.prevent="modal?.showModal()" />
+    <SettingsListRow
+        :title="profile.password ? trans('settings.title-change-password') : trans('settings.title-set-password')"
+        :description="!profile.password ? trans('settings.warning-no-password') : undefined"
+        :warning="!profile.password"
+        @click.prevent="modal?.showModal()"
+    />
     <dialog ref="modal" class="modal">
         <div class="modal-box">
             <form @submit.prevent="updatePassword">
-                <h3 class="text-lg font-bold">{{ trans('settings.title-change-password') }}</h3>
+                <h3 class="text-lg font-bold">
+                    {{
+                        profile.password
+                            ? trans('settings.title-change-password')
+                            : trans('settings.title-set-password')
+                    }}
+                </h3>
                 <div class="flex flex-col gap-3 mt-4">
                     <input
                         v-if="profile.password"

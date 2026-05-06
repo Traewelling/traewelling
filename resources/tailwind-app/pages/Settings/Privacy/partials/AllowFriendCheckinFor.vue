@@ -1,12 +1,7 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
 import { ref } from 'vue';
-import {
-    Api,
-    FriendCheckinSetting,
-    UpdateProfileInformationRequest,
-    UserProfileSettingsResource,
-} from '../../../../../types/Api.gen';
+import { Api, FriendCheckinSetting, UserProfileSettingsResource } from '../../../../../types/Api.gen';
 import SettingsListRow from '../../SettingsListRow.vue';
 
 const props = defineProps<{
@@ -39,11 +34,8 @@ function getLabel(visibility: FriendCheckinSetting): string {
 }
 
 function updateVisibility() {
-    const data = props.profile as UpdateProfileInformationRequest;
-    data.friendCheckin = input.value;
-
     api.settings
-        .updateProfileSettings(data)
+        .updateProfileSettings({ friendCheckin: input.value })
         .then((response) => {
             response.json().then((data) => {
                 emits('profile-updated', data.data);
