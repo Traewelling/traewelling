@@ -9,7 +9,6 @@ import {
     Clock,
     Eye,
     EyeOff,
-    Globe,
     Heart,
     Lock,
     MoreVertical,
@@ -17,10 +16,8 @@ import {
     PlaneTakeoff,
     Route,
     Share2,
-    Shield,
     Trash2,
     User,
-    UserCheck,
     UserPlus,
     UserX,
     VolumeX,
@@ -54,6 +51,7 @@ import {
 } from '../../../vue/helpers/DateTimeHelper';
 import { useActiveCheckin } from '../../../vue/stores/activeCheckin';
 import { useUserStore } from '../../../vue/stores/user';
+import { ALL_VISIBILITIES, VISIBILITY_ICONS } from '../../helpers/visibility';
 
 const props = defineProps<{
     status: StatusResource;
@@ -432,24 +430,7 @@ async function handleBlock() {
     }
 }
 
-const visibilityIcon = computed(() => {
-    switch (statusObject.value.visibility) {
-        case StatusVisibility.Value0:
-            return Globe;
-        case StatusVisibility.Value1:
-            return Lock;
-        case StatusVisibility.Value2:
-            return UserCheck;
-        case StatusVisibility.Value3:
-            return Lock;
-        case StatusVisibility.Value4:
-            return UserCheck;
-        case StatusVisibility.Value5:
-            return Shield;
-        default:
-            return Eye;
-    }
-});
+const visibilityIcon = computed(() => VISIBILITY_ICONS[statusObject.value.visibility] ?? Eye);
 
 const isOwn = computed(() => !!userStore.user && userStore.user.id === statusObject.value.userDetails.id);
 const isBusy = computed(() => deleting.value);
@@ -949,12 +930,7 @@ const durationStr = computed(() => {
                 <!-- Visibility dropdown -->
                 <div v-if="!statusObject.lock_visibility" class="dropdown">
                     <button tabindex="0" class="btn btn-sm btn-outline gap-1">
-                        <Globe v-if="editVisibility === StatusVisibility.Value0" class="w-4 h-4" />
-                        <Eye v-else-if="editVisibility === StatusVisibility.Value1" class="w-4 h-4" />
-                        <UserCheck v-else-if="editVisibility === StatusVisibility.Value2" class="w-4 h-4" />
-                        <Lock v-else-if="editVisibility === StatusVisibility.Value3" class="w-4 h-4" />
-                        <UserCheck v-else-if="editVisibility === StatusVisibility.Value4" class="w-4 h-4" />
-                        <Shield v-else class="w-4 h-4" />
+                        <component :is="VISIBILITY_ICONS[editVisibility]" class="w-4 h-4" />
                         {{ trans('status.visibility.' + editVisibility) }}
                     </button>
                     <ul
@@ -962,7 +938,7 @@ const durationStr = computed(() => {
                         class="dropdown-content menu bg-base-100 rounded-box z-10 w-72 p-2 shadow-lg border border-base-200"
                     >
                         <li
-                            v-for="v in [0, 1, 2, 3, 4, 5]"
+                            v-for="v in ALL_VISIBILITIES"
                             :key="v"
                             @click="
                                 editVisibility = v as StatusVisibility;
@@ -970,12 +946,7 @@ const durationStr = computed(() => {
                             "
                         >
                             <a :class="editVisibility === v ? 'active' : ''">
-                                <Globe v-if="v === 0" class="w-4 h-4 shrink-0" />
-                                <Eye v-else-if="v === 1" class="w-4 h-4 shrink-0" />
-                                <UserCheck v-else-if="v === 2" class="w-4 h-4 shrink-0" />
-                                <Lock v-else-if="v === 3" class="w-4 h-4 shrink-0" />
-                                <UserCheck v-else-if="v === 4" class="w-4 h-4 shrink-0" />
-                                <Shield v-else class="w-4 h-4 shrink-0" />
+                                <component :is="VISIBILITY_ICONS[v]" class="w-4 h-4 shrink-0" />
                                 <span>
                                     {{ trans('status.visibility.' + v) }}
                                     <span class="block text-xs text-base-content/50">{{

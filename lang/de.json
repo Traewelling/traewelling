@@ -832,6 +832,8 @@
   "tag.title.trwl:wagon_class": "Wagengattung",
   "tag.add": "Tag hinzufügen",
   "tag.key": "Typ",
+  "tag.custom_key": "Eigener Typ",
+  "tag.custom_key.placeholder": "z. B. Auslastung",
   "tag.value": "Wert",
   "tag.value.trwl:social_status.do_not_disturb": "🚫 Bitte nicht stören",
   "tag.value.trwl:social_status.open": "👋 Offen für Gespräche",

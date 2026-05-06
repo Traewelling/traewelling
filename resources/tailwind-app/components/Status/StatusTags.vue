@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
-import { Eye, Globe, Lock, Plus, Trash2, UserCheck } from 'lucide-vue-next';
+import { Plus, Trash2 } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { Api, StatusTagResource, StatusVisibility } from '../../../types/Api.gen';
 import { getEnumValues, getTitle, keys } from '../../../vue/helpers/StatusTag';
+import { ALL_VISIBILITIES, VISIBILITY_ICONS } from '../../helpers/visibility';
 
 const props = defineProps<{
     statusId: number;
@@ -18,6 +19,8 @@ const localTags = ref<StatusTagResource[]>([...props.tags]);
 // add modal
 const showAddModal = ref(false);
 const newKey = ref<string>(keys[0]);
+const isCustomKey = ref(false);
+const customKeyInput = ref('');
 const newValue = ref('');
 const newVisibility = ref<number>(StatusVisibility.Value0);
 const saving = ref(false);
@@ -29,6 +32,8 @@ const editValue = ref('');
 const editVisibility = ref<number>(StatusVisibility.Value0);
 const editSaving = ref(false);
 const deletingKey = ref<string | null>(null);
+
+const CUSTOM_SENTINEL = '__custom__';
 
 function closeDropdown() {
     (document.activeElement as HTMLElement)?.blur();
@@ -47,16 +52,30 @@ const availableKeys = () => keys.filter((k) => !localTags.value.some((t) => t.ke
 
 function openAddModal() {
     const available = availableKeys();
-    newKey.value = available[0] ?? keys[0];
-    const vals = enumValues(newKey.value);
-    newValue.value = vals ? vals[0].value : '';
+    if (available.length > 0) {
+        newKey.value = available[0];
+        isCustomKey.value = false;
+        const vals = enumValues(newKey.value);
+        newValue.value = vals ? vals[0].value : '';
+    } else {
+        newKey.value = CUSTOM_SENTINEL;
+        isCustomKey.value = true;
+        newValue.value = '';
+    }
+    customKeyInput.value = '';
     newVisibility.value = StatusVisibility.Value0;
     showAddModal.value = true;
 }
 
 function onKeyChange() {
-    const vals = enumValues(newKey.value);
-    newValue.value = vals ? vals[0].value : '';
+    isCustomKey.value = newKey.value === CUSTOM_SENTINEL;
+    customKeyInput.value = '';
+    if (!isCustomKey.value) {
+        const vals = enumValues(newKey.value);
+        newValue.value = vals ? vals[0].value : '';
+    } else {
+        newValue.value = '';
+    }
 }
 
 function openEditModal(tag: StatusTagResource) {
@@ -68,11 +87,12 @@ function openEditModal(tag: StatusTagResource) {
 }
 
 async function addTag() {
-    if (!newValue.value) return;
+    const actualKey = isCustomKey.value ? customKeyInput.value.trim() : newKey.value;
+    if (!actualKey || !newValue.value) return;
     saving.value = true;
     try {
         const res = await api.status.createSingleStatusTag(
-            { key: newKey.value, value: newValue.value, visibility: newVisibility.value },
+            { key: actualKey, value: newValue.value, visibility: newVisibility.value },
             props.statusId,
         );
         localTags.value.push(res.data.data as StatusTagResource);
@@ -114,7 +134,7 @@ async function deleteTag(tag: StatusTagResource) {
 <template>
     <div v-if="localTags.length || editable" class="flex flex-wrap items-center gap-1.5">
         <button
-            v-if="editable && availableKeys().length > 0"
+            v-if="editable"
             class="badge badge-outline gap-1 text-xs cursor-pointer hover:badge-primary transition-colors"
             @click="openAddModal"
         >
@@ -145,10 +165,11 @@ async function deleteTag(tag: StatusTagResource) {
                     >
                     <select v-model="newKey" class="select select-bordered" @change="onKeyChange">
                         <option v-for="k in availableKeys()" :key="k" :value="k">{{ getTitle(k) }}</option>
+                        <option :value="CUSTOM_SENTINEL">{{ trans('tag.custom_key') }}</option>
                     </select>
                 </div>
 
-                <div class="form-control">
+                <div v-if="!isCustomKey" class="form-control">
                     <label class="label"
                         ><span class="label-text">{{ trans('tag.value') }}</span></label
                     >
@@ -161,16 +182,34 @@ async function deleteTag(tag: StatusTagResource) {
                 </div>
             </div>
 
+            <div v-if="isCustomKey" class="grid grid-cols-2 gap-3 mb-3">
+                <div class="form-control">
+                    <label class="label"
+                        ><span class="label-text">{{ trans('tag.custom_key') }}</span></label
+                    >
+                    <input
+                        v-model="customKeyInput"
+                        type="text"
+                        class="input input-bordered"
+                        :placeholder="trans('tag.custom_key.placeholder')"
+                        @keydown.enter="addTag"
+                    />
+                </div>
+                <div class="form-control">
+                    <label class="label"
+                        ><span class="label-text">{{ trans('tag.value') }}</span></label
+                    >
+                    <input v-model="newValue" type="text" class="input input-bordered" @keydown.enter="addTag" />
+                </div>
+            </div>
+
             <div class="mb-4">
                 <label class="label"
                     ><span class="label-text">{{ trans('settings.visibility') }}</span></label
                 >
                 <div class="dropdown w-full">
                     <button tabindex="0" class="btn btn-sm btn-outline gap-1 w-full justify-start">
-                        <Globe v-if="newVisibility === 0" class="w-4 h-4" />
-                        <Eye v-else-if="newVisibility === 1" class="w-4 h-4" />
-                        <UserCheck v-else-if="newVisibility === 2" class="w-4 h-4" />
-                        <Lock v-else class="w-4 h-4" />
+                        <component :is="VISIBILITY_ICONS[newVisibility]" class="w-4 h-4" />
                         {{ trans('status.visibility.' + newVisibility) }}
                     </button>
                     <ul
@@ -178,7 +217,7 @@ async function deleteTag(tag: StatusTagResource) {
                         class="dropdown-content menu bg-base-100 rounded-box z-10 w-full p-2 shadow-lg border border-base-200"
                     >
                         <li
-                            v-for="v in [0, 1, 2, 3]"
+                            v-for="v in ALL_VISIBILITIES"
                             :key="v"
                             @click="
                                 newVisibility = v as StatusVisibility;
@@ -186,10 +225,7 @@ async function deleteTag(tag: StatusTagResource) {
                             "
                         >
                             <a :class="newVisibility === v ? 'active' : ''">
-                                <Globe v-if="v === 0" class="w-4 h-4 shrink-0" />
-                                <Eye v-else-if="v === 1" class="w-4 h-4 shrink-0" />
-                                <UserCheck v-else-if="v === 2" class="w-4 h-4 shrink-0" />
-                                <Lock v-else class="w-4 h-4 shrink-0" />
+                                <component :is="VISIBILITY_ICONS[v]" class="w-4 h-4 shrink-0" />
                                 <span>
                                     {{ trans('status.visibility.' + v) }}
                                     <span class="block text-xs text-base-content/50">{{
@@ -204,7 +240,11 @@ async function deleteTag(tag: StatusTagResource) {
 
             <div class="modal-action">
                 <button class="btn btn-ghost" @click="showAddModal = false">{{ trans('cancel') }}</button>
-                <button class="btn btn-primary" :disabled="saving || !newValue" @click="addTag">
+                <button
+                    class="btn btn-primary"
+                    :disabled="saving || !newValue || (isCustomKey && !customKeyInput.trim())"
+                    @click="addTag"
+                >
                     <span v-if="saving" class="loading loading-spinner loading-xs" />
                     {{ trans('save') }}
                 </button>
@@ -253,10 +293,7 @@ async function deleteTag(tag: StatusTagResource) {
                 >
                 <div class="dropdown w-full">
                     <button tabindex="0" class="btn btn-sm btn-outline gap-1 w-full justify-start">
-                        <Globe v-if="editVisibility === 0" class="w-4 h-4" />
-                        <Eye v-else-if="editVisibility === 1" class="w-4 h-4" />
-                        <UserCheck v-else-if="editVisibility === 2" class="w-4 h-4" />
-                        <Lock v-else class="w-4 h-4" />
+                        <component :is="VISIBILITY_ICONS[editVisibility]" class="w-4 h-4" />
                         {{ trans('status.visibility.' + editVisibility) }}
                     </button>
                     <ul
@@ -264,7 +301,7 @@ async function deleteTag(tag: StatusTagResource) {
                         class="dropdown-content menu bg-base-100 rounded-box z-10 w-full p-2 shadow-lg border border-base-200"
                     >
                         <li
-                            v-for="v in [0, 1, 2, 3]"
+                            v-for="v in ALL_VISIBILITIES"
                             :key="v"
                             @click="
                                 editVisibility = v as StatusVisibility;
@@ -272,10 +309,7 @@ async function deleteTag(tag: StatusTagResource) {
                             "
                         >
                             <a :class="editVisibility === v ? 'active' : ''">
-                                <Globe v-if="v === 0" class="w-4 h-4 shrink-0" />
-                                <Eye v-else-if="v === 1" class="w-4 h-4 shrink-0" />
-                                <UserCheck v-else-if="v === 2" class="w-4 h-4 shrink-0" />
-                                <Lock v-else class="w-4 h-4 shrink-0" />
+                                <component :is="VISIBILITY_ICONS[v]" class="w-4 h-4 shrink-0" />
                                 <span>
                                     {{ trans('status.visibility.' + v) }}
                                     <span class="block text-xs text-base-content/50">{{

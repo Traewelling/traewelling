@@ -15,6 +15,7 @@ import {
 import { useActiveCheckin } from '../../../vue/stores/activeCheckin';
 import { checkinSuccessStore } from '../../../vue/stores/checkinSuccess';
 import { useProfileSettingsStore } from '../../../vue/stores/profileSettings';
+import { getVisibilityOptions } from '../../helpers/visibility';
 import EventPicker from './EventPicker.vue';
 import FriendPicker from './FriendPicker.vue';
 import TagEditor from './TagEditor.vue';
@@ -45,14 +46,7 @@ const tagEditor = ref<InstanceType<typeof TagEditor> | null>(null);
 
 const remaining = computed(() => 280 - statusText.value.length);
 
-const visibilityOptions = computed(() => [
-    { value: 0, label: trans('status.visibility.0') },
-    { value: 1, label: trans('status.visibility.1') },
-    { value: 2, label: trans('status.visibility.2') },
-    { value: 3, label: trans('status.visibility.3') },
-    { value: 4, label: trans('status.visibility.4') },
-    { value: 5, label: trans('status.visibility.5') },
-]);
+const visibilityOptions = computed(getVisibilityOptions);
 
 const businessOptions = computed(() => [
     { value: 0, label: trans('stationboard.business.private') },

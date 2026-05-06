@@ -3,6 +3,7 @@ import { trans } from 'laravel-vue-i18n';
 import { ref } from 'vue';
 import { Api, StatusVisibility, UserProfileSettingsResource } from '../../../../../types/Api.gen';
 import { useProfileSettingsStore } from '../../../../../vue/stores/profileSettings';
+import { VISIBILITY_ITEMS } from '../../../../helpers/visibility';
 import SettingsListRow from '../../SettingsListRow.vue';
 
 const props = defineProps<{
@@ -15,18 +16,9 @@ const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 const profileStore = useProfileSettingsStore();
 const input = ref<StatusVisibility>(props.profile.defaultStatusVisibility);
 
-const visibilities = [
-    { value: StatusVisibility.Value0, label: 'status.visibility.0', description: 'status.visibility.0.detail' },
-    { value: StatusVisibility.Value1, label: 'status.visibility.1', description: 'status.visibility.1.detail' },
-    { value: StatusVisibility.Value2, label: 'status.visibility.2', description: 'status.visibility.2.detail' },
-    { value: StatusVisibility.Value3, label: 'status.visibility.3', description: 'status.visibility.3.detail' },
-    { value: StatusVisibility.Value4, label: 'status.visibility.4', description: 'status.visibility.4.detail' },
-    { value: StatusVisibility.Value5, label: 'status.visibility.5', description: 'status.visibility.5.detail' },
-];
-
 function getLabel(visibility: StatusVisibility): string {
-    const option = visibilities.find((v) => v.value === visibility);
-    return option ? trans(option.label) : '';
+    const item = VISIBILITY_ITEMS.find((v) => v.value === visibility);
+    return item ? trans(item.labelKey) : '';
 }
 
 function updateVisibility() {
@@ -58,8 +50,8 @@ function updateVisibility() {
             <form @submit.prevent="updateVisibility">
                 <h3 class="text-lg font-bold">{{ trans('settings.visibility.default') }}</h3>
                 <select v-model="input" class="select w-full">
-                    <option v-for="option in visibilities" :key="option.value" :value="option.value">
-                        {{ trans(option.label) }} ({{ trans(option.description) }})
+                    <option v-for="item in VISIBILITY_ITEMS" :key="item.value" :value="item.value">
+                        {{ trans(item.labelKey) }} ({{ trans(item.detailKey) }})
                     </option>
                 </select>
                 <div class="modal-action">

@@ -5,39 +5,58 @@ import { computed, ref } from 'vue';
 import { Api, StatusTagResource } from '../../../types/Api.gen';
 import { TrwlTag } from '../../../types/TrwlTags';
 import { getEnumValues, getTitle, keys } from '../../../vue/helpers/StatusTag';
+import { getVisibilityOptions } from '../../helpers/visibility';
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+
+const CUSTOM_SENTINEL = '__custom__';
 
 const tags = ref<TrwlTag[]>([]);
 const open = ref(false);
 
 const selectedKey = ref<string>(keys[0]);
+const isCustomKey = ref(false);
+const customKeyInput = ref('');
 const inputValue = ref('');
 const tagVisibility = ref(0);
 
 const enumValues = computed(() => getEnumValues(selectedKey.value));
-const isEnum = computed(() => enumValues.value !== null);
+const isEnum = computed(() => enumValues.value !== null && !isCustomKey.value);
 const availableKeys = computed(() => keys.filter((k) => !tags.value.some((t) => t.key === k)));
 
-const visibilityOptions = computed(() => [
-    { value: 0, label: trans('status.visibility.0') },
-    { value: 2, label: trans('status.visibility.2') },
-    { value: 3, label: trans('status.visibility.3') },
-]);
+const visibilityOptions = computed(getVisibilityOptions);
 
 function onKeyChange(): void {
-    const vals = getEnumValues(selectedKey.value);
-    inputValue.value = vals ? vals[0].value : '';
+    isCustomKey.value = selectedKey.value === CUSTOM_SENTINEL;
+    customKeyInput.value = '';
+    if (!isCustomKey.value) {
+        const vals = getEnumValues(selectedKey.value);
+        inputValue.value = vals ? vals[0].value : '';
+    } else {
+        inputValue.value = '';
+    }
 }
 
 function addTag(): void {
-    if (!inputValue.value || !selectedKey.value) return;
-    tags.value.push({ key: selectedKey.value, value: inputValue.value, visibility: tagVisibility.value });
-    selectedKey.value = availableKeys.value.find((k) => k !== selectedKey.value) ?? availableKeys.value[0] ?? keys[0];
-    const vals = getEnumValues(selectedKey.value);
-    inputValue.value = vals ? vals[0].value : '';
+    const actualKey = isCustomKey.value ? customKeyInput.value.trim() : selectedKey.value;
+    if (!actualKey || !inputValue.value) return;
+    if (tags.value.some((t) => t.key === actualKey)) return;
+
+    tags.value.push({ key: actualKey, value: inputValue.value, visibility: tagVisibility.value });
     tagVisibility.value = 0;
-    if (!availableKeys.value.length) open.value = false;
+
+    const nextKey = availableKeys.value[0];
+    if (nextKey) {
+        selectedKey.value = nextKey;
+        isCustomKey.value = false;
+        const vals = getEnumValues(nextKey);
+        inputValue.value = vals ? vals[0].value : '';
+    } else {
+        selectedKey.value = CUSTOM_SENTINEL;
+        isCustomKey.value = true;
+        customKeyInput.value = '';
+        inputValue.value = '';
+    }
 }
 
 function removeTag(key: string): void {
@@ -58,7 +77,6 @@ defineExpose({ postTags });
             type="button"
             class="btn btn-sm gap-1"
             :class="tags.length ? 'btn-primary' : 'btn-ghost'"
-            :disabled="availableKeys.length === 0 && !tags.length"
             @click="open = !open"
         >
             <Tag class="w-4 h-4" />
@@ -85,7 +103,7 @@ defineExpose({ postTags });
             </div>
 
             <!-- Add tag form -->
-            <div v-if="availableKeys.length" class="flex flex-col gap-2">
+            <div class="flex flex-col gap-2">
                 <div class="flex gap-2 flex-wrap">
                     <select
                         v-model="selectedKey"
@@ -95,25 +113,28 @@ defineExpose({ postTags });
                         <option v-for="key in availableKeys" :key="key" :value="key">
                             {{ getTitle(key) }}
                         </option>
+                        <option :value="CUSTOM_SENTINEL">{{ trans('tag.custom_key') }}</option>
                     </select>
 
-                    <select
-                        v-if="isEnum"
-                        v-model="inputValue"
-                        class="select select-bordered select-sm flex-1 min-w-[130px]"
-                    >
-                        <option v-for="opt in enumValues" :key="opt.value" :value="opt.value">
-                            {{ opt.label }}
-                        </option>
-                    </select>
-                    <input
-                        v-else
-                        v-model="inputValue"
-                        type="text"
-                        class="input input-bordered input-sm flex-1 min-w-[130px]"
-                        :placeholder="trans('tag.value')"
-                        @keydown.enter.prevent="addTag"
-                    />
+                    <template v-if="!isCustomKey">
+                        <select
+                            v-if="isEnum"
+                            v-model="inputValue"
+                            class="select select-bordered select-sm flex-1 min-w-[130px]"
+                        >
+                            <option v-for="opt in enumValues" :key="opt.value" :value="opt.value">
+                                {{ opt.label }}
+                            </option>
+                        </select>
+                        <input
+                            v-else
+                            v-model="inputValue"
+                            type="text"
+                            class="input input-bordered input-sm flex-1 min-w-[130px]"
+                            :placeholder="trans('tag.value')"
+                            @keydown.enter.prevent="addTag"
+                        />
+                    </template>
 
                     <select v-model="tagVisibility" class="select select-bordered select-sm w-[100px]">
                         <option v-for="opt in visibilityOptions" :key="opt.value" :value="opt.value">
@@ -122,7 +143,30 @@ defineExpose({ postTags });
                     </select>
                 </div>
 
-                <button type="button" class="btn btn-sm btn-outline w-full" :disabled="!inputValue" @click="addTag">
+                <!-- Custom key row -->
+                <div v-if="isCustomKey" class="flex gap-2">
+                    <input
+                        v-model="customKeyInput"
+                        type="text"
+                        class="input input-bordered input-sm flex-1"
+                        :placeholder="trans('tag.custom_key.placeholder')"
+                        @keydown.enter.prevent="addTag"
+                    />
+                    <input
+                        v-model="inputValue"
+                        type="text"
+                        class="input input-bordered input-sm flex-1"
+                        :placeholder="trans('tag.value')"
+                        @keydown.enter.prevent="addTag"
+                    />
+                </div>
+
+                <button
+                    type="button"
+                    class="btn btn-sm btn-outline w-full"
+                    :disabled="!inputValue || (isCustomKey && !customKeyInput.trim())"
+                    @click="addTag"
+                >
                     <Plus class="w-4 h-4" />
                     {{ trans('tag.add') }}
                 </button>
