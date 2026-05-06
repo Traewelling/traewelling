@@ -27,6 +27,7 @@ class OAuthFlowTest extends ApiTestCase
             'name' => 'Test Machine Client',
             'secret' => Str::random(40),
             'redirect' => '',
+            'grant_types' => ['client_credentials'],
             'personal_access_client' => false,
             'password_client' => false,
             'revoked' => false,

@@ -27,12 +27,19 @@ class OAuthClientRepository
         bool $webhooksEnabled = false,
         ?string $authorizedWebhookUrl = null,
     ): OAuthClient {
+        $grantTypes = match (true) {
+            $personalAccess => ['personal_access'],
+            $password => ['password', 'refresh_token'],
+            default => ['authorization_code', 'refresh_token'],
+        };
+
         $client = Passport::client()->forceFill([
             'user_id' => $userId,
             'name' => $name,
             'secret' => ($confidential || $personalAccess) ? Str::random(40) : null,
             'provider' => $provider,
             'redirect' => $redirect,
+            'grant_types' => $grantTypes,
             'personal_access_client' => $personalAccess,
             'password_client' => $password,
             'revoked' => false,

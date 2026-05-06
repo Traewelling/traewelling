@@ -79,6 +79,7 @@ class OAuthClient extends PassportClient
     ];
 
     protected $casts = [
+        'grant_types' => 'array',
         'personal_access_client' => 'bool',
         'password_client' => 'bool',
         'revoked' => 'bool',

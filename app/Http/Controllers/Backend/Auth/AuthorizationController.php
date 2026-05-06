@@ -50,15 +50,19 @@ class AuthorizationController extends PassportAuthorizationController
             return $this->parseWebhookExtensions($request, $client);
         });
 
+        $prompt = $request->string('prompt')->explode(' ')->map(trim(...))->filter()->values();
+        if ($prompt->contains('none')) {
+            $prompt = collect(['none']);
+        }
+
         if ($this->guard->guest()) {
-            if ($request->get('prompt') === 'none') {
-                throw PassportOAuthServerException::loginRequired($authRequest);
-            }
-            $this->promptForLogin($request);
+            $prompt->contains('none')
+                ? throw PassportOAuthServerException::loginRequired($authRequest)
+                : $this->promptForLogin($request);
         }
 
         if (
-            $request->get('prompt') === 'login' &&
+            $prompt->contains('login') &&
             !$request->session()->get('promptedForLogin', false)
         ) {
             $this->guard->logout();
@@ -77,18 +81,18 @@ class AuthorizationController extends PassportAuthorizationController
 
         if (
             $webhook === null &&
-            $request->get('prompt') !== 'consent' &&
+            $prompt->doesntContain('consent') &&
             ($client->skipsAuthorization($user, $scopes) || $this->hasGrantedScopes($user, $client, $scopes))
         ) {
             return $this->approveRequest($authRequest, $psrResponse);
         }
 
-        if ($request->get('prompt') === 'none') {
+        if ($prompt->contains('none')) {
             throw PassportOAuthServerException::consentRequired($authRequest);
         }
 
         $request->session()->put('authToken', $authToken = Str::random());
-        $request->session()->put('authRequest', $authRequest);
+        $request->session()->put('authRequest', serialize($authRequest));
         $request->session()->put('webhook', $webhook);
 
         $userCount = $client->tokens()
