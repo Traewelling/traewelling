@@ -22,8 +22,7 @@ const mergedLinks = computed(() => {
         <div class="card-body">
             <p v-if="userData.bio" class="text-muted fst-italic m-0">
                 <i class="fa fa-quote-left me-2" />
-                <!-- eslint-disable-next-line vue/no-v-html -->
-                <span class="profile-bio" v-html="userData.bio" />
+                <span class="profile-bio">{{ userData.bio }}</span>
             </p>
             <div v-if="mergedLinks.length" class="d-flex justify-content-center flex-wrap gap-3 mt-4">
                 <a
@@ -41,3 +40,9 @@ const mergedLinks = computed(() => {
         </div>
     </div>
 </template>
+
+<style scoped>
+.profile-bio {
+    white-space: pre-wrap;
+}
+</style>
