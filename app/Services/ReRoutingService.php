@@ -267,7 +267,6 @@ class ReRoutingService
             );
             $this->tripRepository->setRouteSegmentForStop($start, $segment);
         } catch (BRouterException|GuzzleException $e) {
-            Log::error('RerouteStops: Failed to create route segment', ['error' => $e->getMessage()]);
             if ($e instanceof ClientException) {
                 Log::warning('RerouteStops: ClientException details', [
                     'response' => $e->getResponse()?->getBody()->getContents(),
@@ -280,6 +279,16 @@ class ReRoutingService
             if (str_contains($e->getMessage(), 'cURL error 28')) {
                 return;
             }
+            if (str_contains($e->getMessage(), 'no track found')) {
+                Log::debug('RerouteStops: BRouter found no track, skipping segment', [
+                    'from' => $start->station?->name,
+                    'to' => $end->station?->name,
+                    'error' => $e->getMessage(),
+                ]);
+
+                return;
+            }
+            Log::error('RerouteStops: Failed to create route segment', ['error' => $e->getMessage()]);
             report($e);
         } catch (\Exception $e) {
             Log::error('RerouteStops: Failed to create route segment', ['error' => $e->getMessage()]);
