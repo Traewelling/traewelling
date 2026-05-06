@@ -9,6 +9,7 @@ use App\Http\Controllers\Backend\Auth\AuthorizationController;
 use App\Http\Controllers\Backend\VersionController;
 use App\Notifications\LangMailMessage;
 use Carbon\CarbonInterval;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Contracts\Auth\StatefulGuard;
@@ -50,6 +51,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        AuthenticationException::redirectUsing(fn () => route('login'));
+
         if (config('app.force-https')) {
             URL::forceScheme('https');
         }
