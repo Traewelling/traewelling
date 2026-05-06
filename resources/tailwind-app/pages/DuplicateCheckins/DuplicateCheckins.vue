@@ -43,7 +43,9 @@ fetchDuplicates();
     <AppLayout>
         <div class="max-w-2xl mx-auto">
             <h1 class="text-2xl lg:text-3xl font-bold mb-1">{{ trans('checkin.duplicates.title') }}</h1>
-            <p v-if="loading || groups.length > 0" class="text-base-content/60 mb-6">{{ trans('checkin.duplicates.description') }}</p>
+            <p v-if="loading || groups.length > 0" class="text-base-content/60 mb-6">
+                {{ trans('checkin.duplicates.description') }}
+            </p>
 
             <template v-if="loading">
                 <div v-for="n in 2" :key="n" class="card bg-base-100 mb-4">

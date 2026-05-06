@@ -41,7 +41,9 @@ fetchDuplicates();
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-7">
             <h1 class="fs-4 mb-1">{{ trans('checkin.duplicates.title') }}</h1>
-            <p v-if="loading || groups.length > 0" class="text-muted mb-4">{{ trans('checkin.duplicates.description') }}</p>
+            <p v-if="loading || groups.length > 0" class="text-muted mb-4">
+                {{ trans('checkin.duplicates.description') }}
+            </p>
 
             <div v-if="loading" class="text-center py-5">
                 <div class="spinner-border" role="status">
