@@ -163,15 +163,15 @@ class ReRoutingServiceTest extends UnitTestCase
     public function test_stop_with_existing_segment_is_skipped_and_stopovers_decremented(): void
     {
         $station = $this->makeStation(self::LAT_A, self::LON_A);
-        $stopA = $this->makeStopover($station);
-        $stopB = $this->makeStopover($station, segment: $this->makeSegment());
+        $stopA = $this->makeStopover($station, segment: $this->makeSegment());
+        $stopB = $this->makeStopover($station);
 
         $trip = $this->makeTrip([$stopA, $stopB]);
 
         $this->brouter->shouldNotReceive('getRoute');
         $this->repository->shouldNotReceive('getRouteSegmentBetweenStops');
 
-        // stopovers starts at 2, decremented to 1 for the stop with an existing segment.
+        // stopovers starts at 2, decremented to 1 for the pair whose FROM stop already has a segment.
         // 0 errors / 1 counted stopover = 0% → job dispatched.
         $result = $this->service->rerouteStops($trip);
 

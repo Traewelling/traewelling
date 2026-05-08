@@ -7,9 +7,9 @@ return [
     'distance_deviation' => [
         'cooldown_error_percent' => (float) env('DISTANCE_DEVIATION_COOLDOWN_ERROR_PERCENT', 10),
         'cooldown_seconds' => (int) env('DISTANCE_DEVIATION_COOLDOWN_SECONDS', 60),
-        'threshold_percent' => (float) env('DISTANCE_DEVIATION_THRESHOLD_PERCENT', 20),
-        'threshold_percent_medium' => (float) env('DISTANCE_DEVIATION_THRESHOLD_PERCENT_MEDIUM', 25),
-        'threshold_percent_short' => (float) env('DISTANCE_DEVIATION_THRESHOLD_PERCENT_SHORT', 30),
+        'threshold_percent' => (float) env('DISTANCE_DEVIATION_THRESHOLD_PERCENT', 30),
+        'threshold_percent_medium' => (float) env('DISTANCE_DEVIATION_THRESHOLD_PERCENT_MEDIUM', 50),
+        'threshold_percent_short' => (float) env('DISTANCE_DEVIATION_THRESHOLD_PERCENT_SHORT', 55),
         'threshold_percent_shortest' => (float) env('DISTANCE_DEVIATION_THRESHOLD_PERCENT_SHORTEST', 40),
         'shortest_distance' => (int) env('DISTANCE_DEVIATION_SHORTEST_DISTANCE', 400),
         'short_distance' => (int) env('DISTANCE_DEVIATION_SHORT_DISTANCE', 2000),

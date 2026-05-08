@@ -43,8 +43,8 @@ class ReRoutingService
             if (!$previousStop) {
                 continue;
             }
-            if ($stop->routeSegment !== null) {
-                Log::debug('RerouteStops: At least one stop already has route segment, skipping whole process', ['stop_id' => $stop->id]);
+            if ($previousStop->routeSegment !== null) {
+                Log::debug('RerouteStops: Segment already assigned to this stopover pair, skipping', ['stop_id' => $previousStop->id]);
                 $this->stopovers--;
 
                 continue;
