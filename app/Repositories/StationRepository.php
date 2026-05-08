@@ -144,4 +144,16 @@ class StationRepository
     {
         return Station::whereId($id)->first();
     }
+
+    public function getIdentifierForStation(string $identifierId, int $stationId): ?StationIdentifier
+    {
+        return StationIdentifier::where('id', $identifierId)
+            ->where('station_id', $stationId)
+            ->first();
+    }
+
+    public function moveIdentifierToStation(StationIdentifier $identifier, Station $targetStation): void
+    {
+        $identifier->update(['station_id' => $targetStation->id]);
+    }
 }

@@ -6,6 +6,7 @@ namespace App\Services\Checkin;
 
 use App\DataProviders\DataProviderInterface;
 use App\Models\Station;
+use App\Models\StationIdentifier;
 use App\Models\User;
 use App\Repositories\StationRepository;
 use Illuminate\Support\Collection;
@@ -47,5 +48,16 @@ class StationService
         }
 
         return $stations;
+    }
+
+    public function moveIdentifier(StationIdentifier $identifier, Station $targetStation, User $actor): void
+    {
+        $sourceStation = $identifier->station;
+
+        $this->stationRepository->moveIdentifierToStation($identifier, $targetStation);
+
+        activity()->causedBy($actor)
+            ->performedOn($identifier)
+            ->log("Moved identifier {$identifier->identifier} ({$identifier->type->value}) from station {$sourceStation->name} ({$sourceStation->id}) to {$targetStation->name} ({$targetStation->id})");
     }
 }
