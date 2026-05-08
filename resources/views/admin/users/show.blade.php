@@ -247,7 +247,7 @@
                                         </a>
                                     </td>
                                     <td>
-                                        <a href="{{route('admin.trips.show', ['id' => $status->checkin->trip->id])}}">
+                                        <a href="{{url('/admin/trips/' . $status->checkin->trip->id)}}">
                                             {{ $status->checkin->id }} ({{ $status->checkin->trip->source }})
                                         </a>
                                         <br/>

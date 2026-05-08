@@ -35,12 +35,6 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function () {
         Route::prefix('trips')->group(function () {
             Route::get('/', [TripController::class, 'index'])
                 ->name('admin.trips');
-            Route::get('/{id}', [TripController::class, 'renderTrip'])
-                ->whereNumber('id')
-                ->name('admin.trips.show');
-            Route::get('/{id}/reroute', [TripController::class, 'rerouteTrip'])
-                ->whereNumber('id')
-                ->name('admin.trips.reroute');
         });
 
         Route::prefix('stations')->group(function () {

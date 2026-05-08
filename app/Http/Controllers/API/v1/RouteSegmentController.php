@@ -11,8 +11,10 @@ use App\Exceptions\BRouterException;
 use App\Http\Resources\RouteSegmentResource;
 use App\Jobs\AssignRouteSegmentToStopovers;
 use App\Jobs\DeleteRouteSegment;
+use App\Jobs\UpgradeRouteSegmentAssignments;
 use App\Models\RouteSegment;
 use App\Models\Station;
+use App\Models\StationIdentifier;
 use App\Models\Stopover;
 use App\Repositories\TripRepository;
 use App\Services\BRouterService;
@@ -64,7 +66,8 @@ class RouteSegmentController extends Controller
             'to_station_id' => ['required', 'integer', 'exists:train_stations,id'],
         ]);
 
-        $segments = RouteSegment::where('from_station_id', $validated['from_station_id'])
+        $segments = RouteSegment::with(['fromIdentifier', 'toIdentifier'])
+            ->where('from_station_id', $validated['from_station_id'])
             ->where('to_station_id', $validated['to_station_id'])
             ->orderBy('duration')
             ->get();
@@ -127,6 +130,20 @@ class RouteSegmentController extends Controller
                         example: 42,
                         nullable: true,
                     ),
+                    new OA\Property(
+                        property: 'from_identifier_id',
+                        description: 'UUID of the StationIdentifier for the origin. Must be provided together with to_identifier_id.',
+                        type: 'string',
+                        format: 'uuid',
+                        nullable: true,
+                    ),
+                    new OA\Property(
+                        property: 'to_identifier_id',
+                        description: 'UUID of the StationIdentifier for the destination. Must be provided together with from_identifier_id.',
+                        type: 'string',
+                        format: 'uuid',
+                        nullable: true,
+                    ),
                 ],
             ),
         ),
@@ -158,19 +175,33 @@ class RouteSegmentController extends Controller
             'from_station_id' => ['required', 'integer', 'exists:train_stations,id'],
             'to_station_id' => ['required', 'integer', 'exists:train_stations,id', 'different:from_station_id'],
             'stopover_id' => ['nullable', 'integer', 'exists:train_stopovers,id'],
+            'from_identifier_id' => ['nullable', 'string', 'uuid', 'exists:station_identifiers,id', 'required_with:to_identifier_id'],
+            'to_identifier_id' => ['nullable', 'string', 'uuid', 'exists:station_identifiers,id', 'required_with:from_identifier_id'],
         ]);
 
         $fromStation = Station::findOrFail($validated['from_station_id']);
         $toStation = Station::findOrFail($validated['to_station_id']);
 
+        $fromIdentifier = isset($validated['from_identifier_id'])
+            ? StationIdentifier::find($validated['from_identifier_id'])
+            : null;
+        $toIdentifier = isset($validated['to_identifier_id'])
+            ? StationIdentifier::find($validated['to_identifier_id'])
+            : null;
+
+        $fromLat = ($fromIdentifier?->latitude !== null) ? $fromIdentifier->latitude : $fromStation->latitude;
+        $fromLon = ($fromIdentifier?->longitude !== null) ? $fromIdentifier->longitude : $fromStation->longitude;
+        $toLat = ($toIdentifier?->latitude !== null) ? $toIdentifier->latitude : $toStation->latitude;
+        $toLon = ($toIdentifier?->longitude !== null) ? $toIdentifier->longitude : $toStation->longitude;
+
         $encodedPolyline = new PolylineTranscoder()->encodePolyline([
-            [$fromStation->longitude, $fromStation->latitude],
-            [$toStation->longitude, $toStation->latitude],
+            [$fromLon, $fromLat],
+            [$toLon, $toLat],
         ]);
 
         $distanceInMeters = (int) $geoService->getDistance(
-            new Coordinate($fromStation->latitude, $fromStation->longitude),
-            new Coordinate($toStation->latitude, $toStation->longitude),
+            new Coordinate($fromLat, $fromLon),
+            new Coordinate($toLat, $toLon),
         );
 
         $duration = null;
@@ -197,7 +228,18 @@ class RouteSegmentController extends Controller
             $pathType = $stopover->trip->category->getSegmentPathType();
 
             if ($duration !== null) {
-                $existingSegment = $tripRepository->getRouteSegmentBetweenStops($stopover, $next, $duration, $pathType);
+                // When identifier IDs are explicitly requested, only reuse an existing segment
+                // if it already has those exact identifiers — never fall back to station-to-station.
+                // This allows upgrading an existing station-based assignment to identifier-based.
+                if ($fromIdentifier !== null && $toIdentifier !== null) {
+                    $existingSegment = RouteSegment::where('from_identifier_id', $fromIdentifier->id)
+                        ->where('to_identifier_id', $toIdentifier->id)
+                        ->where(fn ($q) => $q->where('path_type', $pathType)->orWhereNull('path_type'))
+                        ->first();
+                } else {
+                    $existingSegment = $tripRepository->getRouteSegmentBetweenStops($stopover, $next, $duration, $pathType);
+                }
+
                 if ($existingSegment !== null) {
                     $tripRepository->setRouteSegmentForStop($stopover, $existingSegment);
 
@@ -215,10 +257,16 @@ class RouteSegmentController extends Controller
             duration: $duration,
             pathType: $pathType,
             distanceInMeters: $distanceInMeters,
+            fromIdentifier: $fromIdentifier,
+            toIdentifier: $toIdentifier,
         );
 
         if ($stopover !== null) {
             $tripRepository->setRouteSegmentForStop($stopover, $segment);
+        }
+
+        if ($fromIdentifier !== null && $toIdentifier !== null) {
+            UpgradeRouteSegmentAssignments::dispatch($segment->id);
         }
 
         return new RouteSegmentResource($segment)

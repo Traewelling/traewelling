@@ -14,6 +14,8 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'identifier', type: 'string', example: 'RK'),
         new OA\Property(property: 'name', type: 'string', example: 'Karlsruhe Hbf', nullable: true),
         new OA\Property(property: 'origin', type: 'string', example: 'db', nullable: true),
+        new OA\Property(property: 'latitude', type: 'number', format: 'float', example: 48.993207, nullable: true),
+        new OA\Property(property: 'longitude', type: 'number', format: 'float', example: 8.400977, nullable: true),
     ],
 )]
 class StationIdentifierResource extends JsonResource
@@ -27,6 +29,8 @@ class StationIdentifierResource extends JsonResource
             'identifier' => $this->identifier,
             'name' => $this->name,
             'origin' => $this->origin,
+            'latitude' => $this->latitude,
+            'longitude' => $this->longitude,
         ];
     }
 }

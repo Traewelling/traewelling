@@ -4,6 +4,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { Api, type Station } from '../../../types/Api.gen';
 import BackendLayout from '../../layouts/BackendLayout.vue';
+import StationCoordinatesMap from './partials/StationCoordinatesMap.vue';
 import StationDetailsCard from './partials/StationDetailsCard.vue';
 import StationIdentifiersCard from './partials/StationIdentifiersCard.vue';
 
@@ -100,6 +101,8 @@ watch(stationId, fetchStation);
                         :nearby-stations="nearbyStations"
                         @changed="fetchStation"
                     />
+
+                    <StationCoordinatesMap :station="station" :identifiers="station.identifiers ?? []" />
                 </div>
 
                 <!-- Right column -->

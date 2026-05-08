@@ -829,6 +829,46 @@ export interface AdminStatusResource {
   createdBy: LightUserResource | null;
 }
 
+/** AdminStopover */
+export interface AdminStopoverResource {
+  id?: number;
+  station?: {
+    id?: number;
+    name?: string;
+  };
+  /** @format date-time */
+  arrivalPlanned?: string | null;
+  /** @format date-time */
+  arrivalReal?: string | null;
+  /** @format date-time */
+  departurePlanned?: string | null;
+  /** @format date-time */
+  departureReal?: string | null;
+  /** @format uuid */
+  routeSegmentId?: string | null;
+  routeSegmentType?: "identifier" | "station" | null;
+  /** @format uuid */
+  stationIdentifierId?: string | null;
+}
+
+/** AdminTrip */
+export interface AdminTripResource {
+  id?: number;
+  tripId?: string;
+  category?: string;
+  mode?: string | null;
+  number?: string | null;
+  lineName?: string | null;
+  journeyNumber?: number | null;
+  operator?: string | null;
+  source?: string | null;
+  user?: LightUserResource | null;
+  /** @format date-time */
+  lastRefreshed?: string | null;
+  stopovers?: AdminStopoverResource[];
+  statuses?: AdminStatusResource[];
+}
+
 export interface AlertResource {
   /** @example "123e4567-e89b-12d3-a456-426614174000" */
   id: string;
@@ -1729,6 +1769,16 @@ export interface StationIdentifierResource {
   name?: string | null;
   /** @example "db" */
   origin?: string | null;
+  /**
+   * @format float
+   * @example 48.993207
+   */
+  latitude?: number | null;
+  /**
+   * @format float
+   * @example 8.400977
+   */
+  longitude?: number | null;
 }
 
 /** Station */
@@ -3198,6 +3248,46 @@ export class Api<
         secure: true,
         type: ContentType.Json,
         format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Admin only. Returns full trip details including stopovers with route segment info and checkins.
+     *
+     * @tags Admin
+     * @name GetAdminTrip
+     * @summary Get trip details
+     * @request GET:/admin/trips/{id}
+     * @secure
+     */
+    getAdminTrip: (id: number, params: RequestParams = {}) =>
+      this.request<
+        {
+          data?: AdminTripResource;
+        },
+        void
+      >({
+        path: `/admin/trips/${id}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Admin only. Dispatches a background job to recalculate the polyline for the given trip.
+     *
+     * @tags Admin
+     * @name RerouteAdminTrip
+     * @summary Dispatch reroute job
+     * @request POST:/admin/trips/{id}/reroute
+     * @secure
+     */
+    rerouteAdminTrip: (id: number, params: RequestParams = {}) =>
+      this.request<void, void>({
+        path: `/admin/trips/${id}/reroute`,
+        method: "POST",
+        secure: true,
         ...params,
       }),
   };
@@ -5113,6 +5203,16 @@ export class Api<
          * @example 42
          */
         stopover_id?: number | null;
+        /**
+         * UUID of the StationIdentifier for the origin. Must be provided together with to_identifier_id.
+         * @format uuid
+         */
+        from_identifier_id?: string | null;
+        /**
+         * UUID of the StationIdentifier for the destination. Must be provided together with from_identifier_id.
+         * @format uuid
+         */
+        to_identifier_id?: string | null;
       },
       params: RequestParams = {},
     ) =>

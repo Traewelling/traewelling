@@ -28,7 +28,7 @@
                             @foreach($trips as $trip)
                                 <tr>
                                     <td>
-                                        <a href="{{route('admin.trips.show', ['id' => $trip->id])}}">
+                                        <a href="{{url('/admin/trips/' . $trip->id)}}">
                                             {{$trip->id}}
                                         </a>
                                     </td>

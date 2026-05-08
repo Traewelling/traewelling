@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { Api, type RouteSegmentResource } from '../../../types/Api.gen';
+
+const router = useRouter();
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 
@@ -40,7 +43,13 @@ function formatDuration(seconds: number | null | undefined): string {
             <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
                 <dt class="text-base-content/50 font-medium">From</dt>
                 <dd>
-                    <span>{{ segment.fromStation?.name ?? '—' }}</span>
+                    <a
+                        v-if="segment.fromStation?.id"
+                        class="link link-hover"
+                        @click.prevent="router.push(`/admin/stations/${segment.fromStation.id}`)"
+                        >{{ segment.fromStation.name }}</a
+                    >
+                    <span v-else>{{ segment.fromStation?.name ?? '—' }}</span>
                     <div v-if="segment.fromIdentifier" class="text-xs text-base-content/50 mt-0.5">
                         {{ segment.fromIdentifier.type }}:
                         <code class="font-mono">{{ segment.fromIdentifier.identifier }}</code>
@@ -57,7 +66,13 @@ function formatDuration(seconds: number | null | undefined): string {
 
                 <dt class="text-base-content/50 font-medium">To</dt>
                 <dd>
-                    <span>{{ segment.toStation?.name ?? '—' }}</span>
+                    <a
+                        v-if="segment.toStation?.id"
+                        class="link link-hover"
+                        @click.prevent="router.push(`/admin/stations/${segment.toStation.id}`)"
+                        >{{ segment.toStation.name }}</a
+                    >
+                    <span v-else>{{ segment.toStation?.name ?? '—' }}</span>
                     <div v-if="segment.toIdentifier" class="text-xs text-base-content/50 mt-0.5">
                         {{ segment.toIdentifier.type }}:
                         <code class="font-mono">{{ segment.toIdentifier.identifier }}</code>
