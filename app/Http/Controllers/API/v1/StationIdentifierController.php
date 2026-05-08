@@ -8,6 +8,7 @@ use App\Enum\StationIdentifierType;
 use App\Models\Station;
 use App\Repositories\StationRepository;
 use App\Services\Checkin\StationService;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -27,10 +28,6 @@ class StationIdentifierController extends Controller
         description: 'Admin only. Manually add an identifier to a station. The `origin` field will be set to `null`.',
         summary: 'Add a station identifier',
         security: [['passport' => ['*']], ['token' => []]],
-        tags: ['Stations'],
-        parameters: [
-            new OA\Parameter(name: 'stationId', description: 'Station ID', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
-        ],
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
@@ -41,6 +38,10 @@ class StationIdentifierController extends Controller
                 ],
             ),
         ),
+        tags: ['Stations'],
+        parameters: [
+            new OA\Parameter(name: 'stationId', description: 'Station ID', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
+        ],
         responses: [
             new OA\Response(response: 201, description: 'Identifier created'),
             new OA\Response(response: 403, description: 'Forbidden'),
@@ -58,12 +59,16 @@ class StationIdentifierController extends Controller
             'identifier' => ['required', 'string', 'max:255'],
         ]);
 
-        $this->stationService->createIdentifier(
-            $station,
-            StationIdentifierType::from($validated['type']),
-            $validated['identifier'],
-            $request->user(),
-        );
+        try {
+            $this->stationService->createIdentifier(
+                $station,
+                StationIdentifierType::from($validated['type']),
+                $validated['identifier'],
+                $request->user(),
+            );
+        } catch (UniqueConstraintViolationException) {
+            return $this->sendError('This identifier already exists on another station.', 422);
+        }
 
         return response()->noContent(201);
     }
@@ -74,21 +79,21 @@ class StationIdentifierController extends Controller
         description: 'Admin only. Update the type and value of an existing station identifier.',
         summary: 'Update a station identifier',
         security: [['passport' => ['*']], ['token' => []]],
-        tags: ['Stations'],
-        parameters: [
-            new OA\Parameter(name: 'stationId', description: 'Station ID', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
-            new OA\Parameter(name: 'identifierId', description: 'Identifier UUID', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid')),
-        ],
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
                 required: ['type', 'identifier'],
                 properties: [
                     new OA\Property(property: 'type', ref: '#/components/schemas/StationIdentifierType'),
-                    new OA\Property(property: 'identifier', type: 'string', maxLength: 255, example: 'de:08212:1'),
+                    new OA\Property(property: 'identifier', type: 'string', example: 'de:08212:1', maxLength: 255),
                 ],
             ),
         ),
+        tags: ['Stations'],
+        parameters: [
+            new OA\Parameter(name: 'stationId', description: 'Station ID', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
+            new OA\Parameter(name: 'identifierId', description: 'Identifier UUID', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid')),
+        ],
         responses: [
             new OA\Response(response: 204, description: 'Updated'),
             new OA\Response(response: 403, description: 'Forbidden'),
@@ -111,12 +116,16 @@ class StationIdentifierController extends Controller
             return $this->sendError('Identifier not found for this station', 404);
         }
 
-        $this->stationService->updateIdentifierValues(
-            $identifier,
-            StationIdentifierType::from($validated['type']),
-            $validated['identifier'],
-            $request->user(),
-        );
+        try {
+            $this->stationService->updateIdentifierValues(
+                $identifier,
+                StationIdentifierType::from($validated['type']),
+                $validated['identifier'],
+                $request->user(),
+            );
+        } catch (UniqueConstraintViolationException) {
+            return $this->sendError('This identifier already exists on another station.', 422);
+        }
 
         return response()->noContent();
     }
@@ -127,11 +136,6 @@ class StationIdentifierController extends Controller
         description: 'Admin only. Move a station identifier to a different station.',
         summary: 'Move a station identifier',
         security: [['passport' => ['*']], ['token' => []]],
-        tags: ['Stations'],
-        parameters: [
-            new OA\Parameter(name: 'stationId', description: 'Source station ID', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
-            new OA\Parameter(name: 'identifierId', description: 'Identifier UUID', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid')),
-        ],
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
@@ -141,6 +145,11 @@ class StationIdentifierController extends Controller
                 ],
             ),
         ),
+        tags: ['Stations'],
+        parameters: [
+            new OA\Parameter(name: 'stationId', description: 'Source station ID', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
+            new OA\Parameter(name: 'identifierId', description: 'Identifier UUID', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid')),
+        ],
         responses: [
             new OA\Response(response: 204, description: 'Moved'),
             new OA\Response(response: 403, description: 'Forbidden'),
