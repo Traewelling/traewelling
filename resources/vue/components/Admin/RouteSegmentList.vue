@@ -94,7 +94,8 @@ onMounted(fetchSegments);
                         <tr>
                             <th>Duration</th>
                             <th>Distance</th>
-                            <th>Type</th>
+                            <th>Path type</th>
+                            <th>Segment type</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -107,7 +108,23 @@ onMounted(fetchSegments);
                             <td class="font-mono tabular-nums text-xs">{{ formatDuration(segment.duration) }}</td>
                             <td class="tabular-nums text-xs">{{ formatDistance(segment.distance) }}</td>
                             <td class="text-xs">{{ segment.pathType ?? '—' }}</td>
-                            <td class="text-right">
+                            <td class="text-xs">
+                                <template v-if="segment.fromIdentifier?.id && segment.toIdentifier?.id">
+                                    <span class="badge badge-success badge-xs">identifier → identifier</span>
+                                    <div class="mt-1 space-y-0.5 text-base-content/60">
+                                        <div class="font-mono">
+                                            {{ segment.fromIdentifier.type }}:
+                                            {{ segment.fromIdentifier.identifier }}
+                                        </div>
+                                        <div class="font-mono">
+                                            {{ segment.toIdentifier.type }}:
+                                            {{ segment.toIdentifier.identifier }}
+                                        </div>
+                                    </div>
+                                </template>
+                                <span v-else class="badge badge-warning badge-xs">station → station</span>
+                            </td>
+                            <td class="text-right align-top">
                                 <template v-if="segment.id !== currentSegmentId">
                                     <a :href="segmentUrl(segment.id!)" class="btn btn-xs btn-ghost">Open</a>
                                     <button

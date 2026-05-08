@@ -15,6 +15,7 @@ use App\Http\Controllers\API\ChangelogController;
 use App\Http\Controllers\API\v1\AdminEventController;
 use App\Http\Controllers\API\v1\AdminEventSuggestionController;
 use App\Http\Controllers\API\v1\AdminStatusController;
+use App\Http\Controllers\API\v1\AdminTripController;
 use App\Http\Controllers\API\v1\AlertController;
 use App\Http\Controllers\API\v1\ApplicationController;
 use App\Http\Controllers\API\v1\AuthController as v1Auth;
@@ -253,6 +254,9 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         });
 
         Route::prefix('admin')->group(static function () {
+            Route::get('trips/{id}', [AdminTripController::class, 'show'])->whereNumber('id');
+            Route::post('trips/{id}/reroute', [AdminTripController::class, 'reroute'])->whereNumber('id');
+
             Route::get('statuses', [AdminStatusController::class, 'index']);
             Route::get('statuses/{id}', [AdminStatusController::class, 'show'])->whereNumber('id');
             Route::put('statuses/{id}', [AdminStatusController::class, 'update'])->whereNumber('id');

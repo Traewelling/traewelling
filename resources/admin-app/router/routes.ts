@@ -13,6 +13,7 @@ import StationsIndex from '../pages/Stations/StationsIndex.vue';
 import StationsShow from '../pages/Stations/StationsShow.vue';
 import StatusesIndex from '../pages/Statuses/StatusesIndex.vue';
 import StatusesShow from '../pages/Statuses/StatusesShow.vue';
+import TripsShow from '../pages/Trips/TripsShow.vue';
 import Welcome from '../pages/Welcome.vue';
 
 const routes: Array<RouteRecordRaw> = [
@@ -83,6 +84,10 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: '/admin/stations/:id',
         component: StationsShow,
+    },
+    {
+        path: '/admin/trips/:id',
+        component: TripsShow,
     },
 ];
 

@@ -37,21 +37,19 @@ class TripRepository
         $fromIdentifierId = $start->station_identifier_id;
         $toIdentifierId = $end->station_identifier_id;
 
-        // When both stopovers have identifiers, prefer an exact identifier-based segment.
+        // When both stopovers have identifiers, require an identifier-based segment.
+        // There is no fallback to station-to-station, if no match exists, return null
+        // so the caller can create a new identifier-to-identifier segment.
         if ($fromIdentifierId !== null && $toIdentifierId !== null) {
-            $segment = RouteSegment::where('from_identifier_id', $fromIdentifierId)
+            return RouteSegment::where('from_identifier_id', $fromIdentifierId)
                 ->where('to_identifier_id', $toIdentifierId)
                 ->where(fn ($q) => $q->where('path_type', $pathType)->orWhereNull('path_type'))
                 ->whereBetween('duration', $durationRange)
                 ->when($excludeId !== null, fn ($q) => $q->where('id', '!=', $excludeId))
                 ->first();
-
-            if ($segment !== null) {
-                return $segment;
-            }
         }
 
-        // Fall back to station-based lookup (only segments without identifier specificity).
+        // Fallback for stopovers without an identifier assigned (should not occur normally).
         return RouteSegment::where('from_station_id', $start->train_station_id)
             ->where('to_station_id', $end->train_station_id)
             ->whereNull('from_identifier_id')

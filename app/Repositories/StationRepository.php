@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Enum\StationIdentifierType;
+use App\Models\RouteSegment;
 use App\Models\Station;
 use App\Models\StationIdentifier;
 use App\Models\User;
@@ -155,6 +156,12 @@ class StationRepository
     public function moveIdentifierToStation(StationIdentifier $identifier, Station $targetStation): void
     {
         $identifier->update(['station_id' => $targetStation->id]);
+
+        RouteSegment::where('from_identifier_id', $identifier->id)
+            ->update(['from_station_id' => $targetStation->id]);
+
+        RouteSegment::where('to_identifier_id', $identifier->id)
+            ->update(['to_station_id' => $targetStation->id]);
     }
 
     public function createIdentifier(Station $station, StationIdentifierType $type, string $value): StationIdentifier

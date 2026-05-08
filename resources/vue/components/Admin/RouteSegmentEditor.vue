@@ -265,10 +265,10 @@ onMounted(() => {
 
     const existingPts = decodePolyline(props.segment.polyline ?? '', props.segment.polylinePrecision ?? 5);
 
-    const fromLat = props.segment.fromStation?.latitude ?? 0;
-    const fromLng = props.segment.fromStation?.longitude ?? 0;
-    const toLat = props.segment.toStation?.latitude ?? 0;
-    const toLng = props.segment.toStation?.longitude ?? 0;
+    const fromLat = props.segment.fromIdentifier?.latitude ?? props.segment.fromStation?.latitude ?? 0;
+    const fromLng = props.segment.fromIdentifier?.longitude ?? props.segment.fromStation?.longitude ?? 0;
+    const toLat = props.segment.toIdentifier?.latitude ?? props.segment.toStation?.latitude ?? 0;
+    const toLng = props.segment.toIdentifier?.longitude ?? props.segment.toStation?.longitude ?? 0;
 
     map = L.map(mapEl.value);
     setTilingLayer('open-railway-map', map);
@@ -324,10 +324,10 @@ onUnmounted(() => {
 
 function reset(): void {
     if (!map) return;
-    const fromLat = props.segment.fromStation?.latitude ?? 0;
-    const fromLng = props.segment.fromStation?.longitude ?? 0;
-    const toLat = props.segment.toStation?.latitude ?? 0;
-    const toLng = props.segment.toStation?.longitude ?? 0;
+    const fromLat = props.segment.fromIdentifier?.latitude ?? props.segment.fromStation?.latitude ?? 0;
+    const fromLng = props.segment.fromIdentifier?.longitude ?? props.segment.fromStation?.longitude ?? 0;
+    const toLat = props.segment.toIdentifier?.latitude ?? props.segment.toStation?.latitude ?? 0;
+    const toLng = props.segment.toIdentifier?.longitude ?? props.segment.toStation?.longitude ?? 0;
     markerA!.setLatLng([fromLat, fromLng]);
     markerB!.setLatLng([toLat, toLng]);
     clearIntermediates();
@@ -357,7 +357,7 @@ function reset(): void {
                     <span v-if="previewDistance !== null" class="text-xs text-base-content/50 tabular-nums">
                         {{ (previewDistance / 1000).toFixed(2) }} km
                     </span>
-                    <button class="btn btn-sm btn-warning" @click="reset">Reset to Stations</button>
+                    <button class="btn btn-sm btn-warning" @click="reset">Reset</button>
                     <button class="btn btn-sm btn-success" :disabled="!saveEnabled" @click="save">
                         Save to Segment
                     </button>

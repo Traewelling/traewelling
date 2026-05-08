@@ -804,6 +804,96 @@
                 ]
             }
         },
+        "/admin/trips/{id}": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Get trip details",
+                "description": "Admin only. Returns full trip details including stopovers with route segment info and checkins.",
+                "operationId": "getAdminTrip",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Trip details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/AdminTripResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/admin/trips/{id}/reroute": {
+            "post": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Dispatch reroute job",
+                "description": "Admin only. Dispatches a background job to recalculate the polyline for the given trip.",
+                "operationId": "rerouteAdminTrip",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Job dispatched"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/alerts": {
             "get": {
                 "tags": [
@@ -3470,6 +3560,18 @@
                                         "description": "If provided, the new segment is assigned to this stopover and the duration is derived from the timetable.",
                                         "type": "integer",
                                         "example": 42,
+                                        "nullable": true
+                                    },
+                                    "from_identifier_id": {
+                                        "description": "UUID of the StationIdentifier for the origin. Must be provided together with to_identifier_id.",
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "nullable": true
+                                    },
+                                    "to_identifier_id": {
+                                        "description": "UUID of the StationIdentifier for the destination. Must be provided together with from_identifier_id.",
+                                        "type": "string",
+                                        "format": "uuid",
                                         "nullable": true
                                     }
                                 },
@@ -10032,6 +10134,128 @@
                 },
                 "type": "object"
             },
+            "AdminStopoverResource": {
+                "title": "AdminStopover",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "station": {
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "name": {
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "arrivalPlanned": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "arrivalReal": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "departurePlanned": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "departureReal": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "routeSegmentId": {
+                        "type": "string",
+                        "format": "uuid",
+                        "nullable": true
+                    },
+                    "routeSegmentType": {
+                        "type": "string",
+                        "nullable": true,
+                        "enum": [
+                            "identifier",
+                            "station"
+                        ]
+                    },
+                    "stationIdentifierId": {
+                        "type": "string",
+                        "format": "uuid",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "AdminTripResource": {
+                "title": "AdminTrip",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "tripId": {
+                        "type": "string"
+                    },
+                    "category": {
+                        "type": "string"
+                    },
+                    "mode": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "number": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "lineName": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "journeyNumber": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "operator": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "source": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "user": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/LightUserResource"
+                            }
+                        ],
+                        "nullable": true
+                    },
+                    "lastRefreshed": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "stopovers": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AdminStopoverResource"
+                        }
+                    },
+                    "statuses": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AdminStatusResource"
+                        }
+                    }
+                },
+                "type": "object"
+            },
             "AlertResource": {
                 "required": [
                     "id",
@@ -11523,6 +11747,18 @@
                     "origin": {
                         "type": "string",
                         "example": "db",
+                        "nullable": true
+                    },
+                    "latitude": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 48.993207,
+                        "nullable": true
+                    },
+                    "longitude": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 8.400977,
                         "nullable": true
                     }
                 },
