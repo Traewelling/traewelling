@@ -1716,6 +1716,11 @@ export interface SessionResource {
 
 /** StationIdentifier */
 export interface StationIdentifierResource {
+  /**
+   * @format uuid
+   * @example "550e8400-e29b-41d4-a716-446655440000"
+   */
+  id?: string;
   /** @example "de_db_ril100" */
   type?: string;
   /** @example "RK" */

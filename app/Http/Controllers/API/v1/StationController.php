@@ -19,6 +19,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Log;
 use OpenApi\Attributes as OA;
@@ -392,5 +393,27 @@ class StationController extends Controller
         }
 
         return $this->sendResponse(new StationResource($station));
+    }
+
+    public function moveIdentifier(Request $request, int $stationId, string $identifierId): Response|JsonResponse
+    {
+        $station = Station::findOrFail($stationId);
+        $this->authorize('update', $station);
+
+        $validated = $request->validate([
+            'target_station_id' => ['required', 'integer', 'exists:train_stations,id'],
+        ]);
+
+        $identifier = $this->stationRepository->getIdentifierForStation($identifierId, $stationId);
+        if ($identifier === null) {
+            return $this->sendError('Identifier not found for this station', 404);
+        }
+
+        $targetStation = Station::findOrFail($validated['target_station_id']);
+        $this->authorize('update', $targetStation);
+
+        $this->stationService->moveIdentifier($identifier, $targetStation, $request->user());
+
+        return response()->noContent();
     }
 }

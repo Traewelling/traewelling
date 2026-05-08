@@ -3,6 +3,7 @@
 namespace Tests\Feature\APIv1;
 
 use App\Models\Station;
+use App\Models\StationIdentifier;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Passport\Passport;
@@ -129,6 +130,28 @@ class StationTest extends ApiTestCase
         $response->assertOk();
         $this->assertDatabaseMissing('train_stations', [
             'id' => $oldStation->id,
+        ]);
+    }
+
+    public function test_admin_can_move_identifier_to_another_station(): void
+    {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        Passport::actingAs($admin, ['*']);
+
+        $source = Station::factory()->create();
+        $target = Station::factory()->create();
+        $identifier = StationIdentifier::factory()->create(['station_id' => $source->id]);
+
+        $response = $this->putJson(
+            "/api/v1/stations/{$source->id}/identifiers/{$identifier->id}/move",
+            ['target_station_id' => $target->id],
+        );
+
+        $response->assertNoContent();
+        $this->assertDatabaseHas('station_identifiers', [
+            'id' => $identifier->id,
+            'station_id' => $target->id,
         ]);
     }
 }
