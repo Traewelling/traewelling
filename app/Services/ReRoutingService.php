@@ -196,76 +196,132 @@ class ReRoutingService
             Log::debug('RerouteStops: Segment already exists, setting for stop', ['segment' => $segment->id]);
             $this->tripRepository->setRouteSegmentForStop($start, $segment);
 
-            return; // already rerouted
+            return;
         }
-        Log::debug('Getting new route from BRouter', [
-            'from' => $start->station,
-            'to' => $end->station,
-            'type' => $pathType,
-        ]);
 
+        $originCoord = new Coordinate($startLocation->latitude, $startLocation->longitude);
+        $destCoord = new Coordinate($endLocation->latitude, $endLocation->longitude);
+        $hadInfraError = false;
+
+        $route = $this->tryBrouterRoute($originCoord, $destCoord, $duration, $oldDistance, $pathType, $start->station->name, $end->station->name, false, $hadInfraError);
+
+        if ($route === null) {
+            // Phase 1: jitter origin up to 2x
+            for ($i = 0; $i < 2 && $route === null; $i++) {
+                $route = $this->tryBrouterRoute($this->jitterCoordinate($originCoord), $destCoord, $duration, $oldDistance, $pathType, $start->station->name, $end->station->name, true, $hadInfraError);
+            }
+        }
+
+        if ($route === null) {
+            // Phase 2: jitter destination up to 2x
+            for ($i = 0; $i < 2 && $route === null; $i++) {
+                $route = $this->tryBrouterRoute($originCoord, $this->jitterCoordinate($destCoord), $duration, $oldDistance, $pathType, $start->station->name, $end->station->name, true, $hadInfraError);
+            }
+        }
+
+        if ($route === null) {
+            // Phase 3: jitter both simultaneously up to 2x
+            for ($i = 0; $i < 2 && $route === null; $i++) {
+                $route = $this->tryBrouterRoute($this->jitterCoordinate($originCoord), $this->jitterCoordinate($destCoord), $duration, $oldDistance, $pathType, $start->station->name, $end->station->name, true, $hadInfraError);
+            }
+        }
+
+        if ($route === null) {
+            if ($hadInfraError) {
+                $this->queryExceptions++;
+            }
+            Log::debug('RerouteStops: All jitter attempts failed, skipping segment', [
+                'from' => $start->station->name,
+                'to' => $end->station->name,
+            ]);
+
+            return;
+        }
+
+        $segment = $this->tripRepository->createRouteSegment(
+            fromStation: $start->station,
+            toStation: $end->station,
+            encodedPolyline: $route['polyline'],
+            duration: $duration,
+            pathType: $pathType,
+            distanceInMeters: $route['distance'],
+            fromIdentifier: $start->stationIdentifier,
+            toIdentifier: $end->stationIdentifier,
+        );
+        $this->tripRepository->setRouteSegmentForStop($start, $segment);
+
+        if ($route['jittered']) {
+            Log::debug('RerouteStops: Segment created after coordinate jitter', [
+                'from' => $start->station->name,
+                'to' => $end->station->name,
+                'distance_m' => $route['distance'],
+            ]);
+        }
+    }
+
+    /**
+     * @return array{polyline: string, distance: int, jittered: bool}|null
+     */
+    private function tryBrouterRoute(
+        Coordinate $fromCoord,
+        Coordinate $toCoord,
+        int $duration,
+        float $oldDistance,
+        SegmentPathType $pathType,
+        string $fromName,
+        string $toName,
+        bool $jittered = false,
+        bool &$hadInfraError = false,
+    ): ?array {
         try {
-            $startCoord = new Coordinate($startLocation->latitude, $startLocation->longitude);
-            $endCoord = new Coordinate($endLocation->latitude, $endLocation->longitude);
-            $brouterProfile = $pathType->getBRouterProfile();
-            $route = $this->brouterService->getRoute([$startCoord, $endCoord], $brouterProfile);
+            $route = $this->brouterService->getRoute([$fromCoord, $toCoord], $pathType->getBRouterProfile());
+
+            if ($duration > 0) {
+                $speed = ($route->distanceInMeters / $duration) * 3.6;
+                if ($speed > 300) {
+                    Log::warning('RerouteStops: Calculated speed is too high, skipping route segment', [
+                        'speed_kmh' => $speed,
+                        'from' => $fromName,
+                        'to' => $toName,
+                        'jittered' => $jittered,
+                    ]);
+
+                    return null;
+                }
+            } elseif ($route->distanceInMeters > 1000) {
+                Log::warning('RerouteStops: No duration available and distance is too high, skipping route segment', [
+                    'distance_m' => $route->distanceInMeters,
+                    'from' => $fromName,
+                    'to' => $toName,
+                ]);
+
+                return null;
+            }
+
+            [$lowerLimit, $upperLimit, $percentage] = $this->getDeviationThreshold($oldDistance);
+
+            if ($oldDistance != 0 && ($route->distanceInMeters > $upperLimit || $route->distanceInMeters < $lowerLimit)) {
+                Log::debug(
+                    sprintf('Distance deviation is greater than %d percent.', $percentage * 100),
+                    [
+                        'from' => $fromName,
+                        'to' => $toName,
+                        'old_distance_m' => $oldDistance,
+                        'new_distance_m' => $route->distanceInMeters,
+                        'upper_limit_m' => $upperLimit,
+                        'lower_limit_m' => $lowerLimit,
+                        'jittered' => $jittered,
+                    ]
+                );
+
+                return null;
+            }
 
             $encodedPolyline = new PolylineTranscoder()->encodePolyline(
                 array_map(static fn (Coordinate $c) => [$c->longitude, $c->latitude], $route->coordinates),
             );
 
-            // if speed is > 300 km/h, we assume the route is invalid
-            if ($duration > 0) {
-                $speed = ($route->distanceInMeters / $duration) * 3.6; // m/s to km/h
-                if ($speed > 300) { // TODO: make configurable per transport mode
-                    Log::warning('RerouteStops: Calculated speed is too high, skipping route segment', [
-                        'speed_kmh' => $speed,
-                        'from' => $start->station->name,
-                        'to' => $end->station->name,
-                    ]);
-
-                    return;
-                }
-            } elseif ($route->distanceInMeters > 1000) {
-                Log::warning('RerouteStops: No duration available and distance is too high, skipping route segment', [
-                    'distance_m' => $route->distanceInMeters,
-                    'from' => $start->station->name,
-                    'to' => $end->station->name,
-                ]);
-
-                return;
-            }
-
-            $distance = $route->distanceInMeters;
-            [$lowerLimit, $upperLimit, $percentage] = $this->getDeviationThreshold($oldDistance);
-
-            if (($oldDistance != 0 && ($distance > $upperLimit || $distance < $lowerLimit))) {
-                Log::debug(
-                    sprintf('Distance deviation is greater than %d percent.', $percentage * 100),
-                    [
-                        'from' => $start->station->name,
-                        'to' => $end->station->name,
-                        'old_distance_m' => $oldDistance,
-                        'new_distance_m' => $distance,
-                        'upper_limit_m' => $upperLimit,
-                        'lower_limit_m' => $lowerLimit,
-                    ]
-                );
-
-                return;
-            }
-
-            $segment = $this->tripRepository->createRouteSegment(
-                fromStation: $start->station,
-                toStation: $end->station,
-                encodedPolyline: $encodedPolyline,
-                duration: $duration,
-                pathType: $pathType,
-                distanceInMeters: $route->distanceInMeters,
-                fromIdentifier: $start->stationIdentifier,
-                toIdentifier: $end->stationIdentifier,
-            );
-            $this->tripRepository->setRouteSegmentForStop($start, $segment);
+            return ['polyline' => $encodedPolyline, 'distance' => $route->distanceInMeters, 'jittered' => $jittered];
         } catch (BRouterException|GuzzleException $e) {
             if ($e instanceof ClientException) {
                 Log::warning('RerouteStops: ClientException details', [
@@ -273,36 +329,55 @@ class ReRoutingService
                     'request' => $e->getRequest()?->getBody()->getContents(),
                 ]);
 
-                return;
+                return null; // client errors are not infra errors
             }
-            $this->queryExceptions++;
+            $hadInfraError = true;
             if (str_contains($e->getMessage(), 'cURL error 28')) {
-                return;
+                return null;
             }
             if (str_contains($e->getMessage(), 'no track found')) {
                 Log::debug('RerouteStops: BRouter found no track, skipping segment', [
-                    'from' => $start->station?->only('id', 'name'),
-                    'to' => $end->station?->only('id', 'name'),
+                    'from' => $fromName,
+                    'to' => $toName,
+                    'jittered' => $jittered,
                     'error' => $e->getMessage(),
                 ]);
 
-                return;
+                return null;
             }
             if (str_contains($e->getMessage(), 'from requested start') || str_contains($e->getMessage(), 'from requested end')) {
-                // BRouter snapped to a route that is outside the endpoint tolerance, only debug logging.
                 Log::debug('RerouteStops: BRouter route endpoint too far from waypoint, skipping segment', [
-                    'from' => $start->station?->only('id', 'name'),
-                    'to' => $end->station?->only('id', 'name'),
+                    'from' => $fromName,
+                    'to' => $toName,
+                    'jittered' => $jittered,
                     'error' => $e->getMessage(),
                 ]);
 
-                return;
+                return null;
             }
             Log::error('RerouteStops: Failed to create route segment', ['error' => $e->getMessage()]);
             report($e);
+
+            return null;
         } catch (\Exception $e) {
             Log::error('RerouteStops: Failed to create route segment', ['error' => $e->getMessage()]);
             report($e);
+
+            return null; // generic exceptions are not counted as infra errors
         }
+    }
+
+    private function jitterCoordinate(Coordinate $coord, float $meters = 20.0): Coordinate
+    {
+        $latDeg = $meters / 111_320;
+        $lonDeg = $meters / (111_320 * cos(deg2rad($coord->latitude)));
+
+        $angle = lcg_value() * 2 * M_PI;
+        $r = sqrt(lcg_value());
+
+        return new Coordinate(
+            $coord->latitude + $r * cos($angle) * $latDeg,
+            $coord->longitude + $r * sin($angle) * $lonDeg,
+        );
     }
 }
