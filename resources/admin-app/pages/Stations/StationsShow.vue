@@ -4,6 +4,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { Api, type Station } from '../../../types/Api.gen';
 import BackendLayout from '../../layouts/BackendLayout.vue';
+import StationDetailsCard from './partials/StationDetailsCard.vue';
 import StationIdentifiersCard from './partials/StationIdentifiersCard.vue';
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
@@ -15,8 +16,6 @@ const station = ref<Station | null>(null);
 const nearbyStations = ref<Station[]>([]);
 const loading = ref(true);
 const error = ref<string | null>(null);
-const resetting = ref(false);
-const resetSuccess = ref(false);
 
 function haversineMeters(lat1: number, lon1: number, lat2: number, lon2: number): number {
     const R = 6_371_000;
@@ -61,19 +60,8 @@ async function fetchStation(): Promise<void> {
     }
 }
 
-async function resetTimeOffset(): Promise<void> {
-    if (!station.value) return;
-    resetting.value = true;
-    resetSuccess.value = false;
-    try {
-        await api.stations.updateStation(stationId.value, { time_offset: null });
-        station.value = { ...station.value, time_offset: null };
-        resetSuccess.value = true;
-    } catch (e) {
-        error.value = e instanceof Error ? e.message : 'Reset failed';
-    } finally {
-        resetting.value = false;
-    }
+function onStationUpdated(updated: Station): void {
+    station.value = { ...updated, identifiers: station.value?.identifiers };
 }
 
 onMounted(fetchStation);
@@ -104,50 +92,13 @@ watch(stationId, fetchStation);
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <!-- Left column -->
                 <div class="space-y-4">
-                    <!-- Station details -->
-                    <div class="card bg-base-100 shadow">
-                        <div class="card-body gap-3">
-                            <h2 class="card-title text-base">Details</h2>
-
-                            <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
-                                <dt class="text-base-content/50 font-medium">ID</dt>
-                                <dd class="font-mono">{{ station.id }}</dd>
-
-                                <dt class="text-base-content/50 font-medium">Name</dt>
-                                <dd>{{ station.name }}</dd>
-
-                                <dt class="text-base-content/50 font-medium">Lat / Lon</dt>
-                                <dd class="font-mono text-xs">
-                                    {{ station.latitude?.toFixed(6) }}, {{ station.longitude?.toFixed(6) }}
-                                </dd>
-
-                                <dt class="text-base-content/50 font-medium">Time offset</dt>
-                                <dd class="flex items-center gap-2">
-                                    <span class="font-mono">{{ station.time_offset ?? '—' }}</span>
-                                    <button
-                                        class="btn btn-xs btn-outline"
-                                        :disabled="resetting"
-                                        @click="resetTimeOffset"
-                                    >
-                                        <span v-if="resetting" class="loading loading-spinner loading-xs" />
-                                        Reset
-                                    </button>
-                                    <span v-if="resetSuccess" class="text-xs text-success">Done</span>
-                                </dd>
-
-                                <dt class="text-base-content/50 font-medium">Created</dt>
-                                <dd class="text-xs text-base-content/70">
-                                    {{ station.created_at ? new Date(station.created_at).toLocaleString() : '—' }}
-                                </dd>
-                            </dl>
-                        </div>
-                    </div>
+                    <StationDetailsCard :station="station" @updated="onStationUpdated" />
 
                     <StationIdentifiersCard
                         :station-id="stationId"
                         :identifiers="station.identifiers ?? []"
                         :nearby-stations="nearbyStations"
-                        @moved="fetchStation"
+                        @changed="fetchStation"
                     />
                 </div>
 

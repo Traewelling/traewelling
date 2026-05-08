@@ -3,7 +3,6 @@
 namespace Tests\Feature\APIv1;
 
 use App\Models\Station;
-use App\Models\StationIdentifier;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Passport\Passport;
@@ -133,25 +132,37 @@ class StationTest extends ApiTestCase
         ]);
     }
 
-    public function test_admin_can_move_identifier_to_another_station(): void
+    public function test_admin_can_update_station(): void
     {
         $admin = User::factory()->create();
         $admin->assignRole('admin');
         Passport::actingAs($admin, ['*']);
 
-        $source = Station::factory()->create();
-        $target = Station::factory()->create();
-        $identifier = StationIdentifier::factory()->create(['station_id' => $source->id]);
+        $station = Station::factory()->create(['name' => 'Old Name', 'latitude' => 48.0, 'longitude' => 8.0]);
 
-        $response = $this->putJson(
-            "/api/v1/stations/{$source->id}/identifiers/{$identifier->id}/move",
-            ['target_station_id' => $target->id],
-        );
+        $this->patchJson('/api/v1/stations/' . $station->id, [
+            'name' => 'New Name',
+            'latitude' => 49.123456,
+            'longitude' => 9.654321,
+        ])->assertOk();
 
-        $response->assertNoContent();
-        $this->assertDatabaseHas('station_identifiers', [
-            'id' => $identifier->id,
-            'station_id' => $target->id,
+        $this->assertDatabaseHas('train_stations', [
+            'id' => $station->id,
+            'name' => 'New Name',
+            'latitude' => 49.123456,
+            'longitude' => 9.654321,
         ]);
+    }
+
+    public function test_user_cannot_update_station(): void
+    {
+        Passport::actingAs(User::factory()->create(), ['*']);
+
+        $station = Station::factory()->create(['name' => 'Old Name']);
+
+        $this->patchJson('/api/v1/stations/' . $station->id, ['name' => 'New Name'])
+            ->assertForbidden();
+
+        $this->assertDatabaseHas('train_stations', ['id' => $station->id, 'name' => 'Old Name']);
     }
 }

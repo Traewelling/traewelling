@@ -34,6 +34,7 @@ use App\Http\Controllers\API\v1\SessionController;
 use App\Http\Controllers\API\v1\SettingsController;
 use App\Http\Controllers\API\v1\SocialController;
 use App\Http\Controllers\API\v1\StationController;
+use App\Http\Controllers\API\v1\StationIdentifierController;
 use App\Http\Controllers\API\v1\StatisticsController;
 use App\Http\Controllers\API\v1\StatusController;
 use App\Http\Controllers\API\v1\StatusTagController;
@@ -206,7 +207,10 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::apiResource('station', StationController::class); // TODO: rename to "stations" when stable
         Route::apiResource('stations', StationController::class);
         Route::put('station/{oldStationId}/merge/{newStationId}', [StationController::class, 'merge']); // currently admin/backend only
-        Route::put('stations/{stationId}/identifiers/{identifierId}/move', [StationController::class, 'moveIdentifier']); // admin only
+        Route::apiResource('stations/{stationId}/identifiers', StationIdentifierController::class)
+            ->only(['store', 'update'])
+            ->parameters(['identifiers' => 'identifierId']); // admin only
+        Route::put('stations/{stationId}/identifiers/{identifierId}/move', [StationIdentifierController::class, 'move']); // admin only
 
         Route::group(['prefix' => 'user/self'], static function () { // move new endpoints to users/self to comply api guidelines
             Route::group(['middleware' => ['scope:read-settings-followers']], static function () {

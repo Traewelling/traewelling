@@ -5666,6 +5666,82 @@ export class Api<
   };
   stations = {
     /**
+     * @description This request returns a single station object
+     *
+     * @tags Checkin
+     * @name ShowStation
+     * @summary Show station
+     * @request GET:/stations/{id}
+     * @secure
+     */
+    showStation: (
+      id?: any,
+      query?: {
+        /** Include station identifiers in the response. */
+        withIdentifiers?: boolean;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data?: StationResource;
+        },
+        void
+      >({
+        path: `/stations/${id}`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Admin only. Update a station's name, coordinates, or time offset.
+     *
+     * @tags Stations
+     * @name UpdateStation
+     * @summary Update a station
+     * @request PATCH:/stations/{id}
+     * @secure
+     */
+    updateStation: (
+      id: number,
+      data: {
+        /** @maxLength 255 */
+        name?: string | null;
+        /**
+         * @format float
+         * @min -90
+         * @max 90
+         */
+        latitude?: number | null;
+        /**
+         * @format float
+         * @min -180
+         * @max 180
+         */
+        longitude?: number | null;
+        time_offset?: number | null;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data?: StationResource;
+        },
+        void
+      >({
+        path: `/stations/${id}`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * @description UNSTABLE: Returns stations by fuzzy text, exact identifier, or within a bounding box (BBOX). **CAUTION:** Slashes in {query} must be replaced (e.g. with %20).
      *
      * @tags Checkin
@@ -5744,33 +5820,106 @@ export class Api<
       }),
 
     /**
-     * @description This request returns a single station object
+     * @description Admin only. Manually add an identifier to a station. The `origin` field will be set to `null`.
      *
-     * @tags Checkin
-     * @name ShowStation
-     * @summary Show station
-     * @request GET:/stations/{id}
+     * @tags Stations
+     * @name StoreStationIdentifier
+     * @summary Add a station identifier
+     * @request POST:/stations/{stationId}/identifiers
      * @secure
      */
-    showStation: (
-      id?: any,
-      query?: {
-        /** Include station identifiers in the response. */
-        withIdentifiers?: boolean;
+    storeStationIdentifier: (
+      stationId: number,
+      data: {
+        /**
+         * The type of the station identifier to look up. Not all types are available for every station. Subject to unannounced change.
+         *     * motis – all transitous.org/motis supplied identifiers
+         *     * wikidata_id – ID of wikidata.org
+         *     * de_db_ril100 – Germany: Deutsche Bahn Richtlinie 100 identifier (e.g. RK for Karlsruhe Hbf)
+         *     * de_db_ibnr – Germany: internal train station ID of Deutsche Bahn (e.g. 8000191 for Karlsruhe Hbf)
+         *
+         */
+        type: StationIdentifierType;
+        /**
+         * @maxLength 255
+         * @example "de:08212:1"
+         */
+        identifier: string;
       },
       params: RequestParams = {},
     ) =>
-      this.request<
-        {
-          data?: StationResource;
-        },
-        void
-      >({
-        path: `/stations/${id}`,
-        method: "GET",
-        query: query,
+      this.request<void, void>({
+        path: `/stations/${stationId}/identifiers`,
+        method: "POST",
+        body: data,
         secure: true,
-        format: "json",
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description Admin only. Update the type and value of an existing station identifier.
+     *
+     * @tags Stations
+     * @name UpdateStationIdentifier
+     * @summary Update a station identifier
+     * @request PATCH:/stations/{stationId}/identifiers/{identifierId}
+     * @secure
+     */
+    updateStationIdentifier: (
+      stationId: number,
+      identifierId: string,
+      data: {
+        /**
+         * The type of the station identifier to look up. Not all types are available for every station. Subject to unannounced change.
+         *     * motis – all transitous.org/motis supplied identifiers
+         *     * wikidata_id – ID of wikidata.org
+         *     * de_db_ril100 – Germany: Deutsche Bahn Richtlinie 100 identifier (e.g. RK for Karlsruhe Hbf)
+         *     * de_db_ibnr – Germany: internal train station ID of Deutsche Bahn (e.g. 8000191 for Karlsruhe Hbf)
+         *
+         */
+        type: StationIdentifierType;
+        /**
+         * @maxLength 255
+         * @example "de:08212:1"
+         */
+        identifier: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, void>({
+        path: `/stations/${stationId}/identifiers/${identifierId}`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description Admin only. Move a station identifier to a different station.
+     *
+     * @tags Stations
+     * @name MoveStationIdentifier
+     * @summary Move a station identifier
+     * @request PUT:/stations/{stationId}/identifiers/{identifierId}/move
+     * @secure
+     */
+    moveStationIdentifier: (
+      stationId: number,
+      identifierId: string,
+      data: {
+        /** @example 42 */
+        target_station_id: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, void>({
+        path: `/stations/${stationId}/identifiers/${identifierId}/move`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
         ...params,
       }),
   };

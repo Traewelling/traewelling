@@ -19,7 +19,6 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Log;
 use OpenApi\Attributes as OA;
@@ -127,6 +126,39 @@ class StationController extends Controller
         return new StationResource($newStation);
     }
 
+    #[OA\Patch(
+        path: '/stations/{id}',
+        operationId: 'updateStation',
+        description: 'Admin only. Update a station\'s name, coordinates, or time offset.',
+        summary: 'Update a station',
+        security: [['passport' => ['*']], ['token' => []]],
+        tags: ['Stations'],
+        parameters: [
+            new OA\Parameter(name: 'id', description: 'Station ID', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
+        ],
+        requestBody: new OA\RequestBody(
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'name', type: 'string', maxLength: 255, nullable: true),
+                    new OA\Property(property: 'latitude', type: 'number', format: 'float', minimum: -90, maximum: 90, nullable: true),
+                    new OA\Property(property: 'longitude', type: 'number', format: 'float', minimum: -180, maximum: 180, nullable: true),
+                    new OA\Property(property: 'time_offset', type: 'integer', nullable: true),
+                ],
+            ),
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Updated station',
+                content: new OA\JsonContent(
+                    properties: [new OA\Property(property: 'data', ref: '#/components/schemas/StationResource')],
+                ),
+            ),
+            new OA\Response(response: 403, description: 'Forbidden'),
+            new OA\Response(response: 404, description: 'Station not found'),
+            new OA\Response(response: 422, description: 'Validation error'),
+        ],
+    )]
     public function update(Request $request, int $id): StationResource
     {
         $station = Station::findOrFail($id);
@@ -393,27 +425,5 @@ class StationController extends Controller
         }
 
         return $this->sendResponse(new StationResource($station));
-    }
-
-    public function moveIdentifier(Request $request, int $stationId, string $identifierId): Response|JsonResponse
-    {
-        $station = Station::findOrFail($stationId);
-        $this->authorize('update', $station);
-
-        $validated = $request->validate([
-            'target_station_id' => ['required', 'integer', 'exists:train_stations,id'],
-        ]);
-
-        $identifier = $this->stationRepository->getIdentifierForStation($identifierId, $stationId);
-        if ($identifier === null) {
-            return $this->sendError('Identifier not found for this station', 404);
-        }
-
-        $targetStation = Station::findOrFail($validated['target_station_id']);
-        $this->authorize('update', $targetStation);
-
-        $this->stationService->moveIdentifier($identifier, $targetStation, $request->user());
-
-        return response()->noContent();
     }
 }

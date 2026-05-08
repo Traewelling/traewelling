@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services\Checkin;
 
 use App\DataProviders\DataProviderInterface;
+use App\Enum\StationIdentifierType;
 use App\Models\Station;
 use App\Models\StationIdentifier;
 use App\Models\User;
@@ -59,5 +60,25 @@ class StationService
         activity()->causedBy($actor)
             ->performedOn($identifier)
             ->log("Moved identifier {$identifier->identifier} ({$identifier->type->value}) from station {$sourceStation->name} ({$sourceStation->id}) to {$targetStation->name} ({$targetStation->id})");
+    }
+
+    public function createIdentifier(Station $station, StationIdentifierType $type, string $value, User $actor): void
+    {
+        $identifier = $this->stationRepository->createIdentifier($station, $type, $value);
+
+        activity()->causedBy($actor)
+            ->performedOn($identifier)
+            ->log("Added identifier {$value} ({$type->value}) to station {$station->name} ({$station->id})");
+    }
+
+    public function updateIdentifierValues(StationIdentifier $identifier, StationIdentifierType $type, string $value, User $actor): void
+    {
+        $old = "{$identifier->identifier} ({$identifier->type->value})";
+
+        $this->stationRepository->updateIdentifierValues($identifier, $type, $value);
+
+        activity()->causedBy($actor)
+            ->performedOn($identifier)
+            ->log("Updated identifier on station ({$identifier->station_id}): {$old} -> {$value} ({$type->value})");
     }
 }
