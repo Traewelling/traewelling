@@ -4322,6 +4322,154 @@
                 ]
             }
         },
+        "/stations/{id}": {
+            "get": {
+                "tags": [
+                    "Checkin"
+                ],
+                "summary": "Show station",
+                "description": "This request returns a single station object",
+                "operationId": "showStation",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "station id",
+                        "example": "1337"
+                    },
+                    {
+                        "name": "withIdentifiers",
+                        "in": "query",
+                        "description": "Include station identifiers in the response.",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/StationResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "503": {
+                        "description": "There has been an error with our data provider"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "create-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Stations"
+                ],
+                "summary": "Update a station",
+                "description": "Admin only. Update a station's name, coordinates, or time offset.",
+                "operationId": "updateStation",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Station ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "nullable": true,
+                                        "maxLength": 255
+                                    },
+                                    "latitude": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "nullable": true,
+                                        "maximum": 90,
+                                        "minimum": -90
+                                    },
+                                    "longitude": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "nullable": true,
+                                        "maximum": 180,
+                                        "minimum": -180
+                                    },
+                                    "time_offset": {
+                                        "type": "integer",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated station",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/StationResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Station not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "*"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/stations": {
             "get": {
                 "tags": [
@@ -4465,57 +4613,220 @@
                 ]
             }
         },
-        "/stations/{id}": {
-            "get": {
+        "/stations/{stationId}/identifiers": {
+            "post": {
                 "tags": [
-                    "Checkin"
+                    "Stations"
                 ],
-                "summary": "Show station",
-                "description": "This request returns a single station object",
-                "operationId": "showStation",
+                "summary": "Add a station identifier",
+                "description": "Admin only. Manually add an identifier to a station. The `origin` field will be set to `null`.",
+                "operationId": "storeStationIdentifier",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "stationId",
                         "in": "path",
-                        "description": "station id",
-                        "example": "1337"
-                    },
-                    {
-                        "name": "withIdentifiers",
-                        "in": "query",
-                        "description": "Include station identifiers in the response.",
+                        "description": "Station ID",
+                        "required": true,
                         "schema": {
-                            "type": "boolean"
+                            "type": "integer"
                         }
                     }
                 ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/components/schemas/StationResource"
-                                        }
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "type",
+                                    "identifier"
+                                ],
+                                "properties": {
+                                    "type": {
+                                        "$ref": "#/components/schemas/StationIdentifierType"
                                     },
-                                    "type": "object"
-                                }
+                                    "identifier": {
+                                        "type": "string",
+                                        "example": "de:08212:1",
+                                        "maxLength": 255
+                                    }
+                                },
+                                "type": "object"
                             }
                         }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Identifier created"
                     },
-                    "401": {
-                        "description": "Unauthorized"
+                    "403": {
+                        "description": "Forbidden"
                     },
-                    "503": {
-                        "description": "There has been an error with our data provider"
+                    "404": {
+                        "description": "Station not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
                     }
                 },
                 "security": [
                     {
                         "passport": [
-                            "create-statuses"
+                            "*"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/stations/{stationId}/identifiers/{identifierId}": {
+            "patch": {
+                "tags": [
+                    "Stations"
+                ],
+                "summary": "Update a station identifier",
+                "description": "Admin only. Update the type and value of an existing station identifier.",
+                "operationId": "updateStationIdentifier",
+                "parameters": [
+                    {
+                        "name": "stationId",
+                        "in": "path",
+                        "description": "Station ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "identifierId",
+                        "in": "path",
+                        "description": "Identifier UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "type",
+                                    "identifier"
+                                ],
+                                "properties": {
+                                    "type": {
+                                        "$ref": "#/components/schemas/StationIdentifierType"
+                                    },
+                                    "identifier": {
+                                        "type": "string",
+                                        "example": "de:08212:1",
+                                        "maxLength": 255
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "Updated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Station or identifier not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "*"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/stations/{stationId}/identifiers/{identifierId}/move": {
+            "put": {
+                "tags": [
+                    "Stations"
+                ],
+                "summary": "Move a station identifier",
+                "description": "Admin only. Move a station identifier to a different station.",
+                "operationId": "moveStationIdentifier",
+                "parameters": [
+                    {
+                        "name": "stationId",
+                        "in": "path",
+                        "description": "Source station ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "identifierId",
+                        "in": "path",
+                        "description": "Identifier UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "target_station_id"
+                                ],
+                                "properties": {
+                                    "target_station_id": {
+                                        "type": "integer",
+                                        "example": 42
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "Moved"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Station or identifier not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "*"
                         ]
                     },
                     {
@@ -12727,6 +13038,10 @@
         {
             "name": "Security",
             "description": "Security"
+        },
+        {
+            "name": "Stations",
+            "description": "Stations"
         },
         {
             "name": "Tickets",

@@ -156,4 +156,19 @@ class StationRepository
     {
         $identifier->update(['station_id' => $targetStation->id]);
     }
+
+    public function createIdentifier(Station $station, StationIdentifierType $type, string $value): StationIdentifier
+    {
+        return StationIdentifier::create([
+            'station_id' => $station->id,
+            'type' => $type,
+            'identifier' => $value,
+            'origin' => null,
+        ]);
+    }
+
+    public function updateIdentifierValues(StationIdentifier $identifier, StationIdentifierType $type, string $value): void
+    {
+        $identifier->update(['type' => $type, 'identifier' => $value]);
+    }
 }
