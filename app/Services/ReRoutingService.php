@@ -202,27 +202,28 @@ class ReRoutingService
         $originCoord = new Coordinate($startLocation->latitude, $startLocation->longitude);
         $destCoord = new Coordinate($endLocation->latitude, $endLocation->longitude);
         $hadInfraError = false;
+        $noTrackFound = false;
 
-        $route = $this->tryBrouterRoute($originCoord, $destCoord, $duration, $oldDistance, $pathType, $start->station->name, $end->station->name, false, $hadInfraError);
+        $route = $this->tryBrouterRoute($originCoord, $destCoord, $duration, $oldDistance, $pathType, $start->station->name, $end->station->name, false, $hadInfraError, $noTrackFound);
 
-        if ($route === null) {
+        if ($route === null && !$noTrackFound) {
             // Phase 1: jitter origin up to 2x
             for ($i = 0; $i < 2 && $route === null; $i++) {
-                $route = $this->tryBrouterRoute($this->jitterCoordinate($originCoord), $destCoord, $duration, $oldDistance, $pathType, $start->station->name, $end->station->name, true, $hadInfraError);
+                $route = $this->tryBrouterRoute($this->jitterCoordinate($originCoord), $destCoord, $duration, $oldDistance, $pathType, $start->station->name, $end->station->name, true, $hadInfraError, $noTrackFound);
             }
         }
 
-        if ($route === null) {
+        if ($route === null && !$noTrackFound) {
             // Phase 2: jitter destination up to 2x
             for ($i = 0; $i < 2 && $route === null; $i++) {
-                $route = $this->tryBrouterRoute($originCoord, $this->jitterCoordinate($destCoord), $duration, $oldDistance, $pathType, $start->station->name, $end->station->name, true, $hadInfraError);
+                $route = $this->tryBrouterRoute($originCoord, $this->jitterCoordinate($destCoord), $duration, $oldDistance, $pathType, $start->station->name, $end->station->name, true, $hadInfraError, $noTrackFound);
             }
         }
 
-        if ($route === null) {
+        if ($route === null && !$noTrackFound) {
             // Phase 3: jitter both simultaneously up to 2x
             for ($i = 0; $i < 2 && $route === null; $i++) {
-                $route = $this->tryBrouterRoute($this->jitterCoordinate($originCoord), $this->jitterCoordinate($destCoord), $duration, $oldDistance, $pathType, $start->station->name, $end->station->name, true, $hadInfraError);
+                $route = $this->tryBrouterRoute($this->jitterCoordinate($originCoord), $this->jitterCoordinate($destCoord), $duration, $oldDistance, $pathType, $start->station->name, $end->station->name, true, $hadInfraError, $noTrackFound);
             }
         }
 
@@ -272,6 +273,7 @@ class ReRoutingService
         string $toName,
         bool $jittered = false,
         bool &$hadInfraError = false,
+        bool &$noTrackFound = false,
     ): ?array {
         try {
             $route = $this->brouterService->getRoute([$fromCoord, $toCoord], $pathType->getBRouterProfile());
@@ -336,6 +338,7 @@ class ReRoutingService
                 return null;
             }
             if (str_contains($e->getMessage(), 'no track found')) {
+                $noTrackFound = true;
                 Log::debug('RerouteStops: BRouter found no track, skipping segment', [
                     'from' => $fromName,
                     'to' => $toName,
