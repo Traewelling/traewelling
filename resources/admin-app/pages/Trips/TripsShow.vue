@@ -164,7 +164,17 @@ watch(tripId, fetchTrip);
                                 <dd class="font-mono">{{ trip.id }}</dd>
 
                                 <dt class="text-base-content/50 font-medium">Trip ID</dt>
-                                <dd class="font-mono text-xs break-all">{{ trip.tripId }}</dd>
+                                <dd class="font-mono text-xs break-all">
+                                    <a
+                                        v-if="trip.source === 'TRANSITOUS'"
+                                        :href="`https://api.transitous.org/api/v5/trip?tripId=${encodeURIComponent(trip.tripId!)}`"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="link link-hover"
+                                        >{{ trip.tripId }}</a
+                                    >
+                                    <template v-else>{{ trip.tripId }}</template>
+                                </dd>
 
                                 <dt class="text-base-content/50 font-medium">Category</dt>
                                 <dd class="font-mono text-xs">{{ trip.category }}</dd>
