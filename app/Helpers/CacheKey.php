@@ -148,9 +148,16 @@ class CacheKey
         return sprintf('account-deletion-notification-two-weeks-before-%s', $user->id);
     }
 
-    public static function getIcsUserMonthlyKey(User $user, Carbon $date): string
+    public static function getIcsUserMonthlyKey(User|int $user, Carbon $date): string
     {
-        return sprintf(self::ICS_USER_MONTHLY, $user->id, $date->format('Y-m'));
+        $userId = $user instanceof User ? $user->id : $user;
+
+        return sprintf(self::ICS_USER_MONTHLY, $userId, $date->format('Y-m'));
+    }
+
+    public static function forgetIcsUserMonthly(User|int $user, Carbon $date): void
+    {
+        Cache::forget(self::getIcsUserMonthlyKey($user, $date));
     }
 
     public static function increment(string $key): void
