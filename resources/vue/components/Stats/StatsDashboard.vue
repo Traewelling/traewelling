@@ -7,6 +7,7 @@ import { Notyf } from 'notyf';
 import 'notyf/notyf.min.css';
 
 import Chart from 'chart.js/auto';
+import AdvancedStats from './AdvancedStats.vue';
 import ChartCategories from './ChartCategories.vue';
 import ChartCompanies from './ChartCompanies.vue';
 import ChartPurpose from './ChartPurpose.vue';
@@ -149,6 +150,11 @@ onMounted(() => {
                 />
             </div>
         </div>
+        <!-- Advanced Statistics Section -->
+        <AdvancedStats :data="data.summary ? data : null" />
+
+        <hr />
+
         <div class="row">
             <div class="col-md-4 mb-4">
                 <ChartPurpose

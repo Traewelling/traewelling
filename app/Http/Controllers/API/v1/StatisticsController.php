@@ -318,6 +318,18 @@ class StatisticsController extends Controller
         $categories = StatisticBackend::getTopTravelCategoryByUser(user: auth()->user(), from: $from, until: $until);
         $operators = StatisticBackend::getTopTripOperatorByUser(user: auth()->user(), from: $from, until: $until);
         $travelTime = StatisticBackend::getDailyTravelTimeByUser(user: auth()->user(), from: $from, until: $until);
+        
+        // Advanced statistics
+        $advancedSummary = StatisticBackend::getAdvancedSummary(user: auth()->user(), from: $from, until: $until);
+        $distancePerYear = StatisticBackend::getDistancePerYear(user: auth()->user());
+        $distancePerMonth = StatisticBackend::getDistancePerMonth(user: auth()->user());
+        $distancePerWeek = StatisticBackend::getDistancePerWeek(user: auth()->user());
+        $lastWeek = StatisticBackend::getLastWeekStats(user: auth()->user());
+        $lastMonth = StatisticBackend::getLastMonthStats(user: auth()->user());
+        $lastYear = StatisticBackend::getLastYearStats(user: auth()->user());
+        $favoriteStations = StatisticBackend::getFavoriteStations(user: auth()->user(), from: $from, until: $until);
+        $favoriteLines = StatisticBackend::getFavoriteLines(user: auth()->user(), from: $from, until: $until);
+        $favoriteRoutes = StatisticBackend::getFavoriteRoutes(user: auth()->user(), from: $from, until: $until);
 
         $returnData = [
             'purpose' => $purposes,
@@ -330,6 +342,22 @@ class StatisticsController extends Controller
                     'duration' => $row->duration,
                 ];
             }),
+            'summary' => $advancedSummary,
+            'by_period' => [
+                'yearly' => $distancePerYear,
+                'monthly' => $distancePerMonth,
+                'weekly' => $distancePerWeek,
+            ],
+            'predefined_periods' => [
+                'last_week' => $lastWeek,
+                'last_month' => $lastMonth,
+                'last_year' => $lastYear,
+            ],
+            'favorites' => [
+                'stations' => $favoriteStations,
+                'lines'    => $favoriteLines,
+                'routes'   => $favoriteRoutes,
+            ],
         ];
 
         $additionalData = [
