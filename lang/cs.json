@@ -1298,5 +1298,10 @@
     "map.vector-tiles.consent.title": "Načíst vektorové dlaždice z OpenFreeMap?",
     "next": "Další",
     "time.earlier": "Dříve",
-    "time.later": "Později"
+    "time.later": "Později",
+    "no-map-data": "Nejsou k dispozici žádná mapová data",
+    "prev": "Předchozí",
+    "settings.mastodon.import-profile-picture": "Importovat profilový obrázek z Mastodonu",
+    "settings.mastodon.no-profile-picture": "Váš účet Mastodon nemá profilový obrázek.",
+    "settings.password-mismatch": "Hesla se neshodují."
 }
