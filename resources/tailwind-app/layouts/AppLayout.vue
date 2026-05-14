@@ -26,18 +26,23 @@
             </div>
 
             <div class="navbar-end">
+                <router-link
+                    v-if="user.authenticated"
+                    :to="{ name: 'search' }"
+                    class="btn btn-ghost btn-sm text-white flex mr-1"
+                >
+                    <Search class="size-5" />
+                </router-link>
                 <button
                     v-if="user.authenticated"
                     class="btn btn-ghost btn-sm text-white flex mr-1"
                     @click="notificationsModal?.open()"
                 >
-                    <div class="relative">
-                        <div class="indicator size-5">
-                            <Bell class="size-5" />
-                            <span v-if="notificationsStore.count > 0" class="badge indicator-item badge-info badge-xs">
-                                {{ notificationsStore.count < 99 ? notificationsStore.count : '99+' }}
-                            </span>
-                        </div>
+                    <div class="indicator">
+                        <Bell class="size-5" />
+                        <span v-if="notificationsStore.count > 0" class="badge indicator-item badge-info badge-xs">
+                            {{ notificationsStore.count < 99 ? notificationsStore.count : '99+' }}
+                        </span>
                     </div>
                 </button>
                 <div v-if="user.authenticated && user.user" class="dropdown dropdown-end hidden lg:flex">
