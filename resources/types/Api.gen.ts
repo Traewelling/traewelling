@@ -6575,7 +6575,7 @@ export class Api<
   };
   tags = {
     /**
-     * @description Returns up to 6 deduplicated tag suggestions based on the user's 3 most recently used key:value pairs and the 3 most frequently used key:value pairs in the last 3 days (minimum 2 uses).
+     * @description Returns tag suggestions based on the user's most recently used key:value pairs and the most frequently used key:value pairs in the last 3 days (minimum 2 uses).
      *
      * @tags Status
      * @name GetTagSuggestions
