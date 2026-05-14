@@ -118,7 +118,8 @@ class CheckinTest extends FeatureTestCase
                 $this->checkinServicew->checkin((new CheckinRequestTestHydrator($user))->hydrateFromTrip($trip));
                 $this->fail("Expected exception for Collision Case $caseCount not thrown");
             } catch (CheckInCollisionException $exception) {
-                $this->assertEquals($baseTrip->linename, $exception->checkin->trip->first()->linename);
+                $this->assertNotEmpty($exception->checkins);
+                $this->assertEquals($baseTrip->linename, $exception->checkins->first()->trip->first()->linename);
             } catch (DataProviderException $e) {
                 $this->markTestSkipped($e->getMessage());
             }
@@ -131,7 +132,7 @@ class CheckinTest extends FeatureTestCase
                 $this->checkinServicew->checkin((new CheckinRequestTestHydrator($user))->hydrateFromTrip($trip));
                 $this->assertTrue(true);
             } catch (CheckInCollisionException $exception) {
-                $this->assertEquals($baseTrip->linename, $exception->checkin->trip->first()->linename);
+                $this->assertNotEmpty($exception->checkins);
                 $this->fail("Exception for Case $caseCount thrown even though checkin should happen.");
             } catch (DataProviderException $e) {
                 $this->markTestSkipped($e->getMessage());

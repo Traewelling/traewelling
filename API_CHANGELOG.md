@@ -38,6 +38,15 @@ Check back here regularly to stay ahead of removals.
 | 2026-04-01 | `DepartureResource.stop.*` is deprecated → use `DepartureResource.station` instead                                                                                                                                | 2026-09-30 | [#4663](https://github.com/Traewelling/traewelling/pull/4663) |
 | 2026-04-07 | `OperatorResource.identifier` is deprecated: legacy HAFAS operator ID, always `null` for new operators                                                                                                            | 2026-09-30 | [#4675](https://github.com/Traewelling/traewelling/pull/4675) |
 | 2026-04-07 | `OperatorResource.id` is deprecated as integer: will become a UUID after 2026-09-30. prefer `uuid` instead while migration-period                                                                                 | 2026-09-30 | [#4676](https://github.com/Traewelling/traewelling/pull/4676) |
+| 2026-05-14 | `POST /api/v1/trains/checkin` 409 response: `message.status_id` and `message.lineName` are deprecated. Use `data.conflicts` (full `StatusResource` array) instead                                                 | 2026-10-31 | [#4677](https://github.com/Traewelling/traewelling/pull/4677) |
+
+---
+
+# 2026-05-14
+
+**`POST /api/v1/trains/checkin` 409 response now includes all conflicting check-ins as full status objects:**
+The response now contains `data.conflicts`, an array of full `StatusResource` objects for all overlapping check-ins.
+The old `message.status_id` and `message.lineName` fields are still present for backward compatibility but deprecated.
 
 ---
 

@@ -36,6 +36,7 @@
   "checkin.select-departure": "Choisir l'arrêt de départ",
   "checkin.conflict": "Un enregistrement parallèle existe déjà.",
   "checkin.conflict.question": "Tu veux encore t'enregistrer ? Tu ne vas recevoir aucun point pour ça mais tes statistiques personnelles vont tout de même se mettre à jour.",
+  "checkin.conflict.force": "S'enregistrer quand même (sans points)",
   "checkin.points.could-have": "Tu aurais pu obtenir plus de points si tu t'étais enregistré·e plus proche de l'heure réelle du départ !",
   "checkin.points.earned": "Tu as gagné :points point|Tu as gagné :points points !",
   "checkin.points.forced": "Tu n'as reçu aucun point pour cet enregistrement car tu as forcé ce dernier.",

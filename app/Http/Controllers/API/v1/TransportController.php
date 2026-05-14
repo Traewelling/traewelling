@@ -18,6 +18,7 @@ use App\Http\Requests\CheckinRequest;
 use App\Http\Resources\CheckinSuccessResource;
 use App\Http\Resources\DepartureResource;
 use App\Http\Resources\StationResource;
+use App\Http\Resources\StatusResource;
 use App\Http\Resources\TripResource;
 use App\Hydrators\CheckinRequestHydrator;
 use App\Models\Station;
@@ -385,7 +386,35 @@ class TransportController extends Controller
                     ],
                 ),
             ),
-            new OA\Response(response: 409, description: 'Checkin collision'),
+            new OA\Response(
+                response: 409,
+                description: 'Checkin collision',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'message',
+                            description: 'Deprecated: use data.conflicts instead',
+                            properties: [
+                                new OA\Property(property: 'status_id', type: 'integer', deprecated: true),
+                                new OA\Property(property: 'lineName', type: 'string', deprecated: true),
+                            ],
+                            type: 'object',
+                            deprecated: true,
+                        ),
+                        new OA\Property(
+                            property: 'data',
+                            properties: [
+                                new OA\Property(
+                                    property: 'conflicts',
+                                    type: 'array',
+                                    items: new OA\Items(ref: StatusResource::class)
+                                ),
+                            ],
+                            type: 'object'
+                        ),
+                    ]
+                )
+            ),
         ],
     )]
     public function create(CheckinRequest $request): JsonResponse
@@ -406,9 +435,23 @@ class TransportController extends Controller
                 ]
             );
         } catch (CheckInCollisionException $exception) {
-            return $this->sendError([
-                'status_id' => $exception->checkin->status_id,
-                'lineName' => $exception->checkin->trip->linename,
+            $statuses = Status::with([
+                'event', 'likes', 'user', 'createdByUser',
+                'checkin.originStopover.station', 'checkin.destinationStopover.station',
+                'checkin.trip.operator', 'checkin.trip.motisSourceLicense',
+                'checkin.statusTags', 'tags', 'mentions.mentioned', 'ticket', 'client',
+            ])->whereIn('id', $exception->checkins->pluck('status_id'))->get();
+
+            $firstCheckin = $exception->checkins->first();
+
+            return response()->json([
+                'message' => [
+                    'status_id' => $firstCheckin?->status_id,  // TODO: remove after 2026-10
+                    'lineName' => $firstCheckin?->trip?->linename, // TODO: remove after 2026-10
+                ],
+                'data' => [
+                    'conflicts' => StatusResource::collection($statuses),
+                ],
             ], 409);
         } catch (StationNotOnTripException) {
             return $this->sendError('Given stations are not on the trip/have wrong departure/arrival.', 400);

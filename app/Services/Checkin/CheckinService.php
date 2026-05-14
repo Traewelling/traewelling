@@ -203,7 +203,7 @@ class CheckinService
             end: $lastStop->arrival
         );
         if (!$force && $overlapping->count() > 0) {
-            throw new CheckInCollisionException($overlapping->first());
+            throw new CheckInCollisionException($overlapping);
         }
 
         $distance = (new LocationController($trip, $firstStop, $lastStop))->calculateDistance();

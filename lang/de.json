@@ -37,6 +37,7 @@
   "checkin.select-departure": "Einstieg wählen",
   "checkin.conflict": "Es existiert bereits ein paralleler Check-in.",
   "checkin.conflict.question": "Möchtest du trotzdem einchecken? Hierfür bekommst du keine Punkte, aber deine persönliche Statistik wird dennoch aktualisiert.",
+  "checkin.conflict.force": "Trotzdem einchecken (keine Punkte)",
   "checkin.points.could-have": "Du hättest mehr Punkte bekommen können, wenn du näher an der reellen Abfahrtszeit eingecheckt hättest!",
   "checkin.points.earned": "Du bekommst :points Punkt!|Du bekommst :points Punkte!",
   "checkin.points.forced": "Du hast für diesen Check-in keine Punkte erhalten, da du ihn forciert hast.",
