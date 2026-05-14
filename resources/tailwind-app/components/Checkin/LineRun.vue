@@ -50,15 +50,17 @@ async function fetchLineRun(): Promise<void> {
         const trip: TripResource = res.data?.data as TripResource;
 
         const givenDeparture = DateTime.fromISO(props.plannedWhen);
-        stopovers.value = (trip.stopovers ?? []).filter((item) => {
-            let time: DateTime | null = null;
-            if (item.arrivalPlanned) time = DateTime.fromISO(item.arrivalPlanned);
-            else if (item.departurePlanned) time = DateTime.fromISO(item.departurePlanned);
-            if (!time) return true;
-            if (time.toMillis() < givenDeparture.toMillis()) return false;
-            if (time.toMillis() > givenDeparture.toMillis()) return true;
-            return Number(props.startId) !== Number(item.id);
+        const allStopovers = trip.stopovers ?? [];
+        const startIndex = allStopovers.findIndex((item) => {
+            if (Number(item.id) !== Number(props.startId)) return false;
+            const dep = item.departurePlanned
+                ? DateTime.fromISO(item.departurePlanned)
+                : item.arrivalPlanned
+                  ? DateTime.fromISO(item.arrivalPlanned)
+                  : null;
+            return dep !== null && dep.toMillis() === givenDeparture.toMillis();
         });
+        stopovers.value = startIndex !== -1 ? allStopovers.slice(startIndex + 1) : allStopovers;
 
         attribution.value = trip.dataSource?.attribution ?? null;
 
