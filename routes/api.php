@@ -92,6 +92,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::post('status/{statusId}/tags', [StatusTagController::class, 'store']);
             Route::put('status/{statusId}/tags/{tagKey}', [StatusTagController::class, 'update']);
             Route::delete('status/{statusId}/tags/{tagKey}', [StatusTagController::class, 'destroy']);
+            Route::get('tags/suggestions', [StatusTagController::class, 'suggestions']);
         });
         Route::group(['middleware' => ['scope:write-likes']], static function () {
             Route::post('status/{id}/like', [LikesController::class, 'create']);

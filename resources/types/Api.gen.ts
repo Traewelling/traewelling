@@ -1894,6 +1894,14 @@ export interface StatusTagResource {
   visibility: number;
 }
 
+/** StatusTagSuggestionResource */
+export interface StatusTagSuggestionResource {
+  /** @example "trwl:vehicle_number" */
+  key: string;
+  /** @example "94 80 0450 921 D-AVG" */
+  value: string;
+}
+
 /** StopoverResource */
 export interface StopoverResource {
   /** @example 12345 */
@@ -6559,6 +6567,30 @@ export class Api<
         void
       >({
         path: `/stopovers/${ids}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+  };
+  tags = {
+    /**
+     * @description Returns up to 6 deduplicated tag suggestions based on the user's 3 most recently used key:value pairs and the 3 most frequently used key:value pairs in the last 3 days (minimum 2 uses).
+     *
+     * @tags Status
+     * @name GetTagSuggestions
+     * @summary Get tag suggestions for the authenticated user
+     * @request GET:/tags/suggestions
+     * @secure
+     */
+    getTagSuggestions: (params: RequestParams = {}) =>
+      this.request<
+        {
+          data?: StatusTagSuggestionResource[];
+        },
+        void
+      >({
+        path: `/tags/suggestions`,
         method: "GET",
         secure: true,
         format: "json",
