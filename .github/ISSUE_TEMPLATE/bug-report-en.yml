@@ -12,8 +12,7 @@ body:
 
         If it’s **not** a data issue but the **Traewelling software** misbehaves, please use this form.
 
-        Also check the [open issues](https://github.com/Traewelling/traewelling/issues) and the
-        [experimental features](https://github.com/Traewelling/traewelling/issues/3660) to avoid duplicates.  
+        Also check the [open issues](https://github.com/Traewelling/traewelling/issues) to avoid duplicates.  
         **Note:** If experimental features are enabled, you can disable them in your settings if needed: https://traewelling.de/settings/profile
 
   - type: checkboxes
