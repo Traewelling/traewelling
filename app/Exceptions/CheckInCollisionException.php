@@ -2,15 +2,15 @@
 
 namespace App\Exceptions;
 
-use App\Models\Checkin;
+use Illuminate\Support\Collection;
 
 class CheckInCollisionException extends Referencable
 {
-    public readonly Checkin $checkin;
+    public readonly Collection $checkins;
 
-    public function __construct(Checkin $checkin)
+    public function __construct(Collection $checkins)
     {
-        $this->checkin = $checkin;
+        $this->checkins = $checkins;
         parent::__construct();
     }
 }

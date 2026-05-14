@@ -6942,13 +6942,29 @@ export class Api<
     createCheckin: (data: CheckinRequestBody, params: RequestParams = {}) =>
       this.request<
         CheckinSuccessResource,
-        void | {
-          /** @example "You are not allowed to check in the following users: 1" */
-          message?: string;
-          meta?: {
-            invalidUsers?: number[];
-          };
-        }
+        | void
+        | {
+            /** @example "You are not allowed to check in the following users: 1" */
+            message?: string;
+            meta?: {
+              invalidUsers?: number[];
+            };
+          }
+        | {
+            /**
+             * Deprecated: use data.conflicts instead
+             * @deprecated
+             */
+            message?: {
+              /** @deprecated */
+              status_id?: number;
+              /** @deprecated */
+              lineName?: string;
+            };
+            data?: {
+              conflicts?: StatusResource[];
+            };
+          }
       >({
         path: `/trains/checkin`,
         method: "POST",

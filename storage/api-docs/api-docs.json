@@ -7447,7 +7447,42 @@
                         }
                     },
                     "409": {
-                        "description": "Checkin collision"
+                        "description": "Checkin collision",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "description": "Deprecated: use data.conflicts instead",
+                                            "properties": {
+                                                "status_id": {
+                                                    "type": "integer",
+                                                    "deprecated": true
+                                                },
+                                                "lineName": {
+                                                    "type": "string",
+                                                    "deprecated": true
+                                                }
+                                            },
+                                            "type": "object",
+                                            "deprecated": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "conflicts": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/StatusResource"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [

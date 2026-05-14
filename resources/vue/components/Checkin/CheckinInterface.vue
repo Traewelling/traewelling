@@ -33,7 +33,7 @@ export default {
         const activeCheckin = useActiveCheckin();
         const checkinSuccess = checkinSuccessStore();
 
-        return { userStore, profileStore, activeCheckin, checkinSuccess };
+        return { userStore, profileStore, activeCheckin, checkinSuccess, DateTime };
     },
     data() {
         return {
@@ -46,6 +46,7 @@ export default {
             loading: false,
             notyf: new Notyf({ position: { x: 'right', y: 'bottom' } }),
             collision: false,
+            collisionCheckins: [],
             selectedEvent: null,
             selectedFriends: [],
         };
@@ -128,11 +129,9 @@ export default {
                                 });
                                 break;
                             case 409:
-                                response.json().then(() => {
+                                response.json().then((result) => {
                                     this.collision = true;
-                                    this.notyf.error(
-                                        trans('checkin.conflict') + '<br>' + trans('checkin.conflict.question'),
-                                    );
+                                    this.collisionCheckins = result?.data?.conflicts ?? [];
                                 });
                                 break;
                             default:
@@ -220,6 +219,34 @@ export default {
             <span v-if="loading" class="visually-hidden">Loading...</span>
             {{ trans('stationboard.btn-checkin') }}
         </button>
+    </div>
+
+    <div v-if="collision" class="alert alert-warning mx-3 mt-3" role="alert">
+        <div class="d-flex align-items-start gap-2">
+            <i class="fa-solid fa-triangle-exclamation mt-1 flex-shrink-0" />
+            <div class="flex-grow-1">
+                <strong class="d-block mb-1">{{ trans('checkin.conflict') }}</strong>
+                <ul v-if="collisionCheckins.length" class="list-unstyled mb-2 small">
+                    <li v-for="conflict in collisionCheckins" :key="conflict.id">
+                        <a :href="'/status/' + conflict.id" target="_blank" rel="noopener" class="d-inline-flex flex-wrap align-items-baseline gap-1 text-reset">
+                            <strong>{{ conflict.checkin?.lineName }}</strong>
+                            <span v-if="conflict.checkin?.origin?.departurePlanned" class="text-muted">{{ DateTime.fromISO(conflict.checkin.origin.departurePlanned).toFormat('HH:mm') }}</span>
+                            <span v-if="conflict.checkin?.origin?.name">{{ conflict.checkin.origin.name }}</span>
+                            <span v-if="conflict.checkin?.destination?.name">&rarr; {{ conflict.checkin.destination.name }}</span>
+                            <span v-if="conflict.checkin?.destination?.arrivalPlanned" class="text-muted">{{ DateTime.fromISO(conflict.checkin.destination.arrivalPlanned).toFormat('HH:mm') }}</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square small opacity-50" />
+                        </a>
+                    </li>
+                </ul>
+                <p class="small mb-2">{{ trans('checkin.conflict.question') }}</p>
+                <div class="text-end">
+                    <button class="btn btn-sm btn-warning" :disabled="loading" @click="checkIn">
+                        <span v-if="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" />
+                        {{ trans('checkin.conflict.force') }}
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="mt-5 mx-3 mb-4 border-top pt-3">
