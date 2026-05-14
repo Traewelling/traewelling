@@ -146,7 +146,9 @@ async function checkIn(): Promise<void> {
                                     &rarr; {{ conflict.checkin.destination.name }}
                                 </span>
                                 <span v-if="conflict.checkin?.destination?.arrivalPlanned" class="opacity-70">
-                                    {{ DateTime.fromISO(conflict.checkin.destination.arrivalPlanned).toFormat('HH:mm') }}
+                                    {{
+                                        DateTime.fromISO(conflict.checkin.destination.arrivalPlanned).toFormat('HH:mm')
+                                    }}
                                 </span>
                                 <i class="fa-solid fa-arrow-up-right-from-square text-xs opacity-50" />
                             </a>

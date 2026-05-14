@@ -228,12 +228,23 @@ export default {
                 <strong class="d-block mb-1">{{ trans('checkin.conflict') }}</strong>
                 <ul v-if="collisionCheckins.length" class="list-unstyled mb-2 small">
                     <li v-for="conflict in collisionCheckins" :key="conflict.id">
-                        <a :href="'/status/' + conflict.id" target="_blank" rel="noopener" class="d-inline-flex flex-wrap align-items-baseline gap-1 text-reset">
+                        <a
+                            :href="'/status/' + conflict.id"
+                            target="_blank"
+                            rel="noopener"
+                            class="d-inline-flex flex-wrap align-items-baseline gap-1 text-reset"
+                        >
                             <strong>{{ conflict.checkin?.lineName }}</strong>
-                            <span v-if="conflict.checkin?.origin?.departurePlanned" class="text-muted">{{ DateTime.fromISO(conflict.checkin.origin.departurePlanned).toFormat('HH:mm') }}</span>
+                            <span v-if="conflict.checkin?.origin?.departurePlanned" class="text-muted">{{
+                                DateTime.fromISO(conflict.checkin.origin.departurePlanned).toFormat('HH:mm')
+                            }}</span>
                             <span v-if="conflict.checkin?.origin?.name">{{ conflict.checkin.origin.name }}</span>
-                            <span v-if="conflict.checkin?.destination?.name">&rarr; {{ conflict.checkin.destination.name }}</span>
-                            <span v-if="conflict.checkin?.destination?.arrivalPlanned" class="text-muted">{{ DateTime.fromISO(conflict.checkin.destination.arrivalPlanned).toFormat('HH:mm') }}</span>
+                            <span v-if="conflict.checkin?.destination?.name"
+                                >&rarr; {{ conflict.checkin.destination.name }}</span
+                            >
+                            <span v-if="conflict.checkin?.destination?.arrivalPlanned" class="text-muted">{{
+                                DateTime.fromISO(conflict.checkin.destination.arrivalPlanned).toFormat('HH:mm')
+                            }}</span>
                             <i class="fa-solid fa-arrow-up-right-from-square small opacity-50" />
                         </a>
                     </li>
@@ -241,7 +252,12 @@ export default {
                 <p class="small mb-2">{{ trans('checkin.conflict.question') }}</p>
                 <div class="text-end">
                     <button class="btn btn-sm btn-warning" :disabled="loading" @click="checkIn">
-                        <span v-if="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" />
+                        <span
+                            v-if="loading"
+                            class="spinner-border spinner-border-sm"
+                            role="status"
+                            aria-hidden="true"
+                        />
                         {{ trans('checkin.conflict.force') }}
                     </button>
                 </div>
