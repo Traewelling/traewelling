@@ -10,7 +10,7 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(
     title: 'AdminStatusResource',
-    required: ['id', 'body', 'visibility', 'business', 'moderationNotes', 'lockVisibility', 'hideBody', 'eventId', 'user', 'checkin', 'stopovers', 'createdAt', 'updatedAt', 'client', 'createdBy'],
+    required: ['id', 'body', 'visibility', 'business', 'moderationNotes', 'lockVisibility', 'hideBody', 'eventId', 'user', 'checkin', 'stopovers', 'createdAt', 'updatedAt'],
     properties: [
         new OA\Property(property: 'id', type: 'integer', example: 12345),
         new OA\Property(property: 'body', type: 'string', nullable: true),
@@ -26,7 +26,6 @@ use OpenApi\Attributes as OA;
             property: 'stopovers',
             type: 'array',
             items: new OA\Items(ref: StopoverResource::class),
-            nullable: true,
         ),
         new OA\Property(property: 'createdAt', type: 'string', format: 'date-time'),
         new OA\Property(property: 'updatedAt', type: 'string', format: 'date-time'),

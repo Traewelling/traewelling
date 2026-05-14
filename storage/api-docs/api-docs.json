@@ -10054,9 +10054,7 @@
                     "checkin",
                     "stopovers",
                     "createdAt",
-                    "updatedAt",
-                    "client",
-                    "createdBy"
+                    "updatedAt"
                 ],
                 "properties": {
                     "id": {
@@ -10104,8 +10102,7 @@
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/StopoverResource"
-                        },
-                        "nullable": true
+                        }
                     },
                     "createdAt": {
                         "type": "string",
@@ -10607,7 +10604,8 @@
                     },
                     "attribution": {
                         "type": "string",
-                        "example": "Provided by foobar under CC BY 4.0"
+                        "example": "Provided by foobar under CC BY 4.0",
+                        "nullable": true
                     }
                 },
                 "type": "object"
@@ -11331,8 +11329,7 @@
                     "id",
                     "uuid",
                     "identifier",
-                    "name",
-                    "identifiers"
+                    "name"
                 ],
                 "properties": {
                     "type": {
@@ -11574,10 +11571,6 @@
                 "title": "RouteSegmentResource",
                 "required": [
                     "id",
-                    "fromStation",
-                    "toStation",
-                    "fromIdentifier",
-                    "toIdentifier",
                     "distance",
                     "duration",
                     "pathType",
@@ -11772,8 +11765,7 @@
                     "latitude",
                     "longitude",
                     "ibnr",
-                    "rilIdentifier",
-                    "areas"
+                    "rilIdentifier"
                 ],
                 "properties": {
                     "id": {
@@ -11917,7 +11909,12 @@
                         "example": true
                     },
                     "client": {
-                        "$ref": "#/components/schemas/ClientResource"
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/ClientResource"
+                            }
+                        ],
+                        "nullable": true
                     },
                     "checkin": {
                         "$ref": "#/components/schemas/TransportResource"
@@ -12997,7 +12994,8 @@
                     "bio": {
                         "description": "Bio of the user",
                         "type": "string",
-                        "example": "Hi there! I am Gertrud!"
+                        "example": "Hi there! I am Gertrud!",
+                        "nullable": true
                     },
                     "profileLinks": {
                         "description": "Profile links of the user",

@@ -17,6 +17,7 @@ use OpenApi\Attributes as OA;
             property: 'attribution',
             type: 'string',
             example: 'Provided by foobar under CC BY 4.0',
+            nullable: true,
         ),
     ],
 )]
