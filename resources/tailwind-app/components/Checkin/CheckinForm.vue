@@ -205,12 +205,14 @@ async function checkIn(): Promise<void> {
             </label>
         </div>
 
-        <!-- Extra options: event, friends, tags -->
+        <!-- Extra options: event, friends -->
         <div class="flex flex-wrap gap-2 items-start">
             <EventPicker v-model="selectedEvent" :timestamp="departureTimestamp" />
             <FriendPicker v-model="selectedFriendIds" />
-            <TagEditor ref="tagEditor" />
         </div>
+
+        <!-- Tags -->
+        <TagEditor ref="tagEditor" />
 
         <!-- Submit -->
         <button

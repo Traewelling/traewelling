@@ -150,6 +150,188 @@ class StatusTagTest extends ApiTestCase
         ]);
     }
 
+    public function test_suggestions_requires_authentication(): void
+    {
+        $response = $this->get('/api/v1/tags/suggestions');
+        $response->assertUnauthorized();
+    }
+
+    public function test_suggestions_returns_empty_array_when_no_tags(): void
+    {
+        $user = User::factory()->create();
+        Passport::actingAs($user, ['*']);
+
+        $response = $this->get('/api/v1/tags/suggestions');
+        $response->assertOk();
+        $response->assertJsonCount(0, 'data');
+    }
+
+    public function test_suggestions_returns_three_most_recent_tags(): void
+    {
+        $user = User::factory()->create();
+        Passport::actingAs($user, ['*']);
+
+        $pairs = [
+            ['key' => StatusTagKey::SEAT->value,         'value' => '61',               'created_at' => now()->subDays(10)],
+            ['key' => StatusTagKey::TICKET->value,       'value' => 'Deutschlandticket', 'created_at' => now()->subDays(5)],
+            ['key' => StatusTagKey::WAGON->value,        'value' => '25',               'created_at' => now()->subDays(2)],
+            ['key' => StatusTagKey::TRAVEL_CLASS->value, 'value' => '1',                'created_at' => now()->subDay()],
+        ];
+
+        foreach ($pairs as $pair) {
+            $status = Status::factory(['user_id' => $user->id])->create();
+            StatusTag::factory(['status_id' => $status->id, 'key' => $pair['key'], 'value' => $pair['value'], 'created_at' => $pair['created_at']])->create();
+        }
+
+        $response = $this->get('/api/v1/tags/suggestions');
+        $response->assertOk();
+        $response->assertJsonCount(3, 'data');
+
+        $keys = collect($response->json('data'))->pluck('key')->all();
+        $this->assertContains(StatusTagKey::TRAVEL_CLASS->value, $keys);
+        $this->assertContains(StatusTagKey::WAGON->value, $keys);
+        $this->assertContains(StatusTagKey::TICKET->value, $keys);
+        $this->assertNotContains(StatusTagKey::SEAT->value, $keys);
+    }
+
+    public function test_suggestions_deduplicates_repeated_key_value_pairs(): void
+    {
+        $user = User::factory()->create();
+        Passport::actingAs($user, ['*']);
+
+        foreach (range(1, 5) as $i) {
+            $status = Status::factory(['user_id' => $user->id])->create();
+            StatusTag::factory(['status_id' => $status->id, 'key' => StatusTagKey::SEAT->value, 'value' => '61'])->create();
+        }
+
+        $response = $this->get('/api/v1/tags/suggestions');
+        $response->assertOk();
+        $response->assertJsonCount(1, 'data');
+        $response->assertJsonPath('data.0.key', StatusTagKey::SEAT->value);
+        $response->assertJsonPath('data.0.value', '61');
+    }
+
+    public function test_suggestions_includes_frequent_tags_from_last_three_days(): void
+    {
+        $user = User::factory()->create();
+        Passport::actingAs($user, ['*']);
+
+        foreach (range(1, 2) as $i) {
+            $status = Status::factory(['user_id' => $user->id])->create();
+            StatusTag::factory([
+                'status_id' => $status->id,
+                'key' => StatusTagKey::TICKET->value,
+                'value' => 'Deutschlandticket',
+                'created_at' => now()->subDay(),
+            ])->create();
+        }
+
+        $response = $this->get('/api/v1/tags/suggestions');
+        $response->assertOk();
+
+        $keys = collect($response->json('data'))->pluck('key')->all();
+        $this->assertContains(StatusTagKey::TICKET->value, $keys);
+    }
+
+    public function test_suggestions_excludes_tags_used_only_once_in_frequent_group(): void
+    {
+        $user = User::factory()->create();
+        Passport::actingAs($user, ['*']);
+
+        $status = Status::factory(['user_id' => $user->id])->create();
+        StatusTag::factory([
+            'status_id' => $status->id,
+            'key' => StatusTagKey::TICKET->value,
+            'value' => 'Einzelticket',
+            'created_at' => now()->subHours(12),
+        ])->create();
+
+        $response = $this->get('/api/v1/tags/suggestions');
+        $response->assertOk();
+
+        // Appears in recent group (1 recent entry), but the frequent group must not include it
+        // since count = 1 < 2. It should still appear exactly once overall via the recent group.
+        $response->assertJsonCount(1, 'data');
+        $response->assertJsonPath('data.0.key', StatusTagKey::TICKET->value);
+    }
+
+    public function test_suggestions_excludes_old_tags_from_frequent_group(): void
+    {
+        $user = User::factory()->create();
+        Passport::actingAs($user, ['*']);
+
+        foreach (range(1, 3) as $i) {
+            $status = Status::factory(['user_id' => $user->id])->create();
+            StatusTag::factory([
+                'status_id' => $status->id,
+                'key' => StatusTagKey::WAGON->value,
+                'value' => '12',
+                'created_at' => now()->subDays(10),
+            ])->create();
+        }
+
+        $response = $this->get('/api/v1/tags/suggestions');
+        $response->assertOk();
+
+        // Appears in recent group but NOT in frequent group (older than 3 days).
+        // Should still appear once via recent.
+        $response->assertJsonCount(1, 'data');
+        $response->assertJsonPath('data.0.key', StatusTagKey::WAGON->value);
+    }
+
+    public function test_suggestions_deduplicates_across_recent_and_frequent_groups(): void
+    {
+        $user = User::factory()->create();
+        Passport::actingAs($user, ['*']);
+
+        // This pair qualifies for both groups: it is recent AND used >= 2 times within 3 days.
+        foreach (range(1, 2) as $i) {
+            $status = Status::factory(['user_id' => $user->id])->create();
+            StatusTag::factory([
+                'status_id' => $status->id,
+                'key' => StatusTagKey::SEAT->value,
+                'value' => '61',
+                'created_at' => now()->subHours(6),
+            ])->create();
+        }
+
+        $response = $this->get('/api/v1/tags/suggestions');
+        $response->assertOk();
+        $response->assertJsonCount(1, 'data');
+    }
+
+    public function test_suggestions_does_not_return_other_users_tags(): void
+    {
+        $user = User::factory()->create();
+        $other = User::factory()->create();
+        Passport::actingAs($user, ['*']);
+
+        $status = Status::factory(['user_id' => $other->id])->create();
+        StatusTag::factory(['status_id' => $status->id, 'key' => StatusTagKey::SEAT->value, 'value' => '99'])->create();
+
+        $response = $this->get('/api/v1/tags/suggestions');
+        $response->assertOk();
+        $response->assertJsonCount(0, 'data');
+    }
+
+    public function test_suggestions_response_contains_only_key_and_value(): void
+    {
+        $user = User::factory()->create();
+        Passport::actingAs($user, ['*']);
+
+        $status = Status::factory(['user_id' => $user->id])->create();
+        StatusTag::factory(['status_id' => $status->id, 'key' => StatusTagKey::SEAT->value, 'value' => '61'])->create();
+
+        $response = $this->get('/api/v1/tags/suggestions');
+        $response->assertOk();
+        $response->assertJsonStructure(['data' => [['key', 'value']]]);
+
+        $item = $response->json('data.0');
+        $this->assertArrayHasKey('key', $item);
+        $this->assertArrayHasKey('value', $item);
+        $this->assertArrayNotHasKey('visibility', $item);
+    }
+
     public function test_social_status_tag_rejects_invalid_value_on_update(): void
     {
         $user = User::factory()->create();

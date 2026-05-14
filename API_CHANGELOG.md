@@ -44,6 +44,10 @@ Check back here regularly to stay ahead of removals.
 
 # 2026-05-14
 
+**New endpoint `GET /api/v1/tags/suggestions`:**
+Returns tag suggestions for the authenticated user, intended for use in the check-in flow.
+Suggestions are currently derived from two sources: the 3 most recently used key:value pairs, and the 3 most frequently used key:value pairs in the last 3 days (minimum 2 uses).
+
 **`POST /api/v1/trains/checkin` 409 response now includes all conflicting check-ins as full status objects:**
 The response now contains `data.conflicts`, an array of full `StatusResource` objects for all overlapping check-ins.
 The old `message.status_id` and `message.lineName` fields are still present for backward compatibility but deprecated.

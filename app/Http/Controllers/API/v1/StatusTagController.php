@@ -7,8 +7,10 @@ use App\Enum\StatusVisibility;
 use App\Events\StatusUpdateEvent;
 use App\Http\Controllers\Backend\Transport\StatusTagController as StatusTagBackend;
 use App\Http\Resources\StatusTagResource;
+use App\Http\Resources\StatusTagSuggestionResource;
 use App\Models\Status;
 use App\Models\StatusTag;
+use App\Services\Checkin\TagSuggestionService;
 
 use function auth;
 
@@ -24,6 +26,37 @@ use OpenApi\Attributes as OA;
 
 class StatusTagController extends Controller
 {
+    #[OA\Get(
+        path: '/tags/suggestions',
+        operationId: 'getTagSuggestions',
+        description: 'Returns tag suggestions based on the user\'s most recently used key:value pairs and the most frequently used key:value pairs in the last 3 days (minimum 2 uses).',
+        summary: 'Get tag suggestions for the authenticated user',
+        security: [['passport' => ['write-statuses']], ['token' => []]],
+        tags: ['Status'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: StatusTagSuggestionResource::class),
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 401, description: 'Unauthorized'),
+        ],
+    )]
+    public function suggestions(TagSuggestionService $service): JsonResponse
+    {
+        return $this->sendResponse(
+            data: StatusTagSuggestionResource::collection($service->getSuggestions(auth()->user())),
+        );
+    }
+
     #[OA\Get(
         path: '/status/{statusId}/tags',
         operationId: 'getTagsForStatus',
