@@ -29,14 +29,15 @@
     <fieldset class="fieldset">
         <div class="label">
             <span class="label-text">{{ __('user.password') }}</span>
-            <a class="label-text link link-secondary" href="{{ route('password.request') }}">
-                {{ __('user.forgot-password') }}
-            </a>
         </div>
 
         <input type="password" id="password" name="password" class="input w-full input-bordered"
                required autocomplete="current-password"
         />
+
+        <a class="label-text link link-secondary self-end" href="{{ route('password.request') }}">
+            {{ __('user.forgot-password') }}
+        </a>
     </fieldset>
 
     <div class="fieldset">
