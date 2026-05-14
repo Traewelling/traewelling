@@ -145,6 +145,7 @@ use OpenApi\Attributes as OA;
             description: 'Bio of the user',
             type: 'string',
             example: 'Hi there! I am Gertrud!',
+            nullable: true,
         ),
         new OA\Property(
             property: 'profileLinks',

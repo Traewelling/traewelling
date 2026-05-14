@@ -820,13 +820,13 @@ export interface AdminStatusResource {
   /** User model with just basic information */
   user: LightUserResource;
   checkin: TransportResource | null;
-  stopovers: StopoverResource[] | null;
+  stopovers: StopoverResource[];
   /** @format date-time */
   createdAt: string;
   /** @format date-time */
   updatedAt: string;
-  client: ClientResource | null;
-  createdBy: LightUserResource | null;
+  client?: ClientResource | null;
+  createdBy?: LightUserResource | null;
 }
 
 /** AdminStopover */
@@ -1071,7 +1071,7 @@ export interface DataSourceResource {
   /** @example "foobar" */
   id: string;
   /** @example "Provided by foobar under CC BY 4.0" */
-  attribution: string;
+  attribution: string | null;
 }
 
 /**
@@ -1562,7 +1562,7 @@ export interface OperatorResource {
   identifier: string | null;
   /** @example "DB Regio AG Nord" */
   name: string;
-  identifiers: OperatorIdentifierResource[];
+  identifiers?: OperatorIdentifierResource[];
 }
 
 /**
@@ -1678,10 +1678,10 @@ export interface RouteSegmentResource {
    * @example "01960000-0000-7000-8000-000000000001"
    */
   id: string;
-  fromStation: StationResource | null;
-  toStation: StationResource | null;
-  fromIdentifier: StationIdentifierResource | null;
-  toIdentifier: StationIdentifierResource | null;
+  fromStation?: StationResource | null;
+  toStation?: StationResource | null;
+  fromIdentifier?: StationIdentifierResource | null;
+  toIdentifier?: StationIdentifierResource | null;
   /**
    * Distance in meters
    * @example 42300
@@ -1803,7 +1803,7 @@ export interface StationResource {
    * @example null
    */
   rilIdentifier: string | null;
-  areas: AreaResource[];
+  areas?: AreaResource[];
   identifiers?: StationIdentifierResource[];
   /** @example "60" */
   time_offset?: number | null;
@@ -1860,7 +1860,7 @@ export interface StatusResource {
    * @example true
    */
   isLikable: boolean;
-  client: ClientResource;
+  client: ClientResource | null;
   checkin: TransportResource;
   event: EventResource | null;
   /** User model with just basic information */
@@ -2513,7 +2513,7 @@ export interface UserResource {
    * Bio of the user
    * @example "Hi there! I am Gertrud!"
    */
-  bio: string;
+  bio: string | null;
   /** Profile links of the user */
   profileLinks: ProfileLinkResource[];
 }

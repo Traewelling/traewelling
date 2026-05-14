@@ -64,7 +64,7 @@ use OpenApi\Attributes as OA;
             type: 'boolean',
             example: true,
         ),
-        new OA\Property(property: 'client', ref: '#/components/schemas/ClientResource'),
+        new OA\Property(property: 'client', ref: '#/components/schemas/ClientResource', nullable: true),
         new OA\Property(property: 'checkin', ref: '#/components/schemas/TransportResource'),
         new OA\Property(
             property: 'event',

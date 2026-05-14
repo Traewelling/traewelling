@@ -10,7 +10,7 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(
     schema: 'OperatorResource',
-    required: ['type', 'id', 'uuid', 'identifier', 'name', 'identifiers'],
+    required: ['type', 'id', 'uuid', 'identifier', 'name'],
     properties: [
         new OA\Property(property: 'type', type: 'string', example: 'operator'),
         new OA\Property(
