@@ -25,6 +25,12 @@ export default defineComponent({
         };
     },
     computed: {
+        tagLineName(): string | null {
+            return this.state.status?.tags?.find((t) => t.key === 'trwl:line_name')?.value ?? null;
+        },
+        tagLineColor(): string | null {
+            return this.state.status?.tags?.find((t) => t.key === 'trwl:line_color')?.value ?? null;
+        },
         departure() {
             const manual = this.state.status?.train?.manualDeparture ?? null;
             if (manual) return DateTime.fromISO(manual);
@@ -114,9 +120,9 @@ export default defineComponent({
                 <p v-show="state.status?.train?.lineName" class="ms-2 col-auto align-items-center d-flex my-0">
                     <LineIndicator
                         :product-name="state.status?.train?.category"
-                        :number="state.status?.train?.lineName ?? ''"
+                        :number="tagLineName ?? state.status?.train?.lineName ?? ''"
                         :color="state.status?.train?.routeTextColor"
-                        :background-color="state.status?.train?.routeColor"
+                        :background-color="tagLineColor ?? state.status?.train?.routeColor"
                     />
                     <span v-show="nextStation" class="ms-1">next: {{ nextStation?.name }}</span>
                 </p>

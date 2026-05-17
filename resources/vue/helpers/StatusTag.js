@@ -2,6 +2,8 @@ import { trans } from 'laravel-vue-i18n';
 
 export const keys = [
     'trwl:journey_number',
+    'trwl:line_name',
+    'trwl:line_color',
     'trwl:ticket',
     'trwl:price',
     'trwl:role',
@@ -36,6 +38,10 @@ export function getIcon(key) {
             return 'fa-1';
         case 'trwl:journey_number':
             return 'fa-route';
+        case 'trwl:line_name':
+            return 'fa-signs-post';
+        case 'trwl:line_color':
+            return 'fa-palette';
         case 'trwl:price':
             return 'fa-money-bill-wave';
         case 'trwl:social_status':

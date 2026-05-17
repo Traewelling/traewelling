@@ -11,6 +11,9 @@ import { useActiveCheckin } from '../../vue/stores/activeCheckin';
 const router = useRouter();
 const state = useActiveCheckin();
 
+const tagLineName = computed(() => state.status?.tags?.find((t) => t.key === 'trwl:line_name')?.value ?? null);
+const tagLineColor = computed(() => state.status?.tags?.find((t) => t.key === 'trwl:line_color')?.value ?? null);
+
 const progress = ref(0);
 const nextStation = ref<StopoverResource | null>(null);
 let fetchInterval: ReturnType<typeof setInterval> | null = null;
@@ -86,9 +89,9 @@ onUnmounted(() => {
                     <LineIndicator
                         :product-name="state.status?.checkin?.category ?? ''"
                         :mode="state.status?.checkin?.mode ?? null"
-                        :number="state.status?.checkin?.lineName ?? ''"
+                        :number="tagLineName ?? state.status?.checkin?.lineName ?? ''"
                         :color="state.status?.checkin?.routeTextColor || undefined"
-                        :background-color="state.status?.checkin?.routeColor || undefined"
+                        :background-color="(tagLineColor ?? state.status?.checkin?.routeColor) || undefined"
                     />
                     <span v-show="nextStation">{{ trans('stationboard.next-stop') }} {{ nextStation?.name }}</span>
                 </p>

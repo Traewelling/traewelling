@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
 import { DateTime } from 'luxon';
-import { PropType, ref, watch } from 'vue';
+import { PropType, computed, ref, watch } from 'vue';
 import { Business, StatusResource } from '../../../../types/Api.gen';
 import {
     getArrivalForStatus,
@@ -20,6 +20,9 @@ const props = defineProps({
         required: true,
     },
 });
+
+const tagLineName = computed(() => props.status.tags?.find((t) => t.key === 'trwl:line_name')?.value ?? null);
+const tagLineColor = computed(() => props.status.tags?.find((t) => t.key === 'trwl:line_color')?.value ?? null);
 
 const arrival = ref(getDepartureAttribute(props.status));
 const duration = ref(
@@ -71,10 +74,10 @@ watch(
                 <LineIndicator
                     class-name="line-badge align-middle line-indicator"
                     :product-name="status.train.category"
-                    :number="status.train.lineName"
+                    :number="tagLineName ?? status.train.lineName"
                     :mode="status.train.mode"
                     :color="status.train.routeTextColor"
-                    :background-color="status.train.routeColor"
+                    :background-color="tagLineColor ?? status.train.routeColor"
                 />
 
                 <small

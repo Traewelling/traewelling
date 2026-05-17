@@ -55,8 +55,8 @@ const formattedDate = computed(() => {
     });
 });
 
-async function fetchStatus() {
-    loading.value = true;
+async function fetchStatus(silent = false) {
+    if (!silent) loading.value = true;
     pageError.value = null;
     try {
         const res = await api.status.getSingleStatus(statusId.value);
@@ -74,7 +74,7 @@ async function fetchStatus() {
         else if (err?.status === 403) pageError.value = '403';
         else pageError.value = '404';
     } finally {
-        loading.value = false;
+        if (!silent) loading.value = false;
     }
 }
 
@@ -129,7 +129,11 @@ watch(
         checkinResult.value = null;
         hasCoPassengers.value = false;
         pageError.value = null;
-        fetchStatus();
+        fetchStatus().then(() => {
+            if (window.history.state?.fromCheckin) {
+                setTimeout(() => fetchStatus(true), 5000);
+            }
+        });
         fetchLikes();
     },
     { immediate: true },
@@ -180,6 +184,7 @@ watch(
                             :status-id="status.id"
                             :tags="status.tags ?? []"
                             :editable="status.userDetails.id === userStore.user?.id"
+                            @tags-changed="status.tags = $event"
                         />
                     </div>
 

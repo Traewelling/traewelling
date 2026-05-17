@@ -18,6 +18,8 @@ enum StatusTagKey: string implements IconEnumInterface
     case VEHICLE_NUMBER = 'trwl:vehicle_number';
     case PASSENGER_RIGHTS = 'trwl:passenger_rights';
     case JOURNEY_NUMBER = 'trwl:journey_number';
+    case LINE_COLOR = 'trwl:line_color';
+    case LINE_NAME = 'trwl:line_name';
     case PRICE = 'trwl:price';
     case SOCIAL_STATUS = 'trwl:social_status';
 

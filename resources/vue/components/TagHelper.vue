@@ -29,6 +29,7 @@ export default {
             default: '',
         },
     },
+    emits: ['tags-changed'],
     data() {
         return {
             tags: [],
@@ -80,6 +81,7 @@ export default {
         },
         updateTags(tags) {
             this.tags = tags;
+            this.$emit('tags-changed', tags);
         },
     },
 };

@@ -78,6 +78,9 @@ const progress = ref(0);
 const interval = ref<number | null>(null);
 const likes = ref(props.status.likes ?? 0);
 
+const tagLineName = computed(() => statusObject.value.tags?.find((t) => t.key === 'trwl:line_name')?.value ?? null);
+const tagLineColor = computed(() => statusObject.value.tags?.find((t) => t.key === 'trwl:line_color')?.value ?? null);
+
 // next stop logic
 const nextStop = ref<StopoverResource | null>(null);
 const isAtStop = ref(false);
@@ -375,9 +378,10 @@ function share() {
     const url = `${window.location.origin}/status/${statusObject.value.id}`;
     const origin = statusObject.value.train.origin.name;
     const dest = statusObject.value.train.destination.name;
+    const displayName = tagLineName.value ?? statusObject.value.train.lineName;
     const text = statusObject.value.body
-        ? `${statusObject.value.body} (@ ${statusObject.value.train.lineName} ${origin} -> ${dest}) #NowTräwelling`
-        : `${statusObject.value.train.lineName} ${origin} -> ${dest} #NowTräwelling`;
+        ? `${statusObject.value.body} (@ ${displayName} ${origin} -> ${dest}) #NowTräwelling`
+        : `${displayName} ${origin} -> ${dest} #NowTräwelling`;
 
     if (navigator.share) {
         navigator.share({ title: 'Träwelling', text, url }).catch(() => {});
@@ -549,10 +553,10 @@ const durationStr = computed(() => {
                                 <LineIndicator
                                     class-name="line-indicator line-badge align-middle"
                                     :product-name="statusObject.train.category"
-                                    :number="statusObject.train.lineName"
+                                    :number="tagLineName ?? statusObject.train.lineName"
                                     :mode="statusObject.train.mode"
                                     :color="statusObject.train.routeTextColor"
-                                    :background-color="statusObject.train.routeColor"
+                                    :background-color="tagLineColor ?? statusObject.train.routeColor"
                                 />
                                 <span v-if="statusObject.train.manualJourneyNumber" class="opacity-60">
                                     ({{ statusObject.train.manualJourneyNumber }})

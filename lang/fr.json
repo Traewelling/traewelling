@@ -793,6 +793,8 @@
   "support.privacy.description2": "Les données seront supprimées après un an indépendamment de ton compte Träwelling.",
   "support.rate_limit_exceeded": "Tu as récemment créé une demande d'assistance. Merci d'attendre quelques jours avant d'en créer une autre.",
   "tag.title.trwl:journey_number": "Numéro du service",
+  "tag.title.trwl:line_color": "Couleur de la ligne",
+  "tag.title.trwl:line_name": "Nom de la ligne",
   "tag.title.trwl:locomotive_class": "Série",
   "tag.title.trwl:passenger_rights": "Droits des voyageur·se·s",
   "tag.title.trwl:price": "Prix",

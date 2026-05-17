@@ -14,6 +14,8 @@ const props = defineProps<{
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 
+const emit = defineEmits<{ 'tags-changed': [tags: StatusTagResource[]] }>();
+
 const localTags = ref<StatusTagResource[]>([...props.tags]);
 
 // add modal
@@ -96,6 +98,7 @@ async function addTag() {
             props.statusId,
         );
         localTags.value.push(res.data.data as StatusTagResource);
+        emit('tags-changed', [...localTags.value]);
         showAddModal.value = false;
     } finally {
         saving.value = false;
@@ -113,6 +116,7 @@ async function saveEditTag() {
         );
         const updated = res.data.data as StatusTagResource;
         localTags.value = localTags.value.map((t) => (t.key === updated.key ? updated : t));
+        emit('tags-changed', [...localTags.value]);
         showEditModal.value = false;
     } finally {
         editSaving.value = false;
@@ -125,6 +129,7 @@ async function deleteTag(tag: StatusTagResource) {
     try {
         await api.status.destroySingleStatusTag(props.statusId, tag.key);
         localTags.value = localTags.value.filter((t) => t.key !== tag.key);
+        emit('tags-changed', [...localTags.value]);
     } finally {
         deletingKey.value = null;
     }

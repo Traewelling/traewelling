@@ -827,6 +827,8 @@
   "support.privacy.description2": "The data will be deleted after one year regardless of your user account with Träwelling.",
   "support.rate_limit_exceeded": "You have recently created a support request. Please wait a bit before creating another request.",
   "tag.title.trwl:journey_number": "Journey number",
+  "tag.title.trwl:line_color": "Line color",
+  "tag.title.trwl:line_name": "Line name",
   "tag.title.trwl:locomotive_class": "Locomotive class",
   "tag.title.trwl:passenger_rights": "Passenger rights",
   "tag.title.trwl:price": "Price",

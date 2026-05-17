@@ -101,7 +101,7 @@ async function checkIn(): Promise<void> {
         activeCheckin.reset();
         checkinSuccess.setResponse(json.data);
         await tagEditor.value?.postTags(json.data.status.id);
-        router.push({ name: 'single-status', params: { id: json.data.status.id } });
+        router.push({ name: 'single-status', params: { id: json.data.status.id }, state: { fromCheckin: true } });
     } catch (e) {
         const status = typeof e === 'object' && e !== null && 'status' in e ? (e as { status: number }).status : 0;
         if (status === 409) {

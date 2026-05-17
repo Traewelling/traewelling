@@ -18,6 +18,7 @@ const status = ref<StatusResource | null>(null);
 const likedBy = ref<UserResource[]>([]);
 const statusId = Number.parseInt(window.location.pathname.split('/').pop() || '0');
 const user = useUserStore();
+
 const pageError = ref<'403' | '404' | null>(null);
 const stopovers = ref<StopoverResource[]>([]);
 const hasCoPassengers = ref(false);
@@ -146,6 +147,7 @@ fetchLikes();
                     :status-object="status"
                     :editable="status.userDetails.id === user.user?.id"
                     class="mb-3"
+                    @tags-changed="status.tags = $event"
                 />
 
                 <div v-show="likedBy.length" class="card">

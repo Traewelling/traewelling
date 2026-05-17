@@ -17,14 +17,25 @@ const props = defineProps({
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 const userStore = useUserStore();
 
-const lineColor = ref<string>('#c72730');
 const polylines = ref<GeoJSONFeature[]>([]);
 const livePositions = ref<LivePointDto[]>([]);
 const events = ref<EventResource[]>([]);
 const mapProvider = computed<MapProvider>(() => userStore.user?.mapProvider ?? MapProvider.Cargo);
 
+function normalizeColor(hex: string | null | undefined): string | null {
+    if (!hex) return null;
+    const clean = hex.replace(/[^0-9a-fA-F]/g, '');
+    return clean.length === 6 ? `#${clean}` : null;
+}
+
+const lineColor = computed<string>(() => {
+    if (props.statuses.length !== 1) return '#c72730';
+    const status = props.statuses[0];
+    const tagColor = status.tags?.find((t) => t.key === 'trwl:line_color')?.value ?? null;
+    return normalizeColor(tagColor) ?? normalizeColor(status.train.routeColor) ?? '#c72730';
+});
+
 if (props.statuses.length === 1) {
-    lineColor.value = props.statuses[0].train.routeColor ? '#' + props.statuses[0].train.routeColor : '#c72730';
     api.polyline
         .getPolylines(props.statuses.map((s) => s.id.toString()).join(','))
         .then((response) => {
