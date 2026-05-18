@@ -366,7 +366,7 @@ class StatusController extends Controller
     #[OA\Get(
         path: '/status',
         operationId: 'listStatuses',
-        description: 'Returns paginated list of statuses, filtered by given parameters',
+        description: 'Returns cursor-paginated statuses filtered by given parameters. The departure window (from..to) defaults to the last 7 days and must not exceed 365 days.',
         summary: '[Auth optional] List and filter statuses',
         tags: ['Status'],
         parameters: [
@@ -383,6 +383,22 @@ class StatusController extends Controller
                 in: 'query',
                 schema: new OA\Schema(type: 'integer'),
                 example: 42,
+            ),
+            new OA\Parameter(
+                name: 'from',
+                description: 'Lower bound for departure (date, e.g. 2024-01-01). Defaults to 7 days before "to".',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'string', format: 'date'),
+                example: '2024-01-01',
+            ),
+            new OA\Parameter(
+                name: 'to',
+                description: 'Upper bound for departure (date, e.g. 2024-01-31). Defaults to now+20min. Range from..to must not exceed 365 days.',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'string', format: 'date'),
+                example: '2024-01-31',
             ),
             new OA\Parameter(
                 name: 'origin_text',
@@ -432,11 +448,10 @@ class StatusController extends Controller
     public function list(Request $request): AnonymousResourceCollection
     {
         $validated = $request->validate([
-            // generic filters
             'body' => ['nullable', 'string', 'max:32'],
             'user_id' => ['nullable', 'integer', 'exists:users,id'],
-
-            // Filters for origin/destination
+            'from' => ['nullable', 'date'],
+            'to' => ['nullable', 'date'],
             'origin_text' => ['nullable', 'string', 'max:64'],
             'origin_id' => ['nullable', 'integer', 'exists:train_stations,id'],
             'destination_text' => ['nullable', 'string', 'max:64'],
@@ -444,35 +459,69 @@ class StatusController extends Controller
         ]);
 
         $user = auth()->user();
-        $query = Status::query()->orderByDesc('created_at');
+        $isOwnSearch = isset($validated['user_id']) && (int) $validated['user_id'] === $user->id;
+
+        if ($isOwnSearch) {
+            // own search ignores day limit (=> less checkins to search)
+            $to = isset($validated['to']) ? Carbon::parse($validated['to'])->endOfDay() : null;
+            $from = isset($validated['from']) ? Carbon::parse($validated['from'])->startOfDay() : null;
+
+            if ($from !== null && $to !== null && $from->isAfter($to)) {
+                throw ValidationException::withMessages(['from' => [__('errors.date-range-order')]]);
+            }
+        } else {
+            $to = isset($validated['to']) ? Carbon::parse($validated['to'])->endOfDay() : now()->addMinutes(20);
+            $from = isset($validated['from']) ? Carbon::parse($validated['from'])->startOfDay() : $to->copy()->subDays(7);
+
+            if ($from->isAfter($to)) {
+                throw ValidationException::withMessages(['from' => [__('errors.date-range-order')]]);
+            }
+            if ($from->diffInDays($to) > 365) {
+                throw ValidationException::withMessages(['from' => [__('errors.date-range-max')]]);
+            }
+        }
+
+        $query = Status::query()->orderByDesc('train_checkins.departure');
 
         if (isset($validated['body'])) {
             $query->where('body', 'like', '%' . $validated['body'] . '%');
         }
 
-        $query->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
+        $hasOriginFilter = isset($validated['origin_text']) || isset($validated['origin_id']);
+        $hasDestinationFilter = isset($validated['destination_text']) || isset($validated['destination_id']);
+
+        $checkinJoin = in_array(DB::connection()->getDriverName(), ['mysql', 'mariadb'], true)
+            ? DB::raw('`train_checkins` FORCE INDEX (idx_tc_departure_status)')
+            : 'train_checkins'; // force best index in mysql and mariadb, but fall back here for sqlite / tests
+
+        $query->join($checkinJoin, 'train_checkins.status_id', '=', 'statuses.id')
             ->join('users', 'statuses.user_id', '=', 'users.id')
-            ->join('train_stopovers as origin_stopover', 'train_checkins.origin_stopover_id', '=', 'origin_stopover.id')
-            ->join('train_stations as origin_station', 'origin_stopover.train_station_id', '=', 'origin_station.id')
-            ->join('train_stopovers as destination_stopover', 'train_checkins.destination_stopover_id', '=', 'destination_stopover.id')
-            ->join('train_stations as destination_station', 'destination_stopover.train_station_id', '=', 'destination_station.id')
-            ->when(isset($validated['origin_text']), function ($q) use ($validated) {
-                $q->where('origin_station.name', 'like', '%' . $validated['origin_text'] . '%');
-            })
-            ->when(isset($validated['origin_id']), function ($q) use ($validated) {
-                $q->where('origin_station.id', $validated['origin_id']);
-            })
-            ->when(isset($validated['destination_text']), function ($q) use ($validated) {
-                $q->where('destination_station.name', 'like', '%' . $validated['destination_text'] . '%');
-            })
-            ->when(isset($validated['destination_id']), function ($q) use ($validated) {
-                $q->where('destination_station.id', $validated['destination_id']);
-            })
-            ->when(isset($validated['user_id']), function ($q) use ($validated) {
-                $q->where('users.id', $validated['user_id']);
-            })
+            ->when($hasOriginFilter, fn ($q) => $q
+                ->join('train_stopovers as origin_stopover', 'train_checkins.origin_stopover_id', '=', 'origin_stopover.id')
+                ->join('train_stations as origin_station', 'origin_stopover.train_station_id', '=', 'origin_station.id')
+            )
+            ->when($hasDestinationFilter, fn ($q) => $q
+                ->join('train_stopovers as destination_stopover', 'train_checkins.destination_stopover_id', '=', 'destination_stopover.id')
+                ->join('train_stations as destination_station', 'destination_stopover.train_station_id', '=', 'destination_station.id')
+            )
+            ->when(isset($validated['origin_text']), fn ($q) => $q
+                ->where('origin_station.name', 'like', '%' . $validated['origin_text'] . '%')
+            )
+            ->when(isset($validated['origin_id']), fn ($q) => $q
+                ->where('origin_station.id', $validated['origin_id'])
+            )
+            ->when(isset($validated['destination_text']), fn ($q) => $q
+                ->where('destination_station.name', 'like', '%' . $validated['destination_text'] . '%')
+            )
+            ->when(isset($validated['destination_id']), fn ($q) => $q
+                ->where('destination_station.id', $validated['destination_id'])
+            )
+            ->when(isset($validated['user_id']), fn ($q) => $q
+                ->where('users.id', $validated['user_id'])
+            )
             ->where(\App\Http\Controllers\Backend\Transport\StatusController::filterStatusVisibility($user))
-            ->where('train_checkins.departure', '<', now()->addMinutes(20))
+            ->when($from !== null, fn ($q) => $q->where('train_checkins.departure', '>=', $from))
+            ->when($to !== null, fn ($q) => $q->where('train_checkins.departure', '<=', $to))
             ->whereNotIn('statuses.user_id', $user->mutedUsers()->select('muted_id'))
             ->whereNotIn('statuses.user_id', $user->blockedUsers()->select('blocked_id'))
             ->whereNotIn('statuses.user_id', $user->blockedByUsers()->select('user_id'))

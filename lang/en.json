@@ -196,6 +196,8 @@
   "error.bad-request": "The request is invalid.",
   "error.login": "Wrong credentials",
   "error.status.not-authorized": "You're not authorised to see this status.",
+  "errors.date-range-max": "The date range between \"from\" and \"to\" must not exceed 365 days.",
+  "errors.date-range-order": "\"from\" must be before \"to\".",
   "errors.403.alt_text": "A train station in thick fog. Several red signals can be seen in the distance.",
   "errors.403.lead": "Mayday, mayday, mayday, you don’t have permission to access this content.",
   "errors.404.alt_text": "Image of an old railway line in a green forest. There is moss on the sleepers and bushes are growing over the tracks.",
