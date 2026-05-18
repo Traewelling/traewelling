@@ -4595,7 +4595,7 @@ export class Api<
       }),
 
     /**
-     * @description Returns paginated list of statuses, filtered by given parameters
+     * @description Returns cursor-paginated statuses filtered by given parameters. The departure window (from..to) defaults to the last 7 days and must not exceed 365 days.
      *
      * @tags Status
      * @name ListStatuses
@@ -4614,6 +4614,18 @@ export class Api<
          * @example 42
          */
         user_id?: number;
+        /**
+         * Lower bound for departure (date, e.g. 2024-01-01). Defaults to 7 days before "to".
+         * @format date
+         * @example "2024-01-01"
+         */
+        from?: string;
+        /**
+         * Upper bound for departure (date, e.g. 2024-01-31). Defaults to now+20min. Range from..to must not exceed 365 days.
+         * @format date
+         * @example "2024-01-31"
+         */
+        to?: string;
         /**
          * Filter by origin station name
          * @example "Central Station"

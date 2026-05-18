@@ -196,6 +196,8 @@
   "error.bad-request": "Die Anfrage ist ungültig.",
   "error.login": "Falsche Anmeldedaten",
   "error.status.not-authorized": "Du bist nicht berechtigt, diesen Status zu sehen.",
+  "errors.date-range-max": "Der Zeitraum zwischen \"von\" und \"bis\" darf maximal 365 Tage betragen.",
+  "errors.date-range-order": "\"von\" muss vor \"bis\" liegen.",
   "errors.403.alt_text": "Ein Bahnhof im dichten Nebel. In der Ferne sieht man mehrere rote Signale",
   "errors.403.lead": "Mayday, mayday, mayday, du hast keine Berechtigung für diesen Inhalt.",
   "errors.404.alt_text": "Bild einer alten Bahnstrecke im grünen Wald. Auf den Schwellen befindet sich Moos und das Gebüsch wächst über die Gleise.",
