@@ -4,7 +4,7 @@
 
 The responsible party for data processing on this website is:
 
-> Träwelling e.V. (i.Gr.)<br>
+> Träwelling e.V.<br>
 > Nuitsstr. 12<br>
 > 76185 Karlsruhe<br>
 > support@traewelling.org
