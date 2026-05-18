@@ -1622,6 +1622,28 @@ export interface PrivacyPolicy {
    * @example false
    */
   hasOldAcceptance: boolean;
+  /** Next privacy policy that is not yet in effect, if any. */
+  upcoming?: {
+    /**
+     * @format uuid
+     * @example "00000000-0000-0000-0000-000000000000"
+     */
+    id?: string;
+    /**
+     * @format date-time
+     * @example "2022-01-05T16:26:14.000000Z"
+     */
+    validFrom?: string;
+    /** @example "This is the english privacy policy" */
+    en?: string;
+    /** @example "Dies ist die deutsche Datenschutzerklärung" */
+    de?: string;
+    /**
+     * @format date-time
+     * @example null
+     */
+    acceptedAt?: string | null;
+  } | null;
 }
 
 /**

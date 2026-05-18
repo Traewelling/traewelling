@@ -6,6 +6,7 @@ use App\Http\Requests\StoreAlertRequest;
 use App\Http\Resources\AlertResource;
 use App\Models\Alert;
 use App\Models\AlertTranslation;
+use App\Services\PrivacyPolicyService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -17,6 +18,10 @@ use OpenApi\Attributes as OA;
 
 class AlertController extends Controller
 {
+    public function __construct(
+        private readonly PrivacyPolicyService $privacyPolicyService,
+    ) {}
+
     #[OA\Get(
         path: '/alerts',
         operationId: 'getAlerts',
@@ -123,6 +128,28 @@ class AlertController extends Controller
 
                 $alerts->prepend($alert);
             }
+        }
+
+        $upcomingPolicy = $this->privacyPolicyService->getUpcomingPolicy();
+        $user = auth()->user();
+
+        if ($upcomingPolicy !== null && $user !== null && !$this->privacyPolicyService->hasUserAcceptedPolicy($user, $upcomingPolicy)) {
+            $alert = new Alert();
+            $alert->id = 'privacy-policy-upcoming';
+            $alert->type = 'warning';
+            $alert->active_from = now();
+            $alert->active_until = $upcomingPolicy->valid_at;
+
+            $translation = new AlertTranslation();
+            $translation->locale = app()->getLocale();
+            $translation->title = __('privacy.upcoming-alert.title');
+            $translation->content = __('privacy.upcoming-alert.content', [
+                'date' => $upcomingPolicy->valid_at->isoFormat('LL'),
+            ]);
+            $translation->url = url('/gdpr-intercept');
+            $alert->setRelation('translations', collect([$translation]));
+
+            $alerts->prepend($alert);
         }
 
         return AlertResource::collection($alerts);

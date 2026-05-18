@@ -13,5 +13,7 @@ readonly class PrivacyPolicyWithAcceptance
         public PrivacyPolicy $policy,
         public ?Carbon $acceptedAt,
         public bool $hasOldAcceptance,
+        public ?PrivacyPolicy $upcomingPolicy = null,
+        public ?Carbon $upcomingAcceptedAt = null,
     ) {}
 }

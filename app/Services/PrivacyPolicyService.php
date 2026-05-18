@@ -76,6 +76,11 @@ readonly class PrivacyPolicyService
         return false;
     }
 
+    public function getUpcomingPolicy(): ?PrivacyPolicy
+    {
+        return $this->repository->getUpcomingPrivacyPolicy();
+    }
+
     public function getLastAcceptedPolicy(User $user): ?PrivacyPolicyAcceptance
     {
         return $this->repository->getLastAcceptedPolicy($user);
@@ -89,14 +94,21 @@ readonly class PrivacyPolicyService
         $policy = $this->getPrivacyPolicy();
         $acceptedAt = null;
         $hasOldAcceptance = false;
+        $upcomingPolicy = $this->repository->getUpcomingPrivacyPolicy();
+        $upcomingAcceptedAt = null;
 
         if ($user !== null) {
             $allAcceptances = $this->getUserAcceptance($user);
             $ownAcceptance = $allAcceptances->firstWhere('privacy_policy_id', $policy->id);
             $acceptedAt = $ownAcceptance?->accepted_at;
             $hasOldAcceptance = $acceptedAt === null && $allAcceptances->isNotEmpty();
+
+            if ($upcomingPolicy !== null) {
+                $upcomingAcceptance = $allAcceptances->firstWhere('privacy_policy_id', $upcomingPolicy->id);
+                $upcomingAcceptedAt = $upcomingAcceptance?->accepted_at;
+            }
         }
 
-        return new PrivacyPolicyWithAcceptance($policy, $acceptedAt, $hasOldAcceptance);
+        return new PrivacyPolicyWithAcceptance($policy, $acceptedAt, $hasOldAcceptance, $upcomingPolicy, $upcomingAcceptedAt);
     }
 }

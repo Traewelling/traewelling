@@ -11540,6 +11540,37 @@
                         "description": "True if the user has accepted a previous (now outdated) version of the privacy policy.",
                         "type": "boolean",
                         "example": false
+                    },
+                    "upcoming": {
+                        "description": "Next privacy policy that is not yet in effect, if any.",
+                        "properties": {
+                            "id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "00000000-0000-0000-0000-000000000000"
+                            },
+                            "validFrom": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "2022-01-05T16:26:14.000000Z"
+                            },
+                            "en": {
+                                "type": "string",
+                                "example": "This is the english privacy policy"
+                            },
+                            "de": {
+                                "type": "string",
+                                "example": "Dies ist die deutsche Datenschutzerklärung"
+                            },
+                            "acceptedAt": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": null,
+                                "nullable": true
+                            }
+                        },
+                        "type": "object",
+                        "nullable": true
                     }
                 },
                 "type": "object"
