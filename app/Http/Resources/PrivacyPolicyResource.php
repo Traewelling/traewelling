@@ -53,6 +53,19 @@ use OpenApi\Attributes as OA;
             type: 'boolean',
             example: false,
         ),
+        new OA\Property(
+            property: 'upcoming',
+            description: 'Next privacy policy that is not yet in effect, if any.',
+            nullable: true,
+            properties: [
+                new OA\Property(property: 'id', type: 'string', format: 'uuid', example: '00000000-0000-0000-0000-000000000000'),
+                new OA\Property(property: 'validFrom', type: 'string', format: 'date-time', example: '2022-01-05T16:26:14.000000Z'),
+                new OA\Property(property: 'en', type: 'string', example: 'This is the english privacy policy'),
+                new OA\Property(property: 'de', type: 'string', example: 'Dies ist die deutsche Datenschutzerklärung'),
+                new OA\Property(property: 'acceptedAt', type: 'string', format: 'date-time', nullable: true, example: null),
+            ],
+            type: 'object',
+        ),
     ],
     type: 'object'
 )]
@@ -73,6 +86,13 @@ class PrivacyPolicyResource extends JsonResource
             'de' => $this->policy->body_md_de,
             'acceptedAt' => $this->acceptedAt,
             'hasOldAcceptance' => $this->hasOldAcceptance,
+            'upcoming' => $this->upcomingPolicy !== null ? [
+                'id' => $this->upcomingPolicy->id,
+                'validFrom' => $this->upcomingPolicy->valid_at,
+                'en' => $this->upcomingPolicy->body_md_en,
+                'de' => $this->upcomingPolicy->body_md_de,
+                'acceptedAt' => $this->upcomingAcceptedAt,
+            ] : null,
         ];
     }
 }

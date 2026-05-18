@@ -17,6 +17,13 @@ class PrivacyPolicyRepository
             ->first();
     }
 
+    public function getUpcomingPrivacyPolicy(): ?PrivacyPolicy
+    {
+        return PrivacyPolicy::where('valid_at', '>', now()->toIso8601ZuluString())
+            ->orderBy('valid_at')
+            ->first();
+    }
+
     public function getPrivacyPolicyById(string $id): PrivacyPolicy
     {
         return PrivacyPolicy::whereId($id)->firstOrFail();
