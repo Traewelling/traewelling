@@ -1318,5 +1318,16 @@
     "trip_creation.form.stations": "Stanice",
     "trip_creation.form.distribute-times": "Rovnoměrně rozdělte časy",
     "trip_creation.form.line.placeholder": "IC, Ex, R, Sp, Os, ...",
-    "trip_creation.form.number.placeholder": "např. EC 143, RJ 174"
+    "trip_creation.form.number.placeholder": "např. EC 143, RJ 174",
+    "errors.date-range-max": "Rozsah dat „od“ a „do“ nesmí překročit 365 dní.",
+    "errors.date-range-order": "„od“ musí být před „do“.",
+    "privacy.upcoming-alert.content": "Nové zásady ochrany osobních údajů vstoupí v platnost dne :date. Můžete je přijmout dříve.",
+    "privacy.upcoming-alert.title": "Nové zásady ochrany osobních údajů",
+    "privacy.upcoming.public-notice": "Nové zásady ochrany osobních údajů vstoupí v platnost dne :date.",
+    "privacy.upcoming.public-notice-link": "Náhled níže",
+    "privacy.upcoming.section-heading": "Nové zásady ochrany osobních údajů (platné od: data)",
+    "privacy.not-signed-yet.body": "Abyste mohli používat Träwelling, musíte souhlasit s našimi zásadami ochrany osobních údajů. Pokud si nepřejete souhlasit, můžete svůj účet smazat kliknutím na tlačítko níže.",
+    "privacy.not-signed-yet.title": "Ještě jste nepodepsali naše zásady ochrany osobních údajů.",
+    "privacy.we-changed.body": "Abyste mohli naši službu nadále používat, musíte souhlasit s nejnovějšími změnami. Pokud si nepřejete souhlasit, můžete svůj účet smazat kliknutím na tlačítko níže.",
+    "privacy.we-changed.title": "Změnili jsme naše zásady ochrany osobních údajů."
 }
