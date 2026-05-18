@@ -42,6 +42,20 @@ Check back here regularly to stay ahead of removals.
 
 ---
 
+# 2026-05-18
+
+**`GET /api/v1/status`: new `from`/`to` parameters and performance fix:**
+The endpoint now accepts optional `from` and `to` date parameters (ISO 8601 date format, e.g. `2024-01-01`) to control the departure time window.
+Without parameters, the window defaults to the last 7 days up to now+20 minutes.
+The window between `from` and `to` must not exceed 365 days. 
+Exception: when `user_id` is set to the authenticated user's own ID, no time limit applies and `from`/`to` are fully optional.
+The previously implicit hard upper bound of `now()+20min` is now the default value of `to` and can be overridden.
+Results are ordered by departure descending (previously: status creation date descending).
+
+(Background: This query was very painful on the production database and causes some headache...)
+
+---
+
 # 2026-05-14
 
 **New endpoint `GET /api/v1/tags/suggestions`:**

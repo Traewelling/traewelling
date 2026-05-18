@@ -194,6 +194,8 @@
   "error.bad-request": "La requête est invalide.",
   "error.login": "Données de connexion incorrectes",
   "error.status.not-authorized": "Tu n'es pas autorisé·e à voir cet enregistrement.",
+  "errors.date-range-max": "La plage de dates entre « from » et « to » ne doit pas dépasser 365 jours.",
+  "errors.date-range-order": "« from » doit être antérieur à « to ».",
   "errors.403.alt_text": "Une gare dans un épais brouillard. Au loin, on aperçoit plusieurs signaux fermés.",
   "errors.403.lead": "Mayday, mayday, mayday, tu n'as pas l'autorisation d'accéder à ce contenu.",
   "errors.404.alt_text": "Image d'une ancienne voie ferrée dans une forêt verdoyante. Il y a de la mousse sur les traverses et des buissons poussent sur les rails.",
