@@ -42,6 +42,16 @@ Check back here regularly to stay ahead of removals.
 
 ---
 
+# 2026-05-19
+
+**`GET /api/v1/trains/trip`: new `continuationTrip` field on `TripResource`:**
+The response now includes an optional `continuationTrip` field (nullable `TripResource`).
+This is set when the trip is part of an interlined through-running service i.e. the physical vehicle continues under a different line name and colour without any transfer required (e.g. S5 becoming S7).
+The nested object contains the full trip data for the immediately following leg, including its own stopovers, line colour, and destination.
+Users can check into each leg independently.
+
+---
+
 # 2026-05-18
 
 **`GET /api/v1/status`: new `from`/`to` parameters and performance fix:**
