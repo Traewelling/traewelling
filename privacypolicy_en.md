@@ -153,6 +153,16 @@ follow such a private profile, the profile data is visible to these users. Howev
 your private profile. This data processing takes place on the basis of your granted consent within the meaning of Art. 6
 para. 1 lit. a DSGVO. Regarding the revocation and the storage period, we refer to the previous explanations.
 
+## Calendar export
+
+Träwelling offers the option to export check-ins as a calendar feed (iCal). The link generated for this purpose contains a personal token and provides
+unfiltered access to all check-ins. Anyone who knows the link can view all check-ins available via the feed. We
+therefore recommend treating the link as confidential and not sharing it publicly.
+
+If the calendar feed is imported into an external application (e.g. a calendar program), we have no influence over
+how that application processes, stores or shares the data. The respective provider of such third-party applications
+is responsible for their data processing.
+
 ## Cookies
 
 Our website uses cookies. These are small text files that your web browser stores on your terminal device. Cookies help

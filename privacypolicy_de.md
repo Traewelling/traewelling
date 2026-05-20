@@ -161,6 +161,16 @@ entscheiden aber selbst, wer Ihrem privaten Profil folgen kann. Diese Datenverar
 erteilten Einwilligung im Sinne des Art. 6 Abs. 1 lit. a DSGVO. Hinsichtlich des Widerrufs und der Speicherdauer
 verweisen wir auf die vorherigen Ausführungen.
 
+## Kalenderexport
+
+Träwelling bietet die Möglichkeit, Checkins als Kalender-Feed (iCal) zu exportieren. Der dabei erzeugte Link enthält einen persönlichen Token und ermöglicht
+ungefilterten Zugriff auf alle Checkins. Jede Person, die den Link kennt, kann sämtliche über den Feed verfügbaren
+Checkins einsehen. Wir empfehlen daher, den Link vertraulich zu behandeln und ihn nicht öffentlich weiterzugeben.
+
+Wird der Kalender-Feed in eine externe Anwendung (z.B. ein Kalender-Programm) importiert, haben wir keinen Einfluss
+darauf, wie diese Anwendung die Daten verarbeitet, speichert oder weitergibt. Für die Datenverarbeitung durch solche
+Drittanwendungen ist deren jeweiliger Anbieter verantwortlich.
+
 ## Cookies
 
 Unsere Website verwendet Cookies. Das sind kleine Textdateien, die Ihr Webbrowser auf Ihrem Endgerät speichert. Cookies
