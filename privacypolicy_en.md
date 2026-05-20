@@ -113,8 +113,8 @@ of our services.
 
 Public content such as other users' statuses can be viewed without registration. For active use of Träwelling —
 in particular creating check-ins — registration is required. You can register either with an e-mail address and
-password, or via single sign-on with Mastodon. When registering via Mastodon, no e-mail address is transmitted; an e-mail address is not
-mandatory.
+password, or via single sign-on with a Fediverse service (e.g. Mastodon, GoToSocial). When registering via a
+Fediverse service, no e-mail address is transmitted; an e-mail address is not mandatory.
 
 If an e-mail address is provided, we use it for important notifications regarding your account.
 
@@ -176,8 +176,8 @@ analysis functions) takes place, these will be treated separately in this data p
 
 ## Transmission of data to third parties
 
-Träwelling offers the option to forward travel data (check-ins) to Mastodon and publish them there at the user's
-request. This only occurs when the user explicitly selects this option during the respective check-in.
+Träwelling offers the option to forward travel data (check-ins) to a Fediverse service and publish them there at
+the user's request. This only occurs when the user explicitly selects this option during the respective check-in.
 Träwelling may commission third parties with the collection, storage and use of personal data (
 commissioned processing). In this case, Träwelling remains the responsible party. These third parties are subject to the
 same data protection provisions as Träwelling. These transfers are made on the basis of your consent within the meaning
@@ -195,8 +195,8 @@ single sign-on provider and confirm the single sign-on registration via a button
 
 Authentication takes place directly with the respective single sign-on provider. In the course of such authentication,
 we receive a user ID with the information that the user is registered with the respective provider under this user ID
-and an ID that cannot be used by us for other purposes (so-called "user handle"). As well as, in the case of Mastodon,
-tokens that allow us to publish, read, manipulate and delete statuses in the respective social network.
+and an ID that cannot be used by us for other purposes (so-called "user handle"). As well as, in the case of
+Fediverse services, tokens that allow us to publish, read, manipulate and delete posts in the respective network.
 Whether additional data is transmitted to us depends on the single sign-on procedure used, on the data releases selected
 as part of the authentication process and also on which data users have released in the privacy or other settings of the
 user account with the single sign-on provider. Depending on the single sign-on provider and the user's choice, this can
@@ -223,9 +223,9 @@ If users wish to delete their data from us, they must cancel their registration 
 
 ## Services used and service providers:
 
-- Mastodon Single-Sign-On: Authentication service; Service provider: This is dependent on the domain you specify. For
-  more information on service provider, privacy policy and opt-out of federated Mastodon servers, please contact your
-  Mastodon provider.
+- Fediverse Single Sign-On (Mastodon-compatible): Authentication service; Service provider: This depends on the
+  domain you specify. For more information on the service provider, privacy policy and opt-out options, please contact
+  the operator of your Fediverse service.
 
 ### Carto
 

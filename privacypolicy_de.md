@@ -113,8 +113,9 @@ technisch fehlerfreien und reibungslosen Bereitstellung unserer Dienste.
 
 Öffentliche Inhalte wie Status anderer Nutzer können ohne Registrierung eingesehen werden. Für die aktive Nutzung von
 Träwelling — insbesondere das Erstellen von Checkins — ist eine Registrierung erforderlich. Die Registrierung ist
-entweder mit einer E-Mail-Adresse und einem Passwort oder über Single-Sign-On mit Mastodon möglich.
-Bei einer Registrierung über Mastodon wird keine E-Mail-Adresse übermittelt;
+entweder mit einer E-Mail-Adresse und einem Passwort oder über Single-Sign-On mit einem Fediverse-Dienst
+(z.B. Mastodon, GoToSocial) möglich.
+Bei einer Registrierung über einen Fediverse-Dienst wird keine E-Mail-Adresse übermittelt;
 eine E-Mail-Adresse ist nicht verpflichtend.
 
 Sofern eine E-Mail-Adresse hinterlegt ist, nutzen wir diese für wichtige Benachrichtigungen, die Ihren Account
@@ -183,8 +184,9 @@ Analyse-Funktionen) erfolgt, werden diese in dieser Datenschutzerklärung separa
 
 ## Übermittlung von Daten an Dritte
 
-Träwelling bietet die Möglichkeit, Reisedaten (Checkins) auf Wunsch des Nutzers an Mastodon weiterzuleiten und dort zu
-veröffentlichen. Dies geschieht ausschließlich, wenn der Nutzer dies beim jeweiligen Checkin explizit auswählt.
+Träwelling bietet die Möglichkeit, Reisedaten (Checkins) auf Wunsch des Nutzers an einen Fediverse-Dienst
+weiterzuleiten und dort zu veröffentlichen. Dies geschieht ausschließlich, wenn der Nutzer dies beim jeweiligen
+Checkin explizit auswählt.
 Träwelling kann Dritte mit der Erhebung, Speicherung und
 Nutzung von personenbezogenen Daten beauftragen (Auftragsverarbeitung). In diesem Fall bleibt Träwelling weiterhin
 verantwortliche Stelle. Diese Dritten unterliegen denselben Datenschutzbestimmungen wie Träwelling. Diese Übermittlungen
@@ -203,9 +205,9 @@ Single-Sign-On-Anmeldung über eine Schaltfläche bestätigen.
 
 Die Authentifikation erfolgt direkt beim jeweiligen Single-Sign-On-Anbieter. Im Rahmen einer solchen Authentifikation
 erhalten wir eine Nutzer-ID mit der Information, dass der Nutzer unter dieser Nutzer-ID beim jeweiligen Anbieter
-angemeldet ist und eine für uns für andere Zwecke nicht weiter nutzbare ID (sog "User Handle“). Sowie im Fall von
-Mastodon Tokens, welche uns ermöglichen, Status im jeweiligen sozialen Netzwerk zu veröffentlichen, lesen,
-manipulieren und löschen. Ob uns zusätzliche Daten übermittelt werden, hängt von dem genutzten Single-Sign-On-Verfahren
+angemeldet ist und eine für uns für andere Zwecke nicht weiter nutzbare ID (sog "User Handle"). Sowie im Fall von
+Fediverse-Diensten Tokens, welche uns ermöglichen, Beiträge im jeweiligen Netzwerk zu veröffentlichen, zu lesen,
+zu manipulieren und zu löschen. Ob uns zusätzliche Daten übermittelt werden, hängt von dem genutzten Single-Sign-On-Verfahren
 ab, von den gewählten Datenfreigaben im Rahmen der Authentifizierung und zudem davon, welche Daten Nutzer in den
 Privatsphäre- oder sonstigen Einstellungen des Nutzerkontos beim Single-Sign-On-Anbieter freigegeben haben. Es können je
 nach Single-Sign-On-Anbieter und der Wahl der Nutzer verschiedene Daten sein, in der Regel sind es die E-Mail-Adresse
@@ -234,9 +236,9 @@ löschen, müssen sie ihre Registrierung bei uns kündigen.
 
 ## Eingesetzte Dienste und Diensteanbieter:
 
-- Mastodon Single-Sign-On: Authentifizierungsdienst; Dienstanbieter: Dieser ist abhängig zur von Ihnen angegebenen
-  Domain. Für weitere Informationen zu Dienstanbieter, Datenschutzerklärung und Widerspruchsmöglichkeit federierter
-  Mastodon-Server, wenden Sie sich bitte an Ihren Mastodon-Anbieter.
+- Fediverse Single-Sign-On (Mastodon-kompatibel): Authentifizierungsdienst; Dienstanbieter: Dieser ist abhängig von
+  der von Ihnen angegebenen Domain. Für weitere Informationen zu Dienstanbieter, Datenschutzerklärung und
+  Widerspruchsmöglichkeit wenden Sie sich bitte an den Betreiber Ihres Fediverse-Dienstes.
 
 ### Carto
 
