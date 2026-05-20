@@ -35,8 +35,27 @@
                                             {{$source->manualLicense->human_name}}
                                             <i class="fas fa-external-link-alt"></i>
                                         </a>
+                                        @if($source->attribution_text)
+                                            <br>
+                                            <small class="text-muted">{{$source->attribution_text}}</small>
+                                        @endif
                                     @elseif($source->spdx)
-                                        {{$source->spdx}}
+                                        @if($source->license_url)
+                                            <a href="{{$source->license_url}}" target="_blank">
+                                                {{$source->spdx}}
+                                                <i class="fas fa-external-link-alt"></i>
+                                            </a>
+                                        @else
+                                            {{$source->spdx}}
+                                        @endif
+                                        @if($source->attribution_text)
+                                            <br>
+                                            <small class="text-muted">{{$source->attribution_text}}</small>
+                                        @endif
+                                    @elseif($source->attribution_text)
+                                        <span class="badge bg-info text-dark">Custom</span>
+                                        <br>
+                                        <small class="text-muted">{{$source->attribution_text}}</small>
                                     @else
                                         <span class="badge bg-secondary">No license information</span>
                                     @endif
