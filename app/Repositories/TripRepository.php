@@ -95,12 +95,65 @@ class TripRepository
     {
         // todo: create trip IDs with a prefix, to distinguish between different data providers
         $dataProvider = new DataProviderBuilder()->build(null, Auth::user());
+
         if (is_numeric($tripID)) {
             $trip = Trip::where('id', $tripID)->where('linename', $lineName)->first();
-        } else {
-            $trip = Trip::where('trip_id', $tripID)->where('linename', $lineName)->first();
+
+            return $trip ?? $dataProvider->fetchHafasTrip($tripID, $lineName);
+        }
+        $trip = Trip::where('trip_id', $tripID)->first();
+
+        if ($trip === null) {
+            return $dataProvider->fetchHafasTrip($tripID, $lineName);
         }
 
-        return $trip ?? $dataProvider->fetchHafasTrip($tripID, $lineName);
+        if ($trip->linename === $lineName) {
+            return $trip;
+        }
+
+        if ($trip->continuation_trip_id !== null) {
+            $match = $this->findInContinuationChainByLineName($trip, $lineName);
+            if ($match !== null) {
+                return $match;
+            }
+        }
+
+        $trip = $dataProvider->fetchHafasTrip($tripID, $lineName);
+
+        if ($trip->linename === $lineName) {
+            return $trip;
+        }
+
+        if ($trip->continuation_trip_id !== null) {
+            $match = $this->findInContinuationChainByLineName($trip, $lineName);
+            if ($match !== null) {
+                return $match;
+            }
+        }
+
+        return $trip;
+    }
+
+    private function findInContinuationChainByLineName(Trip $trip, string $lineName): ?Trip
+    {
+        $seenIds = [$trip->id];
+        $continuationId = $trip->continuation_trip_id;
+
+        while ($continuationId !== null) {
+            if (in_array($continuationId, $seenIds, true)) {
+                break;
+            }
+            $continuation = Trip::find($continuationId);
+            if ($continuation === null) {
+                break;
+            }
+            if ($continuation->linename === $lineName) {
+                return $continuation;
+            }
+            $seenIds[] = $continuation->id;
+            $continuationId = $continuation->continuation_trip_id;
+        }
+
+        return null;
     }
 }

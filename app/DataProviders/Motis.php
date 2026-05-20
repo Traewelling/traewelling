@@ -404,13 +404,23 @@ class Motis extends Controller implements DataProviderInterface
             throw new DataProviderException(__('messages.exception.motis.trip-not-found'));
         }
 
-        $primaryLeg = $rawJourney['legs'][0];
+        $legs = $rawJourney['legs'];
+
+        $matchingIndex = 0;
+        foreach ($legs as $index => $leg) {
+            if ($leg['tripId'] === $tripID) {
+                $matchingIndex = $index;
+                break;
+            }
+        }
+
+        $primaryLeg = $legs[$matchingIndex];
         $journey = Trip::updateOrCreate(['trip_id' => $tripID], $this->hydrator->getTripData($primaryLeg, $lineName, $this->source));
         $this->tripRepository->tryToSaveStopovers($journey, $this->hydrator->parseLegToNewStopovers($primaryLeg, $this->source));
 
         $seenTripIds = [$tripID];
         $previousTrip = $journey;
-        foreach (array_slice($rawJourney['legs'], 1) as $interlinedLeg) {
+        foreach (array_slice($legs, $matchingIndex + 1) as $interlinedLeg) {
             if (!($interlinedLeg['interlineWithPreviousLeg'] ?? false)) {
                 break;
             }
