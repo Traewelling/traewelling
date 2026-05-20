@@ -33,7 +33,7 @@
     "checkin.conflict": "Již existuje souběžná zapsaná jízda.",
     "checkin.conflict.question": "Chcete si stále zapsat jízdu? Nezískáte za to žádné body, ale vaše osobní statistiky budou i nadále aktualizovány.",
     "checkin.points.could-have": "Mohli jste získat více bodů, kdybyste zapsali jízdu blíže ke skutečnému času odjezdu!",
-    "checkin.points.earned": "Získali jste :points bod|Získali jste :points bodů!",
+    "checkin.points.earned": "Získali jste :points bod|Získali jste :points body/ů!",
     "checkin.points.forced": "Za tyto zapsanou jízdu jste nezískali žádné body, protože jste si ji vynutili.",
     "checkin.points.full": "Mohl jste získat :points bodů.",
     "checkin.success.body": "Úspěšně jste si zapsali jízdu a jedete!",
