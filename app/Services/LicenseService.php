@@ -69,19 +69,36 @@ class LicenseService
         );
     }
 
+    private function getAttributionTextLicenseData(MotisSourceLicense $source): LicenseDto
+    {
+        $spdx = MotisSourceLicense::SPDX[$source->spdx] ?? null;
+
+        return new LicenseDto(
+            $spdx['name'] ?? $source->spdx ?? '',
+            $source->attribution_text,
+            $spdx['url'] ?? $source->license_url,
+            $source->source_url
+        );
+    }
+
     private function getLicenseData(?License $manual, ?MotisSourceLicense $source): ?LicenseDto
     {
-        $license = null;
         if ($manual) {
             if (in_array($manual?->spdx, MotisSourceLicense::SPDX)) {
-                $license = $this->getDefaultLicenseData($source, $manual?->spdx);
-            } else {
-                $license = $this->getManualLicenseData($manual, $source);
+                return $this->getDefaultLicenseData($source, $manual?->spdx);
             }
-        } elseif ($source?->spdx) {
-            $license = $this->getDefaultLicenseData($source);
+
+            return $this->getManualLicenseData($manual, $source);
         }
 
-        return $license;
+        if ($source?->attribution_text) {
+            return $this->getAttributionTextLicenseData($source);
+        }
+
+        if ($source?->spdx) {
+            return $this->getDefaultLicenseData($source);
+        }
+
+        return null;
     }
 }
