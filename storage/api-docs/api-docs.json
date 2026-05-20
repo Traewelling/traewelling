@@ -12709,6 +12709,15 @@
                             }
                         ],
                         "nullable": true
+                    },
+                    "continuationTrip": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/TripResource"
+                            }
+                        ],
+                        "nullable": true,
+                        "description": "If this trip is an interlined through-running service, this contains the immediately following trip (different line name/color, no transfer required)."
                     }
                 },
                 "type": "object"

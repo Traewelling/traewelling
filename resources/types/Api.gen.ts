@@ -2296,6 +2296,8 @@ export interface TripResource {
   destination?: Station;
   stopovers?: StopoverResource[];
   dataSource?: DataSourceResource | null;
+  /** If this trip is an interlined through-running service, this contains the immediately following trip (different line name/color, no transfer required). */
+  continuationTrip?: TripResource | null;
 }
 
 /** TrustedUser */

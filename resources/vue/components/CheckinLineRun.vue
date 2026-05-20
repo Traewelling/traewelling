@@ -148,6 +148,22 @@ export default {
             </a>
         </li>
     </ul>
+    <p v-if="lineRun?.continuationTrip" class="text-muted small mb-0 py-2 text-center">
+        {{ $t('stationboard.continues-as') }}
+        <span
+            class="badge ms-1"
+            :style="{
+                backgroundColor: lineRun.continuationTrip.routeColor
+                    ? `#${lineRun.continuationTrip.routeColor}`
+                    : undefined,
+                color: lineRun.continuationTrip.routeTextColor
+                    ? `#${lineRun.continuationTrip.routeTextColor}`
+                    : undefined,
+            }"
+            >{{ lineRun.continuationTrip.lineName }}</span
+        >
+        {{ lineRun.continuationTrip.destination.name }}
+    </p>
     <div v-if="lineRun?.dataSource?.attribution" class="pt-5 pb-2">
         <!-- eslint-disable-next-line vue/no-v-html -->
         <span class="text-xs text-muted" v-html="lineRun.dataSource?.attribution" />

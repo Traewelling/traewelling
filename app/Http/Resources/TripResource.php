@@ -29,10 +29,21 @@ use OpenApi\Attributes as OA;
             ref: '#/components/schemas/DataSourceResource',
             nullable: true,
         ),
+        new OA\Property(
+            property: 'continuationTrip',
+            ref: TripResource::class,
+            description: 'If this trip is an interlined through-running service, this contains the immediately following trip (different line name/color, no transfer required).',
+            nullable: true,
+        ),
     ],
 )]
 class TripResource extends JsonResource
 {
+    public function __construct($resource, private readonly bool $includeContinuation = true)
+    {
+        parent::__construct($resource);
+    }
+
     /**
      * Transform the resource into an array.
      *
@@ -55,6 +66,10 @@ class TripResource extends JsonResource
             'destination' => new StationResource($this->destinationStation),
             'stopovers' => StopoverResource::collection($this->stopovers),
             'dataSource' => $this->motisSourceLicense ? new DataSourceResource($this->motisSourceLicense) : null,
+            'continuationTrip' => $this->when(
+                $this->includeContinuation && $this->continuation_trip_id !== null,
+                fn () => new TripResource($this->continuationTrip, includeContinuation: false),
+            ),
         ];
     }
 }

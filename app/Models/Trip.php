@@ -41,6 +41,8 @@ use Illuminate\Support\Carbon;
  * @property string|null $route_color
  * @property MotisCategory|null $mode
  * @property string|null $route_text_color
+ * @property int|null $continuation_trip_id
+ * @property-read Trip|null $continuationTrip
  * @property-read Collection<int, Checkin> $checkins
  * @property-read int|null $checkins_count
  * @property-read Station|null $destinationStation
@@ -90,7 +92,7 @@ class Trip extends Model
     protected $fillable = [
         'trip_id', 'category', 'number', 'linename', 'route_color', 'route_text_color', 'journey_number', 'operator_id', 'origin_id',
         'destination_id', 'polyline_id', 'departure', 'arrival', 'source', 'motis_source', 'user_id', 'last_refreshed',
-        'motis_source_license_id', 'mode',
+        'motis_source_license_id', 'mode', 'continuation_trip_id',
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
@@ -114,6 +116,7 @@ class Trip extends Model
         'source' => TripSource::class,
         'user_id' => 'integer',
         'mode' => MotisCategory::class,
+        'continuation_trip_id' => 'integer',
     ];
 
     public function polyline(): HasOne
@@ -159,5 +162,10 @@ class Trip extends Model
     public function motisSourceLicense(): BelongsTo
     {
         return $this->belongsTo(MotisSourceLicense::class, 'motis_source_license_id', 'id');
+    }
+
+    public function continuationTrip(): BelongsTo
+    {
+        return $this->belongsTo(Trip::class, 'continuation_trip_id', 'id');
     }
 }
