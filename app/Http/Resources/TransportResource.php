@@ -6,6 +6,7 @@ use App\Enum\StatusTagKey;
 use App\Models\Checkin;
 use App\Models\StatusTag;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Gate;
 use OpenApi\Attributes as OA;
 
 #[OA\Schema(
@@ -109,6 +110,10 @@ class TransportResource extends JsonResource
         $manualJourneyNumber = $this->relationLoaded('statusTags')
             ? $this->statusTags->firstWhere('key', StatusTagKey::JOURNEY_NUMBER->value)
             : StatusTag::whereStatusId($this->status_id)->whereRaw('`key` = ?', [StatusTagKey::JOURNEY_NUMBER->value])->first();
+
+        if ($manualJourneyNumber !== null && Gate::denies('view', $manualJourneyNumber)) {
+            $manualJourneyNumber = null;
+        }
 
         return [
             'trip' => (int) $this->trip->id,
