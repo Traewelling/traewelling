@@ -109,6 +109,8 @@ Maßnahmen gestattet; zugleich liegt hier ein berechtigtes Interesse an der Vera
 f DSGVO vor. Als Betreiber dieser Website haben wir ein berechtigtes Interesse an der Führung von Log-Dateien zur
 technisch fehlerfreien und reibungslosen Bereitstellung unserer Dienste.
 
+Die Server-Log-Dateien, einschließlich der darin enthaltenen IP-Adressen, werden nach 14 Tagen automatisch gelöscht.
+
 ## Registrierung auf dieser Website
 
 Öffentliche Inhalte wie Status anderer Nutzer können ohne Registrierung eingesehen werden. Für die aktive Nutzung von

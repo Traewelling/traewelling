@@ -109,6 +109,8 @@ time, there is a legitimate interest in processing here within the meaning of Ar
 of this website, we have a legitimate interest in keeping log files for the technically error-free and smooth provision
 of our services.
 
+Server log files, including the IP addresses they contain, are automatically deleted after 14 days.
+
 ## Registration on this website
 
 Public content such as other users' statuses can be viewed without registration. For active use of Träwelling —
