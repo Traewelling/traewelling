@@ -221,10 +221,9 @@ service using an account with a provider or service provider for single sign-on 
 prerequisite for this is that the users are registered with the respective provider and are already logged in with the
 single sign-on provider and confirm the single sign-on registration via a button.
 
-Authentication takes place directly with the respective single sign-on provider. In the course of such authentication,
-we receive a user ID with the information that the user is registered with the respective provider under this user ID
-and an ID that cannot be used by us for other purposes (so-called "user handle"). As well as, in the case of
-Fediverse services, tokens that allow us to publish, read, manipulate and delete posts in the respective network.
+Authentication takes place directly with the respective single sign-on provider.
+In the course of such authentication, we receive a user ID as well as, in the case of Fediverse services, tokens that allow us to access the user's Fediverse account.
+This includes in particular reading profile information (e.g. display name, username, profile picture, biography) as well as reading, publishing, editing and deleting posts.
 Whether additional data is transmitted to us depends on the single sign-on procedure used, on the data releases selected
 as part of the authentication process and also on which data users have released in the privacy or other settings of the
 user account with the single sign-on provider. Depending on the single sign-on provider and the user's choice, this can

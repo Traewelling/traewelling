@@ -232,11 +232,10 @@ soziales Netzwerk), auch bei unserem Onlineangebot anzumelden. Voraussetzung hie
 jeweiligen Anbieter registriert sind und bei dem Single-Sign-On-Anbieter bereits angemeldet sind und die
 Single-Sign-On-Anmeldung über eine Schaltfläche bestätigen.
 
-Die Authentifikation erfolgt direkt beim jeweiligen Single-Sign-On-Anbieter. Im Rahmen einer solchen Authentifikation
-erhalten wir eine Nutzer-ID mit der Information, dass der Nutzer unter dieser Nutzer-ID beim jeweiligen Anbieter
-angemeldet ist und eine für uns für andere Zwecke nicht weiter nutzbare ID (sog "User Handle"). Sowie im Fall von
-Fediverse-Diensten Tokens, welche uns ermöglichen, Beiträge im jeweiligen Netzwerk zu veröffentlichen, zu lesen,
-zu manipulieren und zu löschen. Ob uns zusätzliche Daten übermittelt werden, hängt von dem genutzten Single-Sign-On-Verfahren
+Die Authentifikation erfolgt direkt beim jeweiligen Single-Sign-On-Anbieter.
+Im Rahmen einer solchen Authentifikation erhalten wir eine Nutzer-ID sowie im Fall von Fediverse-Diensten Tokens, welche uns ermöglichen, auf das Fediverse-Konto des Nutzers zuzugreifen.
+Dies umfasst insbesondere das Lesen von Profilinformationen (z.B. Anzeigename, Benutzername, Profilbild, Biografie) sowie das Lesen, Veröffentlichen, Bearbeiten und Löschen von Beiträgen.
+Ob uns zusätzliche Daten übermittelt werden, hängt von dem genutzten Single-Sign-On-Verfahren
 ab, von den gewählten Datenfreigaben im Rahmen der Authentifizierung und zudem davon, welche Daten Nutzer in den
 Privatsphäre- oder sonstigen Einstellungen des Nutzerkontos beim Single-Sign-On-Anbieter freigegeben haben. Es können je
 nach Single-Sign-On-Anbieter und der Wahl der Nutzer verschiedene Daten sein, in der Regel sind es die E-Mail-Adresse
