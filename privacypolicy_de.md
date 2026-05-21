@@ -198,16 +198,31 @@ Analyse-Funktionen) erfolgt, werden diese in dieser Datenschutzerklärung separa
 
 ## Übermittlung von Daten an Dritte
 
-Träwelling bietet die Möglichkeit, Reisedaten (Checkins) auf Wunsch des Nutzers an einen Fediverse-Dienst
-weiterzuleiten und dort zu veröffentlichen. Dies geschieht ausschließlich, wenn der Nutzer dies beim jeweiligen
-Checkin explizit auswählt.
 Träwelling kann Dritte mit der Erhebung, Speicherung und
 Nutzung von personenbezogenen Daten beauftragen (Auftragsverarbeitung). In diesem Fall bleibt Träwelling weiterhin
 verantwortliche Stelle. Diese Dritten unterliegen denselben Datenschutzbestimmungen wie Träwelling. Diese Übermittlungen
 erfolgt auf der Grundlage Ihrer Einwilligung im Sinne des Art. 6 Abs. 1 lit. a DSGVO.
-Des weiteren gibt Träwelling personenbezogene Daten an Behörden, andere staatliche Stellen oder Privatpersonen weiter,
+
+### Behörden
+
+Träwelling gibt personenbezogene Daten an Behörden, andere staatliche Stellen oder Privatpersonen weiter,
 wenn dazu auf Grund von gesetzlichen Bestimmungen, Gerichtsentscheidungen oder behördlichen Anordnungen eine
 Verpflichtung besteht. Hierzu besteht mit Art. 6 Abs. 1 lit. c DSGVO eine rechtliche Grundlage.
+
+### Fediverse
+
+Träwelling bietet die Möglichkeit, Reisedaten (Checkins) auf Wunsch des Nutzers an einen Fediverse-Dienst
+weiterzuleiten und dort zu veröffentlichen. Dies geschieht ausschließlich, wenn der Nutzer dies beim jeweiligen
+Checkin explizit auswählt.
+
+### Drittanwendungen
+
+Träwelling stellt eine öffentliche API inklusive Webhook-Funktionalität bereit, über die Drittanwendungen auf Daten
+zugreifen können. Autorisiert ein Nutzer eine Drittanwendung, erhält diese einen persönlichen Zugriffstoken und kann
+im Rahmen der vom Nutzer erteilten Berechtigungen (Scopes) auf nicht-öffentliche Inhalte zugreifen sowie Daten
+erstellen, bearbeiten und löschen. Auf die Verarbeitung,
+Speicherung oder Weitergabe dieser Daten durch solche Drittanwendungen hat Träwelling keinerlei Einfluss. Für die
+Datenverarbeitung durch Drittanwendungen ist deren jeweiliger Anbieter verantwortlich.
 
 ## Single-Sign-On-Anmeldung
 

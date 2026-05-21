@@ -190,15 +190,29 @@ analysis functions) takes place, these will be treated separately in this data p
 
 ## Transmission of data to third parties
 
-Träwelling offers the option to forward travel data (check-ins) to a Fediverse service and publish them there at
-the user's request. This only occurs when the user explicitly selects this option during the respective check-in.
 Träwelling may commission third parties with the collection, storage and use of personal data (
 commissioned processing). In this case, Träwelling remains the responsible party. These third parties are subject to the
 same data protection provisions as Träwelling. These transfers are made on the basis of your consent within the meaning
 of Art. 6 para. 1 lit. a GDPR.
-Furthermore, Träwelling passes on personal data to authorities, other government agencies or private persons if there is
-an obligation to do so due to legal provisions, court decisions or official orders. There is a legal basis for this with
+
+### Authorities
+
+Träwelling passes on personal data to authorities, other government agencies or private persons if there is an
+obligation to do so due to legal provisions, court decisions or official orders. There is a legal basis for this with
 Art. 6 para. 1 lit. c GDPR.
+
+### Fediverse
+
+Träwelling offers the option to forward travel data (check-ins) to a Fediverse service and publish them there at
+the user's request. This only occurs when the user explicitly selects this option during the respective check-in.
+
+### Third-party applications
+
+Träwelling provides a public API including webhook functionality through which third-party applications can access data.
+If a user authorises a third-party application, it receives a personal access token and can, within the scope of the
+permissions (scopes) granted by the user, access non-public content as well as create, edit and delete data. Träwelling has no influence whatsoever over how such third-party applications
+process, store or share this data. The respective provider of each third-party application is responsible for its data
+processing.
 
 ## Single sign-on
 
