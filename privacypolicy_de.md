@@ -9,7 +9,7 @@ Die verantwortliche Stelle für die Datenverarbeitung auf dieser Website ist:
 > 76185 Karlsruhe<br>
 > support@traewelling.org
 
-Die verantwortliche Stelle entscheidet allein oder gemeinsam mit anderen über die Zwecke und Mittel der Verarbeitung von
+Die verantwortliche Stelle entscheidet über die Zwecke und Mittel der Verarbeitung von
 personenbezogenen Daten (z.B. Namen, Kontaktdaten o. Ä.).
 
 ## Welche Daten werden erhoben?

@@ -9,7 +9,7 @@ The responsible party for data processing on this website is:
 > 76185 Karlsruhe<br>
 > support@traewelling.org
 
-The responsible body decides alone or jointly with others on the purposes and means of the processing of personal data (
+The responsible body decides on the purposes and means of the processing of personal data (
 e.g. names, contact details or similar).
 
 ## What data is collected?
