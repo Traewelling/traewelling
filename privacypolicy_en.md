@@ -104,8 +104,8 @@ automatically transmits to us. These are:
 - IP address
 
 There is no merging of this data with other data sources. The legal basis for data processing is Art. 6 (1) lit. b
-DSGVO, which permits the processing of data for the fulfillment of a contract or pre-contractual measures; at the same
-time, there is a legitimate interest in processing here within the meaning of Art. 6 (1) lit. f DSGVO. As the operator
+GDPR, which permits the processing of data for the fulfillment of a contract or pre-contractual measures; at the same
+time, there is a legitimate interest in processing here within the meaning of Art. 6 (1) lit. f GDPR. As the operator
 of this website, we have a legitimate interest in keeping log files for the technically error-free and smooth provision
 of our services.
 
@@ -120,7 +120,7 @@ Fediverse service, no e-mail address is transmitted; an e-mail address is not ma
 
 If an e-mail address is provided, we use it for important notifications regarding your account.
 
-The processing of data entered during registration is based on your consent (Art. 6 para. 1 lit. a DSGVO). For
+The processing of data entered during registration is based on your consent (Art. 6 para. 1 lit. a GDPR). For
 information on storage periods and account deletion, please refer to the "Deleting your account" section.
 
 ## Storage period of contributions and comments
@@ -128,7 +128,7 @@ information on storage periods and account deletion, please refer to the "Deleti
 Contributions and comments as well as related data, such as IP addresses, are stored. The content remains on our
 Website until it has been completely deleted or had to be deleted for legal reasons.
 
-The storage of posts and comments is based on your consent (Art. 6 para. 1 lit. a DSGVO). A revocation of your already
+The storage of posts and comments is based on your consent (Art. 6 para. 1 lit. a GDPR). A revocation of your already
 given
 consent is possible at any time. An informal notification by e-mail is sufficient for the revocation. Likewise, the
 deletion of the account constitutes a revocation.
@@ -153,7 +153,7 @@ Your posts and comments as well as parts of the collected data are usually publi
 possibility to decide within the status and profile settings not to make certain data publicly visible. If other users
 follow such a private profile, the profile data is visible to these users. However, you decide yourself who can follow
 your private profile. This data processing takes place on the basis of your granted consent within the meaning of Art. 6
-para. 1 lit. a DSGVO. Regarding the revocation and the storage period, we refer to the previous explanations.
+para. 1 lit. a GDPR. Regarding the revocation and the storage period, we refer to the previous explanations.
 
 ## Calendar export
 
@@ -180,7 +180,7 @@ configured to automatically delete cookies when you close the program. Disabling
 functionality of our website.
 
 The setting of cookies, which are necessary for the exercise of electronic communication processes or the provision of
-certain functions desired by you, is based on Art. 6 para. 1 lit. f DSGVO. As the operator of this
+certain functions desired by you, is based on Art. 6 para. 1 lit. f GDPR. As the operator of this
 website, we have a legitimate interest in the
 storage of cookies for the technically error-free and smooth provision of our services. Insofar as the setting of other
 cookies (e.g. for
@@ -193,10 +193,10 @@ the user's request. This only occurs when the user explicitly selects this optio
 Träwelling may commission third parties with the collection, storage and use of personal data (
 commissioned processing). In this case, Träwelling remains the responsible party. These third parties are subject to the
 same data protection provisions as Träwelling. These transfers are made on the basis of your consent within the meaning
-of Art. 6 para. 1 lit. a DSGVO.
+of Art. 6 para. 1 lit. a GDPR.
 Furthermore, Träwelling passes on personal data to authorities, other government agencies or private persons if there is
 an obligation to do so due to legal provisions, court decisions or official orders. There is a legal basis for this with
-Art. 6 para. 1 lit. c DSGVO.
+Art. 6 para. 1 lit. c GDPR.
 
 ## Single sign-on
 
@@ -230,8 +230,8 @@ If users wish to delete their data from us, they must cancel their registration 
 - Types of data processed: inventory data (e.g. names, addresses), contact data (e.g. email, phone numbers).
 - Data subjects: Users (e.g. website visitors, users of online services).
 - Purposes of processing: contractual performance and service, registration procedure.
-- Legal grounds: consent (Art. 6 para. 1 p. 1 lit. a DSGVO), contract performance and pre-contractual requests (Art. 6
-  para. 1 p. 1 lit. b. DSGVO), legitimate interests (Art. 6 para. 1 p. 1 lit. f. DSGVO).
+- Legal grounds: consent (Art. 6 para. 1 p. 1 lit. a GDPR), contract performance and pre-contractual requests (Art. 6
+  para. 1 p. 1 lit. b. GDPR), legitimate interests (Art. 6 para. 1 p. 1 lit. f. GDPR).
 
 ## Services used and service providers:
 

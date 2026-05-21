@@ -140,7 +140,7 @@ Löschung des Accounts einen Widerruf dar.
 Die Rechtmäßigkeit bereits erfolgter Datenverarbeitungsvorgänge bleibt vom Widerruf unberührt.
 
 Ihre Daten werden möglicherweise länger als angegeben verarbeitet bzw. einem Löschungsverlangen kann nicht entsprochen
-werden, sofern ein Ausnahmetatbestand der DS-GVO zutrifft, insbesondere einer der in Art. 17 Abs. 3 DS-GVO aufgeführten
+werden, sofern ein Ausnahmetatbestand der DSGVO zutrifft, insbesondere einer der in Art. 17 Abs. 3 DSGVO aufgeführten
 Gründe.
 
 ## Löschen des Accounts
