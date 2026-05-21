@@ -29,6 +29,8 @@ personenbezogenen Daten (z.B. Namen, Kontaktdaten o. Ä.).
 	* Strecke
 	* Abfahrts-/Ankunftszeit
 	* Verkehrsmittel
+	* Optionaler Statustext (Freitext)
+	* Optionale Zusatzinformationen (Tags) als Schlüssel-Wert-Paare, z.B. Sitzplatz, Wagennummer, Fahrtklasse, Ticketart, Fahrzeugnummer oder Preis
 
 ## Ihre Rechte
 

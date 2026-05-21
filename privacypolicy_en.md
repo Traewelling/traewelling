@@ -29,6 +29,8 @@ e.g. names, contact details or similar).
 	* Route
 	* Departure/arrival time
 	* Means of transport
+	* Optional status text (free text)
+	* Optional additional information (tags) as key-value pairs, e.g. seat number, wagon number, travel class, ticket type, vehicle number or price
 
 ## Your rights
 
