@@ -217,8 +217,9 @@ Checkin explizit auswählt.
 ### Drittanwendungen
 
 Träwelling stellt eine öffentliche API inklusive Webhook-Funktionalität bereit, über die Drittanwendungen auf Daten
-zugreifen können. Autorisiert ein Nutzer eine Drittanwendung, erhält diese einen persönlichen Zugriffstoken und kann
-im Rahmen der vom Nutzer erteilten Berechtigungen (Scopes) auf nicht-öffentliche Inhalte zugreifen sowie Daten
+zugreifen können. Die Einwilligung in einen Datenaustausch erfolgt über eine Berechtigungsabfrage an den Nutzer. Dort werden die angeforderten Berechtigungen (Scopes) der Drittanwendung aufgelistet und können akzeptiert oder abgelehnt werden.
+Autorisiert ein Nutzer eine Drittanwendung, erhält diese einen persönlichen Zugriffstoken und kann
+im Rahmen der vom Nutzer erteilten Berechtigungen nicht-öffentliche Inhalte einsehen sowie Daten
 erstellen, bearbeiten und löschen. Auf die Verarbeitung,
 Speicherung oder Weitergabe dieser Daten durch solche Drittanwendungen hat Träwelling keinerlei Einfluss. Für die
 Datenverarbeitung durch Drittanwendungen ist deren jeweiliger Anbieter verantwortlich.
