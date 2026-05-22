@@ -115,7 +115,7 @@ Die Server-Log-Dateien, einschließlich der darin enthaltenen IP-Adressen, werde
 
 ## Registrierung auf dieser Website
 
-Öffentliche Inhalte wie Status anderer Nutzer können ohne Registrierung eingesehen werden. Für die aktive Nutzung von
+Öffentliche Inhalte wie ungeschützte Status anderer Nutzer und Profil-Metadaten können ohne Registrierung eingesehen werden. Für die aktive Nutzung von
 Träwelling — insbesondere das Erstellen von Checkins — ist eine Registrierung erforderlich. Die Registrierung ist
 entweder mit einer E-Mail-Adresse und einem Passwort oder über Single-Sign-On mit einem Fediverse-Dienst
 (z.B. Mastodon, GoToSocial) möglich.
