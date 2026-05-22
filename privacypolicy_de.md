@@ -160,8 +160,7 @@ vorherige Benachrichtigung erfolgen.
 
 Ihre Beiträge und Kommentare sowie Teile der erhobenen Daten sind in der Regel öffentlich einsehbar. Sie haben aber die
 Möglichkeit im Rahmen der Status- und Profileinstellungen zu entscheiden, bestimmte Daten nicht öffentlich sichtbar zu
-machen. Sofern andere User einem solchen privaten Profil folgen, sind die Profildaten für diese User sichtbar. Sie
-entscheiden aber selbst, wer Ihrem privaten Profil folgen kann. Diese Datenverarbeitung erfolgt auf der Grundlage Ihrer
+machen. Sofern andere User einem solchen privaten Profil folgen, sind die Profildaten für diese User sichtbar. Sollten Sie ihr Profil "privat" konfiguriert haben, entscheiden Sie über Zustimmung oder Ablehung über Folgenanfragen. Ebenfalls haben Sie die Möglichkeit, bereits abgeschlossene Folgenanfragen wieder zu entfernen. Diese Datenverarbeitung erfolgt auf der Grundlage Ihrer
 erteilten Einwilligung im Sinne des Art. 6 Abs. 1 lit. a DSGVO. Hinsichtlich des Widerrufs und der Speicherdauer
 verweisen wir auf die vorherigen Ausführungen.
 
