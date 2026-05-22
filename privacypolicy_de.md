@@ -120,7 +120,7 @@ Träwelling — insbesondere das Erstellen von Checkins — ist eine Registrieru
 entweder mit einer E-Mail-Adresse und einem Passwort oder über Single-Sign-On mit einem Fediverse-Dienst
 (z.B. Mastodon, GoToSocial) möglich.
 Bei einer Registrierung über einen Fediverse-Dienst wird keine E-Mail-Adresse übermittelt;
-eine E-Mail-Adresse ist nicht verpflichtend.
+eine E-Mail-Adresse ist nicht verpflichtend, wird aber dringend empfohlen. Nur mit einer E-Mail-Adresse können wir Nutzende im Supportfall eindeutig verifizieren und eine mögliche Accountwiederherstellung einleiten.
 
 Sofern eine E-Mail-Adresse hinterlegt ist, nutzen wir diese für wichtige Benachrichtigungen, die Ihren Account
 betreffen.
