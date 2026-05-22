@@ -168,7 +168,7 @@ verweisen wir auf die vorherigen Ausführungen.
 
 Träwelling bietet die Möglichkeit, Checkins als Kalender-Feed (iCal) zu exportieren. Der dabei erzeugte Link enthält einen persönlichen Token und ermöglicht
 ungefilterten Zugriff auf alle Checkins. Jede Person, die den Link kennt, kann sämtliche über den Feed verfügbaren
-Checkins einsehen. Wir empfehlen daher, den Link vertraulich zu behandeln und ihn nicht öffentlich weiterzugeben.
+Checkins einsehen. Wir empfehlen daher, den Link vertraulich zu behandeln und ihn nicht öffentlich weiterzugeben. Sie können bereits erzeugte Links wieder zurückziehen und damit den Zugriff über diesen entfernen.
 
 Wird der Kalender-Feed in eine externe Anwendung (z.B. ein Kalender-Programm) importiert, haben wir keinen Einfluss
 darauf, wie diese Anwendung die Daten verarbeitet, speichert oder weitergibt. Für die Datenverarbeitung durch solche
