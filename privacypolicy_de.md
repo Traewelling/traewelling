@@ -151,10 +151,12 @@ Nutzer können ihren Account jederzeit sofort und vollständig selbst in den Ein
 personenbezogenen Daten unmittelbar aus dem Live-System entfernt. Aufgrund technischer Backups können diese Daten noch
 bis zu 14 Tage in Sicherungskopien vorhanden sein, bevor sie auch dort vollständig gelöscht werden.
 
-Accounts, bei denen in den letzten 365 Tagen weder ein Login noch ein Checkin stattgefunden hat, gelten als inaktiv und
-werden automatisch gelöscht. Sofern eine E-Mail-Adresse hinterlegt ist, kann einige Wochen vor der Löschung eine
-Erinnerung per E-Mail versendet werden. Eine Ankündigung ist jedoch nicht garantiert; die Löschung kann auch ohne
-vorherige Benachrichtigung erfolgen.
+Accounts, bei denen in den letzten 365 Tagen weder ein Login noch ein Checkin stattgefunden hat, gelten als inaktiv und werden automatisch gelöscht.
+Sofern eine E-Mail-Adresse hinterlegt ist, kann einige Wochen vor der Löschung eine Erinnerung per E-Mail versendet werden.
+Eine Ankündigung ist jedoch nicht garantiert; die Löschung kann auch ohne vorherige Benachrichtigung erfolgen.
+
+Durch die Löschung des Accounts bleibt der E-Mail-Verkehr mit uns unberührt, da keine maschinelle Verknüpfung des Mail-Postfachs mit Ihrem Account vorgenommen wird.
+Für eine Löschung des Mailkontaktes genügt eine formlose Löschanfrage per E-Mail, sofern keine gesetzliche Aufbewahrungspflicht entgegensteht.
 
 ## Öffentliche Sichtbarkeit
 

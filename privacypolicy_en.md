@@ -150,9 +150,12 @@ Users can delete their account at any time, immediately and completely, via the 
 be removed from the live system immediately. Due to technical backups, this data may remain in backup copies for up to
 14 days before being permanently deleted there as well.
 
-Accounts for which no login or check-in has taken place within the last 365 days are considered inactive and will be
-deleted automatically. If an e-mail address is stored, a reminder may be sent by e-mail a few weeks before deletion.
+Accounts for which no login or check-in has taken place within the last 365 days are considered inactive and will be deleted automatically.
+If an e-mail address is stored, a reminder may be sent by e-mail a few weeks before deletion.
 However, prior notice is not guaranteed; deletion may also occur without prior notification.
+
+Deleting your account does not affect any e-mail correspondence with us, as no automated link exists between your e-mail inbox and your account.
+To request deletion of e-mail contact, a simple informal request by e-mail is sufficient, provided no statutory retention obligations apply.
 
 ## Public visibility
 
