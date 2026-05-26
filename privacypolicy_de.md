@@ -17,6 +17,8 @@ Die verantwortliche Stelle entscheidet über die Zwecke und Mittel der Verarbeit
 * Nutzername (Pseudonym)
 * Anzeigename
 * Profilbild
+* Profilbeschreibung (Bio, optional)
+* Externe Links zu anderen sozialen Netzwerken (optional)
 * Social Media Handle von SSO-Providern
 * User-ID von SSO-Providern
 * Authentifizierungs-Tokens von SSO-Providern
@@ -238,6 +240,13 @@ Möchten Nutzer deren Daten bei uns löschen, müssen sie ihre Registrierung bei
 - Zwecke der Verarbeitung: Vertragliche Leistungen und Service, Anmeldeverfahren.
 - Rechtsgrundlagen: Einwilligung (Art. 6 Abs. 1 S. 1 lit. a DSGVO), Vertragserfüllung und vorvertragliche Anfragen (Art.
   6 Abs. 1 S. 1 lit. b. DSGVO), Berechtigte Interessen (Art. 6 Abs. 1 S. 1 lit. f. DSGVO).
+
+## Externe Links
+
+Nutzer können in ihren Profilen Links zu externen Websites veröffentlichen.
+Diese Links werden von uns nicht geprüft oder kontrolliert; für deren Inhalte ist ausschließlich der jeweilige Anbieter oder Betreiber der verlinkten Seite verantwortlich.
+Wir übernehmen keine Haftung für die Inhalte oder Datenschutzpraktiken externer Websites.
+Sofern uns rechtswidrige Inhalte bekannt werden, werden wir entsprechende Links zeitnah entfernen.
 
 ## Eingesetzte Dienste und Diensteanbieter:
 

@@ -21,6 +21,8 @@ The responsible body decides on the purposes and means of the processing of pers
 * User name (pseudonym)
 * Display name
 * Profile picture
+* Profile description (bio, optional)
+* External links to other social networks (optional)
 * Social media handle of SSO providers
 * User ID of SSO providers
 * Authentication tokens from SSO providers
@@ -236,6 +238,13 @@ If users wish to delete their data from us, they must cancel their registration 
 - Purposes of processing: contractual performance and service, registration procedure.
 - Legal grounds: consent (Art. 6 para. 1 p. 1 lit. a GDPR), contract performance and pre-contractual requests (Art. 6
   para. 1 p. 1 lit. b. GDPR), legitimate interests (Art. 6 para. 1 p. 1 lit. f. GDPR).
+
+## External links
+
+Users may publish links to external websites in their profiles.
+These links are neither reviewed nor monitored by us; responsibility for their content lies solely with the respective provider or operator of the linked site.
+We accept no liability for the content or data protection practices of external websites.
+Should we become aware of any illegal content, we will remove the relevant links promptly.
 
 ## Services used and service providers:
 
