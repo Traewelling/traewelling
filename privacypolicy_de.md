@@ -90,7 +90,7 @@ Für weitere Anfragen wenden Sie sich bitte direkt an uns.
 
 Sie haben jederzeit im Rahmen der geltenden gesetzlichen Bestimmungen das Recht auf unentgeltliche Auskunft über Ihre gespeicherten personenbezogenen Daten, Herkunft der Daten, deren Empfänger und den Zweck der Datenverarbeitung und ggf. ein Recht auf Berichtigung, Sperrung oder Löschung dieser Daten.
 
-Ausdrücklich _nicht_ gelöscht werden: Toots (Posts, Veröffentlichunge, o.ä.), die auf externen Plattformen manuell oder automatisiert durch Träwelling erzeugt wurden.
+Ausdrücklich _nicht_ gelöscht werden: Toots (Posts, Veröffentlichungen, o.ä.), die auf externen Plattformen manuell oder automatisiert durch Träwelling erzeugt wurden.
 Dies ist technisch nicht möglich.
 
 Diesbezüglich und auch zu weiteren Fragen zum Thema personenbezogene Daten können Sie sich jederzeit über die im Impressum aufgeführten Kontaktmöglichkeiten an uns wenden.
