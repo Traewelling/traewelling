@@ -121,6 +121,7 @@ password, or via single sign-on with a Fediverse service (e.g. Mastodon, GoToSoc
 Fediverse service, no e-mail address is transmitted; an e-mail address is not mandatory.
 
 If an e-mail address is provided, we use it for important notifications regarding your account.
+Where available, additional e-mail notifications (e.g. about interactions, statistics, ...) can be individually enabled or disabled in the settings.
 
 The processing of data entered during registration is based on your consent (Art. 6 para. 1 lit. a GDPR). For
 information on storage periods and account deletion, please refer to the "Deleting your account" section.

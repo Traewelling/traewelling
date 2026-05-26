@@ -122,8 +122,8 @@ entweder mit einer E-Mail-Adresse und einem Passwort oder über Single-Sign-On m
 Bei einer Registrierung über einen Fediverse-Dienst wird keine E-Mail-Adresse übermittelt;
 eine E-Mail-Adresse ist nicht verpflichtend, wird aber dringend empfohlen. Nur mit einer E-Mail-Adresse können wir Nutzende im Supportfall eindeutig verifizieren und eine mögliche Accountwiederherstellung einleiten.
 
-Sofern eine E-Mail-Adresse hinterlegt ist, nutzen wir diese für wichtige Benachrichtigungen, die Ihren Account
-betreffen.
+Sofern eine E-Mail-Adresse hinterlegt ist, nutzen wir diese für wichtige Benachrichtigungen, die Ihren Account betreffen.
+Soweit verfügbar, können zusätzliche Benachrichtigungen per Mail (bspw. über Interaktionen, Statistiken, ...) gezielt in den Einstellungen aktiviert und deaktiviert werden.
 
 Die Verarbeitung der bei der Registrierung eingegebenen Daten erfolgt auf Grundlage Ihrer Einwilligung (Art. 6 Abs. 1
 lit. a DSGVO). Informationen zur Speicherdauer und Löschung Ihres Accounts finden Sie im Abschnitt
