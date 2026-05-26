@@ -1,3 +1,7 @@
+> **Note:** This is an English translation of our privacy policy, provided to make it more accessible to a wider audience.
+> The German version is the sole legally binding document.
+> In case of any discrepancy between this translation and the German original, the German version shall prevail.
+
 # General notice and mandatory&shy;information
 
 ## Designation of the responsible entity
