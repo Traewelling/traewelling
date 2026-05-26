@@ -168,6 +168,8 @@ Your posts and comments as well as parts of the collected data are usually publi
 However, you have the possibility to decide within the status and profile settings not to make certain data publicly visible.
 If other users follow such a private profile, the profile data is visible to these users.
 However, you decide yourself who can follow your private profile.
+Regardless of the visibility settings chosen, Träwelling administrators may technically access all stored content as part of operating and maintaining the service.
+This occurs exclusively where necessary for operating the service, diagnosing errors, or fulfilling legal obligations.
 This data processing takes place on the basis of your granted consent within the meaning of Art. 6 para. 1 lit. a GDPR.
 Regarding the revocation and the storage period, we refer to the previous explanations.
 

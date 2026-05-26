@@ -150,7 +150,7 @@ Ihre Daten werden möglicherweise länger als angegeben verarbeitet bzw. einem L
 ## Löschen des Accounts
 
 Nutzer können ihren Account jederzeit sofort und vollständig selbst in den Einstellungen löschen.
-Dabei werden alle personenbezogenen Daten unmittelbar aus dem Live-System entfernt.
+Dabei werden alle personenbezogenen Daten unmittelbar aus dem Produktivsystem entfernt.
 Aufgrund technischer Backups können diese Daten noch bis zu 14 Tage in Sicherungskopien vorhanden sein, bevor sie auch dort vollständig gelöscht werden.
 
 Accounts, bei denen in den letzten 365 Tagen weder ein Login noch ein Checkin stattgefunden hat, gelten als inaktiv und werden automatisch gelöscht.
@@ -165,8 +165,10 @@ Für eine Löschung des Mailkontaktes genügt eine formlose Löschanfrage per E-
 Ihre Beiträge und Kommentare sowie Teile der erhobenen Daten sind in der Regel öffentlich einsehbar.
 Sie haben aber die Möglichkeit im Rahmen der Status- und Profileinstellungen zu entscheiden, bestimmte Daten nicht öffentlich sichtbar zu machen.
 Sofern andere User einem solchen privaten Profil folgen, sind die Profildaten für diese User sichtbar.
-Sollten Sie ihr Profil "privat" konfiguriert haben, entscheiden Sie über Zustimmung oder Ablehung über Folgenanfragen.
+Sollten Sie ihr Profil "privat" konfiguriert haben, entscheiden Sie über Zustimmung oder Ablehnung über Folgenanfragen.
 Ebenfalls haben Sie die Möglichkeit, bereits abgeschlossene Folgenanfragen wieder zu entfernen.
+Unabhängig von den gewählten Sichtbarkeitseinstellungen können Administratoren von Träwelling im Rahmen des Betriebs und der Wartung des Dienstes technisch auf alle gespeicherten Inhalte zugreifen.
+Dies geschieht ausschließlich, soweit es für den Betrieb, die Fehleranalyse oder die Erfüllung gesetzlicher Pflichten erforderlich ist.
 Diese Datenverarbeitung erfolgt auf der Grundlage Ihrer erteilten Einwilligung im Sinne des Art. 6 Abs. 1 lit. a DSGVO.
 Hinsichtlich des Widerrufs und der Speicherdauer verweisen wir auf die vorherigen Ausführungen.
 
