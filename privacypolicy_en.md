@@ -4,6 +4,15 @@
 
 # General notice and mandatory&shy;information
 
+## What has changed?
+
+This privacy policy has been comprehensively revised and brought up to date.
+The key change: Träwelling is no longer operated by a private individual, but by the registered association **Träwelling e.V.**, which now acts as the responsible party within the meaning of the GDPR.
+The people behind Träwelling remain the same.
+In addition, existing sections have been clarified and expanded, covering practices that have existed for some time but were not previously documented in detail.
+
+There are no practical implications for users as a result of these changes.
+
 ## Designation of the responsible entity
 
 The responsible party for data processing on this website is:
@@ -12,6 +21,10 @@ The responsible party for data processing on this website is:
 > Nuitsstr. 12<br>
 > 76185 Karlsruhe<br>
 > support@traewelling.org
+
+Authorized representatives:
+- Levin Baumann
+- Kristian Stöckel
 
 The responsible body decides on the purposes and means of the processing of personal data ( e.g. names, contact details or similar).
 

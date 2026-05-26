@@ -1,5 +1,14 @@
 # Allgemeiner Hinweis und Pflicht&shy;informationen
 
+## Was wurde geändert?
+
+Diese Datenschutzerklärung wurde grundlegend überarbeitet und auf den aktuellen Stand gebracht.
+Wesentliche Änderung: Träwelling wird nicht mehr von einer Privatperson, sondern vom eingetragenen Verein **Träwelling e.V.** betrieben, der nun als verantwortliche Stelle im Sinne der DSGVO fungiert.
+Die handelnden Personen hinter Träwelling haben sich dabei nicht verändert.
+Darüber hinaus wurden bestehende Abschnitte präzisiert, die bereits seit Längerem bestehen, bisher aber nicht ausführlich dokumentiert waren.
+
+Für Nutzerinnen und Nutzer ergeben sich durch diese Änderungen keine praktischen Auswirkungen.
+
 ## Benennung der verantwortlichen Stelle
 
 Die verantwortliche Stelle für die Datenverarbeitung auf dieser Website ist:
@@ -8,6 +17,10 @@ Die verantwortliche Stelle für die Datenverarbeitung auf dieser Website ist:
 > Nuitsstr. 12<br>
 > 76185 Karlsruhe<br>
 > support@traewelling.org
+
+Vertretungsberechtigte Personen:
+- Levin Baumann
+- Kristian Stöckel
 
 Die verantwortliche Stelle entscheidet über die Zwecke und Mittel der Verarbeitung von personenbezogenen Daten (z.B. Namen, Kontaktdaten o. Ä.).
 
