@@ -97,7 +97,7 @@ Diesbezüglich und auch zu weiteren Fragen zum Thema personenbezogene Daten kön
 
 ## SSL- bzw. TLS-Verschlüsselung
 
-Aus Sicherheitsgründen und zum Schutz der Übertragung vertraulicher Inhalte, die Sie an uns als Seitenbetreiber senden, nutzt unsere Website eine SSL-bzw. TLS-Verschlüsselung.
+Aus Sicherheitsgründen und zum Schutz der Übertragung vertraulicher Inhalte, die Sie an uns als Seitenbetreiber senden, nutzt unsere Website eine SSL- bzw. TLS-Verschlüsselung.
 Damit sind Daten, die Sie über diese Website übermitteln, für Dritte nicht mitlesbar.
 Sie erkennen eine verschlüsselte Verbindung an der „https://“ Adresszeile Ihres Browsers und am Schloss-Symbol in der Browserzeile.
 
@@ -206,7 +206,7 @@ Sofern die Setzung anderer Cookies (z.B. für Analyse-Funktionen) erfolgt, werde
 Träwelling kann Dritte mit der Erhebung, Speicherung und Nutzung von personenbezogenen Daten beauftragen (Auftragsverarbeitung).
 In diesem Fall bleibt Träwelling weiterhin verantwortliche Stelle.
 Diese Dritten unterliegen denselben Datenschutzbestimmungen wie Träwelling.
-Diese Übermittlungen erfolgt auf der Grundlage Ihrer Einwilligung im Sinne des Art. 6 Abs. 1 lit. a DSGVO.
+Diese Übermittlungen erfolgen auf der Grundlage Ihrer Einwilligung im Sinne des Art. 6 Abs. 1 lit. a DSGVO.
 
 ### Behörden
 
@@ -240,7 +240,7 @@ Im Rahmen einer solchen Authentifikation erhalten wir eine Nutzer-ID sowie im Fa
 Dies umfasst insbesondere das Lesen von Profilinformationen (z.B. Anzeigename, Benutzername, Profilbild, Biografie) sowie das Lesen, Veröffentlichen, Bearbeiten und Löschen von Beiträgen.
 Ob uns zusätzliche Daten übermittelt werden, hängt von dem genutzten Single-Sign-On-Verfahren ab, von den gewählten Datenfreigaben im Rahmen der Authentifizierung und zudem davon, welche Daten Nutzer in den Privatsphäre- oder sonstigen Einstellungen des Nutzerkontos beim Single-Sign-On-Anbieter freigegeben haben.
 Es können je nach Single-Sign-On-Anbieter und der Wahl der Nutzer verschiedene Daten sein, in der Regel sind es die E-Mail-Adresse und der Benutzername.
-Das im Rahmen des Single-Sign-On-Verfahrens eingegebene Kennwort beim Anbieter ist für uns weder nach Single-Sign-On-Anbieter und der Wahl der Nutzer verschiedene Daten sein, einschließlich aber nicht beschränkt auf die Nutzer-ID, die E-Mail-Adresse, den Benutzernamen, den Anzeigenamen und nach zusätzlicher Einwilligung das Profilbild.
+Das im Rahmen des Single-Sign-On-Verfahrens beim Anbieter eingegebene Kennwort ist für uns weder einsehbar noch wird es von uns gespeichert.
 
 Nutzer werden gebeten, zu beachten, dass die bei uns hinterlegten Daten automatisch mit ihrem Nutzerkonto beim Single-Sign-On-Anbieter abgeglichen werden können, dies jedoch nicht immer der Fall ist.
 Ändern sich z.B. die E-Mail-Adressen der Nutzer, müssen sie diese manuell in ihrem Nutzerkonto bei uns ändern.

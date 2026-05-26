@@ -26,7 +26,7 @@ Authorized representatives:
 - Levin Baumann
 - Kristian Stöckel
 
-The responsible body decides on the purposes and means of the processing of personal data ( e.g. names, contact details or similar).
+The responsible body decides on the purposes and means of the processing of personal data (e.g. names, contact details or similar).
 
 ## What data is collected?
 
@@ -83,7 +83,7 @@ Contact details of the State Data Protection Commissioner:
 
 ### Right to data portability
 
-You have the right to have data that we process automatically on the basis of your consent or in fulfillment of a contract handed over to you or to a third party. to third parties.
+You have the right to have data that we process automatically on the basis of your consent or in fulfillment of a contract handed over to you or to third parties.
 The data will be provided in a machine-readable format.
 If you request that the data be transferred directly to another responsible party, this will only be done insofar as it is technically feasible.
 
@@ -203,7 +203,7 @@ Insofar as the setting of other cookies (e.g. for analysis functions) takes plac
 
 ## Transmission of data to third parties
 
-Träwelling may commission third parties with the collection, storage and use of personal data ( commissioned processing).
+Träwelling may commission third parties with the collection, storage and use of personal data (commissioned processing).
 In this case, Träwelling remains the responsible party.
 These third parties are subject to the same data protection provisions as Träwelling.
 These transfers are made on the basis of your consent within the meaning of Art. 6 para. 1 lit. a GDPR.
