@@ -200,6 +200,9 @@ There is a legal basis for this with Art. 6 para. 1 lit. c GDPR.
 
 Träwelling offers the option to forward travel data (check-ins) to a Fediverse service and publish them there at the user's request.
 This only occurs when the user explicitly selects this option during the respective check-in.
+Once a post has been transmitted to the Fediverse service, Träwelling is no longer responsible for its further processing.
+Once a post has been published, we will neither edit nor delete it.
+The privacy policy of the respective Fediverse service applies.
 
 ### Third-party applications
 

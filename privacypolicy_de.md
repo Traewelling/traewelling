@@ -200,6 +200,9 @@ Hierzu besteht mit Art. 6 Abs. 1 lit. c DSGVO eine rechtliche Grundlage.
 
 Träwelling bietet die Möglichkeit, Reisedaten (Checkins) auf Wunsch des Nutzers an einen Fediverse-Dienst weiterzuleiten und dort zu veröffentlichen.
 Dies geschieht ausschließlich, wenn der Nutzer dies beim jeweiligen Checkin explizit auswählt.
+Ab dem Zeitpunkt der Übermittlung an den Fediverse-Dienst ist Träwelling nicht mehr für die Weiterverarbeitung verantwortlich.
+Nach der Veröffentlichung eines Posts werden wir diesen weder bearbeiten, noch löschen.
+Es gelten die Datenschutzbestimmungen des jeweiligen Fediverse-Dienstes.
 
 ### Drittanwendungen
 
