@@ -127,7 +127,7 @@ Der Inhalt verbleibt auf unserer Website, bis er vollständig gelöscht wurde od
 Die Speicherung der Beiträge und Kommentare erfolgt auf Grundlage Ihrer Einwilligung (Art. 6 Abs. 1 lit. a DSGVO).
 Ein Widerruf Ihrer bereits erteilten Einwilligung ist jederzeit möglich.
 Für den Widerruf genügt eine formlose Mitteilung per E-Mail.
-Ebenfalls stellt die Löschung des Accounts einen Widerruf dar.
+Die Löschung des Accounts gilt als Widerruf der Einwilligung für die auf dieser Grundlage verarbeiteten Beiträge und Kommentare.
 Die Rechtmäßigkeit bereits erfolgter Datenverarbeitungsvorgänge bleibt vom Widerruf unberührt.
 
 Ihre Daten werden möglicherweise länger als angegeben verarbeitet bzw. einem Löschungsverlangen kann nicht entsprochen werden, sofern ein Ausnahmetatbestand der DSGVO zutrifft, insbesondere einer der in Art. 17 Abs. 3 DSGVO aufgeführten Gründe.

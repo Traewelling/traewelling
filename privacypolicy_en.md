@@ -129,7 +129,7 @@ The content remains on our Website until it has been completely deleted or had t
 The storage of posts and comments is based on your consent (Art. 6 para. 1 lit. a GDPR).
 A revocation of your already given consent is possible at any time.
 An informal notification by e-mail is sufficient for the revocation.
-Likewise, the deletion of the account constitutes a revocation.
+Deleting your account constitutes a revocation of consent for the posts and comments processed on this basis.
 The legality of data processing operations that have already taken place remains unaffected by the revocation.
 
 Your data may be processed for longer than specified or a request for deletion cannot be complied with if an exceptional circumstance of the GDPR applies, in particular one of the reasons listed in Art. 17 (3) GDPR.
