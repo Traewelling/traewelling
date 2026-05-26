@@ -223,8 +223,7 @@ Im Rahmen einer solchen Authentifikation erhalten wir eine Nutzer-ID sowie im Fa
 Dies umfasst insbesondere das Lesen von Profilinformationen (z.B. Anzeigename, Benutzername, Profilbild, Biografie) sowie das Lesen, Veröffentlichen, Bearbeiten und Löschen von Beiträgen.
 Ob uns zusätzliche Daten übermittelt werden, hängt von dem genutzten Single-Sign-On-Verfahren ab, von den gewählten Datenfreigaben im Rahmen der Authentifizierung und zudem davon, welche Daten Nutzer in den Privatsphäre- oder sonstigen Einstellungen des Nutzerkontos beim Single-Sign-On-Anbieter freigegeben haben.
 Es können je nach Single-Sign-On-Anbieter und der Wahl der Nutzer verschiedene Daten sein, in der Regel sind es die E-Mail-Adresse und der Benutzername.
-Das im Rahmen des Single-Verfahrens eingegebene Kennwort beim Anbieter ist für uns weder nach Single-Sign-On-Anbieter und der Wahl der Nutzer verschiedene Daten sein, einschließlich aber nicht beschränkt auf die Nutzer-ID, die E-Mail-Adresse, den Benutzernamen, den Anzeigenamen und nach zusätzlicher Einwilligung das Profilbild.
-Das im Rahmen des Single-Verfahrens eingegebene Kennwort beim Anbieter ist für uns weder
+Das im Rahmen des Single-Sign-On-Verfahrens eingegebene Kennwort beim Anbieter ist für uns weder nach Single-Sign-On-Anbieter und der Wahl der Nutzer verschiedene Daten sein, einschließlich aber nicht beschränkt auf die Nutzer-ID, die E-Mail-Adresse, den Benutzernamen, den Anzeigenamen und nach zusätzlicher Einwilligung das Profilbild.
 
 Nutzer werden gebeten, zu beachten, dass die bei uns hinterlegten Daten automatisch mit ihrem Nutzerkonto beim Single-Sign-On-Anbieter abgeglichen werden können, dies jedoch nicht immer der Fall ist.
 Ändern sich z.B. die E-Mail-Adressen der Nutzer, müssen sie diese manuell in ihrem Nutzerkonto bei uns ändern.
