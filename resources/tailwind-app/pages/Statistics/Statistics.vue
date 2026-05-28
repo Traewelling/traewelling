@@ -4,6 +4,7 @@ import { ChartNoAxesCombined } from 'lucide-vue-next';
 import { Notyf } from 'notyf';
 import { computed, inject, onMounted, ref, watch } from 'vue';
 import { Api, type StatisticsGlobalData } from '../../../types/Api.gen';
+import AdvancedStats from '../../components/Stats/AdvancedStats.vue';
 import ChartDoughnut from '../../components/Stats/ChartDoughnut.vue';
 import ChartHorizontalBar from '../../components/Stats/ChartHorizontalBar.vue';
 import ChartTimeline from '../../components/Stats/ChartTimeline.vue';
@@ -18,10 +19,101 @@ type StatsData = {
     categories: { name: string; duration: number; count: number }[];
     operators: { name: string; duration: number; count: number }[];
     time: { date: string; duration: number; count: number }[];
+    summary: AdvancedSummary | null;
+    by_period: {
+        yearly: PeriodData[];
+        monthly: PeriodData[];
+        weekly: PeriodData[];
+    };
+    predefined_periods: {
+        last_week: AdvancedSummary | null;
+        last_month: AdvancedSummary | null;
+        last_year: AdvancedSummary | null;
+    } | null;
+    favorites: {
+        stations: { station_id: number; name: string; count: number }[];
+        lines: { linename: string; number: string | null; count: number; distance_km: number }[];
+        routes: {
+            origin_id: number;
+            origin: string;
+            destination_id: number;
+            destination: string;
+            count: number;
+            distance_km: number;
+        }[];
+    } | null;
+};
+
+type RideSummary = {
+    id: number;
+    distance_km: number;
+    departure: string;
+    start: string;
+    end: string;
+    linename: string | null;
+    number: string | null;
+    operator: string | null;
+    origin: string | null;
+    destination: string | null;
+};
+
+type AdvancedSummary = {
+    total_checkins: number;
+    active_days: number;
+    total_distance_km: number;
+    mean_distance_km: number;
+    longest_ride: RideSummary | null;
+    shortest_ride: RideSummary | null;
+};
+
+type PeriodData = {
+    period: string;
+    period_type: string;
+    checkin_count: number;
+    distance_km: number;
+};
+
+type AdvancedStatsApiData = {
+    purpose?: { name?: string | number; duration?: number; count?: number }[];
+    categories?: { name?: string; duration?: number; count?: number }[];
+    operators?: { name?: string; duration?: number; count?: number }[];
+    time?: { date?: string; duration?: number; count?: number }[];
+    summary?: AdvancedSummary | null;
+    by_period?: {
+        yearly?: PeriodData[];
+        monthly?: PeriodData[];
+        weekly?: PeriodData[];
+    };
+    predefined_periods?: {
+        last_week?: AdvancedSummary | null;
+        last_month?: AdvancedSummary | null;
+        last_year?: AdvancedSummary | null;
+    } | null;
+    favorites?: {
+        stations?: { station_id: number; name: string; count: number }[];
+        lines?: { linename: string; number: string | null; count: number; distance_km: number }[];
+        routes?: {
+            origin_id: number;
+            origin: string;
+            destination_id: number;
+            destination: string;
+            count: number;
+            distance_km: number;
+        }[];
+    } | null;
 };
 
 const loading = ref(true);
-const data = ref<StatsData>({ purpose: [], categories: [], operators: [], time: [] });
+const data = ref<StatsData>({
+    purpose: [],
+    categories: [],
+    operators: [],
+    time: [],
+    summary: null,
+    by_period: { yearly: [], monthly: [], weekly: [] },
+    predefined_periods: null,
+    favorites: null,
+});
 const globalStats = ref<StatisticsGlobalData | null>(null);
 const globalFrom = ref<Date | null>(null);
 const globalUntil = ref<Date | null>(null);
@@ -84,7 +176,7 @@ async function fetchStats(): Promise<void> {
     loading.value = true;
     try {
         const res = await api.statistics.getStatistics({ from: fromStr.value, until: untilStr.value });
-        const d = res.data.data;
+        const d = res.data.data as AdvancedStatsApiData | undefined;
         data.value = {
             purpose: (d?.purpose ?? []).map((p) => ({
                 name: String(p.name ?? ''),
@@ -106,6 +198,26 @@ async function fetchStats(): Promise<void> {
                 duration: t.duration ?? 0,
                 count: t.count ?? 0,
             })),
+            summary: d?.summary ?? null,
+            by_period: {
+                yearly: d?.by_period?.yearly ?? [],
+                monthly: d?.by_period?.monthly ?? [],
+                weekly: d?.by_period?.weekly ?? [],
+            },
+            predefined_periods: d?.predefined_periods
+                ? {
+                      last_week: d.predefined_periods.last_week ?? null,
+                      last_month: d.predefined_periods.last_month ?? null,
+                      last_year: d.predefined_periods.last_year ?? null,
+                  }
+                : null,
+            favorites: d?.favorites
+                ? {
+                      stations: d.favorites.stations ?? [],
+                      lines: d.favorites.lines ?? [],
+                      routes: d.favorites.routes ?? [],
+                  }
+                : null,
         };
     } catch (e: unknown) {
         notyf.error(e instanceof Error ? e.message : trans('generic.error'));
@@ -175,6 +287,9 @@ onMounted(() => {
                 {{ trans('stats') }}
             </h1>
         </div>
+        <p class="text-sm text-base-content/60 mb-4">
+            {{ trans('stats.personal', { fromDate: from.toLocaleDateString(), toDate: until.toLocaleDateString() }) }}
+        </p>
 
         <!-- Date range controls -->
         <div class="card bg-base-100 mb-6">
@@ -229,6 +344,8 @@ onMounted(() => {
         </div>
 
         <template v-else>
+            <AdvancedStats :data="data.summary ? data : null" />
+
             <!-- No data at all -->
             <div
                 v-if="!data.purpose.length && !data.categories.length && !data.operators.length && !data.time.length"
