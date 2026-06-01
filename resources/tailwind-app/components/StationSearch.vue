@@ -3,6 +3,15 @@ import { trans } from 'laravel-vue-i18n';
 import { Locate, Search } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { StationResource } from '../../types/Api.gen';
+import router from '../router';
+
+defineProps({
+    small: {
+        type: Boolean,
+        required: false,
+        default: false,
+    },
+});
 
 function ril100(station: StationResource): string | undefined {
     return station.identifiers?.find((i) => i.type === 'de_db_ril100')?.identifier ?? undefined;
@@ -57,7 +66,7 @@ function onBlur(): void {
 }
 
 function selectStation(station: StationResource): void {
-    window.location.href = `/stationboard?stationId=${station.id}&stationName=${encodeURIComponent(station.name)}`;
+    router.push({ name: 'stationboard', query: { stationId: station.id, stationName: station.name } });
 }
 
 async function searchByGps(): Promise<void> {
@@ -82,15 +91,25 @@ async function searchByGps(): Promise<void> {
     );
 }
 
+function getStationArea(station: StationResource): string {
+    if (!station.areas || station.areas.length === 0) return '';
+    const defaultArea = station.areas.find((a) => a.default);
+    const country = station.areas.find((a) => a.adminLevel === 2);
+    if (defaultArea) {
+        return country ? `${defaultArea.name}, ${country.name}` : defaultArea.name;
+    }
+    return country?.name ?? '';
+}
+
 const displayed = (): StationResource[] => (query.value.trim() ? suggestions.value : recentStations.value);
 </script>
 
 <template>
-    <div class="card bg-base-100 mb-4">
+    <div class="card bg-base-100" :class="{ 'mb-2': small, 'mb-4': !small }">
         <div class="card-body py-3 px-4">
             <div class="relative flex gap-2">
                 <div class="relative flex-1">
-                    <div class="input input-bordered flex items-center gap-2 w-full">
+                    <div class="input input-bordered flex items-center gap-2 w-full" :class="{ 'input-sm': small }">
                         <Search class="w-4 h-4 text-base-content/40 shrink-0" />
                         <input
                             v-model="query"
@@ -116,9 +135,13 @@ const displayed = (): StationResource[] => (query.value.trim() ? suggestions.val
                                 @mousedown.prevent="selectStation(station)"
                             >
                                 {{ station.name }}
-                                <span v-if="ril100(station)" class="text-base-content/40 ml-1"
-                                    >({{ ril100(station) }})</span
-                                >
+                                <span v-if="ril100(station)" class="badge badge-soft badge-accent badge-sm ml-1">
+                                    {{ ril100(station) }}
+                                </span>
+                                <span v-if="getStationArea(station)" class="opacity-65 text-xs">
+                                    <br />
+                                    {{ getStationArea(station) }}
+                                </span>
                             </button>
                         </li>
                     </ul>
@@ -126,7 +149,7 @@ const displayed = (): StationResource[] => (query.value.trim() ? suggestions.val
 
                 <button
                     class="btn btn-square btn-outline"
-                    :class="{ loading: fetchingGps }"
+                    :class="{ loading: fetchingGps, 'btn-sm': small }"
                     :title="trans('stationboard.search-by-location')"
                     :disabled="fetchingGps"
                     @click="searchByGps"

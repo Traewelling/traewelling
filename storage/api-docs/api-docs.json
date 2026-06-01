@@ -11849,6 +11849,15 @@
             },
             "StationIdentifierResource": {
                 "title": "StationIdentifier",
+                "required": [
+                    "id",
+                    "type",
+                    "identifier",
+                    "name",
+                    "origin",
+                    "latitude",
+                    "longitude"
+                ],
                 "properties": {
                     "id": {
                         "type": "string",
