@@ -11,7 +11,7 @@ import {
 } from '@indoorequal/vue-maplibre-gl';
 import { trans } from 'laravel-vue-i18n';
 import { GeoJSONFeature, LngLat, LngLatBounds, StyleSpecification } from 'maplibre-gl';
-import { computed, PropType, ref } from 'vue';
+import { computed, onMounted, PropType, ref, watch } from 'vue';
 import { LivePointDto, MapProvider } from '../../../types/Api.gen';
 import { useMapConsentStore } from '../../stores/mapConsent';
 import { useUserStore } from '../../stores/user';
@@ -77,6 +77,7 @@ const props = defineProps({
     },
 });
 
+const mapRef = ref();
 const userStore = useUserStore();
 const mapConsentStore = useMapConsentStore();
 
@@ -169,13 +170,35 @@ const rasterBaseStyle: StyleSpecification = {
 };
 
 const ofmStyleUrl = isDarkMode
-    ? 'https://tiles.openfreemap.org/styles/liberty'
+    ? 'https://tiles.openfreemap.org/styles/dark'
     : 'https://tiles.openfreemap.org/styles/positron';
 
 // Use the OFM style URL when vector tiles are active; otherwise the empty raster base
 const mapStyle = computed<StyleSpecification | string>(() =>
     effectiveUseVectorTiles.value ? ofmStyleUrl : rasterBaseStyle,
 );
+
+const ensureGlobeProjection = () => {
+    if (mapRef.value?.map) {
+        const style = mapRef.value.map.getStyle();
+        if (style && (!style.projection || style.projection.type !== 'globe')) {
+            style.projection = { type: 'globe' };
+            mapRef.value.map.setStyle(style);
+        }
+    }
+};
+
+onMounted(() => {
+    setTimeout(() => {
+        ensureGlobeProjection();
+    }, 100);
+});
+
+watch(effectiveUseVectorTiles, () => {
+    setTimeout(() => {
+        ensureGlobeProjection();
+    }, 100);
+});
 </script>
 
 <template>
@@ -198,7 +221,7 @@ const mapStyle = computed<StyleSpecification | string>(() =>
 
         <!-- Map -->
         <mgl-map
-            v-else
+            ref="mapRef"
             :map-style="mapStyle"
             :max-zoom="18"
             :bounds="effectiveBounds"
