@@ -58,6 +58,7 @@ use Laravel\Passport\Token;
  * @property-read array $redirect_uris
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OAuthClient existsIn(array $haystack)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OAuthClient whereGrantTypes($value)
  *
  * @mixin \Eloquent
  */

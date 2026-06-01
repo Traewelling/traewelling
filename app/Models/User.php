@@ -178,6 +178,11 @@ use Spatie\PersonalDataExport\PersonalDataSelection;
  *
  * @property-read Collection<int, PrivacyPolicyAcceptance> $privacyPolicyAcceptances
  * @property-read int|null $privacy_policy_acceptances_count
+ * @property-read Collection<int, Permission> $teams
+ * @property-read int|null $teams_count
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User team($teams, bool $without = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutTeam($teams)
  *
  * @mixin \Eloquent
  */
