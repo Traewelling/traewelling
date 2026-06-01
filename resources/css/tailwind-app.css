@@ -1,7 +1,20 @@
 @import 'tailwindcss';
 @import 'notyf/notyf.min.css';
 @import 'leaflet/dist/leaflet.css';
+@import 'lgbtq.css';
 
 @plugin "@tailwindcss/typography";
 @plugin "daisyui";
 @import './trwl-theme.css';
+
+.text-pride {
+  padding-left: 5px;
+  padding-right: 5px;
+
+  /*outline the text for better readability*/
+  text-shadow:
+    -1px -1px 0 var(--color-primary),
+    1px -1px 0 var(--color-primary),
+    -1px 1px 0 var(--color-primary),
+    1px 1px 0 var(--color-primary);
+}
