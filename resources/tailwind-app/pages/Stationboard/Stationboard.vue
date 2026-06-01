@@ -3,7 +3,7 @@ import { getActiveLanguage, trans, transChoice } from 'laravel-vue-i18n';
 import { ArrowLeft, ChevronDown, ChevronUp, Plus, TriangleAlert } from 'lucide-vue-next';
 import { DateTime } from 'luxon';
 import { Notyf } from 'notyf';
-import { computed, inject, onMounted, ref } from 'vue';
+import { computed, inject, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { Api, DepartureResource, Station, StopoverResource, TravelType } from '../../../types/Api.gen';
 import LineIndicator from '../../../vue/components/LineIndicator.vue';
@@ -12,6 +12,7 @@ import CheckinForm from '../../components/Checkin/CheckinForm.vue';
 import LineRun from '../../components/Checkin/LineRun.vue';
 import DepartureEntry from '../../components/Stationboard/DepartureEntry.vue';
 import StationTechnicalDetails from '../../components/Stationboard/StationTechnicalDetails.vue';
+import StationSearch from '../../components/StationSearch.vue';
 import TransportIcon from '../../components/TransportIcon.vue';
 import AppLayout from '../../layouts/AppLayout.vue';
 
@@ -175,21 +176,40 @@ onMounted(() => {
 
     fetchDepartures();
 });
+
+watch(router.currentRoute, (to) => {
+    if (to.query.stationId !== stationId.value) return;
+    if (to.query.when) {
+        const parsed = DateTime.fromISO(to.query.when as string).setZone('UTC');
+        if (parsed.isValid) fetchTime.value = parsed;
+    }
+    if (to.query.travelType) {
+        travelType.value = to.query.travelType as string;
+    }
+    fetchDepartures();
+});
 </script>
 
 <template>
     <AppLayout>
         <div class="max-w-2xl mx-auto">
-            <!-- Station header -->
-            <div class="card bg-base-100 mb-4">
+            <div class="flex items-center gap-1 min-w-0 mb-1">
+                <h2 class="font-semibold text-lg truncate">
+                    {{ stationName ?? '…' }}
+                </h2>
+                <StationTechnicalDetails v-if="meta.station" :station="meta.station" />
+            </div>
+            <StationSearch :small="true" />
+            <div class="card bg-base-100 mb-2 md:mb-4">
                 <div class="card-body py-3 px-4 gap-2">
                     <div class="flex items-center justify-between gap-2">
-                        <div class="flex items-center gap-1 min-w-0">
-                            <h2 class="font-semibold text-lg truncate">
-                                {{ stationName ?? '…' }}
-                            </h2>
-                            <StationTechnicalDetails v-if="meta.station" :station="meta.station" />
-                        </div>
+                        <!-- Time navigation -->
+                        <input
+                            v-model="fetchTimeLocal"
+                            type="datetime-local"
+                            class="input input-bordered input-xs text-sm w-auto"
+                            :min="minDateTimeLocal"
+                        />
                         <!-- Travel type filter -->
                         <select
                             v-model="travelType"
@@ -201,31 +221,14 @@ onMounted(() => {
                             </option>
                         </select>
                     </div>
-
-                    <!-- Time navigation -->
-                    <div class="flex items-center gap-2">
-                        <button
-                            class="btn btn-ghost btn-xs btn-square"
-                            :disabled="loading || isPastLimit"
-                            @click="fetchPrevious"
-                        >
-                            <ChevronUp class="w-4 h-4" />
-                        </button>
-                        <input
-                            v-model="fetchTimeLocal"
-                            type="datetime-local"
-                            class="input input-bordered input-xs text-sm w-auto"
-                            :min="minDateTimeLocal"
-                        />
-                        <button class="btn btn-ghost btn-xs btn-square" :disabled="loading" @click="fetchNext">
-                            <ChevronDown class="w-4 h-4" />
-                        </button>
-                    </div>
                 </div>
             </div>
 
             <!-- Hidden licenses info -->
-            <div v-if="removedLicensesCount > 0" class="collapse collapse-arrow bg-base-100 mb-4 border border-info">
+            <div
+                v-if="removedLicensesCount > 0"
+                class="collapse collapse-arrow bg-base-100 mb-2 md:mb-4 border border-info"
+            >
                 <input type="checkbox" />
                 <div class="collapse-title text-sm flex items-center gap-2 text-info font-medium">
                     <TriangleAlert class="w-4 h-4 flex-shrink-0" />
@@ -257,7 +260,7 @@ onMounted(() => {
             </div>
 
             <!-- Top nav -->
-            <div v-if="!loading" class="flex justify-center gap-3 mb-3">
+            <div v-if="!loading" class="flex justify-center gap-3 mb-2 mb:md-4">
                 <button class="btn btn-ghost btn-sm" :disabled="isPastLimit" @click="fetchPrevious">
                     <ChevronUp class="w-4 h-4" />
                     {{ trans('time.earlier') }}

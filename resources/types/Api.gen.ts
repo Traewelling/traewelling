@@ -1782,25 +1782,25 @@ export interface StationIdentifierResource {
    * @format uuid
    * @example "550e8400-e29b-41d4-a716-446655440000"
    */
-  id?: string;
+  id: string;
   /** @example "de_db_ril100" */
-  type?: string;
+  type: string;
   /** @example "RK" */
-  identifier?: string;
+  identifier: string;
   /** @example "Karlsruhe Hbf" */
-  name?: string | null;
+  name: string | null;
   /** @example "db" */
-  origin?: string | null;
+  origin: string | null;
   /**
    * @format float
    * @example 48.993207
    */
-  latitude?: number | null;
+  latitude: number | null;
   /**
    * @format float
    * @example 8.400977
    */
-  longitude?: number | null;
+  longitude: number | null;
 }
 
 /** Station */
