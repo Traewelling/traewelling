@@ -112,28 +112,29 @@ async function openEditModal() {
     editBusiness.value = statusObject.value.business ?? Business.Value0;
     editVisibility.value = statusObject.value.visibility ?? StatusVisibility.Value0;
     editEventId.value = statusObject.value.event?.id ?? null;
-    editManualDeparture.value = isoToDatetimeLocal(statusObject.value.train.manualDeparture);
-    editManualArrival.value = isoToDatetimeLocal(statusObject.value.train.manualArrival);
+    editManualDeparture.value = isoToDatetimeLocal(statusObject.value.checkin.manualDeparture);
+    editManualArrival.value = isoToDatetimeLocal(statusObject.value.checkin.manualArrival);
     editDestinationValue.value = null;
     editStopovers.value = [];
     showEditModal.value = true;
 
     try {
         const res = await api.trains.getTrainTrip({
-            hafasTripId: statusObject.value.train.trip,
-            lineName: statusObject.value.train.lineName,
-            start: statusObject.value.train.origin.id,
+            hafasTripId: statusObject.value.checkin.trip,
+            lineName: statusObject.value.checkin.lineName,
         });
         const all: StopoverResource[] = res.data?.data?.stopovers ?? [];
-        const depPlanned = LuxonDateTime.fromISO(statusObject.value.train.origin.departurePlanned ?? '');
+        const depPlanned = LuxonDateTime.fromISO(statusObject.value.checkin.origin.departurePlanned ?? '');
         editStopovers.value = all.filter((s) => {
-            const arr = LuxonDateTime.fromISO(s.arrivalPlanned ?? s.arrival ?? s.departurePlanned ?? s.departure ?? '');
+            const arr = LuxonDateTime.fromISO(
+                s.arrivalPlanned ?? s.arrivalReal ?? s.departurePlanned ?? s.departureReal ?? '',
+            );
             return arr.isValid && depPlanned.isValid && arr.diff(depPlanned).as('minutes') >= 0;
         });
         const cur = editStopovers.value.find(
             (s) =>
-                s.id === statusObject.value.train.destination.id &&
-                s.arrivalPlanned === statusObject.value.train.destination.arrivalPlanned,
+                s.id === statusObject.value.checkin.destination.id &&
+                s.arrivalPlanned === statusObject.value.checkin.destination.arrivalPlanned,
         );
         if (cur?.arrivalPlanned) {
             editDestinationValue.value = `${cur.id}|${cur.arrivalPlanned}`;
@@ -171,7 +172,7 @@ async function saveEdit() {
 
         if (editDestinationValue.value) {
             const idx = editDestinationValue.value.indexOf('|');
-            body.destinationId = Number(editDestinationValue.value.slice(0, idx));
+            body.destinationId = Number(editDestinationValue.value.slice(0, idx)).toString();
             body.destinationArrivalPlanned = editDestinationValue.value.slice(idx + 1);
         }
 
@@ -217,7 +218,7 @@ function calculateProgress(): number {
     const start = getDepartureForStatus(statusObject.value).dateTime.toMillis();
     const end = getArrivalForStatus(statusObject.value).dateTime.toMillis();
     const now = Date.now();
-    if (!isFinite(start) || !isFinite(end) || end <= start) return now >= end ? 100 : 0;
+    if (!Number.isFinite(start) || !Number.isFinite(end) || end <= start) return now >= end ? 100 : 0;
     if (now <= start) return 0;
     if (now >= end) return 100;
     return Math.min(100, Math.max(0, ((now - start) / (end - start)) * 100));
@@ -263,19 +264,19 @@ watch(
     { immediate: true },
 );
 
+function escapeHtml(s: string): string {
+    return s
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+}
+
 const enrichedBody = computed(() => {
     const body = statusObject.value.body ?? '';
     const mentions: MentionDto[] =
         (statusObject.value as unknown as { bodyMentions?: MentionDto[] }).bodyMentions ?? [];
-
-    function escapeHtml(s: string): string {
-        return s
-            .replaceAll(/&/g, '&amp;')
-            .replaceAll(/</g, '&lt;')
-            .replaceAll(/>/g, '&gt;')
-            .replaceAll(/"/g, '&quot;')
-            .replaceAll(/'/g, '&#039;');
-    }
 
     if (!body) return '';
     if (!mentions.length) return escapeHtml(body);
@@ -286,7 +287,7 @@ const enrichedBody = computed(() => {
     }
     if (!userMap.size) return escapeHtml(body);
 
-    const mentionRegex = /@([a-zA-Z0-9_]+)/g;
+    const mentionRegex = /@(\w+)/g;
     let result = '';
     let lastIndex = 0;
     let match: RegExpExecArray | null;
@@ -373,11 +374,11 @@ async function arrivalNow() {
 
 function share() {
     const url = `${window.location.origin}/status/${statusObject.value.id}`;
-    const origin = statusObject.value.train.origin.name;
-    const dest = statusObject.value.train.destination.name;
+    const origin = statusObject.value.checkin.origin.name;
+    const dest = statusObject.value.checkin.destination.name;
     const text = statusObject.value.body
-        ? `${statusObject.value.body} (@ ${statusObject.value.train.lineName} ${origin} -> ${dest}) #NowTräwelling`
-        : `${statusObject.value.train.lineName} ${origin} -> ${dest} #NowTräwelling`;
+        ? `${statusObject.value.body} (@ ${statusObject.value.checkin.lineName} ${origin} -> ${dest}) #NowTräwelling`
+        : `${statusObject.value.checkin.lineName} ${origin} -> ${dest} #NowTräwelling`;
 
     if (navigator.share) {
         navigator.share({ title: 'Träwelling', text, url }).catch(() => {});
@@ -389,7 +390,7 @@ function share() {
 }
 
 function rideAlongRoute() {
-    const t = statusObject.value.train;
+    const t = statusObject.value.checkin;
     return {
         name: 'checkin',
         query: {
@@ -397,7 +398,7 @@ function rideAlongRoute() {
             lineName: t.lineName,
             start: t.origin.id.toString(),
             destination: t.destination.id.toString(),
-            departure: t.origin.departurePlanned ?? t.origin.departure ?? '',
+            departure: t.origin.departurePlanned ?? t.origin.departureReal ?? '',
             originName: t.origin.name,
             destinationName: t.destination.name,
             category: t.category,
@@ -408,8 +409,8 @@ function rideAlongRoute() {
 async function handleMute() {
     busyMute.value = true;
     try {
-        await api.user.createMute(statusObject.value.userDetails.id as unknown as number);
-        notyf?.success(trans('user.muted', { username: statusObject.value.userDetails.username }));
+        await api.user.createMute(statusObject.value.user.id as unknown as number);
+        notyf?.success(trans('user.muted', { username: statusObject.value.user.username }));
     } catch {
         notyf?.error(trans('generic.error'));
     } finally {
@@ -420,9 +421,9 @@ async function handleMute() {
 async function handleBlock() {
     busyBlock.value = true;
     try {
-        const id = statusObject.value.userDetails.id;
-        await api.user.createBlock(String(id), { userId: id });
-        notyf?.success(trans('user.blocked', { username: statusObject.value.userDetails.username }));
+        const id = statusObject.value.user.id;
+        await api.user.createBlock(id.toString());
+        notyf?.success(trans('user.blocked', { username: statusObject.value.user.username }));
     } catch {
         notyf?.error(trans('generic.error'));
     } finally {
@@ -432,37 +433,37 @@ async function handleBlock() {
 
 const visibilityIcon = computed(() => VISIBILITY_ICONS[statusObject.value.visibility] ?? Eye);
 
-const isOwn = computed(() => !!userStore.user && userStore.user.id === statusObject.value.userDetails.id);
+const isOwn = computed(() => !!userStore.user && userStore.user.id === statusObject.value.user.id);
 const isBusy = computed(() => deleting.value);
 const inProgress = computed(() => progress.value > 0 && progress.value < 100);
 
 const showDepartureNowBtn = computed(() => {
     if (!isOwn.value) return false;
-    const origin = statusObject.value.train.origin;
-    const dest = statusObject.value.train.destination;
-    const dep = LuxonDateTime.fromISO(origin.departurePlanned ?? origin.departure ?? '');
-    const arr = LuxonDateTime.fromISO(dest.arrivalPlanned ?? dest.arrival ?? '');
+    const origin = statusObject.value.checkin.origin;
+    const dest = statusObject.value.checkin.destination;
+    const dep = LuxonDateTime.fromISO(origin.departurePlanned ?? origin.departureReal ?? '');
+    const arr = LuxonDateTime.fromISO(dest.arrivalPlanned ?? dest.arrivalReal ?? '');
     const now = LuxonDateTime.now();
     return dep.isValid && arr.isValid && now >= dep.minus({ minutes: 60 }) && now <= arr.plus({ days: 1 });
 });
 
 const showArrivalNowBtn = computed(() => {
     if (!isOwn.value) return false;
-    const origin = statusObject.value.train.origin;
-    const dest = statusObject.value.train.destination;
-    const dep = LuxonDateTime.fromISO(origin.departurePlanned ?? origin.departure ?? '');
-    const arr = LuxonDateTime.fromISO(dest.arrivalPlanned ?? dest.arrival ?? '');
+    const origin = statusObject.value.checkin.origin;
+    const dest = statusObject.value.checkin.destination;
+    const dep = LuxonDateTime.fromISO(origin.departurePlanned ?? origin.departureReal ?? '');
+    const arr = LuxonDateTime.fromISO(dest.arrivalPlanned ?? dest.arrivalReal ?? '');
     const now = LuxonDateTime.now();
     return dep.isValid && arr.isValid && now >= dep && now <= arr.plus({ days: 1 });
 });
 
 const distanceStr = computed(() => {
-    const d = statusObject.value.train.distance;
+    const d = statusObject.value.checkin.distance;
     return d < 1000 ? `${d} m` : `${(d / 1000).toFixed(0)} km`;
 });
 
 const durationStr = computed(() => {
-    const total = statusObject.value.train.duration ?? 0;
+    const total = statusObject.value.checkin.duration ?? 0;
     if (total <= 0) return null;
     const days = Math.floor(total / (60 * 24));
     const hours = Math.floor((total % (60 * 24)) / 60);
@@ -513,16 +514,16 @@ const durationStr = computed(() => {
                                     :to="{
                                         name: 'stationboard',
                                         query: {
-                                            stationId: statusObject.train.origin.id,
-                                            stationName: statusObject.train.origin.name,
+                                            stationId: statusObject.checkin.origin.id,
+                                            stationName: statusObject.checkin.origin.name,
                                         },
                                     }"
                                     class="font-medium link link-hover leading-tight"
-                                    :class="{ 'line-through text-error': statusObject.train.origin.cancelled }"
+                                    :class="{ 'line-through text-error': statusObject.checkin.origin.cancelled }"
                                 >
-                                    {{ statusObject.train.origin.name }}
+                                    {{ statusObject.checkin.origin.name }}
                                     <span
-                                        v-if="statusObject.train.origin.cancelled"
+                                        v-if="statusObject.checkin.origin.cancelled"
                                         class="badge badge-error badge-xs ml-1"
                                     >
                                         {{ trans('stationboard.stop-cancelled') }}
@@ -542,31 +543,31 @@ const durationStr = computed(() => {
                             <div class="flex flex-wrap items-center gap-1.5 mt-1 text-sm text-base-content/60">
                                 <span class="inline-flex items-center w-4 h-4 [&_img]:w-4 [&_img]:h-4 [&_i]:text-base">
                                     <ProductIcon
-                                        :mode="statusObject.train.mode"
-                                        :product="statusObject.train.category"
+                                        :mode="statusObject.checkin.mode"
+                                        :product="statusObject.checkin.category"
                                     />
                                 </span>
                                 <LineIndicator
                                     class-name="line-indicator line-badge align-middle"
-                                    :product-name="statusObject.train.category"
-                                    :number="statusObject.train.lineName"
-                                    :mode="statusObject.train.mode"
-                                    :color="statusObject.train.routeTextColor"
-                                    :background-color="statusObject.train.routeColor"
+                                    :product-name="statusObject.checkin.category"
+                                    :number="statusObject.checkin.lineName"
+                                    :mode="statusObject.checkin.mode"
+                                    :color="statusObject.checkin.routeTextColor || undefined"
+                                    :background-color="statusObject.checkin.routeColor || undefined"
                                 />
-                                <span v-if="statusObject.train.manualJourneyNumber" class="opacity-60">
-                                    ({{ statusObject.train.manualJourneyNumber }})
+                                <span v-if="statusObject.checkin.manualJourneyNumber" class="opacity-60">
+                                    ({{ statusObject.checkin.manualJourneyNumber }})
                                 </span>
                                 <span
                                     v-else-if="
-                                        statusObject.train.journeyNumber &&
-                                        !statusObject.train.lineName.includes(
-                                            statusObject.train.journeyNumber.toString(),
+                                        statusObject.checkin.journeyNumber &&
+                                        !statusObject.checkin.lineName.includes(
+                                            statusObject.checkin.journeyNumber.toString(),
                                         )
                                     "
                                     class="opacity-60"
                                 >
-                                    ({{ statusObject.train.journeyNumber }})
+                                    ({{ statusObject.checkin.journeyNumber }})
                                 </span>
                                 <span class="flex items-center gap-0.5">
                                     <Route class="w-4 h-4" />
@@ -652,16 +653,16 @@ const durationStr = computed(() => {
                                     :to="{
                                         name: 'stationboard',
                                         query: {
-                                            stationId: statusObject.train.destination.id,
-                                            stationName: statusObject.train.destination.name,
+                                            stationId: statusObject.checkin.destination.id,
+                                            stationName: statusObject.checkin.destination.name,
                                         },
                                     }"
                                     class="font-medium link link-hover leading-tight"
-                                    :class="{ 'line-through text-error': statusObject.train.destination.cancelled }"
+                                    :class="{ 'line-through text-error': statusObject.checkin.destination.cancelled }"
                                 >
-                                    {{ statusObject.train.destination.name }}
+                                    {{ statusObject.checkin.destination.name }}
                                     <span
-                                        v-if="statusObject.train.destination.cancelled"
+                                        v-if="statusObject.checkin.destination.cancelled"
                                         class="badge badge-error badge-xs ml-1"
                                     >
                                         {{ trans('stationboard.stop-cancelled') }}
@@ -695,10 +696,10 @@ const durationStr = computed(() => {
             <!-- Footer: user info + actions -->
             <div class="px-4 py-2 flex items-center gap-2 text-sm border-t border-base-200">
                 <!-- User avatar (mobile) -->
-                <a :href="`/@${statusObject.userDetails.username}`" class="shrink-0">
+                <a :href="`/@${statusObject.user.username}`" class="shrink-0">
                     <img
-                        :src="statusObject.userDetails.profilePicture"
-                        :alt="statusObject.userDetails.username"
+                        :src="statusObject.user.profilePicture"
+                        :alt="statusObject.user.username"
                         class="w-7 h-7 rounded-full object-cover"
                         loading="lazy"
                     />
@@ -706,8 +707,8 @@ const durationStr = computed(() => {
 
                 <!-- Name + timestamp -->
                 <div class="min-w-0 flex-1 flex items-center gap-2">
-                    <a :href="`/@${statusObject.userDetails.username}`" class="font-medium text-xs link link-hover">
-                        {{ isOwn ? trans('user.you') : statusObject.userDetails.username }}
+                    <a :href="`/@${statusObject.user.username}`" class="font-medium text-xs link link-hover">
+                        {{ isOwn ? trans('user.you') : statusObject.user.username }}
                     </a>
                     <a :href="`/status/${statusObject.id}`" class="text-xs text-base-content/40 link link-hover">
                         {{ new Dtm(statusObject.createdAt).toRelative() }}
@@ -824,7 +825,8 @@ const durationStr = computed(() => {
                         :key="`${s.id}-${s.arrivalPlanned}`"
                         :value="`${s.id}|${s.arrivalPlanned}`"
                     >
-                        {{ LuxonDateTime.fromISO(s.arrivalPlanned ?? s.arrival ?? '').toFormat('HH:mm') }}: {{ s.name }}
+                        {{ LuxonDateTime.fromISO(s.arrivalPlanned ?? s.arrivalReal ?? '').toFormat('HH:mm') }}:
+                        {{ s.name }}
                     </option>
                 </select>
             </div>

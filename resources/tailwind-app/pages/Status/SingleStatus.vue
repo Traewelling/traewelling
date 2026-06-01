@@ -39,13 +39,13 @@ const checkinResult = ref<CheckinSuccessResource | null>(null);
 const hasCoPassengers = ref(false);
 
 const ticketVisible = computed(
-    () => !!status.value && userStore.isClosedBeta && status.value.userDetails.id === userStore.user?.id,
+    () => !!status.value && userStore.isClosedBeta && status.value.user.id === userStore.user?.id,
 );
 const hasRightColumn = computed(() => hasCoPassengers.value || ticketVisible.value);
 
 const formattedDate = computed(() => {
     if (!status.value) return '';
-    const dep = status.value.train.origin.departurePlanned ?? status.value.train.origin.departure;
+    const dep = status.value.checkin.origin.departurePlanned ?? status.value.checkin.origin.departure;
     if (!dep) return '';
     return LuxonDateTime.fromISO(dep).toLocaleString({
         weekday: 'long',
@@ -81,9 +81,9 @@ async function fetchStatus() {
 async function fetchStopovers() {
     if (!status.value) return;
     try {
-        const res = await api.stopovers.getStopOvers(status.value.train.trip.toString());
+        const res = await api.stopovers.getStopOvers(status.value.checkin.trip.toString());
         const json = await res.json();
-        stopovers.value = json.data?.[status.value.train.trip] ?? [];
+        stopovers.value = json.data?.[status.value.checkin.trip] ?? [];
     } catch {
         // stopovers are best-effort
     }
@@ -175,11 +175,11 @@ watch(
                     />
 
                     <!-- Tags -->
-                    <div v-if="status.tags?.length || status.userDetails.id === userStore.user?.id" class="mt-3">
+                    <div v-if="status.tags?.length || status.user.id === userStore.user?.id" class="mt-3">
                         <StatusTags
                             :status-id="status.id"
                             :tags="status.tags ?? []"
-                            :editable="status.userDetails.id === userStore.user?.id"
+                            :editable="status.user.id === userStore.user?.id"
                         />
                     </div>
 
@@ -213,7 +213,7 @@ watch(
                                     </a>
                                     <span class="text-base-content/50 ml-1">
                                         {{
-                                            user.id === status.userDetails.id
+                                            user.id === status.user.id
                                                 ? trans('user.liked-own-status')
                                                 : trans('user.liked-status')
                                         }}

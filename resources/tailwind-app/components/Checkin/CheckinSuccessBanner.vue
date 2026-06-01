@@ -25,7 +25,7 @@ const pointsDisabled = computed(
                 <template v-else>
                     {{
                         transChoice('checkin.points.earned', data.points?.points ?? 0, {
-                            points: data.points?.points ?? 0,
+                            points: (data.points?.points ?? 0).toString(),
                         })
                     }}
                 </template>
@@ -40,17 +40,17 @@ const pointsDisabled = computed(
                     <a
                         v-for="s in data.alsoOnThisConnection"
                         :key="s.id"
-                        :href="`/@${s.userDetails.username}`"
+                        :href="`/@${s.user.username}`"
                         class="flex items-center gap-2 hover:opacity-80 transition-opacity"
                     >
                         <img
-                            :src="s.userDetails.profilePicture"
-                            :alt="s.userDetails.username"
+                            :src="s.user.profilePicture"
+                            :alt="s.user.username"
                             class="w-7 h-7 rounded-full border-2 border-success object-cover shrink-0"
                         />
                         <span class="text-sm font-medium leading-tight">
-                            {{ s.userDetails.displayName ?? s.userDetails.username }}
-                            <span class="opacity-60 font-normal">@{{ s.userDetails.username }}</span>
+                            {{ s.user.displayName ?? s.user.username }}
+                            <span class="opacity-60 font-normal">@{{ s.user.username }}</span>
                         </span>
                     </a>
                 </div>
