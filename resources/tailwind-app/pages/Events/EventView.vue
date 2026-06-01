@@ -84,6 +84,10 @@ async function fetchPolyLines() {
         }
     });
 
+    if (polylineTripIds.length == 0) {
+        return;
+    }
+
     api.positions.getLivePositionsForStatuses(polylineTripIds.join(',')).then((response) => {
         livePositions.value = response.data.data || [];
         const newBounds = bounds.value;
