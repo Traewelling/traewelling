@@ -80,6 +80,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereTripId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereContinuationTripId($value)
  *
  * @mixin \Eloquent
  */

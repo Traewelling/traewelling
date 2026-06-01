@@ -46,6 +46,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MotisSourceLicense whereSourceUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MotisSourceLicense whereSpdx($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MotisSourceLicense whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|MotisSourceLicense whereAttributionText($value)
  *
  * @mixin \Eloquent
  */
