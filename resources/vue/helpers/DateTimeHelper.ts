@@ -3,21 +3,21 @@ import { StatusResource, StopoverResource } from '../../types/Api.gen';
 import { Dtm } from './DateTime';
 
 export function getDepartureForStatus(status: StatusResource): Dtm {
-    const departure = status.train.manualDeparture;
+    const departure = status.checkin.manualDeparture;
     if (departure) {
         return Dtm.fromISO(departure);
     }
 
-    return getDepartureForStopover(status.train.origin);
+    return getDepartureForStopover(status.checkin.origin);
 }
 
 export function getArrivalForStatus(status: StatusResource): Dtm {
-    const arrival = status.train.manualArrival;
+    const arrival = status.checkin.manualArrival;
     if (arrival) {
         return Dtm.fromISO(arrival);
     }
 
-    return getArrivalForStopover(status.train.destination);
+    return getArrivalForStopover(status.checkin.destination);
 }
 
 export function getDepartureForStopover(stopover: StopoverResource): Dtm {
@@ -59,10 +59,6 @@ function getDepartureString(stopover: StopoverResource): string | null {
         return stopover.departurePlanned;
     }
 
-    if (stopover.departure) {
-        return stopover.departure;
-    }
-
     return null;
 }
 
@@ -75,24 +71,20 @@ function getArrivalString(stopover: StopoverResource): string | null {
         return stopover.arrivalPlanned;
     }
 
-    if (stopover.arrival) {
-        return stopover.arrival;
-    }
-
     return null;
 }
 
 export function getDepartureAttribute(status: StatusResource): StopoverTime {
-    const planned = status.train.origin.departurePlanned ?? status.train.origin.departure;
-    const real = status.train.origin.departureReal;
-    const manual = status.train.manualDeparture;
+    const planned = status.checkin.origin.departurePlanned;
+    const real = status.checkin.origin.departureReal;
+    const manual = status.checkin.manualDeparture;
     return prepareStopoverTime(planned, real, manual);
 }
 
 export function getArrivalAttribute(status: StatusResource): StopoverTime {
-    const planned = status.train.destination.arrivalPlanned ?? status.train.destination.arrival;
-    const real = status.train.destination.arrivalReal;
-    const manual = status.train.manualArrival;
+    const planned = status.checkin.destination.arrivalPlanned;
+    const real = status.checkin.destination.arrivalReal;
+    const manual = status.checkin.manualArrival;
     return prepareStopoverTime(planned, real, manual);
 }
 

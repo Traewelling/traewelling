@@ -12,10 +12,10 @@ export class StatusHelper {
     private generateBaseText(): string {
         return transChoice(
             'controller.transport.social-post',
-            RegExp(/\s/).exec(this.status.train.lineName)?.length ?? 0,
+            new RegExp(/\s/).exec(this.status.checkin.lineName)?.length ?? 0,
             {
-                lineName: this.status.train.lineName,
-                destination: this.status.train.destination.name,
+                lineName: this.status.checkin.lineName,
+                destination: this.status.checkin.destination.name,
             },
         );
     }
@@ -23,11 +23,11 @@ export class StatusHelper {
     private generateEventText(): string {
         return transChoice(
             'controller.transport.social-post-with-event',
-            RegExp(/\s/).exec(this.status.train.lineName)?.length ?? 0,
+            new RegExp(/\s/).exec(this.status.checkin.lineName)?.length ?? 0,
             {
-                lineName: this.status.train.lineName,
-                destination: this.status.train.destination.name,
-                hashtag: this.status.event!.hashtag,
+                lineName: this.status.checkin.lineName,
+                destination: this.status.checkin.destination.name,
+                hashtag: this.status.event!.hashtag || '',
             },
         );
     }
@@ -36,8 +36,8 @@ export class StatusHelper {
         const hashtag = this.status.event?.hashtag
             ? ' ' + trans('controller.transport.social-post-for', { hashtag: this.status.event.hashtag })
             : '';
-        const lineName = this.status.train.lineName;
-        const destination = this.status.train.destination.name;
+        const lineName = this.status.checkin.lineName;
+        const destination = this.status.checkin.destination.name;
 
         return ` (@ ${lineName} ➜ ${destination}${hashtag}) #NowTräwelling`;
     }
@@ -65,9 +65,9 @@ export class StatusHelper {
         const departure = getDepartureForStatus(this.status);
 
         return trans('description.status', {
-            username: this.status.userDetails.username,
-            origin: this.status.train.origin.name,
-            destination: this.status.train.destination.name,
+            username: this.status.user.username,
+            origin: this.status.checkin.origin.name,
+            destination: this.status.checkin.destination.name,
             date: departure.toLocaleString({
                 year: 'numeric',
                 month: 'numeric',
@@ -75,7 +75,7 @@ export class StatusHelper {
                 hour: 'numeric',
                 minute: '2-digit',
             }),
-            lineName: this.status.train.lineName,
+            lineName: this.status.checkin.lineName,
         });
     }
 
