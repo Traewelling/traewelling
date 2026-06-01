@@ -93,7 +93,11 @@ onUnmounted(() => {
                         <GenericMap
                             :live-positions="livePositions"
                             :bounds="bounds"
-                            :map-provider="user.user?.mapProvider ?? MapProvider.Cargo"
+                            :map-provider="
+                                user.user?.mapProvider
+                                    ? MapProvider[user.user!.mapProvider as keyof typeof MapProvider]
+                                    : MapProvider.Cargo
+                            "
                         >
                             <EventMarker v-for="event in events" :key="event.id" :event="event" />
                         </GenericMap>
