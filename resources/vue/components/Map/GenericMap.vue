@@ -202,23 +202,22 @@ watch(effectiveUseVectorTiles, () => {
 </script>
 
 <template>
-    <div class="generic-map-wrapper">
-        <!-- Consent gate: shown to non-authenticated users who haven't yet activated the map -->
-        <div v-if="!showMap" class="map-consent-gate">
-            <div class="map-consent-content">
-                <p class="map-consent-text">
-                    {{ trans('map.consent.notice') }}
-                </p>
-                <label class="map-consent-remember">
-                    <input v-model="rememberConsent" type="checkbox" />
-                    {{ trans('map.consent.remember') }}
-                </label>
-                <button class="map-consent-btn" @click="activateMap">
-                    {{ trans('map.consent.load') }}
-                </button>
-            </div>
+    <!-- Consent gate: shown to non-authenticated users who haven't yet activated the map -->
+    <div v-if="!showMap" class="map-consent-gate">
+        <div class="map-consent-content">
+            <p class="map-consent-text">
+                {{ trans('map.consent.notice') }}
+            </p>
+            <label class="map-consent-remember">
+                <input v-model="rememberConsent" type="checkbox" />
+                {{ trans('map.consent.remember') }}
+            </label>
+            <button class="map-consent-btn" @click="activateMap">
+                {{ trans('map.consent.load') }}
+            </button>
         </div>
-
+    </div>
+    <div v-else class="generic-map-wrapper">
         <!-- Map -->
         <mgl-map
             ref="mapRef"
