@@ -227,6 +227,7 @@ watch(effectiveUseVectorTiles, () => {
             :bounds="effectiveBounds"
             height="45vh"
             :attribution-control="{ compact: true }"
+            :cooperative-gestures="true"
         >
             <mgl-navigation-control position="top-right" :show-zoom="false" :show-compass="true" />
             <mgl-geolocate-control />
