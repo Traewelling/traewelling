@@ -1,15 +1,21 @@
 <template>
     <AppLayout>
-        <div class="max-w-2xl mx-auto">
+        <div class="max-w-2xl mx-auto min-h-screen">
             <div class="flex items-center gap-4 mb-4">
                 <h1 class="text-2xl font-bold">
                     {{ $t('stationboard.submit-search') }}
+                    <Loading v-if="loading" />
                 </h1>
             </div>
 
-            <div class="join w-full">
-                <input v-model="query" class="input join-item w-full" :placeholder="$t('stationboard.submit-search')" />
-                <button class="btn join-item">
+            <div class="join w-full mb-2">
+                <input
+                    v-model="query"
+                    class="input join-item w-full"
+                    :placeholder="$t('stationboard.submit-search')"
+                    @keyup.enter="getResults()"
+                />
+                <button class="btn join-item" @click="getResults()">
                     <Search class="w-4 h-4">
                         <title>
                             {{ $t('search') }}
@@ -25,7 +31,7 @@
                 >
                     <figure>
                         <div class="avatar">
-                            <div class="w-24 rounded">
+                            <div class="min-w-24 max-w-24 rounded">
                                 <img :src="entry.profilePicture" :alt="entry.username" />
                             </div>
                         </div>
@@ -84,18 +90,19 @@
 
 <script setup lang="ts">
 import { Gauge, Gem, Route, Search, Timer } from 'lucide-vue-next';
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { Api, UserResource } from '../../../types/Api.gen';
 import DurationSpan from '../../../vue/components/Status/Partials/DurationSpan.vue';
+import Loading from '../../components/Loading.vue';
 import AppLayout from '../../layouts/AppLayout.vue';
 import router from '../../router';
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 const route = useRoute();
 const query = ref('');
+const loading = ref(false);
 const results = ref<UserResource[]>([]);
-let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 
 function getFromSearchBar() {
     const params = new URLSearchParams(route.query as Record<string, string>);
@@ -105,13 +112,24 @@ function getFromSearchBar() {
 }
 
 function getResults() {
+    loading.value = true;
+    results.value = [];
+    router.push({ name: 'search', query: { searchQuery: query.value } });
+
     api.user
         .searchUsers(query.value)
         .then((response) => {
             results.value = response.data.data || [];
+
+            if (results.value.length == 1) {
+                router.push({ name: 'user-profile', params: { username: results.value[0].username } });
+            }
         })
         .catch((error) => {
             console.error(error);
+        })
+        .finally(() => {
+            loading.value = false;
         });
 }
 
@@ -124,14 +142,6 @@ const calculateAverageSpeed = (distance: number, duration: number): number => {
     const km = distance / 1000;
     return Math.round(km / hours);
 };
-
-watch(query, () => {
-    if (debounceTimer) clearTimeout(debounceTimer);
-    // push query to searchbar
-    router.push({ name: 'search', query: { searchQuery: query.value } });
-
-    debounceTimer = setTimeout(getResults, 250);
-});
 
 onMounted(() => {
     const initialQuery = getFromSearchBar();
