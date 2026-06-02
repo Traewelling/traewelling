@@ -20,6 +20,7 @@ use OpenApi\Attributes as OA;
 #[OA\Schema(
     schema: 'LikeResponse',
     title: 'LikeResponse',
+    required: ['count'],
     properties: [
         new OA\Property(property: 'count', description: 'Amount of likes', type: 'integer', format: 'int32', example: 12),
     ],
@@ -50,6 +51,7 @@ class LikesController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -97,6 +99,7 @@ class LikesController extends Controller
                 response: 201,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -163,6 +166,7 @@ class LikesController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',

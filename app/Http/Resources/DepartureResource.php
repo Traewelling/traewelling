@@ -12,7 +12,7 @@ use OpenApi\Attributes as OA;
 #[OA\Schema(
     title: 'Departure',
     description: 'A single departure at a station',
-    required: ['tripId', 'stop', 'when', 'plannedWhen', 'delay', 'platform', 'plannedPlatform', 'direction', 'line', 'station'],
+    required: ['tripId', 'stop', 'when', 'plannedWhen', 'delay', 'platform', 'plannedPlatform', 'direction', 'line', 'provenance', 'remarks', 'origin', 'destination', 'currentTripPosition', 'loadFactor', 'cancelled', 'station'],
     properties: [
         new OA\Property(property: 'tripId', description: 'Unique trip identifier', type: 'string', example: '1|200513|0|81|6012023'),
         new OA\Property(

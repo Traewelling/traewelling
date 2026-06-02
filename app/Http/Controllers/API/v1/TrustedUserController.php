@@ -40,6 +40,7 @@ class TrustedUserController extends Controller
                 response: '200',
                 description: 'List of trusted users',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -76,6 +77,7 @@ class TrustedUserController extends Controller
                 response: '200',
                 description: 'List of users who trust the current user',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',

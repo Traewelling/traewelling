@@ -28,6 +28,7 @@ class AdminTripController extends Controller
                 response: 200,
                 description: 'Trip details',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [new OA\Property(property: 'data', ref: AdminTripResource::class)],
                 ),
             ),

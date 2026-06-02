@@ -86,6 +86,7 @@ class TransportController extends Controller
                 response: 200,
                 description: 'Successful operation',
                 content: new OA\JsonContent(
+                    required: ['data', 'meta'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -94,6 +95,7 @@ class TransportController extends Controller
                         ),
                         new OA\Property(
                             property: 'meta',
+                            required: ['station', 'times', 'removedLicenses', 'removedCount'],
                             properties: [
                                 new OA\Property(
                                     property: 'station',
@@ -101,6 +103,7 @@ class TransportController extends Controller
                                 ),
                                 new OA\Property(
                                     property: 'times',
+                                    required: ['now', 'prev', 'next'],
                                     properties: [
                                         new OA\Property(
                                             property: 'now',
@@ -236,6 +239,7 @@ class TransportController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -304,6 +308,7 @@ class TransportController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -374,10 +379,12 @@ class TransportController extends Controller
                 response: 403,
                 description: 'Forbidden — one or more users in `with` cannot be checked in',
                 content: new OA\JsonContent(
+                    required: ['message', 'meta'],
                     properties: [
                         new OA\Property(property: 'message', type: 'string', example: 'You are not allowed to check in the following users: 1'),
                         new OA\Property(
                             property: 'meta',
+                            required: ['invalidUsers'],
                             properties: [
                                 new OA\Property(property: 'invalidUsers', type: 'array', items: new OA\Items(type: 'integer', example: 1)),
                             ],
@@ -390,19 +397,22 @@ class TransportController extends Controller
                 response: 409,
                 description: 'Checkin collision',
                 content: new OA\JsonContent(
+                    required: ['message', 'data'],
                     properties: [
                         new OA\Property(
                             property: 'message',
                             description: 'Deprecated: use data.conflicts instead',
+                            required: ['status_id', 'lineName'],
                             properties: [
-                                new OA\Property(property: 'status_id', type: 'integer', deprecated: true),
-                                new OA\Property(property: 'lineName', type: 'string', deprecated: true),
+                                new OA\Property(property: 'status_id', type: 'integer', nullable: true, deprecated: true),
+                                new OA\Property(property: 'lineName', type: 'string', nullable: true, deprecated: true),
                             ],
                             type: 'object',
                             deprecated: true,
                         ),
                         new OA\Property(
                             property: 'data',
+                            required: ['conflicts'],
                             properties: [
                                 new OA\Property(
                                     property: 'conflicts',
@@ -486,6 +496,7 @@ class TransportController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [new OA\Property(property: 'data', ref: Station::class)],
                     type: 'object',
                 ),
@@ -537,6 +548,7 @@ class TransportController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -582,6 +594,7 @@ class TransportController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',

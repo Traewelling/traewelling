@@ -36,6 +36,7 @@ class AlertController extends Controller
                 response: 200,
                 description: 'List of alerts',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -165,7 +166,14 @@ class AlertController extends Controller
             new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid')),
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Alert details.', content: new OA\JsonContent(properties: [new OA\Property(property: 'data', ref: '#/components/schemas/AlertResource')])),
+            new OA\Response(
+                response: 200,
+                description: 'Alert details.',
+                content: new OA\JsonContent(
+                    required: ['data'],
+                    properties: [new OA\Property(property: 'data', ref: '#/components/schemas/AlertResource')]
+                )
+            ),
             new OA\Response(response: 403, description: 'Forbidden.'),
             new OA\Response(response: 404, description: 'Not found.'),
         ],
@@ -202,7 +210,14 @@ class AlertController extends Controller
         ),
         tags: ['Notifications'],
         responses: [
-            new OA\Response(response: 201, description: 'Alert created.', content: new OA\JsonContent(properties: [new OA\Property(property: 'data', ref: '#/components/schemas/AlertResource')])),
+            new OA\Response(
+                response: 201,
+                description: 'Alert created.',
+                content: new OA\JsonContent(
+                    required: ['data'],
+                    properties: [new OA\Property(property: 'data', ref: '#/components/schemas/AlertResource')]
+                )
+            ),
             new OA\Response(response: 403, description: 'Forbidden.'),
             new OA\Response(response: 422, description: 'Validation error.'),
         ],
@@ -244,7 +259,14 @@ class AlertController extends Controller
             new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid')),
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Alert updated.', content: new OA\JsonContent(properties: [new OA\Property(property: 'data', ref: '#/components/schemas/AlertResource')])),
+            new OA\Response(
+                response: 200,
+                description: 'Alert updated.',
+                content: new OA\JsonContent(
+                    required: ['data'],
+                    properties: [new OA\Property(property: 'data', ref: '#/components/schemas/AlertResource')]
+                )
+            ),
             new OA\Response(response: 403, description: 'Forbidden.'),
             new OA\Response(response: 404, description: 'Not found.'),
             new OA\Response(response: 422, description: 'Validation error.'),

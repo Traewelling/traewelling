@@ -38,6 +38,7 @@ class StatusTagController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -78,6 +79,7 @@ class StatusTagController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -129,6 +131,7 @@ class StatusTagController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -216,6 +219,7 @@ class StatusTagController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -307,6 +311,7 @@ class StatusTagController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -401,6 +406,7 @@ class StatusTagController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['status'],
                     properties: [new OA\Property(property: 'status', type: 'string', example: 'success')],
                 ),
             ),

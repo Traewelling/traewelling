@@ -11,6 +11,7 @@ use OpenApi\Attributes as OA;
     title: 'UserAuth',
     required: [
         'id',
+        'uuid',
         'displayName',
         'username',
         'profilePicture',
@@ -21,6 +22,7 @@ use OpenApi\Attributes as OA;
         'privateProfile',
         'preventIndex',
         'likes_enabled',
+        'pointsEnabled',
         'mapProvider',
         'home',
         'language',

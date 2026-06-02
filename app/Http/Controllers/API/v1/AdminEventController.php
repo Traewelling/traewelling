@@ -58,9 +58,12 @@ class AdminEventController extends Controller
             new OA\Response(
                 response: 200,
                 description: 'Paginated list of events.',
-                content: new OA\JsonContent(properties: [
-                    new OA\Property(property: 'data', type: 'array', items: new OA\Items(ref: '#/components/schemas/EventAdminResource')),
-                ]),
+                content: new OA\JsonContent(
+                    required: ['data'],
+                    properties: [
+                        new OA\Property(property: 'data', type: 'array', items: new OA\Items(ref: '#/components/schemas/EventAdminResource')),
+                    ]
+                ),
             ),
             new OA\Response(response: 403, description: 'Forbidden.'),
         ],
@@ -92,9 +95,11 @@ class AdminEventController extends Controller
             new OA\Response(
                 response: 200,
                 description: 'Event details.',
-                content: new OA\JsonContent(properties: [
-                    new OA\Property(property: 'data', ref: '#/components/schemas/EventAdminResource'),
-                ]),
+                content: new OA\JsonContent(
+                    required: ['data'],
+                    properties: [
+                        new OA\Property(property: 'data', ref: '#/components/schemas/EventAdminResource'),
+                    ]),
             ),
             new OA\Response(response: 403, description: 'Forbidden.'),
             new OA\Response(response: 404, description: 'Not found.'),
@@ -119,9 +124,11 @@ class AdminEventController extends Controller
             new OA\Response(
                 response: 201,
                 description: 'Event created.',
-                content: new OA\JsonContent(properties: [
-                    new OA\Property(property: 'data', ref: '#/components/schemas/EventAdminResource'),
-                ]),
+                content: new OA\JsonContent(
+                    required: ['data'],
+                    properties: [
+                        new OA\Property(property: 'data', ref: '#/components/schemas/EventAdminResource'),
+                    ]),
             ),
             new OA\Response(response: 403, description: 'Forbidden.'),
             new OA\Response(response: 422, description: 'Validation error.'),
@@ -165,9 +172,11 @@ class AdminEventController extends Controller
             new OA\Response(
                 response: 200,
                 description: 'Event updated.',
-                content: new OA\JsonContent(properties: [
-                    new OA\Property(property: 'data', ref: '#/components/schemas/EventAdminResource'),
-                ]),
+                content: new OA\JsonContent(
+                    required: ['data'],
+                    properties: [
+                        new OA\Property(property: 'data', ref: '#/components/schemas/EventAdminResource'),
+                    ]),
             ),
             new OA\Response(response: 403, description: 'Forbidden.'),
             new OA\Response(response: 404, description: 'Not found.'),

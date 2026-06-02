@@ -130,6 +130,7 @@ class TicketController extends Controller
                 response: 201,
                 description: self::OA_DESC_SUCCESS,
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [new OA\Property(property: 'data', ref: '#/components/schemas/TicketResource')],
                 ),
             ),
@@ -179,6 +180,7 @@ class TicketController extends Controller
                 response: 200,
                 description: self::OA_DESC_SUCCESS,
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [new OA\Property(property: 'data', ref: '#/components/schemas/TicketResource')],
                 ),
             ),
@@ -239,6 +241,7 @@ class TicketController extends Controller
                 response: 200,
                 description: self::OA_DESC_SUCCESS,
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [new OA\Property(property: 'data', ref: '#/components/schemas/TicketResource')],
                 ),
             ),
@@ -288,6 +291,7 @@ class TicketController extends Controller
                 response: 200,
                 description: self::OA_DESC_SUCCESS,
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [new OA\Property(property: 'data', ref: '#/components/schemas/TicketStatisticsResource')],
                 ),
             ),

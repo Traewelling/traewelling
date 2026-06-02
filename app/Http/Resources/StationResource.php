@@ -8,7 +8,7 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(
     title: 'Station',
-    required: ['id', 'name', 'latitude', 'longitude', 'ibnr', 'rilIdentifier'],
+    required: ['id', 'name', 'latitude', 'longitude', 'ibnr', 'rilIdentifier', 'areas', 'identifiers', 'time_offset', 'created_at'],
     properties: [
         new OA\Property(property: 'id', type: 'integer', example: '1'),
         new OA\Property(property: 'name', type: 'string', example: 'Karlsruhe Hbf'),

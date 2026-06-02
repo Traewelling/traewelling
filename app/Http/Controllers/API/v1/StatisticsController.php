@@ -46,6 +46,7 @@ class StatisticsController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -75,6 +76,7 @@ class StatisticsController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -104,6 +106,7 @@ class StatisticsController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -142,6 +145,7 @@ class StatisticsController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -191,6 +195,7 @@ class StatisticsController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -377,6 +382,7 @@ class StatisticsController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -478,6 +484,7 @@ class StatisticsController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data', 'meta'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -486,15 +493,10 @@ class StatisticsController extends Controller
                         ),
                         new OA\Property(
                             property: 'meta',
+                            required: ['from', 'until'],
                             properties: [
-                                new OA\Property(
-                                    property: 'from',
-                                    example: '2021-01-01T00:00:00.000000Z',
-                                ),
-                                new OA\Property(
-                                    property: 'until',
-                                    example: '2021-02-01T00:00:00.000000Z',
-                                ),
+                                new OA\Property(property: 'from', example: '2021-01-01T00:00:00.000000Z'),
+                                new OA\Property(property: 'until', example: '2021-02-01T00:00:00.000000Z'),
                             ],
                             type: 'object',
                         ),

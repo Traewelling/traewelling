@@ -95,6 +95,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -143,6 +146,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/EventAdminResource"
@@ -193,6 +199,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/EventAdminResource"
@@ -251,6 +260,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/EventAdminResource"
@@ -340,6 +352,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -390,6 +405,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "properties": {
@@ -484,6 +502,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/EventAdminResource"
@@ -828,6 +849,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/AdminTripResource"
@@ -926,6 +950,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -1015,6 +1042,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/AlertResource"
@@ -1066,6 +1096,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/AlertResource"
@@ -1177,6 +1210,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/AlertResource"
@@ -1258,6 +1294,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -1304,6 +1343,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/OAuthClientResource"
@@ -1362,6 +1404,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/OAuthClientResource"
@@ -1448,6 +1493,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/WebhookStatsResource"
@@ -1488,6 +1536,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "status"
+                                    ],
                                     "properties": {
                                         "status": {
                                             "example": "success"
@@ -1527,6 +1578,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/UserAuthResource"
@@ -1565,6 +1619,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/BearerTokenResponse"
@@ -1664,6 +1721,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -1735,6 +1795,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/EventResource"
@@ -1789,6 +1852,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/EventDetailsResource"
@@ -1852,6 +1918,11 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -1954,6 +2025,11 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -2060,6 +2136,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/UserResource"
@@ -2122,6 +2201,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/UserResource"
@@ -2179,6 +2261,11 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -2242,6 +2329,11 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -2299,6 +2391,11 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -2664,6 +2761,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -2724,6 +2824,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/LikeResponse"
@@ -2785,6 +2888,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/LikeResponse"
@@ -2879,7 +2985,9 @@
                             "application/json": {
                                 "schema": {
                                     "required": [
-                                        "data"
+                                        "data",
+                                        "links",
+                                        "meta"
                                     ],
                                     "properties": {
                                         "data": {
@@ -3047,6 +3155,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "status"
+                                    ],
                                     "properties": {
                                         "status": {
                                             "type": "string",
@@ -3098,6 +3209,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -3172,13 +3286,16 @@
                 ],
                 "summary": "Get the current privacy policy",
                 "description": "Get the current privacy policy",
-                "operationId": "App\\Http\\Controllers\\API\\v1\\PrivacyPolicyController",
+                "operationId": "getCurrentPrivacyPolicy",
                 "responses": {
                     "200": {
                         "description": "Success",
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/Privacy Policy"
@@ -3256,6 +3373,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -3383,6 +3503,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/ReportResource"
@@ -3508,6 +3631,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -3586,6 +3712,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/RouteSegmentResource"
@@ -3635,6 +3764,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/RouteSegmentResource"
@@ -3784,10 +3916,18 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "coordinates",
+                                        "distance"
+                                    ],
                                     "properties": {
                                         "coordinates": {
                                             "type": "array",
                                             "items": {
+                                                "required": [
+                                                    "lat",
+                                                    "lng"
+                                                ],
                                                 "properties": {
                                                     "lat": {
                                                         "type": "number"
@@ -3881,6 +4021,11 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "polyline",
+                                        "distance",
+                                        "customWaypoints"
+                                    ],
                                     "properties": {
                                         "polyline": {
                                             "type": "string"
@@ -3892,6 +4037,10 @@
                                         "customWaypoints": {
                                             "type": "array",
                                             "items": {
+                                                "required": [
+                                                    "lat",
+                                                    "lng"
+                                                ],
                                                 "properties": {
                                                     "lat": {
                                                         "type": "number"
@@ -3938,6 +4087,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -4046,6 +4198,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/UserProfileSettingsResource"
@@ -4119,6 +4274,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/UserProfileSettingsResource"
@@ -4215,6 +4373,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/UserProfileSettingsResource"
@@ -4276,6 +4437,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "message"
+                                    ],
                                     "properties": {
                                         "message": {
                                             "type": "string",
@@ -4314,6 +4478,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "message"
+                                    ],
                                     "properties": {
                                         "message": {
                                             "type": "string",
@@ -4454,6 +4621,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/StationResource"
@@ -4540,6 +4710,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/StationResource"
@@ -4680,6 +4853,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -4950,6 +5126,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -4995,6 +5174,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -5040,6 +5222,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -5096,6 +5281,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -5155,6 +5343,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "properties": {
@@ -5314,6 +5505,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "properties": {
@@ -5397,11 +5591,19 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data",
+                                        "meta"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/StatisticsGlobalData"
                                         },
                                         "meta": {
+                                            "required": [
+                                                "from",
+                                                "until"
+                                            ],
                                             "properties": {
                                                 "from": {
                                                     "example": "2021-01-01T00:00:00.000000Z"
@@ -5456,6 +5658,11 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -5519,6 +5726,11 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -5571,6 +5783,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -5615,6 +5830,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -5658,6 +5876,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -5712,6 +5933,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -5833,6 +6057,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -5884,6 +6111,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/StatusResource"
@@ -5949,6 +6179,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/StatusResource"
@@ -6059,6 +6292,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/StatusResource"
@@ -6110,6 +6346,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "properties": {
@@ -6282,6 +6521,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -6336,6 +6578,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -6404,6 +6649,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/StatusTagResource"
@@ -6464,6 +6712,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "properties": {
@@ -6551,6 +6802,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/StatusTagResource"
@@ -6618,6 +6872,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "status"
+                                    ],
                                     "properties": {
                                         "status": {
                                             "type": "string",
@@ -6768,6 +7025,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/TicketResource"
@@ -6824,6 +7084,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/TicketResource"
@@ -6917,6 +7180,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/TicketResource"
@@ -7018,6 +7284,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/TicketStatisticsResource"
@@ -7231,6 +7500,10 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data",
+                                        "meta"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -7239,11 +7512,22 @@
                                             }
                                         },
                                         "meta": {
+                                            "required": [
+                                                "station",
+                                                "times",
+                                                "removedLicenses",
+                                                "removedCount"
+                                            ],
                                             "properties": {
                                                 "station": {
                                                     "$ref": "#/components/schemas/Station"
                                                 },
                                                 "times": {
+                                                    "required": [
+                                                        "now",
+                                                        "prev",
+                                                        "next"
+                                                    ],
                                                     "properties": {
                                                         "now": {
                                                             "type": "string",
@@ -7346,6 +7630,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/TripResource"
@@ -7411,6 +7698,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -7488,12 +7778,19 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "message",
+                                        "meta"
+                                    ],
                                     "properties": {
                                         "message": {
                                             "type": "string",
                                             "example": "You are not allowed to check in the following users: 1"
                                         },
                                         "meta": {
+                                            "required": [
+                                                "invalidUsers"
+                                            ],
                                             "properties": {
                                                 "invalidUsers": {
                                                     "type": "array",
@@ -7516,16 +7813,26 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ],
                                     "properties": {
                                         "message": {
                                             "description": "Deprecated: use data.conflicts instead",
+                                            "required": [
+                                                "status_id",
+                                                "lineName"
+                                            ],
                                             "properties": {
                                                 "status_id": {
                                                     "type": "integer",
+                                                    "nullable": true,
                                                     "deprecated": true
                                                 },
                                                 "lineName": {
                                                     "type": "string",
+                                                    "nullable": true,
                                                     "deprecated": true
                                                 }
                                             },
@@ -7533,6 +7840,9 @@
                                             "deprecated": true
                                         },
                                         "data": {
+                                            "required": [
+                                                "conflicts"
+                                            ],
                                             "properties": {
                                                 "conflicts": {
                                                     "type": "array",
@@ -7584,6 +7894,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "App\\Models\\Station"
@@ -7641,6 +7954,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -7687,6 +8003,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -7742,6 +8061,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -7813,6 +8135,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "description": "GeoJSON Feature (LineString)",
@@ -7935,6 +8260,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/TripResource"
@@ -7984,6 +8312,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -8090,6 +8421,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -8261,6 +8595,11 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -8336,6 +8675,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/UserResource"
@@ -8355,7 +8697,9 @@
                             "application/json": {
                                 "schema": {
                                     "required": [
-                                        "message"
+                                        "message",
+                                        "reason",
+                                        "user"
                                     ],
                                     "properties": {
                                         "message": {
@@ -8423,6 +8767,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/UserResource"
@@ -8492,6 +8839,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/UserResource"
@@ -8563,6 +8913,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/UserResource"
@@ -8629,6 +8982,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/UserResource"
@@ -8678,6 +9034,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -8721,6 +9080,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -8781,6 +9143,11 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -8853,6 +9220,11 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -9156,6 +9528,11 @@
             "Coordinate": {
                 "title": "Coordinate",
                 "description": "GeoJson Coordinates",
+                "required": [
+                    "type",
+                    "properties",
+                    "geometry"
+                ],
                 "properties": {
                     "type": {
                         "type": "number",
@@ -9190,6 +9567,10 @@
             "FeatureCollection": {
                 "title": "FeatureCollection",
                 "description": "featurecollection of multiple GeoJson points",
+                "required": [
+                    "type",
+                    "features"
+                ],
                 "properties": {
                     "type": {
                         "title": "type",
@@ -9247,6 +9628,14 @@
             "LivePointDto": {
                 "title": "LivePointDto",
                 "description": "All necessary information to calculate live position",
+                "required": [
+                    "point",
+                    "polyline",
+                    "arrival",
+                    "departure",
+                    "lineName",
+                    "statusId"
+                ],
                 "properties": {
                     "point": {
                         "oneOf": [
@@ -9259,7 +9648,14 @@
                         "description": "current point, if stopping at a station"
                     },
                     "polyline": {
-                        "$ref": "#/components/schemas/FeatureCollection"
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/FeatureCollection"
+                            }
+                        ],
+                        "nullable": true,
+                        "title": "polyline",
+                        "description": "geojson point collection of the next line segment"
                     },
                     "arrival": {
                         "title": "arrival",
@@ -9335,6 +9731,15 @@
             "Station": {
                 "title": "Station",
                 "description": "train station model",
+                "required": [
+                    "id",
+                    "name",
+                    "latitude",
+                    "longitude",
+                    "ibnr",
+                    "rilIdentifier",
+                    "identifiers"
+                ],
                 "properties": {
                     "id": {
                         "title": "id",
@@ -9698,6 +10103,10 @@
             },
             "BearerTokenResponse": {
                 "title": "BearerTokenResponse",
+                "required": [
+                    "token",
+                    "expires_at"
+                ],
                 "properties": {
                     "token": {
                         "description": "Bearer Token. Use in Authentication-Header with prefix 'Bearer '. (space is needed)",
@@ -9715,6 +10124,16 @@
             "EventSuggestion": {
                 "title": "EventSuggestion",
                 "description": "Fields for suggesting an event",
+                "required": [
+                    "name",
+                    "host",
+                    "begin",
+                    "end",
+                    "url",
+                    "hashtag",
+                    "nearestStation",
+                    "nearestStationId"
+                ],
                 "properties": {
                     "name": {
                         "description": "name of the event",
@@ -9773,6 +10192,9 @@
             },
             "LikeResponse": {
                 "title": "LikeResponse",
+                "required": [
+                    "count"
+                ],
                 "properties": {
                     "count": {
                         "description": "Amount of likes",
@@ -9839,6 +10261,9 @@
             "StatusAssignTicketBody": {
                 "title": "StatusAssignTicketBody",
                 "description": "Assign or remove a ticket from a status",
+                "required": [
+                    "ticketId"
+                ],
                 "properties": {
                     "ticketId": {
                         "description": "UUID of the ticket to assign, or null to remove the assignment",
@@ -9853,6 +10278,11 @@
             "Polyline": {
                 "title": "Polyline",
                 "description": "Polyline of a single status as GeoJSON Feature",
+                "required": [
+                    "type",
+                    "geometry",
+                    "properties"
+                ],
                 "properties": {
                     "type": {
                         "type": "string",
@@ -9888,6 +10318,9 @@
             "DuplicateCheckinGroup": {
                 "title": "DuplicateCheckinGroup",
                 "description": "A group of check-ins with the same trip and origin stopover (duplicates)",
+                "required": [
+                    "statuses"
+                ],
                 "properties": {
                     "statuses": {
                         "type": "array",
@@ -10154,7 +10587,9 @@
                     "checkin",
                     "stopovers",
                     "createdAt",
-                    "updatedAt"
+                    "updatedAt",
+                    "client",
+                    "createdBy"
                 ],
                 "properties": {
                     "id": {
@@ -10233,6 +10668,17 @@
             },
             "AdminStopoverResource": {
                 "title": "AdminStopover",
+                "required": [
+                    "id",
+                    "station",
+                    "arrivalPlanned",
+                    "arrivalReal",
+                    "departurePlanned",
+                    "departureReal",
+                    "routeSegmentId",
+                    "routeSegmentType",
+                    "stationIdentifierId"
+                ],
                 "properties": {
                     "id": {
                         "type": "integer"
@@ -10291,6 +10737,21 @@
             },
             "AdminTripResource": {
                 "title": "AdminTrip",
+                "required": [
+                    "id",
+                    "tripId",
+                    "category",
+                    "mode",
+                    "number",
+                    "lineName",
+                    "journeyNumber",
+                    "operator",
+                    "source",
+                    "user",
+                    "lastRefreshed",
+                    "stopovers",
+                    "statuses"
+                ],
                 "properties": {
                     "id": {
                         "type": "integer"
@@ -10513,6 +10974,12 @@
             },
             "PointsCalculation": {
                 "title": "PointsCalculation",
+                "required": [
+                    "base",
+                    "distance",
+                    "factor",
+                    "reason"
+                ],
                 "properties": {
                     "base": {
                         "description": "Basepoints for this type of vehicle",
@@ -10540,6 +11007,11 @@
             "Points": {
                 "title": "Points",
                 "description": "Points model",
+                "required": [
+                    "points",
+                    "calculation",
+                    "additional"
+                ],
                 "properties": {
                     "points": {
                         "description": "points",
@@ -10561,6 +11033,11 @@
             },
             "CheckinSuccessResource": {
                 "title": "CheckinResponse",
+                "required": [
+                    "status",
+                    "points",
+                    "alsoOnThisConnection"
+                ],
                 "properties": {
                     "status": {
                         "$ref": "#/components/schemas/StatusResource"
@@ -10646,6 +11123,7 @@
                     "xpChange",
                     "levelBefore",
                     "levelAfter",
+                    "note",
                     "createdAt"
                 ],
                 "properties": {
@@ -10723,6 +11201,13 @@
                     "plannedPlatform",
                     "direction",
                     "line",
+                    "provenance",
+                    "remarks",
+                    "origin",
+                    "destination",
+                    "currentTripPosition",
+                    "loadFactor",
+                    "cancelled",
                     "station"
                 ],
                 "properties": {
@@ -10947,6 +11432,20 @@
             "EventAdminResource": {
                 "title": "EventAdminResource",
                 "description": "Full event data for admin management",
+                "required": [
+                    "id",
+                    "name",
+                    "slug",
+                    "hashtag",
+                    "host",
+                    "url",
+                    "checkin_start",
+                    "checkin_end",
+                    "event_start",
+                    "event_end",
+                    "status",
+                    "station"
+                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -11016,6 +11515,14 @@
             },
             "EventDetailsResource": {
                 "title": "EventDetails",
+                "required": [
+                    "id",
+                    "slug",
+                    "totalDistance",
+                    "totalDuration",
+                    "trainDistance",
+                    "trainDuration"
+                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -11120,6 +11627,19 @@
             "EventSuggestionResource": {
                 "title": "EventSuggestionResource",
                 "description": "Event suggestion submitted by a user",
+                "required": [
+                    "id",
+                    "name",
+                    "host",
+                    "url",
+                    "hashtag",
+                    "begin",
+                    "end",
+                    "station",
+                    "user",
+                    "processed",
+                    "created_at"
+                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -11190,7 +11710,7 @@
                     "id",
                     "token",
                     "name",
-                    "created",
+                    "createdAt",
                     "lastAccessed"
                 ],
                 "properties": {
@@ -11264,6 +11784,7 @@
                     "displayName",
                     "username",
                     "profilePicture",
+                    "mastodon",
                     "preventIndex"
                 ],
                 "properties": {
@@ -11306,6 +11827,12 @@
             "Links": {
                 "title": "Links",
                 "description": "Pagination links",
+                "required": [
+                    "first",
+                    "last",
+                    "prev",
+                    "next"
+                ],
                 "properties": {
                     "first": {
                         "description": "Shared OA schema for Laravel pagination links. Not a real resource.",
@@ -11344,8 +11871,11 @@
                     "redirect",
                     "confidential",
                     "webhooksEnabled",
+                    "authorizedWebhookUrl",
+                    "privacyPolicyUrl",
                     "activeTokensCount",
                     "hasWebhooks",
+                    "plainSecret",
                     "createdAt"
                 ],
                 "properties": {
@@ -11404,7 +11934,8 @@
             "OperatorIdentifierResource": {
                 "required": [
                     "type",
-                    "identifier"
+                    "identifier",
+                    "name"
                 ],
                 "properties": {
                     "type": {
@@ -11429,7 +11960,8 @@
                     "id",
                     "uuid",
                     "identifier",
-                    "name"
+                    "name",
+                    "identifiers"
                 ],
                 "properties": {
                     "type": {
@@ -11471,6 +12003,13 @@
             "PaginationMeta": {
                 "title": "Meta",
                 "description": "Pagination meta data",
+                "required": [
+                    "current_page",
+                    "from",
+                    "path",
+                    "per_page",
+                    "to"
+                ],
                 "properties": {
                     "current_page": {
                         "description": "Shared OA schema for Laravel pagination meta data. Not a real resource.",
@@ -11504,7 +12043,8 @@
                     "de",
                     "en",
                     "acceptedAt",
-                    "hasOldAcceptance"
+                    "hasOldAcceptance",
+                    "upcoming"
                 ],
                 "properties": {
                     "id": {
@@ -11612,7 +12152,8 @@
                     "reason",
                     "description",
                     "reporter",
-                    "created_at"
+                    "created_at",
+                    "activities"
                 ],
                 "properties": {
                     "id": {
@@ -11702,11 +12243,18 @@
                 "title": "RouteSegmentResource",
                 "required": [
                     "id",
+                    "fromStation",
+                    "toStation",
+                    "fromIdentifier",
+                    "toIdentifier",
                     "distance",
                     "duration",
                     "pathType",
                     "polyline",
-                    "polylinePrecision"
+                    "polylinePrecision",
+                    "customWaypointsCount",
+                    "customWaypoints",
+                    "tripsCount"
                 ],
                 "properties": {
                     "id": {
@@ -11905,7 +12453,11 @@
                     "latitude",
                     "longitude",
                     "ibnr",
-                    "rilIdentifier"
+                    "rilIdentifier",
+                    "areas",
+                    "identifiers",
+                    "time_offset",
+                    "created_at"
                 ],
                 "properties": {
                     "id": {
@@ -12009,7 +12561,11 @@
                     "tags",
                     "checkin",
                     "user",
-                    "createdBy"
+                    "createdBy",
+                    "ticket",
+                    "moderation_notes",
+                    "lock_visibility",
+                    "hide_body"
                 ],
                 "properties": {
                     "id": {
@@ -12306,7 +12862,10 @@
                     "validUntil",
                     "price",
                     "currency",
-                    "createdAt"
+                    "createdAt",
+                    "tripCount",
+                    "totalDistance",
+                    "totalDuration"
                 ],
                 "properties": {
                     "id": {
@@ -12374,6 +12933,19 @@
             "TicketStatisticsResource": {
                 "title": "TicketStatisticsResource",
                 "description": "Usage statistics for a single ticket",
+                "required": [
+                    "tripCount",
+                    "distance",
+                    "duration",
+                    "firstUsed",
+                    "lastUsed",
+                    "costPerTrip",
+                    "costPerKm",
+                    "costPerHour",
+                    "purposes",
+                    "categories",
+                    "operators"
+                ],
                 "properties": {
                     "tripCount": {
                         "description": "Total number of trips assigned to this ticket",
@@ -12553,7 +13125,10 @@
                     "category",
                     "number",
                     "lineName",
+                    "routeColor",
+                    "routeTextColor",
                     "journeyNumber",
+                    "manualJourneyNumber",
                     "distance",
                     "points",
                     "duration",
@@ -12561,7 +13136,9 @@
                     "manualArrival",
                     "origin",
                     "destination",
-                    "mode"
+                    "mode",
+                    "operator",
+                    "dataSource"
                 ],
                 "properties": {
                     "trip": {
@@ -12666,6 +13243,20 @@
             },
             "TripResource": {
                 "title": "TripResource",
+                "required": [
+                    "id",
+                    "tripId",
+                    "category",
+                    "mode",
+                    "number",
+                    "lineName",
+                    "journeyNumber",
+                    "origin",
+                    "destination",
+                    "stopovers",
+                    "dataSource",
+                    "continuationTrip"
+                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -12754,6 +13345,7 @@
                 "title": "UserAuth",
                 "required": [
                     "id",
+                    "uuid",
                     "displayName",
                     "username",
                     "profilePicture",
@@ -12764,6 +13356,7 @@
                     "privateProfile",
                     "preventIndex",
                     "likes_enabled",
+                    "pointsEnabled",
                     "mapProvider",
                     "home",
                     "language",
@@ -12929,6 +13522,7 @@
                     "privateProfile",
                     "preventIndex",
                     "defaultStatusVisibility",
+                    "privacyHideDays",
                     "password",
                     "email",
                     "emailVerified",
@@ -13048,6 +13642,8 @@
                     "points",
                     "mastodonUrl",
                     "privateProfile",
+                    "points_enabled",
+                    "likes_enabled",
                     "pointsEnabled",
                     "userInvisibleToMe",
                     "muted",

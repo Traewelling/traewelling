@@ -7,7 +7,7 @@ namespace App\Dto\Transport;
 use App\Http\Resources\StationIdentifierResource;
 use OpenApi\Attributes as OA;
 
-#[OA\Schema(title: 'Station', description: 'train station model', xml: new OA\Xml(name: 'Station'))]
+#[OA\Schema(title: 'Station', description: 'train station model', required: ['id', 'name', 'latitude', 'longitude', 'ibnr', 'rilIdentifier', 'identifiers'], xml: new OA\Xml(name: 'Station'))]
 class Station
 {
     #[OA\Property(title: 'id', description: 'id', example: '4711')]

@@ -21,6 +21,8 @@ use OpenApi\Attributes as OA;
         'points',
         'mastodonUrl',
         'privateProfile',
+        'points_enabled',
+        'likes_enabled',
         'pointsEnabled',
         'userInvisibleToMe',
         'muted',

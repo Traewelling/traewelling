@@ -48,6 +48,7 @@ class TripController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -106,6 +107,7 @@ class TripController extends Controller
                 response: 200,
                 description: 'GeoJSON Feature with a LineString geometry. The `properties.routed` flag indicates whether BRouter was used for at least one segment (false means straight-line fallback).',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(property: 'data', description: 'GeoJSON Feature (LineString)', type: 'object'),
                     ],
@@ -181,6 +183,7 @@ class TripController extends Controller
                 response: 201,
                 description: 'Trip created successfully',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(property: 'data', ref: '#/components/schemas/TripResource'),
                     ],

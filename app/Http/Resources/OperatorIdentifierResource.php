@@ -10,7 +10,7 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(
     schema: 'OperatorIdentifierResource',
-    required: ['type', 'identifier'],
+    required: ['type', 'identifier', 'name'],
     properties: [
         new OA\Property(property: 'type', type: 'string', example: 'motis'),
         new OA\Property(property: 'identifier', type: 'string', example: 'de:db-regio-ag'),

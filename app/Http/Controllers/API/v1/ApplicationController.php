@@ -35,6 +35,7 @@ class ApplicationController extends Controller
                 response: 200,
                 description: self::OA_DESC_SUCCESS,
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [new OA\Property(property: 'data', type: 'array', items: new OA\Items(ref: OAuthClientResource::class))],
                 )
             ),
@@ -57,7 +58,14 @@ class ApplicationController extends Controller
         requestBody: new OA\RequestBody(required: true, content: new OA\JsonContent(ref: StoreOAuthClientRequest::class)),
         tags: ['Applications'],
         responses: [
-            new OA\Response(response: 201, description: self::OA_DESC_SUCCESS, content: new OA\JsonContent(properties: [new OA\Property(property: 'data', ref: OAuthClientResource::class)])),
+            new OA\Response(
+                response: 201,
+                description: self::OA_DESC_SUCCESS,
+                content: new OA\JsonContent(
+                    required: ['data'],
+                    properties: [new OA\Property(property: 'data', ref: OAuthClientResource::class)]
+                )
+            ),
             new OA\Response(response: 401, description: self::OA_DESC_UNAUTHENTICATED),
             new OA\Response(response: 422, description: self::OA_DESC_UNPROCESSABLE),
         ],
@@ -90,7 +98,14 @@ class ApplicationController extends Controller
             new OA\Parameter(name: 'clientId', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
         ],
         responses: [
-            new OA\Response(response: 200, description: self::OA_DESC_SUCCESS, content: new OA\JsonContent(properties: [new OA\Property(property: 'data', ref: OAuthClientResource::class)])),
+            new OA\Response(
+                response: 200,
+                description: self::OA_DESC_SUCCESS,
+                content: new OA\JsonContent(
+                    required: ['data'],
+                    properties: [new OA\Property(property: 'data', ref: OAuthClientResource::class)]
+                )
+            ),
             new OA\Response(response: 401, description: self::OA_DESC_UNAUTHENTICATED),
             new OA\Response(response: 404, description: self::OA_DESC_NOT_FOUND),
             new OA\Response(response: 422, description: self::OA_DESC_UNPROCESSABLE),
@@ -167,7 +182,10 @@ class ApplicationController extends Controller
             new OA\Response(
                 response: 200,
                 description: self::OA_DESC_SUCCESS,
-                content: new OA\JsonContent(properties: [new OA\Property(property: 'data', ref: WebhookStatsResource::class)])
+                content: new OA\JsonContent(
+                    required: ['data'],
+                    properties: [new OA\Property(property: 'data', ref: WebhookStatsResource::class)]
+                )
             ),
             new OA\Response(response: 401, description: self::OA_DESC_UNAUTHENTICATED),
             new OA\Response(response: 404, description: self::OA_DESC_NOT_FOUND),

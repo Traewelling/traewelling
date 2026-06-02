@@ -43,6 +43,7 @@ class FollowController extends Controller
                 response: 201,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -99,6 +100,7 @@ class FollowController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -151,6 +153,7 @@ class FollowController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data', 'links', 'meta'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -158,10 +161,7 @@ class FollowController extends Controller
                             items: new OA\Items(ref: '#/components/schemas/UserResource'),
                         ),
                         new OA\Property(property: 'links', ref: '#/components/schemas/Links'),
-                        new OA\Property(
-                            property: 'meta',
-                            ref: '#/components/schemas/PaginationMeta',
-                        ),
+                        new OA\Property(property: 'meta', ref: '#/components/schemas/PaginationMeta'),
                     ],
                 ),
             ),
@@ -194,6 +194,7 @@ class FollowController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data', 'links', 'meta'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -201,10 +202,7 @@ class FollowController extends Controller
                             items: new OA\Items(ref: '#/components/schemas/UserResource'),
                         ),
                         new OA\Property(property: 'links', ref: '#/components/schemas/Links'),
-                        new OA\Property(
-                            property: 'meta',
-                            ref: '#/components/schemas/PaginationMeta',
-                        ),
+                        new OA\Property(property: 'meta', ref: '#/components/schemas/PaginationMeta'),
                     ],
                 ),
             ),
@@ -235,6 +233,7 @@ class FollowController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data', 'links', 'meta'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -242,10 +241,7 @@ class FollowController extends Controller
                             items: new OA\Items(ref: '#/components/schemas/UserResource'),
                         ),
                         new OA\Property(property: 'links', ref: '#/components/schemas/Links'),
-                        new OA\Property(
-                            property: 'meta',
-                            ref: '#/components/schemas/PaginationMeta',
-                        ),
+                        new OA\Property(property: 'meta', ref: '#/components/schemas/PaginationMeta'),
                     ],
                 ),
             ),

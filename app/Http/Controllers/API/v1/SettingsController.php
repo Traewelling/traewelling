@@ -95,6 +95,7 @@ class SettingsController extends Controller
                 response: 200,
                 description: 'Success',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -146,6 +147,7 @@ class SettingsController extends Controller
                 response: 200,
                 description: 'Success',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -229,6 +231,7 @@ class SettingsController extends Controller
                 response: 200,
                 description: 'Password changed successfully',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [new OA\Property(property: 'data', ref: UserProfileSettingsResource::class)],
                 ),
             ),
@@ -277,6 +280,7 @@ class SettingsController extends Controller
                 response: 200,
                 description: 'Success',
                 content: new OA\JsonContent(
+                    required: ['message'],
                     properties: [
                         new OA\Property(
                             property: 'message',
@@ -327,6 +331,7 @@ class SettingsController extends Controller
                 response: 200,
                 description: 'Success',
                 content: new OA\JsonContent(
+                    required: ['message'],
                     properties: [
                         new OA\Property(
                             property: 'message',

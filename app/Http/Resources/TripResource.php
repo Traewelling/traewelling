@@ -9,6 +9,7 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(
     title: 'TripResource',
+    required: ['id', 'tripId', 'category', 'mode', 'number', 'lineName', 'journeyNumber', 'origin', 'destination', 'stopovers', 'dataSource', 'continuationTrip'],
     properties: [
         new OA\Property(property: 'id', type: 'int', example: 1),
         new OA\Property(property: 'tripId', description: 'Internal trip identifier (use this for the checkin flow)', type: 'string', example: '00000000-0000-0000-0000-000000000000'),
