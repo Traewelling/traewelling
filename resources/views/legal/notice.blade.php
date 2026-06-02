@@ -1,10 +1,9 @@
-@extends(minimalLayout())
+@extends('layouts.minimal-tailwind')
 
 @section('title', __('menu.legal-notice'))
 @section('meta-robots', 'noindex')
 
 @section('content')
-    @if(isNewLayout())
         <main class="flex-1 w-full px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-4">
             <div class="container mx-auto md:px-4 py-2 md:py-24">
                 <div class="grid gap-2 mb-4">
@@ -86,8 +85,5 @@
                     Sutton Coldfield, West Midlands, B72 1JU, United Kingdom, on behalf of the OSM community.</p>
 
             </div>
-        </main
-    @else
-        @include('legal.partials.notice-old')
-    @endif
+        </main>
 @endsection

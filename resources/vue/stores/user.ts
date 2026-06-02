@@ -118,5 +118,10 @@ export const useUserStore = defineStore(
             fetchSettings,
         };
     },
-    { persist: true },
+    {
+        // Exclude `refreshed` from persistence so it always resets to the default
+        // stale date on page load, guaranteeing fetchSettings runs a fresh API call
+        // after every login — even if a different user logged in on the same device.
+        persist: { omit: ['refreshed'] },
+    },
 );
