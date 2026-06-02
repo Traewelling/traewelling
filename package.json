@@ -45,7 +45,7 @@
     "dependencies": {
         "@fortawesome/fontawesome-free": "^7.1.0",
         "@indoorequal/vue-maplibre-gl": "^8.4.2",
-        "@vuepic/vue-datepicker": "^12.0.0",
+        "@vuepic/vue-datepicker": "^13.0.0",
         "apexcharts": "^5.0.0",
         "autoprefixer": "^10.4.20",
         "axios": "^1.8.2",
