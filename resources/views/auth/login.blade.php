@@ -1,100 +1,36 @@
-@extends('layouts.app')
+@php use App\Http\Controllers\Backend\VersionController; @endphp
+@extends('layouts.minimal-tailwind')
 
 @section('title', __('menu.login'))
 @section('meta-robots', 'noindex')
 
 @section('content')
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-7">
-                <div class="card">
-                    <div class="card-header">{{ __('user.login') }}</div>
-
-                    <div class="card-body">
-                        <form method="POST" action="{{ route('login') }}">
-                            @csrf
-
-                            <div class="form-group row mb-3">
-                                <label for="login" class="col-md-4 col-form-label text-md-right">
-                                    {{ __('user.login-credentials') }}
-                                </label>
-
-                                <div class="col-md-6">
-                                    <input id="login" type="text"
-                                           class="form-control @error('login') is-invalid @enderror" name="login"
-                                           value="{{ old('login') }}" required autocomplete="username"
-                                           autocapitalize="none" autofocus="autofocus">
-
-                                    @error('login')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="form-group row mb-3">
-                                <label for="password"
-                                       class="col-md-4 col-form-label text-md-right">{{ __('user.password') }}</label>
-
-                                <div class="col-md-6">
-                                    <input id="password" type="password"
-                                           class="form-control @error('password') is-invalid @enderror" name="password"
-                                           required autocomplete="current-password">
-
-                                    @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="form-group row mb-3">
-                                <div class="col-md-6 offset-md-4">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="remember"
-                                               id="remember" {{ old('remember') ? 'checked' : '' }}>
-
-                                        <label class="form-check-label" for="remember">
-                                            {{ __('user.remember-me') }}
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group row mb-0">
-                                <div class="col-md-8 col-lg-7 offset-md-4">
-                                    <button type="submit" class="btn btn-primary">
-                                        {{ __('user.login') }}
-                                    </button>
-
-                                    @if (Route::has('password.request'))
-                                        <a class="btn btn-link" href="{{ route('password.request') }}">
-                                            {{ __('user.forgot-password') }}
-                                        </a>
-                                    @endif
-                                </div>
-                            </div>
-                        </form>
-                        <hr>
-                        <div class="row justify-content-center">
-                            <div class="col-md-8 col-lg-7">
-                                <form method="GET" action="{{ url('/auth/redirect/mastodon') }}">
-                                    <div class="input-group mt-2">
-                                        <input type="text" name="domain" class="form-control"
-                                               placeholder="{{ __('user.mastodon-instance-url') }}"
-                                               required>
-                                        <button class="btn btn-md btn-primary m-0 px-3" type="submit">
-                                            <i class="fab fa-mastodon"></i> Mastodon
-                                        </button>
-                                    </div>
-                                </form>
+    <div class="bg-base-200 flex min-h-screen items-center w-full">
+        <div class="card mx-auto w-full max-w-5xl shadow-xl">
+            <div class="bg-base-100 grid grid-cols-1 md:grid-cols-2 md:rounded-xl">
+                <div class="">
+                    <div class="hero bg-base-200 min-h-full md:rounded-l-xl"
+                         style="background-image: url(&quot;/images/covers/tickets.jpg&quot;); background-size: cover; background-position: center center;">
+                        <div class="hero-content py-12 text-shadow-md">
+                            <div class="max-w-md">
+                                <h1 class="text-center text-3xl font-bold text-white mix-blend-difference">
+                                    <a href="/">
+                                        <img src="/images/icons/logo.svg" class="h-12 w-12 inline-block fill-current"
+                                             alt="Träwelling Logo" style="stroke: #c72730;"/>
+                                        &nbsp; {{ config('app.name')  }}
+                                    </a>
+                                </h1>
+                                <h5 class="text-center text-gray-400">{{ VersionController::getVersion() }}</h5>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div class="px-10 py-24">
+                    @include('welcome.partials.login')
+                </div>
             </div>
         </div>
     </div>
+
+    @include('welcome.partials.mastodon-modal')
 @endsection

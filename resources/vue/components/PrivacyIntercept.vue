@@ -6,9 +6,13 @@ import DeleteAccountDialog from './Privacy/DeleteAccountDialog.vue';
 import MarkdownContent from './Privacy/MarkdownContent.vue';
 import PolicyActionButtons from './Privacy/PolicyActionButtons.vue';
 
-const props = defineProps<{
-    username: string;
-}>();
+const props = defineProps({
+    username: {
+        type: String,
+        required: false,
+        default: null,
+    },
+});
 
 const isLoggedIn = computed(() => !!props.username);
 
@@ -24,7 +28,7 @@ const {
     loadingAccept,
     formatDate,
     acceptPolicy,
-} = usePrivacyPolicy(isLoggedIn);
+} = usePrivacyPolicy(isLoggedIn.value);
 
 const deleteDialog = ref<InstanceType<typeof DeleteAccountDialog>>();
 </script>
@@ -109,5 +113,5 @@ const deleteDialog = ref<InstanceType<typeof DeleteAccountDialog>>();
         />
     </template>
 
-    <DeleteAccountDialog ref="deleteDialog" :username="props.username" />
+    <DeleteAccountDialog v-if="props.username" ref="deleteDialog" :username="props.username" />
 </template>

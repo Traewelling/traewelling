@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends(appLayout())
 
 @section('title', html_entity_decode(__('privacy.title')))
 @section('meta-robots', 'noindex')

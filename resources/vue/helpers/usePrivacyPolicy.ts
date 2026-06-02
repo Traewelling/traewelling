@@ -1,10 +1,9 @@
 import { trans } from 'laravel-vue-i18n';
 import { Notyf } from 'notyf';
-import type { Ref } from 'vue';
 import { computed, inject, onMounted, ref } from 'vue';
 import { Api } from '../../types/Api.gen';
 
-export function usePrivacyPolicy(isLoggedIn: Ref<boolean>) {
+export function usePrivacyPolicy(isLoggedIn: boolean) {
     const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
     const locale = document.documentElement.lang ?? 'en';
     const notyf = inject('notyf') as Notyf;
@@ -29,11 +28,10 @@ export function usePrivacyPolicy(isLoggedIn: Ref<boolean>) {
     }
 
     const showUpcoming = computed(
-        () =>
-            isLoggedIn.value && hasUserSigned.value && upcomingPolicyId.value !== null && !hasUserSignedUpcoming.value,
+        () => isLoggedIn && hasUserSigned.value && upcomingPolicyId.value !== null && !hasUserSignedUpcoming.value,
     );
 
-    const showActions = computed(() => isLoggedIn.value && (!hasUserSigned.value || showUpcoming.value));
+    const showActions = computed(() => isLoggedIn && (!hasUserSigned.value || showUpcoming.value));
 
     const activeAcceptId = computed(() => (showUpcoming.value ? upcomingPolicyId.value : policyId.value));
 
@@ -44,7 +42,7 @@ export function usePrivacyPolicy(isLoggedIn: Ref<boolean>) {
             const policy = policyResponse.data.data;
             const md = locale.startsWith('de') ? policy.de : policy.en;
 
-            if (!isLoggedIn.value) {
+            if (!isLoggedIn) {
                 policyMarkdown.value = md;
                 if (policy.upcoming) {
                     upcomingValidFrom.value = policy.upcoming.validFrom ?? null;

@@ -1,141 +1,43 @@
-@extends('layouts.app')
+@php use App\Http\Controllers\Backend\VersionController; @endphp
+@extends('layouts.minimal-tailwind')
 
 @section('title', __('menu.register'))
 @section('meta-robots', 'noindex')
 
 @section('content')
-    <div class="container">
-
-        @if(config('app.registration.enabled'))
-
-            <div class="row justify-content-center">
-                <div class="col-md-8 col-lg-7">
-                    <div class="card">
-                        <div class="card-header">{{ __('user.register') }}</div>
-
-                        <div class="card-body">
-                            <form method="POST" action="{{ route('register') }}">
-                                @csrf
-
-                                <div class="form-group row mb-3">
-                                    <label for="username"
-                                           class="col-md-4 col-form-label text-md-right">{{ __('user.username') }}</label>
-
-                                    <div class="col-md-6">
-
-                                        <div class="input-group">
-                                            <span class="input-group-text" id="basic-addon1">@</span>
-
-                                            <input id="username" type="text"
-                                                   class="form-control @error('username') is-invalid @enderror"
-                                                   name="username" value="{{ old('username') }}" required autofocus>
-                                        </div>
-
-                                        @error('username')
-                                        <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <div class="form-group row mb-3">
-                                    <label for="name"
-                                           class="col-md-4 col-form-label text-md-right">{{ __('user.displayname') }}</label>
-
-                                    <div class="col-md-6">
-                                        <input id="name" type="text"
-                                               class="form-control @error('name') is-invalid @enderror" name="name"
-                                               value="{{ old('name') }}" required autocomplete="name" required>
-
-                                        @error('name')
-                                        <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <div class="form-group row mb-3">
-                                    <label for="email"
-                                           class="col-md-4 col-form-label text-md-right">{{ __('user.email') }}</label>
-
-                                    <div class="col-md-6">
-                                        <input id="email" type="email"
-                                               class="form-control @error('email') is-invalid @enderror" name="email"
-                                               value="{{ old('email') }}" required autocomplete="email">
-
-                                        @error('email')
-                                        <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <div class="form-group row mb-3">
-                                    <label for="password"
-                                           class="col-md-4 col-form-label text-md-right">{{ __('user.password') }}</label>
-
-                                    <div class="col-md-6">
-                                        <input id="password" type="password"
-                                               class="form-control @error('password') is-invalid @enderror"
-                                               name="password"
-                                               required autocomplete="new-password" minlength="8">
-
-                                        @error('password')
-                                        <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <div class="form-group row mb-3">
-                                    <label for="password-confirm"
-                                           class="col-md-4 col-form-label text-md-right">{{ __('settings.confirm-password') }}</label>
-
-                                    <div class="col-md-6">
-                                        <input id="password-confirm" type="password" class="form-control"
-                                               name="password_confirmation" required autocomplete="new-password"
-                                               minlength="8">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row mb-0">
-                                    <div class="col-md-6 offset-md-4">
-                                        <button type="submit" class="btn btn-primary">
-                                            {{ __('user.register') }}
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-                            <hr>
-                            <div class="row justify-content-center">
-                                <div class="col-md-8 col-lg-7">
-                                    <form method="GET" action="{{ url('/auth/redirect/mastodon') }}">
-                                        <div class="input-group mt-2">
-                                            <input type="text" name="domain" class="form-control"
-                                                   placeholder="{{__('user.mastodon-instance-url')}}"
-                                                   aria-describedby="button-addon4" required>
-                                            <button class="btn btn-md btn-primary m-0 px-3" type="submit"><i
-                                                    class="fab fa-mastodon"></i> Mastodon
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
+    <div class="bg-base-200 flex min-h-screen items-center w-full">
+        <div class="card mx-auto w-full max-w-5xl shadow-xl">
+            <div class="bg-base-100 grid grid-cols-1 md:grid-cols-2 md:rounded-xl">
+                <div class="">
+                    <div class="hero bg-base-200 min-h-full md:rounded-l-xl"
+                         style="background-image: url(&quot;/images/covers/register.jpg&quot;); background-size: cover; background-position: center center;">
+                        <div class="hero-content py-12 text-shadow-md">
+                            <div class="max-w-md">
+                                <h1 class="text-center text-3xl font-bold text-white mix-blend-difference">
+                                    <a href="/">
+                                    <img src="/images/icons/logo.svg" class="h-12 w-12 inline-block fill-current"
+                                         alt="Träwelling Logo" style="stroke: #c72730;"/>
+                                    &nbsp; {{ config('app.name')  }}
+                                    </a>
+                                </h1>
+                                <h5 class="text-center text-gray-400">{{ VersionController::getVersion() }}</h5>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div class="px-10 py-12">
+                    @if(config('app.registration.enabled'))
+                        @include('welcome.partials.register')
+                    @else
+                        <div class="alert alert-info text-center" role="alert">
+                            {{ __('user.registration-disabled') }}
+                        </div>
+
+                    @endif
+                </div>
             </div>
-
-        @else
-
-            <div class="alert alert-info text-center" role="alert">
-                {{ __('user.registration-disabled') }}
-            </div>
-
-        @endif
+        </div>
     </div>
+
+    @include('welcome.partials.mastodon-modal')
 @endsection
