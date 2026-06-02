@@ -33,6 +33,8 @@
     @vite(['resources/tailwind-app/app.ts'])
 </head>
 <body>
-<div id="tailwind-app"></div>
+<div id="tailwind-app">
+    @yield('layout-content')
+</div>
 </body>
 </html>

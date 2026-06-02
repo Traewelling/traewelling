@@ -1020,6 +1020,7 @@
   "user.muted.heading2": "Muted users",
   "user.muted.text": "You can't see the check-ins from :username because you have muted this user.",
   "user.no-account": "Don't have an account?",
+  "user.has-account": "Already have an account?",
   "user.no-user": "No user found.",
   "user.not-received-before": "If you didn't get the email, ",
   "user.not-received-link": "click here to request another",

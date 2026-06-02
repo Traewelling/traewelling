@@ -1020,6 +1020,7 @@
   "user.muted.heading2": "Stummgeschaltete Benutzer",
   "user.muted.text": "Du kannst die Check-ins von :username nicht sehen, da du diesen Benutzer stummgeschaltet hast.",
   "user.no-account": "Hast du keinen Account?",
+  "user.has-account": "Hast du einen Account?",
   "user.no-user": "Keinen Nutzer gefunden.",
   "user.not-received-before": "Wenn Du die E-Mail nicht bekommen hast, ",
   "user.not-received-link": "klicke hier für eine neue E-Mail",
