@@ -12,6 +12,7 @@ use OpenApi\Attributes as OA;
     schema: 'EventAdminResource',
     title: 'EventAdminResource',
     description: 'Full event data for admin management',
+    required: ['id', 'name', 'slug', 'hashtag', 'host', 'url', 'checkin_start', 'checkin_end', 'event_start', 'event_end', 'status', 'station'],
     properties: [
         new OA\Property(property: 'id', type: 'integer', example: 1),
         new OA\Property(property: 'name', type: 'string', example: 'Berlin Bahnhofsfest'),

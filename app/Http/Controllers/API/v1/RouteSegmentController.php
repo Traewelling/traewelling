@@ -43,6 +43,7 @@ class RouteSegmentController extends Controller
                 response: 200,
                 description: self::OA_DESC_SUCCESS,
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -88,6 +89,7 @@ class RouteSegmentController extends Controller
                 response: 200,
                 description: self::OA_DESC_SUCCESS,
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(property: 'data', ref: '#/components/schemas/RouteSegmentResource'),
                     ],
@@ -153,6 +155,7 @@ class RouteSegmentController extends Controller
                 response: 201,
                 description: 'Route segment created successfully.',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -358,11 +361,13 @@ class RouteSegmentController extends Controller
                 response: 200,
                 description: 'BRouter coordinates and distance.',
                 content: new OA\JsonContent(
+                    required: ['coordinates', 'distance'],
                     properties: [
                         new OA\Property(
                             property: 'coordinates',
                             type: 'array',
                             items: new OA\Items(
+                                required: ['lat', 'lng'],
                                 properties: [
                                     new OA\Property(property: 'lat', type: 'number'),
                                     new OA\Property(property: 'lng', type: 'number'),
@@ -448,6 +453,7 @@ class RouteSegmentController extends Controller
                 response: 200,
                 description: 'Segment updated successfully.',
                 content: new OA\JsonContent(
+                    required: ['polyline', 'distance', 'customWaypoints'],
                     properties: [
                         new OA\Property(property: 'polyline', type: 'string'),
                         new OA\Property(property: 'distance', description: 'Distance in meters', type: 'integer'),
@@ -455,6 +461,7 @@ class RouteSegmentController extends Controller
                             property: 'customWaypoints',
                             type: 'array',
                             items: new OA\Items(
+                                required: ['lat', 'lng'],
                                 properties: [
                                     new OA\Property(property: 'lat', type: 'number'),
                                     new OA\Property(property: 'lng', type: 'number'),

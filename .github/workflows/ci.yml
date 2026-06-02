@@ -440,6 +440,9 @@ jobs:
 
           echo "✓ API client file exists and appears valid"
 
+      - name: Check for optional (possibly-undefined) properties in API schema
+        run: npm run api:check-no-optional
+
 
   test:
     name: Unit & Feature Tests with Coverage

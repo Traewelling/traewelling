@@ -56,7 +56,7 @@ class NotificationsController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
-                    required: ['data'],
+                    required: ['data', 'links', 'meta'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -184,6 +184,7 @@ class NotificationsController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['status'],
                     properties: [new OA\Property(property: 'status', type: 'string', example: 'success')],
                 ),
             ),

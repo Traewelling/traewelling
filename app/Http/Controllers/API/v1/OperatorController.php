@@ -32,6 +32,7 @@ class OperatorController extends Controller
                 response: 200,
                 description: self::OA_DESC_SUCCESS,
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',

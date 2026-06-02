@@ -11,7 +11,7 @@ use OpenApi\Attributes as OA;
 #[OA\Schema(
     title: 'OAuthClientResource',
     description: 'OAuth application owned by the authenticated user',
-    required: ['id', 'name', 'redirect', 'confidential', 'webhooksEnabled', 'activeTokensCount', 'hasWebhooks', 'createdAt'],
+    required: ['id', 'name', 'redirect', 'confidential', 'webhooksEnabled', 'authorizedWebhookUrl', 'privacyPolicyUrl', 'activeTokensCount', 'hasWebhooks', 'plainSecret', 'createdAt'],
     properties: [
         new OA\Property(property: 'id', type: 'integer', example: 42),
         new OA\Property(property: 'name', type: 'string', example: 'My App'),

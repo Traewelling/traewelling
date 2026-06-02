@@ -10,7 +10,7 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(
     title: 'AdminStatusResource',
-    required: ['id', 'body', 'visibility', 'business', 'moderationNotes', 'lockVisibility', 'hideBody', 'eventId', 'user', 'checkin', 'stopovers', 'createdAt', 'updatedAt'],
+    required: ['id', 'body', 'visibility', 'business', 'moderationNotes', 'lockVisibility', 'hideBody', 'eventId', 'user', 'checkin', 'stopovers', 'createdAt', 'updatedAt', 'client', 'createdBy'],
     properties: [
         new OA\Property(property: 'id', type: 'integer', example: 12345),
         new OA\Property(property: 'body', type: 'string', nullable: true),

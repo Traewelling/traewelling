@@ -7,6 +7,7 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(
     title: 'EventDetails',
+    required: ['id', 'slug', 'totalDistance', 'totalDuration', 'trainDistance', 'trainDuration'],
     properties: [
         new OA\Property(property: 'id', type: 'integer', example: 39),
         new OA\Property(property: 'slug', type: 'string', example: '9_euro_ticket'),

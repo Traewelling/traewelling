@@ -30,6 +30,10 @@ use OpenApi\Attributes as OA;
         'checkin',
         'user',
         'createdBy',
+        'ticket',
+        'moderation_notes',
+        'lock_visibility',
+        'hide_body',
     ],
     properties: [
         new OA\Property(property: 'id', type: 'integer', example: 12345),

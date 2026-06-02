@@ -11,7 +11,7 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(
     schema: 'Privacy Policy',
-    required: ['id', 'validFrom', 'de', 'en', 'acceptedAt', 'hasOldAcceptance'],
+    required: ['id', 'validFrom', 'de', 'en', 'acceptedAt', 'hasOldAcceptance', 'upcoming'],
     properties: [
         new OA\Property(
             property: 'id',

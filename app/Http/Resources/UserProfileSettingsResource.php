@@ -16,6 +16,7 @@ use OpenApi\Attributes as OA;
         'privateProfile',
         'preventIndex',
         'defaultStatusVisibility',
+        'privacyHideDays',
         'password',
         'email',
         'emailVerified',

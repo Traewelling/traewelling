@@ -12,6 +12,7 @@ use OpenApi\Attributes as OA;
     schema: 'EventSuggestionResource',
     title: 'EventSuggestionResource',
     description: 'Event suggestion submitted by a user',
+    required: ['id', 'name', 'host', 'url', 'hashtag', 'begin', 'end', 'station', 'user', 'processed', 'created_at'],
     properties: [
         new OA\Property(property: 'id', type: 'integer', example: 1),
         new OA\Property(property: 'name', type: 'string', example: 'Berliner Fahrradfest'),

@@ -9,7 +9,8 @@
         "lint": "npx eslint . --fix",
         "lint:check": "npx eslint .",
         "format": "prettier --write resources/",
-        "format:check": "prettier --check resources/"
+        "format:check": "prettier --check resources/",
+        "api:check-no-optional": "node scripts/check-api-optional-properties.mjs"
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",

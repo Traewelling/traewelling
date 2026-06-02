@@ -1,11 +1,13 @@
 import { trans } from 'laravel-vue-i18n';
+import { Notyf } from 'notyf';
 import type { Ref } from 'vue';
-import { computed, onMounted, ref } from 'vue';
+import { computed, inject, onMounted, ref } from 'vue';
 import { Api } from '../../types/Api.gen';
 
 export function usePrivacyPolicy(isLoggedIn: Ref<boolean>) {
     const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
     const locale = document.documentElement.lang ?? 'en';
+    const notyf = inject('notyf') as Notyf;
 
     const loading = ref(true);
     const policyId = ref<string | null>(null);
@@ -36,7 +38,7 @@ export function usePrivacyPolicy(isLoggedIn: Ref<boolean>) {
     const activeAcceptId = computed(() => (showUpcoming.value ? upcomingPolicyId.value : policyId.value));
 
     onMounted(async () => {
-        const policyResponse = await api.privacyPolicies.appHttpControllersApiV1PrivacyPolicyController();
+        const policyResponse = await api.privacyPolicies.getCurrentPrivacyPolicy();
 
         if (policyResponse.ok) {
             const policy = policyResponse.data.data;
@@ -78,10 +80,10 @@ export function usePrivacyPolicy(isLoggedIn: Ref<boolean>) {
             if (response.ok) {
                 window.location.href = '/dashboard';
             } else {
-                window.notyf.error(trans('settings.something-wrong'));
+                notyf.error(trans('settings.something-wrong'));
             }
         } catch {
-            window.notyf.error(trans('settings.something-wrong'));
+            notyf.error(trans('settings.something-wrong'));
         } finally {
             loadingAccept.value = false;
         }

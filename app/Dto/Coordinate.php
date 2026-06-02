@@ -9,7 +9,7 @@ use JsonSerializable;
 use OpenApi\Attributes as OA;
 use stdClass;
 
-#[OA\Schema(title: 'Coordinate', description: 'GeoJson Coordinates', xml: new OA\Xml(name: 'Coordinate'))]
+#[OA\Schema(title: 'Coordinate', description: 'GeoJson Coordinates', required: ['type', 'properties', 'geometry'], xml: new OA\Xml(name: 'Coordinate'))]
 readonly class Coordinate implements JsonSerializable
 {
     #[OA\Property(property: 'type', example: 'Feature')]

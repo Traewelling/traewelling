@@ -10,6 +10,7 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(
     title: 'AdminTrip',
+    required: ['id', 'tripId', 'category', 'mode', 'number', 'lineName', 'journeyNumber', 'operator', 'source', 'user', 'lastRefreshed', 'stopovers', 'statuses'],
     properties: [
         new OA\Property(property: 'id', type: 'integer'),
         new OA\Property(property: 'tripId', type: 'string'),

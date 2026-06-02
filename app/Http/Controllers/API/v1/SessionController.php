@@ -23,6 +23,7 @@ class SessionController extends Controller
                 description: Controller::OA_DESC_SUCCESS,
                 content: new OA\JsonContent(
                     type: 'object',
+                    required: ['data'],
                     properties: [
                         new OA\Property(property: 'data', type: 'array', items: new OA\Items(ref: '#/components/schemas/SessionResource')),
                     ]

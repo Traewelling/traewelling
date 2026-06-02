@@ -30,6 +30,7 @@ class ReportController extends Controller
                 response: 200,
                 description: 'Paginated list of reports.',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -68,6 +69,7 @@ class ReportController extends Controller
                 response: 200,
                 description: 'Report details including activity log.',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(property: 'data', ref: '#/components/schemas/ReportResource'),
                     ],

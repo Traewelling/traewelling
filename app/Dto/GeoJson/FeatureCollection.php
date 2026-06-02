@@ -8,6 +8,7 @@ use OpenApi\Attributes as OA;
 #[OA\Schema(
     title: 'FeatureCollection',
     description: 'featurecollection of multiple GeoJson points',
+    required: ['type', 'features'],
     xml: new OA\Xml(name: 'FeatureCollection'),
 )]
 class FeatureCollection implements \JsonSerializable

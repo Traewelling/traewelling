@@ -11,6 +11,7 @@ use OpenApi\Attributes as OA;
 #[OA\Schema(
     schema: 'BearerTokenResponse',
     title: 'BearerTokenResponse',
+    required: ['token', 'expires_at'],
     properties: [
         new OA\Property(property: 'token', description: "Bearer Token. Use in Authentication-Header with prefix 'Bearer '. (space is needed)", type: 'string', example: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9...'),
         new OA\Property(property: 'expires_at', description: 'End of life for this token.', type: 'string', example: '2023-10-19T15:15:06+02:00'),
@@ -32,6 +33,7 @@ class AuthController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['status'],
                     properties: [new OA\Property(property: 'status', example: 'success')],
                 ),
             ),
@@ -65,6 +67,7 @@ class AuthController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -97,6 +100,7 @@ class AuthController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',

@@ -20,6 +20,7 @@ use OpenApi\Attributes as OA;
         'xpChange',
         'levelBefore',
         'levelAfter',
+        'note',
         'createdAt',
     ],
     properties: [

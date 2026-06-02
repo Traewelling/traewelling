@@ -12,7 +12,7 @@ use OpenApi\Attributes as OA;
 #[OA\Schema(
     title: 'TicketResource',
     description: 'A transit ticket / Fahrkarte',
-    required: ['id', 'name', 'validFrom', 'validUntil', 'price', 'currency', 'createdAt'],
+    required: ['id', 'name', 'validFrom', 'validUntil', 'price', 'currency', 'createdAt', 'tripCount', 'totalDistance', 'totalDuration'],
     properties: [
         new OA\Property(
             property: 'id',

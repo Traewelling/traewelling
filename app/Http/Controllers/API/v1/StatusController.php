@@ -13,7 +13,6 @@ use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\StopoverResource;
-use App\Models\Checkin;
 use App\Models\Status;
 use App\Models\Stopover;
 use App\Models\Ticket;
@@ -53,6 +52,7 @@ use OpenApi\Attributes as OA;
     schema: 'StatusAssignTicketBody',
     title: 'StatusAssignTicketBody',
     description: 'Assign or remove a ticket from a status',
+    required: ['ticketId'],
     properties: [
         new OA\Property(property: 'ticketId', description: 'UUID of the ticket to assign, or null to remove the assignment', type: 'string', format: 'uuid', example: '00000000-0000-0000-0000-000000000000', nullable: true),
     ],
@@ -61,6 +61,7 @@ use OpenApi\Attributes as OA;
     schema: 'Polyline',
     title: 'Polyline',
     description: 'Polyline of a single status as GeoJSON Feature',
+    required: ['type', 'geometry', 'properties'],
     properties: [
         new OA\Property(property: 'type', type: 'string', example: 'Feature'),
         new OA\Property(
@@ -103,6 +104,7 @@ class StatusController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data', 'links', 'meta'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -147,6 +149,7 @@ class StatusController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data', 'links', 'meta'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -154,10 +157,7 @@ class StatusController extends Controller
                             items: new OA\Items(ref: '#/components/schemas/StatusResource'),
                         ),
                         new OA\Property(property: 'links', ref: '#/components/schemas/Links'),
-                        new OA\Property(
-                            property: 'meta',
-                            ref: '#/components/schemas/PaginationMeta',
-                        ),
+                        new OA\Property(property: 'meta', ref: '#/components/schemas/PaginationMeta'),
                     ],
                 ),
             ),
@@ -174,6 +174,7 @@ class StatusController extends Controller
         schema: 'DuplicateCheckinGroup',
         title: 'DuplicateCheckinGroup',
         description: 'A group of check-ins with the same trip and origin stopover (duplicates)',
+        required: ['statuses'],
         properties: [
             new OA\Property(
                 property: 'statuses',
@@ -194,6 +195,7 @@ class StatusController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -279,6 +281,7 @@ class StatusController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -308,6 +311,7 @@ class StatusController extends Controller
                 response: '200',
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -346,6 +350,7 @@ class StatusController extends Controller
                 response: '200',
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -434,6 +439,7 @@ class StatusController extends Controller
                 response: 200,
                 description: 'list of matching statuses',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -559,6 +565,7 @@ class StatusController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [new OA\Property(property: 'data', ref: '#/components/schemas/StatusResource')],
                 ),
             ),
@@ -651,6 +658,7 @@ class StatusController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [new OA\Property(property: 'data', ref: '#/components/schemas/StatusResource')],
                 ),
             ),
@@ -811,6 +819,7 @@ class StatusController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [new OA\Property(property: 'data', ref: '#/components/schemas/StatusResource')],
                 ),
             ),
@@ -872,6 +881,7 @@ class StatusController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',

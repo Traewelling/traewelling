@@ -10,7 +10,7 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(
     title: 'RouteSegmentResource',
-    required: ['id', 'distance', 'duration', 'pathType', 'polyline', 'polylinePrecision'],
+    required: ['id', 'fromStation', 'toStation', 'fromIdentifier', 'toIdentifier', 'distance', 'duration', 'pathType', 'polyline', 'polylinePrecision', 'customWaypointsCount', 'customWaypoints', 'tripsCount'],
     properties: [
         new OA\Property(property: 'id', type: 'string', format: 'uuid', example: '01960000-0000-7000-8000-000000000001'),
         new OA\Property(property: 'fromStation', ref: StationResource::class, nullable: true),

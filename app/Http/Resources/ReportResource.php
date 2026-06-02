@@ -11,7 +11,7 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(
     schema: 'ReportResource',
-    required: ['id', 'status', 'subject_type', 'subject_id', 'reason', 'description', 'reporter', 'created_at'],
+    required: ['id', 'status', 'subject_type', 'subject_id', 'reason', 'description', 'reporter', 'created_at', 'activities'],
     properties: [
         new OA\Property(property: 'id', type: 'string', format: 'uuid', example: '123e4567-e89b-12d3-a456-426614174000'),
         new OA\Property(property: 'status', type: 'string', example: 'open', enum: ['open', 'waiting', 'closed']),
