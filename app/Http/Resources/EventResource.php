@@ -8,7 +8,7 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(
     title: 'Event',
-    required: ['id', 'name', 'slug', 'hashtag', 'host', 'url', 'begin', 'end', 'station', 'isPride'],
+    required: ['id', 'name', 'slug', 'hashtag', 'host', 'url', 'begin', 'end', 'station', 'isPride', 'totalDuration', 'totalDistance'],
     properties: [
         new OA\Property(property: 'id', type: 'integer', example: 39),
         new OA\Property(property: 'name', type: 'string', example: '9-Euro-Ticket'),
@@ -20,6 +20,8 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'end', type: 'string', format: 'date', example: '2022-01-02'),
         new OA\Property(property: 'isPride', type: 'boolean', example: true),
         new OA\Property(property: 'station', ref: StationResource::class, nullable: true),
+        new OA\Property(property: 'totalDistance', type: 'integer', example: 12345),
+        new OA\Property(property: 'totalDuration', type: 'integer', example: 12345),
     ],
 )]
 class EventResource extends JsonResource
@@ -38,6 +40,8 @@ class EventResource extends JsonResource
             'end' => ($this->event_end ?? $this->checkin_end)->toIso8601String(),
             'isPride' => (bool) $this->isPride,
             'station' => new StationResource($this->station),
+            'totalDistance' => $this->total_distance ?? 0,
+            'totalDuration' => $this->total_duration ?? 0,
         ];
     }
 }

@@ -1360,6 +1360,10 @@ export interface EventResource {
   /** @example true */
   isPride: boolean;
   station: StationResource | null;
+  /** @example 12345 */
+  totalDistance: number;
+  /** @example 12345 */
+  totalDuration: number;
 }
 
 /**

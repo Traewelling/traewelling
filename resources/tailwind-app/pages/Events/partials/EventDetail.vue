@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { currentLocale } from 'laravel-vue-i18n';
-import { Calendar, HashIcon, LinkIcon, SquareArrowOutUpRight } from 'lucide-vue-next';
+import { Calendar, Clock, HashIcon, LinkIcon, Route, SquareArrowOutUpRight } from 'lucide-vue-next';
 import { computed } from 'vue';
 import { EventResource } from '../../../../types/Api.gen';
+import DistanceSpan from '../../../components/Stats/DistanceSpan.vue';
+import DurationSpan from '../../../components/Stats/DurationSpan.vue';
 
 const props = defineProps<{
     event: EventResource;
@@ -48,6 +50,14 @@ const duration = computed(() => {
             {{ event.url }}
             <SquareArrowOutUpRight class="inline-block size-5" />
         </a>
+    </p>
+    <p>
+        <Route class="inline-block size-5 me-2" />
+        <DistanceSpan :distance="event.totalDistance ?? 0" />
+    </p>
+    <p>
+        <Clock class="inline-block size-5 me-2" />
+        <DurationSpan :duration="event.totalDuration ?? 0" />
     </p>
     <div v-if="event.host || event.station" class="mt-3">
         <p v-if="event.host">{{ $t('events.host') }}: {{ event.host }}</p>

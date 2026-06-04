@@ -11569,7 +11569,9 @@
                     "begin",
                     "end",
                     "station",
-                    "isPride"
+                    "isPride",
+                    "totalDuration",
+                    "totalDistance"
                 ],
                 "properties": {
                     "id": {
@@ -11620,6 +11622,14 @@
                             }
                         ],
                         "nullable": true
+                    },
+                    "totalDistance": {
+                        "type": "integer",
+                        "example": 12345
+                    },
+                    "totalDuration": {
+                        "type": "integer",
+                        "example": 12345
                     }
                 },
                 "type": "object"
