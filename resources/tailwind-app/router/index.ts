@@ -28,8 +28,12 @@ router.afterEach(async (to) => {
         document.title = appName;
         return;
     }
-    if (!isLoaded()) {
-        await loadLanguageAsync(getActiveLanguage());
+    // loadLanguageAsync can resolve early (via AbortController) when the i18n plugin's
+    // loadFallbackLanguage() triggers a competing load() call. Loop until the language
+    // is genuinely present in I18n.loaded before calling trans().
+    const lang = getActiveLanguage();
+    while (!isLoaded(lang)) {
+        await loadLanguageAsync(lang);
     }
     document.title = `${trans(titleKey)} – ${appName}`;
 });

@@ -3,6 +3,7 @@ import { trans } from 'laravel-vue-i18n';
 import { ref } from 'vue';
 import { usePrivacyPolicy } from '../../../vue/helpers/usePrivacyPolicy';
 import { useUserStore } from '../../../vue/stores/user';
+import Loading from '../../components/Loading.vue';
 import AppLayout from '../../layouts/AppLayout.vue';
 import DeleteAccountDialog from './partials/DeleteAccountDialog.vue';
 import MarkdownContent from './partials/MarkdownContent.vue';
@@ -32,13 +33,7 @@ const deleteDialog = ref<InstanceType<typeof DeleteAccountDialog>>();
 <template>
     <AppLayout>
         <div class="container mx-auto md:px-4 py-2 md:py-24">
-            <!-- Loading skeleton -->
-            <div v-if="loading" class="text-center my-5">
-                <div class="spinner-border text-secondary" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-            </div>
-
+            <Loading v-if="loading" />
             <template v-else>
                 <!-- Notice banner: upcoming policy (public view) -->
                 <div

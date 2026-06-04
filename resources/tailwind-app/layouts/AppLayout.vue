@@ -12,12 +12,12 @@
 
             <div class="navbar-center hidden text-white lg:flex">
                 <ul class="menu menu-horizontal px-1">
-                    <li v-for="link in links" v-show="link.condition === undefined || link.condition" :key="link.name">
-                        <a v-if="link.legacy" :href="link.route as string">
-                            <component :is="link.icon" class="inline-block w-6 h-6 mr-2" />
-                            {{ trans(link.name) }}
-                        </a>
-                        <router-link v-else :to="link.route">
+                    <li
+                        v-for="(link, number) in links"
+                        v-show="link.condition === undefined || link.condition"
+                        :key="number"
+                    >
+                        <router-link :to="link.route">
                             <component :is="link.icon" class="inline-block w-6 h-6 mr-2" />
                             {{ trans(link.name) }}
                         </router-link>
@@ -52,22 +52,22 @@
                     </div>
                     <ul tabindex="-1" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
                         <li v-for="link in userLinks" :key="link.name">
-                            <a
-                                v-if="link.legacy"
-                                v-show="link.condition === undefined || link.condition"
-                                :href="link.route as string"
-                            >
-                                <component :is="link.icon" class="inline-block w-6 h-6 mr-2" />
-                                {{ trans(link.name) }}
-                            </a>
-                            <router-link
-                                v-else
-                                v-show="link.condition === undefined || link.condition"
-                                :to="link.route"
-                            >
+                            <router-link v-show="link.condition === undefined || link.condition" :to="link.route">
                                 <component :is="link.icon" class="inline-block w-6 h-6 mr-2" />
                                 {{ trans(link.name) }}
                             </router-link>
+                        </li>
+                        <li>
+                            <a href="https://help.traewelling.de/faq/" target="_blank">
+                                <LifeBuoy class="inline-block w-6 h-6 mr-2" />
+                                {{ trans('menu.about') }}
+                            </a>
+                        </li>
+                        <li v-if="user.isEventModerator || user.isAdmin">
+                            <a href="/admin">
+                                <MonitorCog class="inline-block w-6 h-6 mr-2" />
+                                {{ trans('menu.backend') }}
+                            </a>
                         </li>
                         <li class="border-t border-base-300 mt-1 pt-1">
                             <button @click="logout">
@@ -155,26 +155,32 @@
             <ul class="menu bg-base-200 min-h-full w-80 p-4">
                 <!-- Sidebar content here -->
                 <li v-for="link in links" v-show="link.condition === undefined || link.condition" :key="link.name">
-                    <a v-if="link.legacy" :href="link.route as string">
-                        <component :is="link.icon" class="inline-block w-6 h-6 mr-2" />
-                        {{ trans(link.name) }}
-                    </a>
-                    <router-link v-else :to="link.route">
+                    <router-link :to="link.route">
                         <component :is="link.icon" class="inline-block w-6 h-6 mr-2" />
                         {{ trans(link.name) }}
                     </router-link>
                 </li>
-                <li class="border-1"></li>
-                <li v-for="link in userLinks" :key="link.route">
-                    <a v-if="link.legacy" v-show="link.condition === undefined || link.condition" :href="link.route">
-                        <component :is="link.icon" class="inline-block w-6 h-6 mr-2" />
-                        {{ trans(link.name) }}
-                    </a>
-                    <router-link v-else v-show="link.condition === undefined || link.condition" :to="link.route">
-                        <component :is="link.icon" class="inline-block w-6 h-6 mr-2" />
-                        {{ trans(link.name) }}
-                    </router-link>
-                </li>
+                <template v-if="user.authenticated">
+                    <li class="border-1"></li>
+                    <li v-for="(link, number) in userLinks" :key="number">
+                        <router-link v-show="link.condition === undefined || link.condition" :to="link.route">
+                            <component :is="link.icon" class="inline-block w-6 h-6 mr-2" />
+                            {{ trans(link.name) }}
+                        </router-link>
+                    </li>
+                    <li>
+                        <a href="https://help.traewelling.de/faq/" target="_blank">
+                            <LifeBuoy class="inline-block w-6 h-6 mr-2" />
+                            {{ trans('menu.about') }}
+                        </a>
+                    </li>
+                    <li v-if="user.isEventModerator || user.isAdmin">
+                        <a href="/admin">
+                            <MonitorCog class="inline-block w-6 h-6 mr-2" />
+                            {{ trans('menu.backend') }}
+                        </a>
+                    </li>
+                </template>
                 <li class="border-t border-base-300 mt-1 pt-1">
                     <button @click="logout">
                         <LogOut class="inline-block w-6 h-6 mr-2" />
@@ -271,20 +277,18 @@ onUnmounted(() => {
 const links: {
     name: string;
     icon: FunctionalComponent;
-    route: string | RouteLocationRaw;
-    legacy: boolean;
+    route: RouteLocationRaw;
     condition?: boolean;
 }[] = [
-    { name: 'menu.dashboard', icon: House, route: { name: 'dashboard' }, legacy: false },
+    { name: 'menu.dashboard', icon: House, route: { name: 'dashboard' } },
     {
         name: 'menu.leaderboard',
         icon: Medal,
         route: { name: 'leaderboard' },
-        legacy: false,
         condition: user.user?.pointsEnabled || false,
     },
-    { name: 'menu.active', icon: Map, route: { name: 'active-journeys' }, legacy: false },
-    { name: 'stats', icon: ChartNoAxesCombined, route: { name: 'statistics' }, legacy: false },
+    { name: 'menu.active', icon: Map, route: { name: 'active-journeys' } },
+    { name: 'stats', icon: ChartNoAxesCombined, route: { name: 'statistics' } },
 ];
 
 function logout() {
@@ -314,8 +318,7 @@ const userLinks = computed<
     {
         name: string;
         icon: FunctionalComponent;
-        route: string | RouteLocationRaw;
-        legacy: boolean;
+        route: RouteLocationRaw;
         condition?: boolean;
     }[]
 >(() => [
@@ -325,18 +328,10 @@ const userLinks = computed<
         route: { name: 'user-profile', params: { username: user.getUsername } },
         legacy: false,
     },
-    { name: 'menu.export', icon: Save, route: { name: 'export' }, legacy: false },
-    { name: 'menu.settings', icon: Settings, route: { name: 'settings-profile' }, legacy: false },
-    { name: 'checkin.duplicates.title', icon: Copy, route: { name: 'statuses-duplicates' }, legacy: false },
-    { name: 'menu.about', icon: LifeBuoy, route: 'https://help.traewelling.de/faq/', legacy: true },
-    { name: 'tickets.title', icon: Ticket, route: { name: 'tickets' }, legacy: false, condition: user.isClosedBeta },
-    { name: 'stationboard.submit-search', icon: Search, route: { name: 'search' }, legacy: false },
-    {
-        name: 'menu.backend',
-        icon: MonitorCog,
-        route: '/admin',
-        condition: user.isEventModerator || user.isAdmin,
-        legacy: true,
-    },
+    { name: 'menu.export', icon: Save, route: { name: 'export' } },
+    { name: 'menu.settings', icon: Settings, route: { name: 'settings-profile' } },
+    { name: 'checkin.duplicates.title', icon: Copy, route: { name: 'statuses-duplicates' } },
+    { name: 'tickets.title', icon: Ticket, route: { name: 'tickets' }, condition: user.isClosedBeta },
+    { name: 'stationboard.submit-search', icon: Search, route: { name: 'search' } },
 ]);
 </script>
