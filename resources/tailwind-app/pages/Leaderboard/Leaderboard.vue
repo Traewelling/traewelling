@@ -28,6 +28,7 @@ function fetchData() {
                 usersLeaderboard.value = data.data;
                 loading.value--;
             });
+            select(selected.value);
         })
         .catch(() => {
             loading.value--;
