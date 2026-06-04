@@ -244,6 +244,7 @@ const routes: Array<RouteRecordRaw> = [
     },
     {
         path: '/settings',
+        name: 'settings',
         redirect: '/settings/profile',
     },
     {

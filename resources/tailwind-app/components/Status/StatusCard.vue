@@ -52,6 +52,8 @@ import {
 import { useActiveCheckin } from '../../../vue/stores/activeCheckin';
 import { useUserStore } from '../../../vue/stores/user';
 import { ALL_VISIBILITIES, VISIBILITY_ICONS } from '../../helpers/visibility';
+import DistanceSpan from '../Stats/DistanceSpan.vue';
+import DurationSpan from '../Stats/DurationSpan.vue';
 
 const props = defineProps<{
     status: StatusResource;
@@ -456,22 +458,6 @@ const showArrivalNowBtn = computed(() => {
     const now = LuxonDateTime.now();
     return dep.isValid && arr.isValid && now >= dep && now <= arr.plus({ days: 1 });
 });
-
-const distanceStr = computed(() => {
-    const d = statusObject.value.checkin.distance;
-    return d < 1000 ? `${d} m` : `${(d / 1000).toFixed(0)} km`;
-});
-
-const durationStr = computed(() => {
-    const total = statusObject.value.checkin.duration ?? 0;
-    if (total <= 0) return null;
-    const days = Math.floor(total / (60 * 24));
-    const hours = Math.floor((total % (60 * 24)) / 60);
-    const mins = total % 60;
-    if (days > 0) return `${days}d ${hours}h ${mins}min`;
-    if (hours > 0) return `${hours}h ${mins}min`;
-    return `${mins}min`;
-});
 </script>
 
 <template>
@@ -571,11 +557,11 @@ const durationStr = computed(() => {
                                 </span>
                                 <span class="flex items-center gap-0.5">
                                     <Route class="w-4 h-4" />
-                                    {{ distanceStr }}
+                                    <DistanceSpan :distance="statusObject.checkin.distance" />
                                 </span>
-                                <span v-if="durationStr" class="flex items-center gap-0.5">
+                                <span v-if="statusObject.checkin.duration" class="flex items-center gap-0.5">
                                     <Clock class="w-4 h-4" />
-                                    {{ durationStr }}
+                                    <DurationSpan :duration="statusObject.checkin.duration" />
                                 </span>
                                 <span
                                     v-if="statusObject.business === Business.Value1"
