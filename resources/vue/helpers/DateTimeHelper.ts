@@ -142,13 +142,13 @@ export function timeTypeTooltip(type: StopoverTimeType): string {
     }
 }
 
-export function secondsToDuration(seconds: number): TimeDuration {
+export function minutesToDuration(minutes: number): TimeDuration {
     const duration: TimeDuration = {};
 
-    duration.years = Math.floor(seconds / (365 * 24 * 60 * 60));
-    duration.days = Math.floor((seconds % (365 * 24 * 60 * 60)) / (24 * 60 * 60));
-    duration.hours = Math.floor((seconds % (24 * 60 * 60)) / (60 * 60));
-    duration.minutes = Math.floor((seconds % (60 * 60)) / 60);
+    duration.years = Math.floor(minutes / (365 * 24 * 60));
+    duration.days = Math.floor((minutes % (365 * 24 * 60)) / (24 * 60));
+    duration.hours = Math.floor((minutes % (24 * 60)) / 60);
+    duration.minutes = Math.floor(minutes % 60);
 
     return duration;
 }
