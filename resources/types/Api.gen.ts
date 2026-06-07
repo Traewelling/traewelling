@@ -174,6 +174,43 @@ export enum HafasTravelType {
 }
 
 /**
+ * ExportableFileType
+ * The file type to export the data in. The available columns depend on the file type.
+ */
+export enum ExportableFileType {
+  Pdf = "pdf",
+  CsvHuman = "csv_human",
+  CsvMachine = "csv_machine",
+  Json = "json",
+}
+
+/**
+ * ExportableColumn
+ * Columns that can be exported in the export file.
+ */
+export enum ExportableColumn {
+  StatusId = "status_id",
+  JourneyType = "journey_type",
+  LineName = "line_name",
+  JourneyNumber = "journey_number",
+  OriginName = "origin_name",
+  OriginCoordinates = "origin_coordinates",
+  DeparturePlanned = "departure_planned",
+  DepartureReal = "departure_real",
+  DestinationName = "destination_name",
+  DestinationCoordinates = "destination_coordinates",
+  ArrivalPlanned = "arrival_planned",
+  ArrivalReal = "arrival_real",
+  Duration = "duration",
+  Distance = "distance",
+  Points = "points",
+  Body = "body",
+  TravelType = "travel_type",
+  StatusTags = "status_tags",
+  Operator = "operator",
+}
+
+/**
  * DataProvider
  * What type of data provider did the user specify? (users need to be in closed-beta for this to take effect)
  * @example "cargo"
@@ -237,6 +274,8 @@ export interface ConfigurationInformation {
   features: Feature[];
   /** A list of supported languages in the application. */
   languages: Language[];
+  /** Cooldown time in days between gdpr exports */
+  gdprExportCooldown: number;
 }
 
 /** Represents a language with its code and name. */
@@ -2359,6 +2398,11 @@ export interface UserAuthResource {
   defaultStatusVisibility: number;
   /** @example ["admin","open-beta","closed-beta"] */
   roles: string[];
+  /**
+   * @format date-time
+   * @example "2024-01-01T00:00:00Z"
+   */
+  recentGdprExport: string | null;
 }
 
 /**
@@ -3892,6 +3936,71 @@ export class Api<
         method: "GET",
         query: query,
         secure: true,
+        format: "json",
+        ...params,
+      }),
+  };
+  export = {
+    /**
+     * @description Requests a full GDPR data export. The export is processed asynchronously and delivered via email. Only available when the GDPR export feature is enabled for the account. Subject to a per-user cooldown (see `gdprExportCooldown` in the configuration endpoint). The `recentGdprExport` field on the authenticated user resource reflects the last request timestamp.
+     *
+     * @tags Export
+     * @name RequestGdprExport
+     * @summary Request a GDPR data export
+     * @request POST:/export/gdpr
+     * @secure
+     */
+    requestGdprExport: (params: RequestParams = {}) =>
+      this.request<
+        {
+          /** @example "Export successfully requested." */
+          message: string;
+        },
+        void
+      >({
+        path: `/export/gdpr`,
+        method: "POST",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Generates a downloadable export of the authenticated user's statuses. Supported formats are `pdf`, `csv_human` (human-readable column headings), `csv_machine` (machine-readable column headings), and `json`. The `columns` parameter selects which fields to include and is required for PDF and CSV formats; it is ignored for JSON. The date range may not exceed 365 days, and the result set is capped at 2000 trips.
+     *
+     * @tags Export
+     * @name GenerateStatusExport
+     * @summary Export statuses as PDF, CSV or JSON
+     * @request POST:/export/statuses
+     * @secure
+     */
+    generateStatusExport: (
+      data: {
+        /**
+         * Start date of the export period (inclusive)
+         * @format date
+         * @example "2024-01-01"
+         */
+        from: string;
+        /**
+         * End date of the export period (inclusive)
+         * @format date
+         * @example "2024-01-31"
+         */
+        until: string;
+        /** Columns to include. Required for pdf/csv formats, ignored for json. */
+        columns?: ExportableColumn[];
+        /** The file type to export the data in. The available columns depend on the file type. */
+        filetype: ExportableFileType;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<File, void>({
+        path: `/export/statuses`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),

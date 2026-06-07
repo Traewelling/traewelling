@@ -4,6 +4,34 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
+use OpenApi\Attributes as OA;
+
+#[OA\Schema(
+    title: 'ExportableColumn',
+    description: 'Columns that can be exported in the export file.',
+    type: 'string',
+    enum: [
+        'status_id',
+        'journey_type',
+        'line_name',
+        'journey_number',
+        'origin_name',
+        'origin_coordinates',
+        'departure_planned',
+        'departure_real',
+        'destination_name',
+        'destination_coordinates',
+        'arrival_planned',
+        'arrival_real',
+        'duration',
+        'distance',
+        'points',
+        'body',
+        'travel_type',
+        'status_tags',
+        'operator',
+    ],
+)]
 enum ExportableColumn: string
 {
     case STATUS_ID = 'status_id';

@@ -295,6 +295,7 @@
   "export.reason.commute": "Arbeitsweg",
   "export.reason.private": "Private Reise",
   "export.request": "Export anfordern",
+  "export.requested": "Export angefordert",
   "export.submit": "Exportieren als",
   "export.title": "Exportieren",
   "export.title.arrival_planned": "Ankunft geplant",
