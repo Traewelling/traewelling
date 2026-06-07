@@ -47,8 +47,8 @@
 </template>
 
 <script setup lang="ts">
+import { Star, Trophy } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { Star, Trophy } from 'lucide-vue-next';
 import { onMounted } from 'vue';
 import { useContributeStore } from '../../vue/stores/contribute';
 

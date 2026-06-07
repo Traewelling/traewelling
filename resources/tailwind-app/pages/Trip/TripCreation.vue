@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { FileSpreadsheet, GripVertical, Hash, Layers, MapPin, Plus, Route, Save, Tag, Timer } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { FileSpreadsheet, GripVertical, Hash, Layers, MapPin, Plus, Route, Save, Tag, Timer } from 'lucide-vue-next';
 import { DateTime } from 'luxon';
 import { GeoJSONFeature, LngLat, LngLatBounds } from 'maplibre-gl';
 import { Notyf } from 'notyf';

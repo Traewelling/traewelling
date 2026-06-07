@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { Calendar, Check } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { Calendar, Check } from 'lucide-vue-next';
 import { computed, onMounted, ref } from 'vue';
 import { Api, EventResource } from '../../../types/Api.gen';
 

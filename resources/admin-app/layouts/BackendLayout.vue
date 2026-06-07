@@ -11,7 +11,7 @@ import {
     Scale,
     Train,
     Users,
-} from 'lucide-vue-next';
+} from '@lucide/vue';
 import { type FunctionalComponent } from 'vue';
 import { useUserStore } from '../../vue/stores/user';
 

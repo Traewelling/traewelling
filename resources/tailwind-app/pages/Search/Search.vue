@@ -11,6 +11,7 @@
             <div class="join w-full mb-2">
                 <input
                     v-model="query"
+                    autofocus
                     class="input join-item w-full"
                     :placeholder="$t('stationboard.submit-search')"
                     @keyup.enter="getResults()"
@@ -89,7 +90,7 @@
 </template>
 
 <script setup lang="ts">
-import { Gauge, Gem, Route, Search, Timer } from 'lucide-vue-next';
+import { Gauge, Gem, Route, Search, Timer } from '@lucide/vue';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { Api, UserResource } from '../../../types/Api.gen';

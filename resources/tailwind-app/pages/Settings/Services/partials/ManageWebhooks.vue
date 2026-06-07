@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { Trash2 } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { Trash2 } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { Api, WebhookResource } from '../../../../../types/Api.gen';
 import SettingsListRow from '../../SettingsListRow.vue';

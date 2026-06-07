@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { trans } from 'laravel-vue-i18n';
 import {
     AlertTriangle,
     ArrowRight,
@@ -11,31 +10,11 @@ import {
     EyeOff,
     Heart,
     Lock,
-    MoreVertical,
-    PlaneLanding,
-    PlaneTakeoff,
     Route,
-    Share2,
-    Trash2,
-    User,
-    UserPlus,
-    UserX,
-    VolumeX,
-} from 'lucide-vue-next';
-import { DateTime as LuxonDateTime } from 'luxon';
-import { Notyf } from 'notyf';
-import { computed, inject, onBeforeUnmount, onMounted, ref, watch } from 'vue';
-import {
-    Api,
-    Business,
-    EventResource,
-    MentionDto,
-    StatusResource,
-    StatusUpdateBody,
-    StatusVisibility,
-    StopoverResource,
-    UserResource,
-} from '../../../types/Api.gen';
+} from '@lucide/vue';
+import { trans } from 'laravel-vue-i18n';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { Api, Business, MentionDto, StatusResource, StopoverResource, UserResource } from '../../../types/Api.gen';
 import LineIndicator from '../../../vue/components/LineIndicator.vue';
 import TrwMap from '../../../vue/components/Map/Map.vue';
 import ProductIcon from '../../../vue/components/ProductIcon.vue';
@@ -49,11 +28,13 @@ import {
     getDepartureForStopover,
     StopoverTimeType,
 } from '../../../vue/helpers/DateTimeHelper';
-import { useActiveCheckin } from '../../../vue/stores/activeCheckin';
 import { useUserStore } from '../../../vue/stores/user';
-import { ALL_VISIBILITIES, VISIBILITY_ICONS } from '../../helpers/visibility';
+import { VISIBILITY_ICONS } from '../../helpers/visibility';
 import DistanceSpan from '../Stats/DistanceSpan.vue';
 import DurationSpan from '../Stats/DurationSpan.vue';
+import StatusContextMenu from './StatusContextMenu.vue';
+import StatusDeleteModal from './StatusDeleteModal.vue';
+import StatusEditModal from './StatusEditModal.vue';
 
 const props = defineProps<{
     status: StatusResource;
@@ -69,13 +50,12 @@ const emit = defineEmits<{
 }>();
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
-const notyf = inject('notyf') as Notyf;
 const userStore = useUserStore();
-const activeCheckin = useActiveCheckin();
 
 const statusObject = ref<StatusResource>(props.status);
 const deleted = ref(false);
-const deleting = ref(false);
+const showDeleteModal = ref(false);
+const showEditModal = ref(false);
 const progress = ref(0);
 const interval = ref<number | null>(null);
 const likes = ref(props.status.likes ?? 0);
@@ -83,111 +63,6 @@ const likes = ref(props.status.likes ?? 0);
 // next stop logic
 const nextStop = ref<StopoverResource | null>(null);
 const isAtStop = ref(false);
-
-// modals state
-const showDeleteConfirm = ref(false);
-const busyMute = ref(false);
-const busyBlock = ref(false);
-const busyDepartureNow = ref(false);
-const busyArrivalNow = ref(false);
-
-// edit modal state
-const showEditModal = ref(false);
-const editLoading = ref(false);
-const editStopovers = ref<StopoverResource[]>([]);
-const editDestinationValue = ref<string | null>(null);
-const editManualDeparture = ref<string>('');
-const editManualArrival = ref<string>('');
-const editBody = ref('');
-const editBusiness = ref<Business>(Business.Value0);
-const editVisibility = ref<StatusVisibility>(StatusVisibility.Value0);
-const editEventId = ref<number | null>(null);
-const editEvents = ref<EventResource[]>([]);
-
-function isoToDatetimeLocal(iso: string | null | undefined): string {
-    if (!iso) return '';
-    return LuxonDateTime.fromISO(iso).toFormat("yyyy-MM-dd'T'HH:mm");
-}
-
-async function openEditModal() {
-    editBody.value = statusObject.value.body ?? '';
-    editBusiness.value = statusObject.value.business ?? Business.Value0;
-    editVisibility.value = statusObject.value.visibility ?? StatusVisibility.Value0;
-    editEventId.value = statusObject.value.event?.id ?? null;
-    editManualDeparture.value = isoToDatetimeLocal(statusObject.value.checkin.manualDeparture);
-    editManualArrival.value = isoToDatetimeLocal(statusObject.value.checkin.manualArrival);
-    editDestinationValue.value = null;
-    editStopovers.value = [];
-    showEditModal.value = true;
-
-    try {
-        const res = await api.trains.getTrainTrip({
-            hafasTripId: statusObject.value.checkin.trip,
-            lineName: statusObject.value.checkin.lineName,
-        });
-        const all: StopoverResource[] = res.data?.data?.stopovers ?? [];
-        const depPlanned = LuxonDateTime.fromISO(statusObject.value.checkin.origin.departurePlanned ?? '');
-        editStopovers.value = all.filter((s) => {
-            const arr = LuxonDateTime.fromISO(
-                s.arrivalPlanned ?? s.arrivalReal ?? s.departurePlanned ?? s.departureReal ?? '',
-            );
-            return arr.isValid && depPlanned.isValid && arr.diff(depPlanned).as('minutes') >= 0;
-        });
-        const cur = editStopovers.value.find(
-            (s) =>
-                s.id === statusObject.value.checkin.destination.id &&
-                s.arrivalPlanned === statusObject.value.checkin.destination.arrivalPlanned,
-        );
-        if (cur?.arrivalPlanned) {
-            editDestinationValue.value = `${cur.id}|${cur.arrivalPlanned}`;
-        }
-    } catch {
-        // stopovers best-effort
-    }
-
-    try {
-        const dep = getDepartureForStatus(statusObject.value).toISO() ?? '';
-        const evRes = await api.events.getEvents({ timestamp: dep });
-        editEvents.value = evRes.data.data ?? [];
-    } catch {
-        editEvents.value = [];
-    }
-}
-
-function closeDropdown() {
-    (document.activeElement as HTMLElement)?.blur();
-}
-
-async function saveEdit() {
-    editLoading.value = true;
-    try {
-        const body: StatusUpdateBody = {
-            body: editBody.value || null,
-            business: editBusiness.value,
-            visibility: editVisibility.value,
-            eventId: editEventId.value,
-            manualDeparture: editManualDeparture.value
-                ? LuxonDateTime.fromISO(editManualDeparture.value).toISO()
-                : null,
-            manualArrival: editManualArrival.value ? LuxonDateTime.fromISO(editManualArrival.value).toISO() : null,
-        } as StatusUpdateBody;
-
-        if (editDestinationValue.value) {
-            const idx = editDestinationValue.value.indexOf('|');
-            body.destinationId = Number(editDestinationValue.value.slice(0, idx)).toString();
-            body.destinationArrivalPlanned = editDestinationValue.value.slice(idx + 1);
-        }
-
-        const res = await api.status.updateSingleStatus(body, statusObject.value.id);
-        statusObject.value = res.data.data as StatusResource;
-        emit('status-updated', statusObject.value);
-        showEditModal.value = false;
-    } catch {
-        notyf?.error(trans('generic.error'));
-    } finally {
-        editLoading.value = false;
-    }
-}
 
 watch(
     () => props.status,
@@ -321,158 +196,24 @@ function toggleLike() {
     }
 }
 
-function confirmDelete() {
-    showDeleteConfirm.value = true;
+function onStatusUpdated(s: StatusResource) {
+    statusObject.value = s;
+    emit('status-updated', s);
 }
 
-function executeDelete() {
-    deleting.value = true;
-    showDeleteConfirm.value = false;
-    api.status
-        .destroySingleStatus(statusObject.value.id)
-        .then(() => {
-            deleted.value = true;
-            emit('status-deleted', statusObject.value.id);
-            if (activeCheckin.status?.id === statusObject.value.id) {
-                activeCheckin.reset();
-            }
-        })
-        .catch((e) => {
-            deleting.value = false;
-            notyf?.error(String(e));
-        });
-}
-
-function getNowIso(): string {
-    return LuxonDateTime.now()
-        .set({ second: 0, millisecond: 0 })
-        .toISO({ suppressSeconds: true, suppressMilliseconds: true });
-}
-
-async function departureNow() {
-    busyDepartureNow.value = true;
-    try {
-        const res = await api.status.updateSingleStatus(
-            { manualDeparture: getNowIso() } as never,
-            statusObject.value.id,
-        );
-        statusObject.value = res.data.data as StatusResource;
-        emit('status-updated', statusObject.value);
-    } finally {
-        busyDepartureNow.value = false;
-    }
-}
-
-async function arrivalNow() {
-    busyArrivalNow.value = true;
-    try {
-        const res = await api.status.updateSingleStatus({ manualArrival: getNowIso() } as never, statusObject.value.id);
-        statusObject.value = res.data.data as StatusResource;
-        emit('status-updated', statusObject.value);
-    } finally {
-        busyArrivalNow.value = false;
-    }
-}
-
-function share() {
-    const url = `${window.location.origin}/status/${statusObject.value.id}`;
-    const origin = statusObject.value.checkin.origin.name;
-    const dest = statusObject.value.checkin.destination.name;
-    const text = statusObject.value.body
-        ? `${statusObject.value.body} (@ ${statusObject.value.checkin.lineName} ${origin} -> ${dest}) #NowTräwelling`
-        : `${statusObject.value.checkin.lineName} ${origin} -> ${dest} #NowTräwelling`;
-
-    if (navigator.share) {
-        navigator.share({ title: 'Träwelling', text, url }).catch(() => {});
-    } else {
-        navigator.clipboard.writeText(`${text} ${url}`).then(() => {
-            notyf?.success(trans('menu.share.clipboard.success'));
-        });
-    }
-}
-
-function rideAlongRoute() {
-    const t = statusObject.value.checkin;
-    return {
-        name: 'checkin',
-        query: {
-            tripId: t.trip.toString(),
-            lineName: t.lineName,
-            start: t.origin.id.toString(),
-            destination: t.destination.id.toString(),
-            departure: t.origin.departurePlanned ?? t.origin.departureReal ?? '',
-            originName: t.origin.name,
-            destinationName: t.destination.name,
-            category: t.category,
-        },
-    };
-}
-
-async function handleMute() {
-    busyMute.value = true;
-    try {
-        await api.user.createMute(statusObject.value.user.id as unknown as number);
-        notyf?.success(trans('user.muted', { username: statusObject.value.user.username }));
-    } catch {
-        notyf?.error(trans('generic.error'));
-    } finally {
-        busyMute.value = false;
-    }
-}
-
-async function handleBlock() {
-    busyBlock.value = true;
-    try {
-        const id = statusObject.value.user.id;
-        await api.user.createBlock(id.toString());
-        notyf?.success(trans('user.blocked', { username: statusObject.value.user.username }));
-    } catch {
-        notyf?.error(trans('generic.error'));
-    } finally {
-        busyBlock.value = false;
-    }
+function onStatusDeleted(id: number) {
+    deleted.value = true;
+    showDeleteModal.value = false;
+    emit('status-deleted', id);
 }
 
 const visibilityIcon = computed(() => VISIBILITY_ICONS[statusObject.value.visibility] ?? Eye);
-
-const isOwn = computed(() => !!userStore.user && userStore.user.id === statusObject.value.user.id);
-const isBusy = computed(() => deleting.value);
 const inProgress = computed(() => progress.value > 0 && progress.value < 100);
-
-const showDepartureNowBtn = computed(() => {
-    if (!isOwn.value) return false;
-    const origin = statusObject.value.checkin.origin;
-    const dest = statusObject.value.checkin.destination;
-    const dep = LuxonDateTime.fromISO(origin.departurePlanned ?? origin.departureReal ?? '');
-    const arr = LuxonDateTime.fromISO(dest.arrivalPlanned ?? dest.arrivalReal ?? '');
-    const now = LuxonDateTime.now();
-    return dep.isValid && arr.isValid && now >= dep.minus({ minutes: 60 }) && now <= arr.plus({ days: 1 });
-});
-
-const showArrivalNowBtn = computed(() => {
-    if (!isOwn.value) return false;
-    const origin = statusObject.value.checkin.origin;
-    const dest = statusObject.value.checkin.destination;
-    const dep = LuxonDateTime.fromISO(origin.departurePlanned ?? origin.departureReal ?? '');
-    const arr = LuxonDateTime.fromISO(dest.arrivalPlanned ?? dest.arrivalReal ?? '');
-    const now = LuxonDateTime.now();
-    return dep.isValid && arr.isValid && now >= dep && now <= arr.plus({ days: 1 });
-});
 </script>
 
 <template>
     <Transition name="fade">
         <div v-if="!deleted" class="card bg-base-100 shadow-sm relative">
-            <!-- deleting overlay -->
-            <Transition name="overlay">
-                <div
-                    v-if="isBusy"
-                    class="absolute inset-0 z-10 bg-base-100/70 flex items-center justify-center rounded-box"
-                >
-                    <span class="loading loading-spinner loading-md" />
-                </div>
-            </Transition>
-
             <!-- Map (shown on status detail page) -->
             <div
                 v-if="showMap"
@@ -556,11 +297,11 @@ const showArrivalNowBtn = computed(() => {
                                     ({{ statusObject.checkin.journeyNumber }})
                                 </span>
                                 <span class="flex items-center gap-0.5">
-                                    <Route class="w-4 h-4" />
+                                    <Route class="inline-block size-4" />
                                     <DistanceSpan :distance="statusObject.checkin.distance" />
                                 </span>
                                 <span v-if="statusObject.checkin.duration" class="flex items-center gap-0.5">
-                                    <Clock class="w-4 h-4" />
+                                    <Clock class="inline-block size-4" />
                                     <DurationSpan :duration="statusObject.checkin.duration" />
                                 </span>
                                 <span
@@ -568,17 +309,17 @@ const showArrivalNowBtn = computed(() => {
                                     class="tooltip"
                                     :data-tip="trans('stationboard.business.business')"
                                 >
-                                    <Briefcase class="w-4 h-4" />
+                                    <Briefcase class="inline-block size-4" />
                                 </span>
                                 <span
                                     v-else-if="statusObject.business === Business.Value2"
                                     class="tooltip"
                                     :data-tip="trans('stationboard.business.commute')"
                                 >
-                                    <Building2 class="w-4 h-4" />
+                                    <Building2 class="inline-block size-4" />
                                 </span>
                                 <span v-if="statusObject.event" class="flex items-center gap-0.5">
-                                    <Calendar class="w-4 h-4" />
+                                    <Calendar class="inline-block size-4" />
                                     <a :href="`/event/${statusObject.event.slug}`" class="link link-hover">
                                         {{ statusObject.event.name }}
                                     </a>
@@ -681,7 +422,7 @@ const showArrivalNowBtn = computed(() => {
 
             <!-- Footer: user info + actions -->
             <div class="px-4 py-2 flex items-center gap-2 text-sm border-t border-base-200">
-                <!-- User avatar (mobile) -->
+                <!-- User avatar -->
                 <a :href="`/@${statusObject.user.username}`" class="shrink-0">
                     <img
                         :src="statusObject.user.profilePicture"
@@ -694,7 +435,9 @@ const showArrivalNowBtn = computed(() => {
                 <!-- Name + timestamp -->
                 <div class="min-w-0 flex-1 flex items-center gap-2">
                     <a :href="`/@${statusObject.user.username}`" class="font-medium text-xs link link-hover">
-                        {{ isOwn ? trans('user.you') : statusObject.user.username }}
+                        {{
+                            userStore.user?.id === statusObject.user.id ? trans('user.you') : statusObject.user.username
+                        }}
                     </a>
                     <a :href="`/status/${statusObject.id}`" class="text-xs text-base-content/40 link link-hover">
                         {{ new Dtm(statusObject.createdAt).toRelative() }}
@@ -708,7 +451,10 @@ const showArrivalNowBtn = computed(() => {
                     :class="{ 'text-error': statusObject.liked }"
                     @click="toggleLike"
                 >
-                    <Heart class="w-4 h-4" :class="statusObject.liked ? 'fill-error stroke-error' : 'stroke-current'" />
+                    <Heart
+                        class="inline-block size-4"
+                        :class="statusObject.liked ? 'fill-error stroke-error' : 'stroke-current'"
+                    />
                     <span v-if="likes > 0">{{ likes }}</span>
                 </button>
 
@@ -718,311 +464,35 @@ const showArrivalNowBtn = computed(() => {
                 </span>
 
                 <!-- Context menu -->
-                <div class="dropdown dropdown-end">
-                    <button tabindex="0" class="btn btn-ghost btn-xs btn-circle text-base-content/40">
-                        <MoreVertical class="w-4 h-4" />
-                    </button>
-                    <ul
-                        tabindex="0"
-                        class="dropdown-content menu bg-base-100 rounded-box z-20 w-48 p-1 shadow-lg border border-base-200"
-                    >
-                        <li>
-                            <button @click="share">
-                                <Share2 class="w-4 h-4" />
-                                {{ trans('menu.share') }}
-                            </button>
-                        </li>
-
-                        <template v-if="userStore.user">
-                            <template v-if="isOwn">
-                                <li v-if="showDepartureNowBtn">
-                                    <button :disabled="busyDepartureNow" @click="departureNow">
-                                        <PlaneTakeoff class="w-4 h-4" />
-                                        {{ trans('status.departure-now') }}
-                                    </button>
-                                </li>
-                                <li v-if="showArrivalNowBtn">
-                                    <button :disabled="busyArrivalNow" @click="arrivalNow">
-                                        <PlaneLanding class="w-4 h-4" />
-                                        {{ trans('status.arrival-now') }}
-                                    </button>
-                                </li>
-                                <li>
-                                    <button @click="openEditModal">
-                                        <Eye class="w-4 h-4" />
-                                        {{ trans('edit') }}
-                                    </button>
-                                </li>
-                                <li>
-                                    <button class="text-error" @click="confirmDelete">
-                                        <Trash2 class="w-4 h-4" />
-                                        {{ trans('delete') }}
-                                    </button>
-                                </li>
-                            </template>
-                            <template v-else>
-                                <li>
-                                    <router-link :to="rideAlongRoute()">
-                                        <UserPlus class="w-4 h-4" />
-                                        {{ trans('status.join') }}
-                                    </router-link>
-                                </li>
-                                <li>
-                                    <button :disabled="busyMute" @click="handleMute">
-                                        <VolumeX class="w-4 h-4" />
-                                        {{ trans('user.mute-tooltip') }}
-                                    </button>
-                                </li>
-                                <li>
-                                    <button class="text-error" :disabled="busyBlock" @click="handleBlock">
-                                        <UserX class="w-4 h-4" />
-                                        {{ trans('user.block-tooltip') }}
-                                    </button>
-                                </li>
-                            </template>
-                            <template v-if="userStore.isAdmin">
-                                <li class="menu-title text-xs">Admin</li>
-                                <li>
-                                    <a :href="`/admin/statuses/${statusObject.id}`">
-                                        {{ trans('menu.backend') }}
-                                    </a>
-                                </li>
-                            </template>
-                        </template>
-                    </ul>
-                </div>
+                <StatusContextMenu
+                    :status="statusObject"
+                    @edit="showEditModal = true"
+                    @delete="showDeleteModal = true"
+                    @status-updated="onStatusUpdated"
+                />
             </div>
         </div>
     </Transition>
 
-    <!-- edit modal -->
-    <dialog class="modal" :class="{ 'modal-open': showEditModal }">
-        <div class="modal-box w-11/12 max-w-xl overflow-visible">
-            <h3 class="font-bold text-lg mb-4">{{ trans('modals.editStatus-title') }}</h3>
+    <StatusEditModal
+        :open="showEditModal"
+        :status="statusObject"
+        @close="showEditModal = false"
+        @saved="
+            (s) => {
+                statusObject = s;
+                showEditModal = false;
+                emit('status-updated', s);
+            }
+        "
+    />
 
-            <!-- Destination -->
-            <div class="form-control mb-3">
-                <label class="label"
-                    ><span class="label-text">{{ trans('exit') }}</span></label
-                >
-                <select v-model="editDestinationValue" class="select select-bordered w-full">
-                    <option
-                        v-for="s in editStopovers"
-                        :key="`${s.id}-${s.arrivalPlanned}`"
-                        :value="`${s.id}|${s.arrivalPlanned}`"
-                    >
-                        {{ LuxonDateTime.fromISO(s.arrivalPlanned ?? s.arrivalReal ?? '').toFormat('HH:mm') }}:
-                        {{ s.name }}
-                    </option>
-                </select>
-            </div>
-
-            <!-- Manual times -->
-            <div class="grid grid-cols-2 gap-3 mb-3">
-                <div class="form-control">
-                    <label class="label"
-                        ><span class="label-text text-xs">{{ trans('export.title.departure_real') }}</span></label
-                    >
-                    <input v-model="editManualDeparture" type="datetime-local" class="input input-bordered input-sm" />
-                </div>
-                <div class="form-control">
-                    <label class="label"
-                        ><span class="label-text text-xs">{{ trans('export.title.arrival_real') }}</span></label
-                    >
-                    <input v-model="editManualArrival" type="datetime-local" class="input input-bordered input-sm" />
-                </div>
-            </div>
-
-            <!-- Body -->
-            <div class="form-control mb-3">
-                <textarea
-                    v-model="editBody"
-                    class="textarea textarea-bordered"
-                    :placeholder="trans('modals.editStatus-label')"
-                    maxlength="280"
-                    rows="4"
-                />
-                <div v-if="(editBody || '').length > 100" class="label">
-                    <span class="label-text-alt text-base-content/50">{{ (editBody || '').length }}/280</span>
-                </div>
-            </div>
-
-            <!-- Business, Visibility, Event -->
-            <div class="flex flex-wrap gap-2 mb-4">
-                <!-- Business dropdown -->
-                <div class="dropdown">
-                    <button tabindex="0" class="btn btn-sm btn-outline gap-1">
-                        <User v-if="editBusiness === Business.Value0" class="w-4 h-4" />
-                        <Briefcase v-else-if="editBusiness === Business.Value1" class="w-4 h-4" />
-                        <Building2 v-else class="w-4 h-4" />
-                        {{
-                            editBusiness === Business.Value0
-                                ? trans('stationboard.business.private')
-                                : editBusiness === Business.Value1
-                                  ? trans('stationboard.business.business')
-                                  : trans('stationboard.business.commute')
-                        }}
-                    </button>
-                    <ul
-                        tabindex="0"
-                        class="dropdown-content menu bg-base-100 rounded-box z-10 w-64 p-2 shadow-lg border border-base-200"
-                    >
-                        <li
-                            @click="
-                                editBusiness = Business.Value0;
-                                closeDropdown();
-                            "
-                        >
-                            <a :class="editBusiness === Business.Value0 ? 'active' : ''">
-                                <User class="w-4 h-4 shrink-0" />
-                                <span>
-                                    {{ trans('stationboard.business.private') }}
-                                </span>
-                            </a>
-                        </li>
-                        <li
-                            @click="
-                                editBusiness = Business.Value1;
-                                closeDropdown();
-                            "
-                        >
-                            <a :class="editBusiness === Business.Value1 ? 'active' : ''">
-                                <Briefcase class="w-4 h-4 shrink-0" />
-                                <span>
-                                    {{ trans('stationboard.business.business') }}
-                                    <span class="block text-xs text-base-content/50">{{
-                                        trans('stationboard.business.business.detail')
-                                    }}</span>
-                                </span>
-                            </a>
-                        </li>
-                        <li
-                            @click="
-                                editBusiness = Business.Value2;
-                                closeDropdown();
-                            "
-                        >
-                            <a :class="editBusiness === Business.Value2 ? 'active' : ''">
-                                <Building2 class="w-4 h-4 shrink-0" />
-                                <span>
-                                    {{ trans('stationboard.business.commute') }}
-                                    <span class="block text-xs text-base-content/50">{{
-                                        trans('stationboard.business.commute.detail')
-                                    }}</span>
-                                </span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Visibility dropdown -->
-                <div v-if="!statusObject.lock_visibility" class="dropdown">
-                    <button tabindex="0" class="btn btn-sm btn-outline gap-1">
-                        <component :is="VISIBILITY_ICONS[editVisibility]" class="w-4 h-4" />
-                        {{ trans('status.visibility.' + editVisibility) }}
-                    </button>
-                    <ul
-                        tabindex="0"
-                        class="dropdown-content menu bg-base-100 rounded-box z-10 w-72 p-2 shadow-lg border border-base-200"
-                    >
-                        <li
-                            v-for="v in ALL_VISIBILITIES"
-                            :key="v"
-                            @click="
-                                editVisibility = v as StatusVisibility;
-                                closeDropdown();
-                            "
-                        >
-                            <a :class="editVisibility === v ? 'active' : ''">
-                                <component :is="VISIBILITY_ICONS[v]" class="w-4 h-4 shrink-0" />
-                                <span>
-                                    {{ trans('status.visibility.' + v) }}
-                                    <span class="block text-xs text-base-content/50">{{
-                                        trans('status.visibility.' + v + '.detail')
-                                    }}</span>
-                                </span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Event dropdown -->
-                <div class="dropdown">
-                    <button tabindex="0" class="btn btn-sm btn-outline gap-1">
-                        <Calendar class="w-4 h-4" />
-                        {{
-                            editEventId
-                                ? (editEvents.find((e) => e.id === editEventId)?.name ?? '…')
-                                : trans('events.no-event-dropdown')
-                        }}
-                    </button>
-                    <ul
-                        tabindex="0"
-                        class="dropdown-content menu bg-base-100 rounded-box z-10 w-72 p-2 shadow-lg border border-base-200 max-h-60 overflow-y-auto"
-                    >
-                        <li
-                            @click="
-                                editEventId = null;
-                                closeDropdown();
-                            "
-                        >
-                            <a :class="editEventId === null ? 'active' : ''">
-                                <Calendar class="w-4 h-4 shrink-0" />
-                                {{ trans('events.no-event-dropdown') }}
-                            </a>
-                        </li>
-                        <li
-                            v-for="e in editEvents"
-                            :key="e.id"
-                            @click="
-                                editEventId = e.id;
-                                closeDropdown();
-                            "
-                        >
-                            <a :class="editEventId === e.id ? 'active' : ''">
-                                <Calendar class="w-4 h-4 shrink-0" />
-                                <span>
-                                    {{ e.name }}
-                                    <span v-if="e.hashtag" class="block text-xs text-base-content/50"
-                                        >#{{ e.hashtag }}</span
-                                    >
-                                </span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="modal-action">
-                <button class="btn btn-ghost" @click="showEditModal = false">{{ trans('cancel') }}</button>
-                <button class="btn btn-primary" :disabled="editLoading" @click="saveEdit">
-                    <span v-if="editLoading" class="loading loading-spinner loading-xs" />
-                    {{ trans('modals.edit-confirm') }}
-                </button>
-            </div>
-        </div>
-        <form method="dialog" class="modal-backdrop" @submit.prevent="showEditModal = false">
-            <button>close</button>
-        </form>
-    </dialog>
-
-    <!-- delete confirm dialog -->
-    <dialog class="modal" :class="{ 'modal-open': showDeleteConfirm }">
-        <div class="modal-box">
-            <h3 class="font-bold text-lg">{{ trans('modals.deleteStatus-title') }}</h3>
-            <div class="modal-action">
-                <button class="btn btn-ghost" @click="showDeleteConfirm = false">
-                    {{ trans('cancel') }}
-                </button>
-                <button class="btn btn-error" @click="executeDelete">
-                    {{ trans('delete') }}
-                </button>
-            </div>
-        </div>
-        <form method="dialog" class="modal-backdrop" @submit.prevent="showDeleteConfirm = false">
-            <button>close</button>
-        </form>
-    </dialog>
+    <StatusDeleteModal
+        :open="showDeleteModal"
+        :status-id="statusObject.id"
+        @close="showDeleteModal = false"
+        @deleted="onStatusDeleted"
+    />
 </template>
 
 <style scoped>
@@ -1030,14 +500,6 @@ const showArrivalNowBtn = computed(() => {
     transition: opacity 0.4s ease;
 }
 .fade-leave-to {
-    opacity: 0;
-}
-.overlay-enter-active,
-.overlay-leave-active {
-    transition: opacity 0.15s ease;
-}
-.overlay-enter-from,
-.overlay-leave-to {
     opacity: 0;
 }
 </style>

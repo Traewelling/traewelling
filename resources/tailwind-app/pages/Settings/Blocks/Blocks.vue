@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { UserRoundCheck, UserRoundX } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { UserRoundCheck, UserRoundX } from 'lucide-vue-next';
 import { Notyf } from 'notyf';
 import { inject, ref } from 'vue';
 import { Api, LightUser } from '../../../../types/Api.gen';

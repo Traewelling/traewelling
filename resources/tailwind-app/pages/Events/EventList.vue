@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { CalendarIcon } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { CalendarIcon } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { Api } from '../../../types/Api.gen';
 import Loading from '../../components/Loading.vue';

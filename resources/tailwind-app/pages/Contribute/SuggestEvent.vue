@@ -208,8 +208,8 @@
 </template>
 
 <script setup lang="ts">
+import { ArrowLeft, CircleCheck, CircleX, MapPin, Search, TriangleAlert, X } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { ArrowLeft, CircleCheck, CircleX, MapPin, Search, TriangleAlert, X } from 'lucide-vue-next';
 import { DateTime } from 'luxon';
 import { onBeforeUnmount, onMounted, reactive, ref } from 'vue';
 import ContributeLayout from '../../layouts/ContributeLayout.vue';

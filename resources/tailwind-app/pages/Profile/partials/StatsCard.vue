@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { Clock, Route, Star } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { Clock, Route, Star } from 'lucide-vue-next';
 import { UserResource } from '../../../../types/Api.gen';
 import DistanceSpan from '../../../components/Stats/DistanceSpan.vue';
 import DurationSpan from '../../../components/Stats/DurationSpan.vue';

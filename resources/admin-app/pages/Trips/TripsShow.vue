@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { ArrowLeft } from 'lucide-vue-next';
+import { ArrowLeft } from '@lucide/vue';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import {
     type AdminStatusResource,
     type AdminStopoverResource,
     type AdminTripResource,
-    type StationIdentifierResource,
     Api,
+    type StationIdentifierResource,
 } from '../../../types/Api.gen';
 import BackendLayout from '../../layouts/BackendLayout.vue';
 

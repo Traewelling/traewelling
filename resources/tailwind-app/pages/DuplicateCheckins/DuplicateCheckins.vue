@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { CheckCircle, Copy } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { CheckCircle, Copy } from 'lucide-vue-next';
 import { Notyf } from 'notyf';
 import { inject, ref } from 'vue';
 import { StatusResource } from '../../../types/Api.gen';

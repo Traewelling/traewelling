@@ -1,16 +1,5 @@
 <script setup lang="ts">
-import {
-    AtSign,
-    Calendar,
-    Download,
-    Heart,
-    Mail,
-    MailOpen,
-    Train,
-    TriangleAlert,
-    UserPlus,
-    Users,
-} from 'lucide-vue-next';
+import { AtSign, Calendar, Download, Heart, Mail, MailOpen, Train, TriangleAlert, UserPlus, Users } from '@lucide/vue';
 import { computed, FunctionalComponent } from 'vue';
 import { useRouter } from 'vue-router';
 import { Notification } from '../../../../types/Api.gen';

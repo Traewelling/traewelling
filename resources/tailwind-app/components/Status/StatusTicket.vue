@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { EyeOff, Ticket, X } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { EyeOff, Ticket, X } from 'lucide-vue-next';
 import { computed, onMounted, ref } from 'vue';
 import { Api, TicketResource } from '../../../types/Api.gen';
 import { Dtm } from '../../../vue/helpers/DateTime';

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ArrowRightLeft, Pencil, Plus } from 'lucide-vue-next';
+import { ArrowRightLeft, Pencil, Plus } from '@lucide/vue';
 import { ref } from 'vue';
-import { Api, StationIdentifierType, type Station, type StationIdentifier } from '../../../../types/Api.gen';
+import { Api, type Station, type StationIdentifier, StationIdentifierType } from '../../../../types/Api.gen';
 import { IDENTIFIER_TYPES, type IdentifierType } from '../../../../types/StationIdentifier';
 
 const props = defineProps<{

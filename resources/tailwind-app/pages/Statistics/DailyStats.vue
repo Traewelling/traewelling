@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { ChevronLeft, ChevronRight, Clock, Dices, Map, Route, Train } from '@lucide/vue';
 import { trans, transChoice } from 'laravel-vue-i18n';
-import { ChevronLeft, ChevronRight, Clock, Dices, Map, Route, Train } from 'lucide-vue-next';
 import { Notyf } from 'notyf';
 import { computed, inject, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';

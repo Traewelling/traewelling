@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Check, X } from 'lucide-vue-next';
+import { Check, X } from '@lucide/vue';
 import { onMounted, ref } from 'vue';
 import { Api, type EventSuggestionResource } from '../../../types/Api.gen';
 import BackendLayout from '../../layouts/BackendLayout.vue';

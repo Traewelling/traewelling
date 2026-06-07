@@ -1,5 +1,5 @@
+import { Eye, Globe, Lock, LogIn, Shield, Users } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { Eye, Globe, Lock, LogIn, Shield, Users } from 'lucide-vue-next';
 import type { Component } from 'vue';
 
 export const VISIBILITY_ICONS: Record<number, Component> = {

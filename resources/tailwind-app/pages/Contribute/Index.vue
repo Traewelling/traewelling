@@ -59,8 +59,8 @@
 </template>
 
 <script setup lang="ts">
+import { CalendarPlus, Info } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { CalendarPlus, Info } from 'lucide-vue-next';
 import { onMounted } from 'vue';
 import { useUserStore } from '../../../vue/stores/user';
 import ContributionHistory from '../../components/ContributionHistory.vue';

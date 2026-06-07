@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Check } from 'lucide-vue-next';
+import { Check } from '@lucide/vue';
 import { ref, watch } from 'vue';
 
 const props = defineProps<{

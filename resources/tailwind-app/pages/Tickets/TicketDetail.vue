@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { ChevronRight, Pencil, Ticket } from '@lucide/vue';
 import { trans, transChoice } from 'laravel-vue-i18n';
-import { ChevronRight, Pencil, Ticket } from 'lucide-vue-next';
 import { Notyf } from 'notyf';
 import { computed, inject, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';

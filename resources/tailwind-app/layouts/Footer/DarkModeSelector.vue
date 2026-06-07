@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { Moon, Sun, SunMoon } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { Moon, Sun, SunMoon } from 'lucide-vue-next';
 import { ref } from 'vue';
 import DarkModeService, { DarkMode } from '../../../vue/services/DarkModeService';
 

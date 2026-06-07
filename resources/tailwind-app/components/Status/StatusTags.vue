@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { Plus, Trash2 } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { Plus, Trash2 } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { Api, StatusTagResource, StatusVisibility } from '../../../types/Api.gen';
 import { getEnumValues, getTitle, keys } from '../../../vue/helpers/StatusTag';

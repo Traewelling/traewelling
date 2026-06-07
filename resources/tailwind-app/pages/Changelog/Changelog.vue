@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { Info, SquareArrowOutUpRight } from '@lucide/vue';
 import { getActiveLanguage } from 'laravel-vue-i18n';
-import { Info, SquareArrowOutUpRight } from 'lucide-vue-next';
 import { DateTime } from 'luxon';
 import { onMounted, ref } from 'vue';
 import { Api, ChangelogResource } from '../../../types/Api.gen';

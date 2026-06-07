@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { ChevronDown, ChevronUp, Train } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { ChevronDown, ChevronUp, Train } from 'lucide-vue-next';
 import { DateTime } from 'luxon';
 import { Notyf } from 'notyf';
 import { inject, onMounted, ref } from 'vue';

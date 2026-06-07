@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { ChevronRight } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { ChevronRight } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 import { EventResource } from '../../../../types/Api.gen';
 import { contrastingColor, generateColorFromString } from '../../../../vue/helpers/ColorHelper';

@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { ArrowLeft, ArrowRight } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { ArrowLeft, ArrowRight } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { EventResource } from '../../../../types/Api.gen';
 import EventPopup from './EventPopup.vue';

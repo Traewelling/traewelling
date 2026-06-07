@@ -82,8 +82,8 @@
 </template>
 
 <script setup lang="ts">
+import { ArrowLeft, CalendarPlus, House, Menu, PencilRuler, User } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { ArrowLeft, CalendarPlus, House, Menu, PencilRuler, User } from 'lucide-vue-next';
 import { FunctionalComponent } from 'vue';
 import DarkModeSelector from './Footer/DarkModeSelector.vue';
 import LanguageSelector from './Footer/LanguageSelector.vue';

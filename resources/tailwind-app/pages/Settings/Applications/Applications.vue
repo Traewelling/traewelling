@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { ChartBar, ExternalLink, Pencil, Plus, Trash2 } from '@lucide/vue';
 import { trans, transChoice } from 'laravel-vue-i18n';
-import { ChartBar, ExternalLink, Pencil, Plus, Trash2 } from 'lucide-vue-next';
 import { Notyf } from 'notyf';
 import { inject, ref } from 'vue';
 import { Api, OAuthClientResource } from '../../../../types/Api.gen';
