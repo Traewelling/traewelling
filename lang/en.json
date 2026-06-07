@@ -295,6 +295,7 @@
   "export.reason.commute": "Commute",
   "export.reason.private": "Private travel",
   "export.request": "Request",
+  "export.requested": "Export requested",
   "export.submit": "Export as",
   "export.title": "Export data",
   "export.title.arrival_planned": "Arrival planned",

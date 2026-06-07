@@ -2104,6 +2104,153 @@
                 ]
             }
         },
+        "/export/gdpr": {
+            "post": {
+                "tags": [
+                    "Export"
+                ],
+                "summary": "Request a GDPR data export",
+                "description": "Requests a full GDPR data export. The export is processed asynchronously and delivered via email. Only available when the GDPR export feature is enabled for the account. Subject to a per-user cooldown (see `gdprExportCooldown` in the configuration endpoint). The `recentGdprExport` field on the authenticated user resource reflects the last request timestamp.",
+                "operationId": "requestGdprExport",
+                "responses": {
+                    "200": {
+                        "description": "Export requested successfully – will be delivered by email when ready",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "message"
+                                    ],
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Export successfully requested."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Feature not available for this account, or cooldown period has not elapsed"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-exports"
+                        ]
+                    },
+                    {
+                        "token": [
+                            "write-exports"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/export/statuses": {
+            "post": {
+                "tags": [
+                    "Export"
+                ],
+                "summary": "Export statuses as PDF, CSV or JSON",
+                "description": "Generates a downloadable export of the authenticated user's statuses. Supported formats are `pdf`, `csv_human` (human-readable column headings), `csv_machine` (machine-readable column headings), and `json`. The `columns` parameter selects which fields to include and is required for PDF and CSV formats; it is ignored for JSON. The date range may not exceed 365 days, and the result set is capped at 2000 trips.",
+                "operationId": "generateStatusExport",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "from",
+                                    "until",
+                                    "filetype"
+                                ],
+                                "properties": {
+                                    "from": {
+                                        "description": "Start date of the export period (inclusive)",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-01-01"
+                                    },
+                                    "until": {
+                                        "description": "End date of the export period (inclusive)",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-01-31"
+                                    },
+                                    "columns": {
+                                        "description": "Columns to include. Required for pdf/csv formats, ignored for json.",
+                                        "type": "array",
+                                        "items": {
+                                            "$ref": "#/components/schemas/ExportableColumn"
+                                        }
+                                    },
+                                    "filetype": {
+                                        "$ref": "#/components/schemas/ExportableFileType"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "File attachment ready for download",
+                        "content": {
+                            "application/pdf": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            },
+                            "text/csv": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Date range exceeds the 365-day maximum"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "406": {
+                        "description": "Result set exceeds the 2000-trip limit – narrow the date range"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-exports"
+                        ]
+                    },
+                    {
+                        "token": [
+                            "write-exports"
+                        ]
+                    }
+                ]
+            }
+        },
         "/user/{id}/follow": {
             "post": {
                 "tags": [
@@ -9465,7 +9612,8 @@
                     "appUrl",
                     "features",
                     "languages",
-                    "version"
+                    "version",
+                    "gdprExportCooldown"
                 ],
                 "properties": {
                     "appName": {
@@ -9501,6 +9649,10 @@
                         "items": {
                             "$ref": "#/components/schemas/Language"
                         }
+                    },
+                    "gdprExportCooldown": {
+                        "description": "Cooldown time in days between gdpr exports",
+                        "type": "integer"
                     }
                 },
                 "type": "object"
@@ -9889,6 +10041,43 @@
                 "enum": [
                     "default",
                     "transitous"
+                ]
+            },
+            "ExportableColumn": {
+                "title": "ExportableColumn",
+                "description": "Columns that can be exported in the export file.",
+                "type": "string",
+                "enum": [
+                    "status_id",
+                    "journey_type",
+                    "line_name",
+                    "journey_number",
+                    "origin_name",
+                    "origin_coordinates",
+                    "departure_planned",
+                    "departure_real",
+                    "destination_name",
+                    "destination_coordinates",
+                    "arrival_planned",
+                    "arrival_real",
+                    "duration",
+                    "distance",
+                    "points",
+                    "body",
+                    "travel_type",
+                    "status_tags",
+                    "operator"
+                ]
+            },
+            "ExportableFileType": {
+                "title": "ExportableFileType",
+                "description": "The file type to export the data in. The available columns depend on the file type.",
+                "type": "string",
+                "enum": [
+                    "pdf",
+                    "csv_human",
+                    "csv_machine",
+                    "json"
                 ]
             },
             "HafasTravelType": {
@@ -13371,7 +13560,8 @@
                     "home",
                     "language",
                     "defaultStatusVisibility",
-                    "roles"
+                    "roles",
+                    "recentGdprExport"
                 ],
                 "properties": {
                     "id": {
@@ -13454,6 +13644,12 @@
                             "open-beta",
                             "closed-beta"
                         ]
+                    },
+                    "recentGdprExport": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T00:00:00Z",
+                        "nullable": true
                     }
                 },
                 "type": "object"
@@ -14037,6 +14233,10 @@
         {
             "name": "Admin",
             "description": "Admin"
+        },
+        {
+            "name": "Export",
+            "description": "Export"
         },
         {
             "name": "Privacy Policy",
