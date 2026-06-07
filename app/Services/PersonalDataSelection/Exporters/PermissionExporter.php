@@ -14,5 +14,12 @@ class PermissionExporter extends AbstractExporter
     protected string $fileName = 'permissions.json';
 
     protected string $relation = 'permissions';
-    // todo: columns
+
+    protected array $columns = [
+        'id',
+        'name',
+        'guard_name',
+        'created_at',
+        'updated_at',
+    ];
 }

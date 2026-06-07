@@ -43,7 +43,6 @@ use Spatie\PersonalDataExport\PersonalDataSelection;
  * @property string|null $avatar
  * @property string|null $email
  * @property \Illuminate\Support\Carbon|null $email_verified_at
- * @property \Illuminate\Support\Carbon|null $privacy_ack_at
  * @property string|null $password
  * @property int|null $home_id
  * @property string|null $remember_token

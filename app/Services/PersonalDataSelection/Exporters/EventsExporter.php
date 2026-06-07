@@ -20,4 +20,21 @@ class EventsExporter extends AbstractExporter
     protected string $model = Event::class;
 
     protected string $whereColumn = 'approved_by';
+
+    protected array $columns = [
+        'id',
+        'station_id',
+        'name',
+        'slug',
+        'hashtag',
+        'host',
+        'url',
+        'created_at',
+        'updated_at',
+        'event_start',
+        'event_end',
+        'approved_by',
+        'checkin_start',
+        'checkin_end',
+    ];
 }

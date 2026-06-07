@@ -7,19 +7,19 @@ namespace App\Services\PersonalDataSelection\Exporters;
 use App\Services\PersonalDataSelection\Exporters\Base\AbstractExporter;
 use App\Services\PersonalDataSelection\Exporters\Base\RelationExportable;
 
-class ProfileLinksExporter extends AbstractExporter
+class PrivacyAckExporter extends AbstractExporter
 {
     use RelationExportable;
 
-    protected string $fileName = 'profile_links.json';
+    protected string $fileName = 'privacy_policy_acceptances.json';
 
-    protected string $relation = 'profileLinks';
+    protected string $relation = 'privacyPolicyAcceptances';
 
     protected array $columns = [
         'id',
         'user_id',
-        'name',
-        'url',
+        'privacy_policy_id',
+        'accepted_at',
         'created_at',
         'updated_at',
     ];

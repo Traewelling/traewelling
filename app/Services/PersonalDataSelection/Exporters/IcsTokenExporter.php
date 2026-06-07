@@ -14,5 +14,14 @@ class IcsTokenExporter extends AbstractExporter
     protected string $fileName = 'ics_tokens.json';
 
     protected string $relation = 'icsTokens';
-    // todo: columns
+
+    protected array $columns = [
+        'id',
+        'user_id',
+        'token',
+        'created_at',
+        'updated_at',
+        'name',
+        'last_accessed',
+    ];
 }

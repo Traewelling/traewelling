@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { TriangleAlert } from '@lucide/vue';
+import { trans } from 'laravel-vue-i18n';
 import { computed } from 'vue';
 
 const ALL_COLUMNS = [

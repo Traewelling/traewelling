@@ -14,5 +14,15 @@ class NotificationsExporter extends AbstractExporter
     protected string $fileName = 'notifications.json';
 
     protected string $relation = 'notifications';
-    // todo: columns
+
+    protected array $columns = [
+        'id',
+        'type',
+        'notifiable_type',
+        'notifiable_id',
+        'data',
+        'read_at',
+        'created_at',
+        'updated_at',
+    ];
 }

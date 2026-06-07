@@ -84,7 +84,7 @@ async function submit(filetype: ExportableFileType) {
                         @click="submit(ExportableFileType.CsvHuman)"
                     >
                         <span v-if="loading" class="loading loading-spinner loading-xs"></span>
-                        <Table v-else class="w-4 h-4" />
+                        <TableIcon v-else class="w-4 h-4" />
                         CSV ({{ trans('human-readable-headings') }})
                     </button>
                     <button
@@ -93,7 +93,7 @@ async function submit(filetype: ExportableFileType) {
                         @click="submit(ExportableFileType.CsvMachine)"
                     >
                         <span v-if="loading" class="loading loading-spinner loading-xs"></span>
-                        <Table v-else class="w-4 h-4" />
+                        <TableIcon v-else class="w-4 h-4" />
                         CSV ({{ trans('machine-readable-headings') }})
                     </button>
                 </div>

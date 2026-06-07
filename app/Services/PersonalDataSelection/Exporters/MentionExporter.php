@@ -20,4 +20,14 @@ class MentionExporter extends AbstractExporter
     protected string $model = Mention::class;
 
     protected string $whereColumn = 'mentioned_id';
+
+    protected array $columns = [
+        'id',
+        'status_id',
+        'mentioned_id',
+        'position',
+        'length',
+        'created_at',
+        'updated_at',
+    ];
 }
