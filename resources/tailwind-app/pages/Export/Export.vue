@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { Save } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { Save } from 'lucide-vue-next';
 import { computed } from 'vue';
 import { useUserStore } from '../../../vue/stores/user';
 import AppLayout from '../../layouts/AppLayout.vue';
