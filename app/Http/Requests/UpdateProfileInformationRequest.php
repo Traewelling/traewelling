@@ -72,6 +72,7 @@ class UpdateProfileInformationRequest extends FormRequest
             'pointsEnabled' => ['sometimes', 'nullable', 'boolean'],
             'bio' => ['sometimes', 'nullable', 'string', 'max:500'],
             'experimental' => ['sometimes', 'boolean', 'nullable'],
+            'profileLinks' => ['sometimes', 'nullable', 'array'],
             'profileLinks.*.name' => ['required_with:profileLinks', 'string', new Enum(ProfileLinkName::class)],
             'profileLinks.*.url' => ['required_with:profileLinks', 'string', 'url', 'max:255'],
             'timezone' => ['sometimes', 'string', Rule::in(DateTimeZone::listIdentifiers())],
