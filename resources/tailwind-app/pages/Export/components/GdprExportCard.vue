@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { CheckCircle, Download, ShieldCheck } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { CheckCircle, Download, ShieldCheck } from 'lucide-vue-next';
 import { DateTime } from 'luxon';
 import { Notyf } from 'notyf';
 import { computed, inject, ref } from 'vue';
