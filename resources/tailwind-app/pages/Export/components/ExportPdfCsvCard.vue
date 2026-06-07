@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { CalendarDays, Download, FileCode, FileText, TableIcon } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { CalendarDays, Download, FileCode, FileText, TableIcon } from 'lucide-vue-next';
 import { Notyf } from 'notyf';
 import { inject, ref } from 'vue';
 import { ExportableColumn, ExportableFileType } from '../../../../types/Api.gen';
