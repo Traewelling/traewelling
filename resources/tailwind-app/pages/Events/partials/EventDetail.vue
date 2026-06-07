@@ -1,14 +1,17 @@
 <script setup lang="ts">
-import { Calendar, Clock, HashIcon, LinkIcon, Route, SquareArrowOutUpRight } from '@lucide/vue';
+import { Calendar, Clock, HashIcon, LinkIcon, Route, ShieldCogCorner, SquareArrowOutUpRight } from '@lucide/vue';
 import { currentLocale } from 'laravel-vue-i18n';
 import { computed } from 'vue';
 import { EventResource } from '../../../../types/Api.gen';
+import { useUserStore } from '../../../../vue/stores/user';
 import DistanceSpan from '../../../components/Stats/DistanceSpan.vue';
 import DurationSpan from '../../../components/Stats/DurationSpan.vue';
 
 const props = defineProps<{
     event: EventResource;
 }>();
+
+const user = useUserStore();
 
 const duration = computed(() => {
     const locale = currentLocale.value.startsWith('de') ? 'de' : currentLocale.value;
@@ -27,7 +30,14 @@ const duration = computed(() => {
 </script>
 
 <template>
-    <h3 class="mb-4 text-lg font-bold">{{ event.name }}</h3>
+    <h3 class="mb-4 text-lg font-bold">
+        {{ event.name }}
+        <a v-if="user.isAdmin" :href="`/admin/events/${event.id}/edit`" class="btn btn-ghost btn-sm">
+            <ShieldCogCorner class="inline-block size-3.5">
+                <title>{{ $t('menu.backend') }}</title>
+            </ShieldCogCorner>
+        </a>
+    </h3>
     <p>
         <Calendar class="inline-block size-5 me-1">
             <title>

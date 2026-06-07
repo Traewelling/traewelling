@@ -65,7 +65,7 @@
                         </li>
                         <li v-if="user.isEventModerator || user.isAdmin">
                             <a href="/admin">
-                                <MonitorCog class="inline-block w-6 h-6 mr-2" />
+                                <ShieldCogCorner class="inline-block w-6 h-6 mr-2" />
                                 {{ trans('menu.backend') }}
                             </a>
                         </li>
@@ -176,7 +176,7 @@
                     </li>
                     <li v-if="user.isEventModerator || user.isAdmin">
                         <a href="/admin">
-                            <MonitorCog class="inline-block w-6 h-6 mr-2" />
+                            <ShieldCogCorner class="inline-block w-6 h-6 mr-2" />
                             {{ trans('menu.backend') }}
                         </a>
                     </li>
@@ -211,16 +211,16 @@ import {
     Map,
     Medal,
     Menu,
-    MonitorCog,
     Save,
     Search,
     Settings,
+    ShieldCogCorner,
     Ticket,
     User,
     X,
 } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { computed, FunctionalComponent, onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
+import { computed, FunctionalComponent, onMounted, onUnmounted, ref } from 'vue';
 import { RouteLocationRaw } from 'vue-router';
 import { PrideService } from '../../vue/services/PrideService';
 import { useConfigurationStore } from '../../vue/stores/configuration';
@@ -260,7 +260,7 @@ function dismissBanner() {
 }
 
 const notificationsStore = useNotificationsStore();
-const notificationsModal = useTemplateRef('notificationsModal');
+const notificationsModal = ref<typeof NotificationsModal | null>(null);
 let pollInterval: ReturnType<typeof setInterval> | null = null;
 
 onMounted(() => {

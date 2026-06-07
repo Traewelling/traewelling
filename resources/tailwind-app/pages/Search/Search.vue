@@ -11,6 +11,7 @@
             <div class="join w-full mb-2">
                 <input
                     v-model="query"
+                    autofocus
                     class="input join-item w-full"
                     :placeholder="$t('stationboard.submit-search')"
                     @keyup.enter="getResults()"

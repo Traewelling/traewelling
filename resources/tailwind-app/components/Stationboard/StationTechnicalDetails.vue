@@ -1,14 +1,21 @@
 <script setup lang="ts">
-import { Info } from '@lucide/vue';
+import { Info, ShieldCogCorner } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
 import { computed, ref } from 'vue';
 import type { Station, StationIdentifierResource } from '../../../types/Api.gen';
+import { useUserStore } from '../../../vue/stores/user';
 
 const props = defineProps<{
     station: Station;
 }>();
 
-const identifiers = computed<StationIdentifierResource[]>(() => props.station.identifiers ?? []);
+const user = useUserStore();
+
+const identifiers = computed<StationIdentifierResource[]>(() =>
+    (props.station.identifiers ?? []).sort((a, b) => {
+        return (a.name ?? '').localeCompare(b.name ?? '') || (a.identifier ?? '').localeCompare(b.identifier ?? '');
+    }),
+);
 const modalRef = ref<HTMLDialogElement | null>(null);
 </script>
 
@@ -20,10 +27,21 @@ const modalRef = ref<HTMLDialogElement | null>(null);
         type="button"
         @click="modalRef?.showModal()"
     >
-        <Info class="w-3.5 h-3.5">
+        <Info class="inline-block size-3.5">
             <title>{{ $t('stationboard.station-info') }}</title>
         </Info>
     </button>
+    <a
+        v-if="user.isAdmin && station.id"
+        :href="`/admin/stations/${station.id}`"
+        class="btn btn-ghost btn-xs text-base-content/50"
+        role="button"
+    >
+        <ShieldCogCorner class="inline-block size-3.5">
+            <title>{{ $t('menu.backend') }}</title>
+        </ShieldCogCorner>
+    </a>
+
     <dialog ref="modalRef" class="modal modal-bottom sm:modal-middle">
         <div class="modal-box">
             <form method="dialog">

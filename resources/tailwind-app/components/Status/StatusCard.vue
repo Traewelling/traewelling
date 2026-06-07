@@ -15,6 +15,7 @@ import {
     PlaneTakeoff,
     Route,
     Share2,
+    ShieldCogCorner,
     Trash2,
     User,
     UserPlus,
@@ -556,11 +557,11 @@ const showArrivalNowBtn = computed(() => {
                                     ({{ statusObject.checkin.journeyNumber }})
                                 </span>
                                 <span class="flex items-center gap-0.5">
-                                    <Route class="w-4 h-4" />
+                                    <Route class="inline-block size-4" />
                                     <DistanceSpan :distance="statusObject.checkin.distance" />
                                 </span>
                                 <span v-if="statusObject.checkin.duration" class="flex items-center gap-0.5">
-                                    <Clock class="w-4 h-4" />
+                                    <Clock class="inline-block size-4" />
                                     <DurationSpan :duration="statusObject.checkin.duration" />
                                 </span>
                                 <span
@@ -568,17 +569,17 @@ const showArrivalNowBtn = computed(() => {
                                     class="tooltip"
                                     :data-tip="trans('stationboard.business.business')"
                                 >
-                                    <Briefcase class="w-4 h-4" />
+                                    <Briefcase class="inline-block size-4" />
                                 </span>
                                 <span
                                     v-else-if="statusObject.business === Business.Value2"
                                     class="tooltip"
                                     :data-tip="trans('stationboard.business.commute')"
                                 >
-                                    <Building2 class="w-4 h-4" />
+                                    <Building2 class="inline-block size-4" />
                                 </span>
                                 <span v-if="statusObject.event" class="flex items-center gap-0.5">
-                                    <Calendar class="w-4 h-4" />
+                                    <Calendar class="inline-block size-4" />
                                     <a :href="`/event/${statusObject.event.slug}`" class="link link-hover">
                                         {{ statusObject.event.name }}
                                     </a>
@@ -708,7 +709,10 @@ const showArrivalNowBtn = computed(() => {
                     :class="{ 'text-error': statusObject.liked }"
                     @click="toggleLike"
                 >
-                    <Heart class="w-4 h-4" :class="statusObject.liked ? 'fill-error stroke-error' : 'stroke-current'" />
+                    <Heart
+                        class="inline-block size-4"
+                        :class="statusObject.liked ? 'fill-error stroke-error' : 'stroke-current'"
+                    />
                     <span v-if="likes > 0">{{ likes }}</span>
                 </button>
 
@@ -720,7 +724,7 @@ const showArrivalNowBtn = computed(() => {
                 <!-- Context menu -->
                 <div class="dropdown dropdown-end">
                     <button tabindex="0" class="btn btn-ghost btn-xs btn-circle text-base-content/40">
-                        <MoreVertical class="w-4 h-4" />
+                        <MoreVertical class="inline-block size-4" />
                     </button>
                     <ul
                         tabindex="0"
@@ -728,7 +732,7 @@ const showArrivalNowBtn = computed(() => {
                     >
                         <li>
                             <button @click="share">
-                                <Share2 class="w-4 h-4" />
+                                <Share2 class="inline-block size-4" />
                                 {{ trans('menu.share') }}
                             </button>
                         </li>
@@ -737,25 +741,25 @@ const showArrivalNowBtn = computed(() => {
                             <template v-if="isOwn">
                                 <li v-if="showDepartureNowBtn">
                                     <button :disabled="busyDepartureNow" @click="departureNow">
-                                        <PlaneTakeoff class="w-4 h-4" />
+                                        <PlaneTakeoff class="inline-block size-4" />
                                         {{ trans('status.departure-now') }}
                                     </button>
                                 </li>
                                 <li v-if="showArrivalNowBtn">
                                     <button :disabled="busyArrivalNow" @click="arrivalNow">
-                                        <PlaneLanding class="w-4 h-4" />
+                                        <PlaneLanding class="inline-block size-4" />
                                         {{ trans('status.arrival-now') }}
                                     </button>
                                 </li>
                                 <li>
                                     <button @click="openEditModal">
-                                        <Eye class="w-4 h-4" />
+                                        <Eye class="inline-block size-4" />
                                         {{ trans('edit') }}
                                     </button>
                                 </li>
                                 <li>
                                     <button class="text-error" @click="confirmDelete">
-                                        <Trash2 class="w-4 h-4" />
+                                        <Trash2 class="inline-block size-4" />
                                         {{ trans('delete') }}
                                     </button>
                                 </li>
@@ -763,19 +767,19 @@ const showArrivalNowBtn = computed(() => {
                             <template v-else>
                                 <li>
                                     <router-link :to="rideAlongRoute()">
-                                        <UserPlus class="w-4 h-4" />
+                                        <UserPlus class="inline-block size-4" />
                                         {{ trans('status.join') }}
                                     </router-link>
                                 </li>
                                 <li>
                                     <button :disabled="busyMute" @click="handleMute">
-                                        <VolumeX class="w-4 h-4" />
+                                        <VolumeX class="inline-block size-4" />
                                         {{ trans('user.mute-tooltip') }}
                                     </button>
                                 </li>
                                 <li>
                                     <button class="text-error" :disabled="busyBlock" @click="handleBlock">
-                                        <UserX class="w-4 h-4" />
+                                        <UserX class="inline-block size-4" />
                                         {{ trans('user.block-tooltip') }}
                                     </button>
                                 </li>
@@ -784,6 +788,7 @@ const showArrivalNowBtn = computed(() => {
                                 <li class="menu-title text-xs">Admin</li>
                                 <li>
                                     <a :href="`/admin/statuses/${statusObject.id}`">
+                                        <ShieldCogCorner class="inline-block size-4" />
                                         {{ trans('menu.backend') }}
                                     </a>
                                 </li>
@@ -837,7 +842,7 @@ const showArrivalNowBtn = computed(() => {
             <div class="form-control mb-3">
                 <textarea
                     v-model="editBody"
-                    class="textarea textarea-bordered"
+                    class="textarea textarea-bordered w-full"
                     :placeholder="trans('modals.editStatus-label')"
                     maxlength="280"
                     rows="4"
@@ -852,9 +857,9 @@ const showArrivalNowBtn = computed(() => {
                 <!-- Business dropdown -->
                 <div class="dropdown">
                     <button tabindex="0" class="btn btn-sm btn-outline gap-1">
-                        <User v-if="editBusiness === Business.Value0" class="w-4 h-4" />
-                        <Briefcase v-else-if="editBusiness === Business.Value1" class="w-4 h-4" />
-                        <Building2 v-else class="w-4 h-4" />
+                        <User v-if="editBusiness === Business.Value0" class="inline-block size-4" />
+                        <Briefcase v-else-if="editBusiness === Business.Value1" class="inline-block size-4" />
+                        <Building2 v-else class="inline-block size-4" />
                         {{
                             editBusiness === Business.Value0
                                 ? trans('stationboard.business.private')
@@ -918,7 +923,7 @@ const showArrivalNowBtn = computed(() => {
                 <!-- Visibility dropdown -->
                 <div v-if="!statusObject.lock_visibility" class="dropdown">
                     <button tabindex="0" class="btn btn-sm btn-outline gap-1">
-                        <component :is="VISIBILITY_ICONS[editVisibility]" class="w-4 h-4" />
+                        <component :is="VISIBILITY_ICONS[editVisibility]" class="inline-block size-4" />
                         {{ trans('status.visibility.' + editVisibility) }}
                     </button>
                     <ul
@@ -949,7 +954,7 @@ const showArrivalNowBtn = computed(() => {
                 <!-- Event dropdown -->
                 <div class="dropdown">
                     <button tabindex="0" class="btn btn-sm btn-outline gap-1">
-                        <Calendar class="w-4 h-4" />
+                        <Calendar class="inline-block size-4" />
                         {{
                             editEventId
                                 ? (editEvents.find((e) => e.id === editEventId)?.name ?? '…')

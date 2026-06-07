@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Ban, Flag, Lock, UserCheck, Volume2, VolumeX } from '@lucide/vue';
+import { Ban, Flag, Lock, ShieldCogCorner, UserCheck, Volume2, VolumeX } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
 import { Notyf } from 'notyf';
 import { inject, PropType, ref } from 'vue';
@@ -125,8 +125,12 @@ async function toggleBlock() {
                         :disabled="busyMute"
                         @click="toggleMute"
                     >
-                        <VolumeX v-if="!userData.muted" class="w-4 h-4" />
-                        <Volume2 v-else class="w-4 h-4" />
+                        <VolumeX v-if="!userData.muted" class="size-4">
+                            <title>{{ trans('user.unmute-tooltip') }}</title>
+                        </VolumeX>
+                        <Volume2 v-else class="size-4">
+                            <title>{{ trans('user.mute-tooltip') }}</title>
+                        </Volume2>
                     </button>
 
                     <!-- Block / Unblock -->
@@ -136,8 +140,12 @@ async function toggleBlock() {
                         :disabled="busyBlock"
                         @click="toggleBlock"
                     >
-                        <UserCheck v-if="userData.blocked" class="w-4 h-4" />
-                        <Ban v-else class="w-4 h-4" />
+                        <UserCheck v-if="userData.blocked" class="size-4">
+                            <title>{{ trans('user.unblock-tooltip') }}</title>
+                        </UserCheck>
+                        <Ban v-else class="size-4">
+                            <title>{{ trans('user.block-tooltip') }}</title>
+                        </Ban>
                     </button>
 
                     <!-- Report -->
@@ -146,16 +154,21 @@ async function toggleBlock() {
                         :data-tip="trans('status.report')"
                         @click="showReportModal = true"
                     >
-                        <Flag class="w-4 h-4" />
+                        <Flag class="size-4">
+                            <title>{{ trans('status.report') }}</title>
+                        </Flag>
                     </button>
 
                     <!-- Admin link -->
                     <a
                         v-if="authUser.isAdmin"
                         :href="`/admin/users/${userData.id}`"
-                        class="btn btn-sm btn-ghost text-primary-content/70 hover:bg-primary-content/10 hover:text-primary-content"
+                        class="btn btn-sm btn-ghost text-primary-content/70 hover:bg-primary-content/10 hover:text-primary-content tooltip"
+                        :data-tip="trans('menu.admin')"
                     >
-                        Admin
+                        <ShieldCogCorner class="size-4">
+                            <title>{{ trans('menu.admin') }}</title>
+                        </ShieldCogCorner>
                     </a>
                 </template>
             </div>
