@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { ChartBar, TriangleAlert } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { ChartBar, TriangleAlert } from 'lucide-vue-next';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { Api, WebhookStatsResource } from '../../../../types/Api.gen';

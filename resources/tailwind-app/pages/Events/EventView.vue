@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { ChevronDown } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
 import { forEach } from 'lodash';
-import { ChevronDown } from 'lucide-vue-next';
 import { DateTime } from 'luxon';
 import { LngLat, LngLatBounds } from 'maplibre-gl';
 import { onMounted, ref } from 'vue';

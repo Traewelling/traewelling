@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { Building2 } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { Building2 } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { Api } from '../../../types/Api.gen';
 

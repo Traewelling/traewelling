@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { Check, Users } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { Check, Users } from 'lucide-vue-next';
 import { computed, onMounted, ref } from 'vue';
 import { Api, TrustedUserResource } from '../../../types/Api.gen';
 

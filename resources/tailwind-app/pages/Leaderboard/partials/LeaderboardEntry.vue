@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Gauge, Gem, Route, Timer } from 'lucide-vue-next';
+import { Gauge, Gem, Route, Timer } from '@lucide/vue';
 import { LeaderboardUserResource } from '../../../../types/Api.gen';
 import DurationSpan from '../../../../vue/components/Status/Partials/DurationSpan.vue';
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { Info } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { Info } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 import type { Station, StationIdentifierResource } from '../../../types/Api.gen';
 

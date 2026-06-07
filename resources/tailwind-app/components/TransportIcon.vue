@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Moon, Plane, Ship, Train } from 'lucide-vue-next';
+import { Moon, Plane, Ship, Train } from '@lucide/vue';
 import { computed } from 'vue';
 
 const props = defineProps<{

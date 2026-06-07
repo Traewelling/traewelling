@@ -45,6 +45,7 @@
     "dependencies": {
         "@fortawesome/fontawesome-free": "^7.1.0",
         "@indoorequal/vue-maplibre-gl": "^8.4.2",
+        "@lucide/vue": "^1.17.0",
         "@vuepic/vue-datepicker": "^13.0.0",
         "apexcharts": "^5.0.0",
         "autoprefixer": "^10.4.20",
@@ -58,7 +59,6 @@
         "leaflet": "^1.9.4",
         "Leaflet-MovingMaker": "^0.0.1",
         "lgbtq.css": "^2.0.7",
-        "lucide-vue-next": "^1.0.0",
         "luxon": "^3.4.4",
         "maplibre-gl": "^5.11.0",
         "marked": "^18.0.0",

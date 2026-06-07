@@ -201,7 +201,6 @@
 </template>
 
 <script setup lang="ts">
-import { trans } from 'laravel-vue-i18n';
 import {
     Bell,
     ChartNoAxesCombined,
@@ -219,7 +218,8 @@ import {
     Ticket,
     User,
     X,
-} from 'lucide-vue-next';
+} from '@lucide/vue';
+import { trans } from 'laravel-vue-i18n';
 import { computed, FunctionalComponent, onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
 import { RouteLocationRaw } from 'vue-router';
 import { PrideService } from '../../vue/services/PrideService';

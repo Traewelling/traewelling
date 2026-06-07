@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { CheckCheck } from '@lucide/vue';
 import { trans, transChoice } from 'laravel-vue-i18n';
-import { CheckCheck } from 'lucide-vue-next';
 import { computed } from 'vue';
 import { CheckinSuccessResource, PointReason } from '../../../types/Api.gen';
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { BellOff, CheckCheck } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { BellOff, CheckCheck } from 'lucide-vue-next';
 import { useNotificationsStore } from '../../../vue/stores/notifications';
 import AppLayout from '../../layouts/AppLayout.vue';
 import NotificationEntry from './partials/NotificationEntry.vue';

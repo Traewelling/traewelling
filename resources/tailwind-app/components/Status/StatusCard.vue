@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { trans } from 'laravel-vue-i18n';
 import {
     AlertTriangle,
     ArrowRight,
@@ -21,7 +20,8 @@ import {
     UserPlus,
     UserX,
     VolumeX,
-} from 'lucide-vue-next';
+} from '@lucide/vue';
+import { trans } from 'laravel-vue-i18n';
 import { DateTime as LuxonDateTime } from 'luxon';
 import { Notyf } from 'notyf';
 import { computed, inject, onBeforeUnmount, onMounted, ref, watch } from 'vue';

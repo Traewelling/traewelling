@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { ArrowLeft, ArrowRight, Medal } from '@lucide/vue';
 import { getActiveLanguage } from 'laravel-vue-i18n';
-import { ArrowLeft, ArrowRight, Medal } from 'lucide-vue-next';
 import { DateTime } from 'luxon';
 import { onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';

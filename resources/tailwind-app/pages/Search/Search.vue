@@ -89,7 +89,7 @@
 </template>
 
 <script setup lang="ts">
-import { Gauge, Gem, Route, Search, Timer } from 'lucide-vue-next';
+import { Gauge, Gem, Route, Search, Timer } from '@lucide/vue';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { Api, UserResource } from '../../../types/Api.gen';

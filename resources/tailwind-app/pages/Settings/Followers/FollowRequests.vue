@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { UserMinus, UserPlus, UserRoundX } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { UserMinus, UserPlus, UserRoundX } from 'lucide-vue-next';
 import { Notyf } from 'notyf';
 import { inject, ref } from 'vue';
 import { Api, UserResource } from '../../../../types/Api.gen';

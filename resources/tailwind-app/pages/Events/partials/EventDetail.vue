@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { Calendar, Clock, HashIcon, LinkIcon, Route, SquareArrowOutUpRight } from '@lucide/vue';
 import { currentLocale } from 'laravel-vue-i18n';
-import { Calendar, Clock, HashIcon, LinkIcon, Route, SquareArrowOutUpRight } from 'lucide-vue-next';
 import { computed } from 'vue';
 import { EventResource } from '../../../../types/Api.gen';
 import DistanceSpan from '../../../components/Stats/DistanceSpan.vue';

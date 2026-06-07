@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { Locate, Search } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { Locate, Search } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { StationResource } from '../../types/Api.gen';
 import router from '../router';

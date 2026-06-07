@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { Plus, Tag, Trash2 } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { Plus, Tag, Trash2 } from 'lucide-vue-next';
 import { computed, onMounted, ref } from 'vue';
 import { Api, StatusTagResource, StatusTagSuggestionResource } from '../../../types/Api.gen';
 import { TrwlTag } from '../../../types/TrwlTags';

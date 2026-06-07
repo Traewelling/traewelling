@@ -49,8 +49,8 @@
 </template>
 
 <script setup lang="ts">
+import { History, TrendingDown, TrendingUp } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { History, TrendingDown, TrendingUp } from 'lucide-vue-next';
 import { DateTime } from 'luxon';
 import { onMounted, ref } from 'vue';
 

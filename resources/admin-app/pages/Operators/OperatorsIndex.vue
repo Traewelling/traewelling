@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowRightLeft, ShieldX, Trash2 } from 'lucide-vue-next';
+import { ArrowRightLeft, ShieldX, Trash2 } from '@lucide/vue';
 import { ref, watch } from 'vue';
 import { Api, type OperatorResource } from '../../../types/Api.gen';
 import BackendLayout from '../../layouts/BackendLayout.vue';

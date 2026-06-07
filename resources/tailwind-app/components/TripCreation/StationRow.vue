@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { Trash2 } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { Trash2 } from 'lucide-vue-next';
 import { ref, useTemplateRef, watch } from 'vue';
 import { Api, StationResource } from '../../../types/Api.gen';
 

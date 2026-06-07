@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { FileText } from 'lucide-vue-next';
+import { FileText } from '@lucide/vue';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { Api, type ReportResource } from '../../../types/Api.gen';

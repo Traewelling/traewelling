@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { ArrowLeft, ChevronDown, ChevronUp, Plus, TriangleAlert } from '@lucide/vue';
 import { getActiveLanguage, trans, transChoice } from 'laravel-vue-i18n';
-import { ArrowLeft, ChevronDown, ChevronUp, Plus, TriangleAlert } from 'lucide-vue-next';
 import { DateTime } from 'luxon';
 import { Notyf } from 'notyf';
 import { computed, inject, onMounted, ref, watch } from 'vue';

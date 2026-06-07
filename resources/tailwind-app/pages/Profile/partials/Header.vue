@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { Ban, Flag, Lock, UserCheck, Volume2, VolumeX } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { Ban, Flag, Lock, UserCheck, Volume2, VolumeX } from 'lucide-vue-next';
 import { Notyf } from 'notyf';
 import { inject, PropType, ref } from 'vue';
 import { Api, UserResource, ViewUserForbiddenReason } from '../../../../types/Api.gen';
