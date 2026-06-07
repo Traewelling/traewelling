@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { trans } from 'laravel-vue-i18n';
-import { secondsToDuration, TimeDuration } from '../../../vue/helpers/DateTimeHelper';
+import { minutesToDuration, TimeDuration } from '../../../vue/helpers/DateTimeHelper';
 
 const props = defineProps({
     duration: {
@@ -14,7 +14,7 @@ const props = defineProps({
     },
 });
 
-const split = ref<TimeDuration>(secondsToDuration(props.duration));
+const split = ref<TimeDuration>(minutesToDuration(props.duration));
 </script>
 
 <template>
