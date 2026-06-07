@@ -18,7 +18,7 @@ class TripsExporter extends AbstractExporter
     protected array $columns = [
         'id', 'trip_id', 'category', 'number', 'linename', 'journey_number',
         'operator_id', 'origin_id', 'destination_id', 'polyline_id', 'departure', 'arrival',
-        'source', 'motis_source', 'user_id', 'last_refreshed', 'created_at', 'updated_at',
+        'source', 'motis_source', 'user_id', 'last_refreshed', 'created_at', 'updated_at', 'route_color', 'mode', 'route_text_color', 'continuation_trip_id', 'motis_source_license_id',
     ];
 
     protected string $whereColumn = 'user_id';

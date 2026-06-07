@@ -14,5 +14,12 @@ class LikesExporter extends AbstractExporter
     protected string $fileName = 'likes.json';
 
     protected string $relation = 'likes';
-    // todo: columns
+
+    protected array $columns = [
+        'id',
+        'user_id',
+        'status_id',
+        'created_at',
+        'updated_at',
+    ];
 }
