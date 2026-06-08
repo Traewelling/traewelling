@@ -10,7 +10,9 @@
     @endif
 
     <button class="btn btn-neutral" onclick="mastodon_modal.showModal()" type="button">
-        <i class="fa-brands fa-mastodon text-primary"></i>
+        <figure class="w-4 fill-white">
+        @include('welcome.partials.mastodon-icon')
+        </figure>
         {{ __('user.login.mastodon') }}
     </button>
 
