@@ -8,11 +8,48 @@ use App\Http\Resources\AdminTripResource;
 use App\Jobs\RefreshPolyline;
 use App\Models\Trip;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OA;
 
 class AdminTripController extends Controller
 {
+    #[OA\Get(
+        path: '/admin/trips',
+        operationId: 'getAdminTrips',
+        description: 'Admin only. Returns a cursor-paginated list of all trips with checkin counts.',
+        summary: 'List trips',
+        security: [['passport' => []], ['token' => []]],
+        tags: ['Admin'],
+        parameters: [
+            new OA\Parameter(name: 'cursor', in: 'query', required: false, schema: new OA\Schema(type: 'string')),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Paginated list of trips',
+                content: new OA\JsonContent(
+                    required: ['data'],
+                    properties: [
+                        new OA\Property(property: 'data', type: 'array', items: new OA\Items(ref: AdminTripResource::class)),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 403, description: 'Forbidden'),
+        ],
+    )]
+    public function index(): AnonymousResourceCollection
+    {
+        $this->authorize('adminViewAny', Trip::class);
+
+        $trips = Trip::with(['originStation', 'destinationStation', 'operator', 'user'])
+            ->withCount('checkins')
+            ->orderByDesc('created_at')
+            ->cursorPaginate(50);
+
+        return AdminTripResource::collection($trips);
+    }
+
     #[OA\Get(
         path: '/admin/trips/{id}',
         operationId: 'getAdminTrip',
@@ -41,6 +78,8 @@ class AdminTripController extends Controller
         $this->authorize('adminViewAny', Trip::class);
 
         $trip = Trip::with([
+            'originStation',
+            'destinationStation',
             'operator',
             'user',
             'stopovers.station',
@@ -48,7 +87,7 @@ class AdminTripController extends Controller
             'checkins.status.user',
             'checkins.status.checkin.originStopover.station',
             'checkins.status.checkin.destinationStopover.station',
-        ])->findOrFail($id);
+        ])->withCount('checkins')->findOrFail($id);
 
         return new AdminTripResource($trip);
     }

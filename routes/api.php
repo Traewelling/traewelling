@@ -12,10 +12,12 @@
 */
 
 use App\Http\Controllers\API\ChangelogController;
+use App\Http\Controllers\API\v1\AdminActivityController;
 use App\Http\Controllers\API\v1\AdminEventController;
 use App\Http\Controllers\API\v1\AdminEventSuggestionController;
 use App\Http\Controllers\API\v1\AdminStatusController;
 use App\Http\Controllers\API\v1\AdminTripController;
+use App\Http\Controllers\API\v1\AdminUserController;
 use App\Http\Controllers\API\v1\AlertController;
 use App\Http\Controllers\API\v1\ApplicationController;
 use App\Http\Controllers\API\v1\AuthController as v1Auth;
@@ -255,6 +257,14 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         });
 
         Route::prefix('admin')->group(static function () {
+            Route::get('activity', [AdminActivityController::class, 'index']);
+
+            Route::get('users', [AdminUserController::class, 'index']);
+            Route::get('users/{id}', [AdminUserController::class, 'show'])->whereNumber('id');
+            Route::put('users/{id}/email', [AdminUserController::class, 'updateEmail'])->whereNumber('id');
+            Route::put('users/{id}/roles', [AdminUserController::class, 'updateRoles'])->whereNumber('id');
+
+            Route::get('trips', [AdminTripController::class, 'index']);
             Route::get('trips/{id}', [AdminTripController::class, 'show'])->whereNumber('id');
             Route::post('trips/{id}/reroute', [AdminTripController::class, 'reroute'])->whereNumber('id');
 
