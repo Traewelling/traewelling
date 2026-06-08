@@ -11,11 +11,11 @@ class StatusExporter extends AbstractExporter
 {
     protected string $fileName = 'statuses.json';
 
-    protected function exportData(): array|string
+    protected function exportData(): array
     {
-        $statuses = $this->user->statuses()->with('tags', 'ticket');
+        $statuses = $this->user->statuses()->with(['tags', 'ticket']);
 
-        return StatusResource::collection($statuses->get())->toJson();
+        return StatusResource::collection($statuses->get())->toArray(request());
     }
 
     protected function onExportValidation(): bool

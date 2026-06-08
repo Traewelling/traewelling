@@ -11,11 +11,11 @@ class WebhookExporter extends AbstractExporter
 {
     protected string $fileName = 'webhooks.json';
 
-    protected function exportData(): array|string
+    protected function exportData(): array
     {
         $webhooks = $this->user->webhooks()->with('events');
 
-        return WebhookResource::collection($webhooks->get())->toJson();
+        return WebhookResource::collection($webhooks->get())->toArray(request());
     }
 
     protected function onExportValidation(): bool
