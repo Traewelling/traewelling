@@ -846,6 +846,26 @@ export interface UpdateProfileInformationRequest {
   timezone?: string;
 }
 
+/** ActivityLog */
+export interface ActivityLogResource {
+  id: number;
+  causer: {
+    id: number;
+    name: string;
+    username: string;
+  } | null;
+  description: string;
+  subjectType: string | null;
+  subjectFullType: string | null;
+  subjectId: number | null;
+  changes: {
+    old: Record<string, any>;
+    attributes: Record<string, any>;
+  };
+  /** @format date-time */
+  createdAt: string;
+}
+
 /** AdminStatusResource */
 export interface AdminStatusResource {
   /** @example 12345 */
@@ -897,18 +917,82 @@ export interface AdminStopoverResource {
 export interface AdminTripResource {
   id: number;
   tripId: string;
+  checkinsCount: number | null;
   category: string;
   mode: string | null;
   number: string | null;
   lineName: string | null;
+  routeColor: string | null;
   journeyNumber: number | null;
   operator: string | null;
   source: string | null;
   user: LightUserResource | null;
   /** @format date-time */
   lastRefreshed: string | null;
+  origin: {
+    id?: number;
+    name?: string;
+  } | null;
+  destination: {
+    id?: number;
+    name?: string;
+  } | null;
   stopovers: AdminStopoverResource[];
   statuses: AdminStatusResource[];
+}
+
+/** AdminUserListItem */
+export interface AdminUserListResource {
+  id: number;
+  username: string;
+  displayName: string;
+  email: string | null;
+  /** @format date-time */
+  emailVerifiedAt: string | null;
+  mastodonUrl: string | null;
+  /** @format date-time */
+  lastLogin: string | null;
+  /** @format date-time */
+  createdAt: string;
+}
+
+/** AdminUserResource */
+export interface AdminUserResource {
+  id: number;
+  username: string;
+  displayName: string;
+  email: string | null;
+  /** @format date-time */
+  emailVerifiedAt: string | null;
+  hasPassword: boolean;
+  mastodonUrl: string | null;
+  /** @format date-time */
+  lastLogin: string | null;
+  /** @format date-time */
+  createdAt: string;
+  /** Total distance in metres */
+  trainDistance: number;
+  /** Total duration in minutes */
+  trainDuration: number;
+  points: number;
+  roles: string[];
+  allRoles: {
+    name: string;
+    permissions: string[];
+  }[];
+  mailChanges: {
+    id: string;
+    oldEmail: string;
+    newEmail: string;
+    /** @format date-time */
+    createdAt: string | null;
+  }[];
+  /** @format date-time */
+  privacyPolicyCurrent: string | null;
+  /** @format date-time */
+  privacyPolicyFuture: string | null;
+  privacyPolicyFutureExists: boolean;
+  recentStatuses: AdminStatusResource[];
 }
 
 export interface AlertResource {
@@ -2983,6 +3067,39 @@ export class Api<
   };
   admin = {
     /**
+     * @description Requires "view activity" permission. Returns the last 3 months of activity log entries, excluding system entries.
+     *
+     * @tags Admin
+     * @name GetAdminActivity
+     * @summary List activity log
+     * @request GET:/admin/activity
+     * @secure
+     */
+    getAdminActivity: (
+      query?: {
+        cursor?: string;
+        /** Full class name to filter by subject type, requires subjectId */
+        subjectType?: string;
+        /** Subject ID to filter by, requires subjectType */
+        subjectId?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data: ActivityLogResource[];
+        },
+        void
+      >({
+        path: `/admin/activity`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * No description
      *
      * @tags Admin
@@ -3335,6 +3452,35 @@ export class Api<
       }),
 
     /**
+     * @description Admin only. Returns a cursor-paginated list of all trips with checkin counts.
+     *
+     * @tags Admin
+     * @name GetAdminTrips
+     * @summary List trips
+     * @request GET:/admin/trips
+     * @secure
+     */
+    getAdminTrips: (
+      query?: {
+        cursor?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data: AdminTripResource[];
+        },
+        void
+      >({
+        path: `/admin/trips`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * @description Admin only. Returns full trip details including stopovers with route segment info and checkins.
      *
      * @tags Admin
@@ -3371,6 +3517,110 @@ export class Api<
         path: `/admin/trips/${id}/reroute`,
         method: "POST",
         secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Admin only. Returns a cursor-paginated list of all users, optionally filtered by a search query.
+     *
+     * @tags Admin
+     * @name GetAdminUsers
+     * @summary List users
+     * @request GET:/admin/users
+     * @secure
+     */
+    getAdminUsers: (
+      query?: {
+        cursor?: string;
+        query?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data: AdminUserListResource[];
+        },
+        void
+      >({
+        path: `/admin/users`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Admin only. Returns full details for a single user including stats, roles, mail changes, and recent statuses.
+     *
+     * @tags Admin
+     * @name GetAdminUser
+     * @summary Get user details
+     * @request GET:/admin/users/{id}
+     * @secure
+     */
+    getAdminUser: (id: number, params: RequestParams = {}) =>
+      this.request<
+        {
+          data: AdminUserResource;
+        },
+        void
+      >({
+        path: `/admin/users/${id}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Admin only. Updates the email address for a user and sends a verification notification.
+     *
+     * @tags Admin
+     * @name UpdateAdminUserEmail
+     * @summary Update user email
+     * @request PUT:/admin/users/{id}/email
+     * @secure
+     */
+    updateAdminUserEmail: (
+      id: number,
+      data: {
+        /** @format email */
+        email: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, void>({
+        path: `/admin/users/${id}/email`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description Admin only. Syncs roles for a user. The admin role is protected and cannot be removed.
+     *
+     * @tags Admin
+     * @name UpdateAdminUserRoles
+     * @summary Update user roles
+     * @request PUT:/admin/users/{id}/roles
+     * @secure
+     */
+    updateAdminUserRoles: (
+      id: number,
+      data: {
+        roles: string[];
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, void>({
+        path: `/admin/users/${id}/roles`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
         ...params,
       }),
   };

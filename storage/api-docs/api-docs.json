@@ -51,6 +51,81 @@
                 }
             }
         },
+        "/admin/activity": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "List activity log",
+                "description": "Requires \"view activity\" permission. Returns the last 3 months of activity log entries, excluding system entries.",
+                "operationId": "getAdminActivity",
+                "parameters": [
+                    {
+                        "name": "cursor",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "subjectType",
+                        "in": "query",
+                        "description": "Full class name to filter by subject type, requires subjectId",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "subjectId",
+                        "in": "query",
+                        "description": "Subject ID to filter by, requires subjectType",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated activity log",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ActivityLogResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/admin/events": {
             "get": {
                 "tags": [
@@ -825,6 +900,60 @@
                 ]
             }
         },
+        "/admin/trips": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "List trips",
+                "description": "Admin only. Returns a cursor-paginated list of all trips with checkin counts.",
+                "operationId": "getAdminTrips",
+                "parameters": [
+                    {
+                        "name": "cursor",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated list of trips",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/AdminTripResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/admin/trips/{id}": {
             "get": {
                 "tags": [
@@ -906,6 +1035,246 @@
                     },
                     "404": {
                         "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/admin/users": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "List users",
+                "description": "Admin only. Returns a cursor-paginated list of all users, optionally filtered by a search query.",
+                "operationId": "getAdminUsers",
+                "parameters": [
+                    {
+                        "name": "cursor",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "query",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated list of users",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/AdminUserListResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/admin/users/{id}": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Get user details",
+                "description": "Admin only. Returns full details for a single user including stats, roles, mail changes, and recent statuses.",
+                "operationId": "getAdminUser",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/AdminUserResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/admin/users/{id}/email": {
+            "put": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Update user email",
+                "description": "Admin only. Updates the email address for a user and sends a verification notification.",
+                "operationId": "updateAdminUserEmail",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "Email updated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/admin/users/{id}/roles": {
+            "put": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Update user roles",
+                "description": "Admin only. Syncs roles for a user. The admin role is protected and cannot be removed.",
+                "operationId": "updateAdminUserRoles",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "roles"
+                                ],
+                                "properties": {
+                                    "roles": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "Roles updated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
                     }
                 },
                 "security": [
@@ -10761,6 +11130,85 @@
                 },
                 "type": "object"
             },
+            "ActivityLogResource": {
+                "title": "ActivityLog",
+                "required": [
+                    "id",
+                    "causer",
+                    "description",
+                    "subjectType",
+                    "subjectFullType",
+                    "subjectId",
+                    "changes",
+                    "createdAt"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "causer": {
+                        "required": [
+                            "id",
+                            "name",
+                            "username"
+                        ],
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "username": {
+                                "type": "string"
+                            }
+                        },
+                        "type": "object",
+                        "nullable": true
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "subjectType": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "subjectFullType": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "subjectId": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "changes": {
+                        "required": [
+                            "old",
+                            "attributes"
+                        ],
+                        "properties": {
+                            "old": {
+                                "type": "object",
+                                "additionalProperties": {
+                                    "nullable": true
+                                }
+                            },
+                            "attributes": {
+                                "type": "object",
+                                "additionalProperties": {
+                                    "nullable": true
+                                }
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
             "AdminStatusResource": {
                 "title": "AdminStatusResource",
                 "required": [
@@ -10929,15 +11377,19 @@
                 "required": [
                     "id",
                     "tripId",
+                    "checkinsCount",
                     "category",
                     "mode",
                     "number",
                     "lineName",
+                    "routeColor",
                     "journeyNumber",
                     "operator",
                     "source",
                     "user",
                     "lastRefreshed",
+                    "origin",
+                    "destination",
                     "stopovers",
                     "statuses"
                 ],
@@ -10947,6 +11399,10 @@
                     },
                     "tripId": {
                         "type": "string"
+                    },
+                    "checkinsCount": {
+                        "type": "integer",
+                        "nullable": true
                     },
                     "category": {
                         "type": "string"
@@ -10960,6 +11416,10 @@
                         "nullable": true
                     },
                     "lineName": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "routeColor": {
                         "type": "string",
                         "nullable": true
                     },
@@ -10988,6 +11448,30 @@
                         "format": "date-time",
                         "nullable": true
                     },
+                    "origin": {
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "name": {
+                                "type": "string"
+                            }
+                        },
+                        "type": "object",
+                        "nullable": true
+                    },
+                    "destination": {
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "name": {
+                                "type": "string"
+                            }
+                        },
+                        "type": "object",
+                        "nullable": true
+                    },
                     "stopovers": {
                         "type": "array",
                         "items": {
@@ -10995,6 +11479,199 @@
                         }
                     },
                     "statuses": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AdminStatusResource"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "AdminUserListResource": {
+                "title": "AdminUserListItem",
+                "required": [
+                    "id",
+                    "username",
+                    "displayName",
+                    "email",
+                    "emailVerifiedAt",
+                    "mastodonUrl",
+                    "lastLogin",
+                    "createdAt"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "displayName": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "emailVerifiedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "mastodonUrl": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "lastLogin": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "AdminUserResource": {
+                "title": "AdminUserResource",
+                "required": [
+                    "id",
+                    "username",
+                    "displayName",
+                    "email",
+                    "emailVerifiedAt",
+                    "hasPassword",
+                    "mastodonUrl",
+                    "lastLogin",
+                    "createdAt",
+                    "trainDistance",
+                    "trainDuration",
+                    "points",
+                    "roles",
+                    "allRoles",
+                    "mailChanges",
+                    "privacyPolicyCurrent",
+                    "privacyPolicyFuture",
+                    "privacyPolicyFutureExists",
+                    "recentStatuses"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "displayName": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "emailVerifiedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "hasPassword": {
+                        "type": "boolean"
+                    },
+                    "mastodonUrl": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "lastLogin": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "trainDistance": {
+                        "description": "Total distance in metres",
+                        "type": "number"
+                    },
+                    "trainDuration": {
+                        "description": "Total duration in minutes",
+                        "type": "number"
+                    },
+                    "points": {
+                        "type": "integer"
+                    },
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "allRoles": {
+                        "type": "array",
+                        "items": {
+                            "required": [
+                                "name",
+                                "permissions"
+                            ],
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "permissions": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "mailChanges": {
+                        "type": "array",
+                        "items": {
+                            "required": [
+                                "id",
+                                "oldEmail",
+                                "newEmail",
+                                "createdAt"
+                            ],
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "oldEmail": {
+                                    "type": "string"
+                                },
+                                "newEmail": {
+                                    "type": "string"
+                                },
+                                "createdAt": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "nullable": true
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "privacyPolicyCurrent": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "privacyPolicyFuture": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "privacyPolicyFutureExists": {
+                        "type": "boolean"
+                    },
+                    "recentStatuses": {
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/AdminStatusResource"

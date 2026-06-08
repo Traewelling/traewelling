@@ -1,51 +1,21 @@
 <?php
 
-use App\Http\Controllers\Frontend\Admin\ActivityController;
-use App\Http\Controllers\Frontend\Admin\LicensesController;
-use App\Http\Controllers\Frontend\Admin\MotisSourceController;
-use App\Http\Controllers\Frontend\Admin\StationController;
-use App\Http\Controllers\Frontend\Admin\TripController;
-use App\Http\Controllers\Frontend\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'permission:view-backend'])->group(function () {
     Route::middleware('role:admin')->group(function () {
-        // these routes are only accessible for admins
-        Route::prefix('sources')->group(function () {
-            Route::get('/', [MotisSourceController::class, 'index'])
-                ->name('admin.sources');
-            Route::post('/', [MotisSourceController::class, 'show'])->name('admin.sources.show');
-            Route::post('/mass-assign', [MotisSourceController::class, 'massAssign'])
-                ->name('admin.sources.mass-assign');
-        });
-        Route::resource('licenses', LicensesController::class)
-            ->only(['create', 'store', 'index']);
-
         Route::prefix('users')->group(function () {
-            Route::get('/', [UserController::class, 'renderIndex'])
-                ->name('admin.users');
-            Route::get('/{id}', [UserController::class, 'renderUser'])
-                ->name('admin.users.show');
-            Route::post('/', [UserController::class, 'updateRoles'])
-                ->name('admin.users.update-roles');
-            Route::post('/update-mail', [UserController::class, 'updateMail'])
-                ->name('admin.users.update-mail');
+            Route::get('/', fn () => view('admin.app'))->name('admin.users');
+            Route::get('/{id}', fn () => view('admin.app'))->name('admin.users.show');
         });
 
-        Route::prefix('trips')->group(function () {
-            Route::get('/', [TripController::class, 'index'])
-                ->name('admin.trips');
-        });
-
-        Route::prefix('stations')->group(function () {
-            Route::post('/wikidata/import', [StationController::class, 'importWikidata'])->name('backend.status.import.wikidata'); // TODO: Make this an API endpoint when it is accessible for users too
-            Route::post('/{id}/wikidata', [StationController::class, 'fetchWikidata']);
-        });
+        Route::get('trips', fn () => view('admin.app'))
+            ->name('admin.trips');
 
         Route::get('operators', fn () => view('admin.app'))
             ->name('admin.operators');
 
-        Route::get('activity', [ActivityController::class, 'render'])
+        Route::get('activity', fn () => view('admin.app'))
             ->name('admin.activity');
     });
 

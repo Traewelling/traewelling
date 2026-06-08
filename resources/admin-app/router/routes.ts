@@ -1,4 +1,5 @@
 import { RouteRecordRaw } from 'vue-router';
+import ActivityIndex from '../pages/Activity/ActivityIndex.vue';
 import AlertsIndex from '../pages/Alerts/AlertsIndex.vue';
 import AlertsForm from '../pages/Alerts/partials/AlertsForm.vue';
 import EventsIndex from '../pages/Events/EventsIndex.vue';
@@ -13,10 +14,17 @@ import StationsIndex from '../pages/Stations/StationsIndex.vue';
 import StationsShow from '../pages/Stations/StationsShow.vue';
 import StatusesIndex from '../pages/Statuses/StatusesIndex.vue';
 import StatusesShow from '../pages/Statuses/StatusesShow.vue';
+import TripsIndex from '../pages/Trips/TripsIndex.vue';
 import TripsShow from '../pages/Trips/TripsShow.vue';
+import UsersIndex from '../pages/Users/UsersIndex.vue';
+import UsersShow from '../pages/Users/UsersShow.vue';
 import Welcome from '../pages/Welcome.vue';
 
 const routes: Array<RouteRecordRaw> = [
+    {
+        path: '/admin/activity',
+        component: ActivityIndex,
+    },
     {
         path: '/admin',
         component: Welcome,
@@ -86,8 +94,20 @@ const routes: Array<RouteRecordRaw> = [
         component: StationsShow,
     },
     {
+        path: '/admin/trips',
+        component: TripsIndex,
+    },
+    {
         path: '/admin/trips/:id',
         component: TripsShow,
+    },
+    {
+        path: '/admin/users',
+        component: UsersIndex,
+    },
+    {
+        path: '/admin/users/:id',
+        component: UsersShow,
     },
 ];
 
