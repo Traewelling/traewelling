@@ -6,14 +6,14 @@ namespace App\Services\PersonalDataSelection\Exporters\Base;
 
 trait ModelExportable
 {
-    protected function exportData(): string
+    protected function exportData(): array
     {
         $condition = $this->whereCondition ?? 'id';
 
         return $this->model::where(
             $this->whereColumn,
             $this->user->{$condition}
-        )->get()->toJson();
+        )->get()->toArray();
     }
 
     protected function onExportValidation(): bool

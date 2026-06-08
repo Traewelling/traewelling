@@ -16,6 +16,7 @@ abstract class AbstractExporter
     public function __construct(User $user)
     {
         $this->user = $user;
+        auth()->setUser($user);
 
         if (!isset($this->fileName)) {
             throw new InvalidArgumentException('Property $fileName must be set in ' . static::class);

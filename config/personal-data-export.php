@@ -16,7 +16,7 @@ return [
     /*
      * The amount of days the exports will be available.
      */
-    'delete_after_days' => 7,
+    'delete_after_days' => env('GDPR_EXPORT_DAYS', 14),
 
     /*
      * Determines whether the user should be logged in to be able
@@ -35,7 +35,7 @@ return [
      * which will create the export.
      */
     'job' => [
-        'queue' => 'export',
+        'queue' => 'low',
         'connection' => null,
     ],
 ];

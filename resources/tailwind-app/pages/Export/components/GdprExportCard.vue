@@ -51,7 +51,7 @@ const canRequestExport = computed(() => {
 
             <div v-if="requested" role="alert" class="alert alert-success py-2">
                 <CheckCircle class="w-4 h-4 shrink-0" />
-                <span class="text-sm">{{ trans('notifications.personalDataExported.lead') }}</span>
+                <span class="text-sm">{{ trans('export.requested') }}</span>
             </div>
 
             <div v-else class="card-actions justify-end">
