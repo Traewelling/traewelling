@@ -2,6 +2,7 @@
 import { trans } from 'laravel-vue-i18n';
 import { ref } from 'vue';
 import { Api, UserProfileSettingsResource } from '../../../../../types/Api.gen';
+import { IconHelper } from '../../../../helpers/IconHelper';
 import SettingsListRow from '../../SettingsListRow.vue';
 
 const props = defineProps<{
@@ -18,16 +19,15 @@ const selectedProvider = ref<ProviderOption | null>(null);
 type ProviderOption = {
     label: string;
     value: 'website' | 'instagram' | 'bluesky' | 'facebook' | 'mastodon' | 'tiktok' | 'github';
-    icon: string;
 };
 
 const providerOptions: ProviderOption[] = [
-    { label: 'Website', value: 'website', icon: '' },
-    { label: 'Instagram', value: 'instagram', icon: '/images/icons/instagram.svg' },
-    { label: 'BlueSky', value: 'bluesky', icon: '/images/icons/bluesky.svg' },
-    { label: 'Facebook', value: 'facebook', icon: '/images/icons/facebook.svg' },
-    { label: 'TikTok', value: 'tiktok', icon: '/images/icons/tiktok.svg' },
-    { label: 'GitHub', value: 'github', icon: '/images/icons/github.svg' },
+    { label: 'Website', value: 'website' },
+    { label: 'Instagram', value: 'instagram' },
+    { label: 'BlueSky', value: 'bluesky' },
+    { label: 'Facebook', value: 'facebook' },
+    { label: 'TikTok', value: 'tiktok' },
+    { label: 'GitHub', value: 'github' },
 ];
 
 function saveLink() {
@@ -97,7 +97,11 @@ function removeLink(): void {
                             :key="option.value"
                         >
                             <a @click.prevent="selectProvider(option)">
-                                <img v-if="option.icon" :src="option.icon" alt="" class="w-4 h-4 me-2 inline" />
+                                <component
+                                    :is="IconHelper.getLinkIcon(option.value)"
+                                    :class="option.value === 'website' ? '' : 'fill-base-content '"
+                                    class="w-4 h-4 mr-2 stroke-base-content"
+                                />
                                 {{ option.label }}
                             </a>
                         </li>
@@ -105,7 +109,11 @@ function removeLink(): void {
                     <template v-else>
                         <li v-for="option in providerOptions" :key="option.value">
                             <a @click.prevent="selectProvider(option)">
-                                <img v-if="option.icon" :src="option.icon" alt="" class="w-4 h-4 me-2 inline" />
+                                <component
+                                    :is="IconHelper.getLinkIcon(option.value)"
+                                    :class="option.value === 'website' ? '' : 'fill-base-content '"
+                                    class="w-4 h-4 mr-2 stroke-base-content"
+                                />
                                 {{ option.label }}
                                 <span
                                     v-if="getCurrentLink(option.value).length > 0"
