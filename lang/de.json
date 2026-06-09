@@ -1272,6 +1272,8 @@
   "validation.size.string": ":attribute muss :size Zeichen lang sein.",
   "validation.starts_with": ":attribute muss mit einem der folgenden Anfänge aufweisen: :values",
   "validation.string": ":attribute muss ein String sein.",
+  "validation.tag": "Der Tag :value ist ungültig.",
+  "validation.tag.format": "Ein Tag darf nur mit Buchstaben oder Zahlen (ohne Umlaute) beginnen und keinen / enthalten!",
   "validation.timezone": ":attribute muss eine gültige Zeitzone sein.",
   "validation.unique": ":attribute ist bereits vergeben.",
   "validation.uploaded": ":attribute konnte nicht hochgeladen werden.",

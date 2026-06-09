@@ -1276,6 +1276,8 @@
   "validation.size.string": "The :attribute must be :size characters.",
   "validation.starts_with": "The :attribute must start with one of the following: :values.",
   "validation.string": "The :attribute must be a string.",
+  "validation.tag": "The tag :attribute is invalid.",
+  "validation.tag.format": "A tag may only start with letters or numbers (without umlauts) and may not contain a slash!",
   "validation.timezone": "The :attribute must be a valid timezone.",
   "validation.unique": "The :attribute has already been taken.",
   "validation.uploaded": "The :attribute failed to upload.",

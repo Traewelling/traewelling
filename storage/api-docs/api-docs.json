@@ -7296,7 +7296,7 @@
                     {
                         "name": "tagKey",
                         "in": "path",
-                        "description": "Key of StatusTag",
+                        "description": "Key of StatusTag, regex:/^\\w[^\\/\\n\\r%?\\<>]*$/",
                         "schema": {
                             "type": "string"
                         },
@@ -7375,7 +7375,7 @@
                     {
                         "name": "tagKey",
                         "in": "path",
-                        "description": "Key of StatusTag",
+                        "description": "Key of StatusTag, regex:/^\\w[^\\/\\n\\r%?\\<>]*$/",
                         "schema": {
                             "type": "string"
                         },
@@ -10555,6 +10555,26 @@
                     "DE_DB_IBNR"
                 ]
             },
+            "StatusTagKey": {
+                "title": "StatusTagKey",
+                "description": "StatusTagKey",
+                "type": "string",
+                "example": "trwl:social_status",
+                "enum": [
+                    "trwl:seat",
+                    "trwl:wagon",
+                    "trwl:ticket",
+                    "trwl:travel_class",
+                    "trwl:locomotive_class",
+                    "trwl:wagon_class",
+                    "trwl:role",
+                    "trwl:vehicle_number",
+                    "trwl:passenger_rights",
+                    "trwl:journey_number",
+                    "trwl:price",
+                    "trwl:social_status"
+                ]
+            },
             "StatusVisibility": {
                 "title": "visibility",
                 "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the user specify?",
@@ -13559,12 +13579,34 @@
                 ],
                 "properties": {
                     "key": {
-                        "type": "string",
-                        "example": "trwl:vehicle_number"
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/StatusTagKey"
+                            },
+                            {
+                                "description": "regex:/^\\w[^\\/\\n\\r%?\\<>]*$/",
+                                "type": "string",
+                                "example": "custom_tag"
+                            }
+                        ]
                     },
                     "value": {
-                        "type": "string",
-                        "example": "94 80 0450 921 D-AVG"
+                        "oneOf": [
+                            {
+                                "description": "Values allowed for the tag trwl:social_status",
+                                "type": "string",
+                                "enum": [
+                                    "open",
+                                    "open_find_me",
+                                    "open_lets_hang",
+                                    "do_not_disturb"
+                                ]
+                            },
+                            {
+                                "type": "string",
+                                "example": "94 80 0450 921 D-AVG"
+                            }
+                        ]
                     },
                     "visibility": {
                         "type": "integer",

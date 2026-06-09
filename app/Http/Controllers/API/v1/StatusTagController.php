@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Enum\StatusTagKey;
 use App\Enum\StatusVisibility;
 use App\Events\StatusUpdateEvent;
 use App\Http\Controllers\Backend\Transport\StatusTagController as StatusTagBackend;
+use App\Http\Requests\StoreStatusTagRequest;
+use App\Http\Requests\UpdateStatusTagRequest;
 use App\Http\Resources\StatusTagResource;
 use App\Http\Resources\StatusTagSuggestionResource;
 use App\Models\Status;
@@ -17,10 +18,6 @@ use function auth;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
 use OpenApi\Attributes as OA;
 
@@ -84,7 +81,7 @@ class StatusTagController extends Controller
                         new OA\Property(
                             property: 'data',
                             type: 'array',
-                            items: new OA\Items(ref: '#/components/schemas/StatusTagResource'),
+                            items: new OA\Items(ref: StatusTagResource::class),
                         ),
                     ],
                 ),
@@ -139,12 +136,12 @@ class StatusTagController extends Controller
                                 new OA\Property(
                                     property: '1337',
                                     type: 'array',
-                                    items: new OA\Items(ref: '#/components/schemas/StatusTagResource'),
+                                    items: new OA\Items(ref: StatusTagResource::class),
                                 ),
                                 new OA\Property(
                                     property: '4711',
                                     type: 'array',
-                                    items: new OA\Items(ref: '#/components/schemas/StatusTagResource'),
+                                    items: new OA\Items(ref: StatusTagResource::class),
                                 ),
                             ],
                             type: 'object',
@@ -194,7 +191,7 @@ class StatusTagController extends Controller
         requestBody: new OA\RequestBody(
             content: new OA\MediaType(
                 mediaType: 'application/json',
-                schema: new OA\Schema(ref: '#/components/schemas/StatusTagResource'),
+                schema: new OA\Schema(ref: StatusTagResource::class),
             ),
         ),
         tags: ['Status'],
@@ -208,7 +205,7 @@ class StatusTagController extends Controller
             ),
             new OA\Parameter(
                 name: 'tagKey',
-                description: 'Key of StatusTag',
+                description: 'Key of StatusTag, regex:/^\w[^\/\n\r%?\\<>]*$/',
                 in: 'path',
                 schema: new OA\Schema(type: 'string'),
                 example: 'seat',
@@ -223,7 +220,7 @@ class StatusTagController extends Controller
                     properties: [
                         new OA\Property(
                             property: 'data',
-                            ref: '#/components/schemas/StatusTagResource',
+                            ref: StatusTagResource::class,
                             type: 'object',
                         ),
                     ],
@@ -238,23 +235,9 @@ class StatusTagController extends Controller
             ),
         ],
     )]
-    public function update(Request $request, int $statusId, string $tagKey): JsonResponse
+    public function update(UpdateStatusTagRequest $request, int $statusId, string $tagKey): JsonResponse
     {
-        // Use the incoming key if provided, otherwise fall back to the existing tag key
-        $keyForValidation = $request->input('key', $tagKey);
-        $allowedValues = StatusTagKey::tryFrom($keyForValidation)?->allowedValues();
-
-        $validated = $request->validate([
-            'key' => ['nullable', 'string', 'max:255'],
-            'value' => [
-                'required',
-                'string',
-                'max:255',
-                Rule::when($allowedValues !== null, [Rule::in($allowedValues ?? [])]),
-            ],
-            'visibility' => ['nullable', new Enum(StatusVisibility::class)],
-        ]);
-
+        $validated = $request->validated();
         try {
             $status = Status::findOrFail($statusId);
             $statusTag = $status->tags->where('key', $tagKey)->first();
@@ -330,26 +313,9 @@ class StatusTagController extends Controller
             ),
         ],
     )]
-    public function store(Request $request, int $statusId): JsonResponse
+    public function store(StoreStatusTagRequest $request, int $statusId): JsonResponse
     {
-        $allowedValues = StatusTagKey::tryFrom($request->input('key'))?->allowedValues();
-
-        $validator = Validator::make($request->all(), [
-            'key' => ['required', 'string', 'max:255'],
-            'value' => [
-                'required',
-                'string',
-                'max:255',
-                Rule::when($allowedValues !== null, [Rule::in($allowedValues ?? [])]),
-            ],
-            'visibility' => ['required', new Enum(StatusVisibility::class)],
-        ]);
-
-        if ($validator->fails()) {
-            return $this->sendError(error: $validator->errors(), code: 400);
-        }
-        $validated = $validator->validate();
-
+        $validated = $request->validated();
         try {
             $status = Status::findOrFail($statusId);
 
@@ -395,7 +361,7 @@ class StatusTagController extends Controller
             ),
             new OA\Parameter(
                 name: 'tagKey',
-                description: 'Key of StatusTag',
+                description: 'Key of StatusTag, regex:/^\w[^\/\n\r%?\\<>]*$/',
                 in: 'path',
                 schema: new OA\Schema(type: 'string'),
                 example: 'trwl:seat',

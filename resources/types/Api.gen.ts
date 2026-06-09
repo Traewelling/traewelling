@@ -63,6 +63,26 @@ export enum StatusVisibility {
 }
 
 /**
+ * StatusTagKey
+ * StatusTagKey
+ * @example "trwl:social_status"
+ */
+export enum StatusTagKey {
+  TrwlSeat = "trwl:seat",
+  TrwlWagon = "trwl:wagon",
+  TrwlTicket = "trwl:ticket",
+  TrwlTravelClass = "trwl:travel_class",
+  TrwlLocomotiveClass = "trwl:locomotive_class",
+  TrwlWagonClass = "trwl:wagon_class",
+  TrwlRole = "trwl:role",
+  TrwlVehicleNumber = "trwl:vehicle_number",
+  TrwlPassengerRights = "trwl:passenger_rights",
+  TrwlJourneyNumber = "trwl:journey_number",
+  TrwlPrice = "trwl:price",
+  TrwlSocialStatus = "trwl:social_status",
+}
+
+/**
  * StationIdentifierType
  * The type of the station identifier to look up. Not all types are available for every station. Subject to unannounced change.
  *     * motis – all transitous.org/motis supplied identifiers
@@ -2038,10 +2058,10 @@ export interface StatusResource {
 
 /** StatusTagResource */
 export interface StatusTagResource {
-  /** @example "trwl:vehicle_number" */
-  key: string;
-  /** @example "94 80 0450 921 D-AVG" */
-  value: string;
+  /** regex:/^\w[^\/\n\r%?\<>]*$/ */
+  key: StatusTagKey | string;
+  /** Values allowed for the tag trwl:social_status */
+  value: "open" | "open_find_me" | "open_lets_hang" | "do_not_disturb" | string;
   /** @example "1" */
   visibility: number;
 }
