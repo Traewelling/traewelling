@@ -349,7 +349,7 @@ class StatusTagTest extends ApiTestCase
             data: ['value' => 'invalid_value'],
         );
 
-        $response->assertStatus(422);
+        $response->assertStatus(400);
         $this->assertDatabaseHas('status_tags', [
             'status_id' => $status->id,
             'key' => StatusTagKey::SOCIAL_STATUS->value,
