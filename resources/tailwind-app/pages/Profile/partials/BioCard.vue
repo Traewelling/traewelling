@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ExternalLink } from '@lucide/vue';
 import { computed } from 'vue';
 import { UserResource } from '../../../../types/Api.gen';
+import { IconHelper } from '../../../helpers/IconHelper';
 
 const props = defineProps({
     userData: {
@@ -34,10 +34,14 @@ const mergedLinks = computed(() => {
                     target="_blank"
                     rel="me noopener"
                     :aria-label="link.name ?? ''"
-                    class="flex items-center gap-1 text-sm text-base-content/50 hover:text-primary transition-colors"
+                    class="flex items-center gap-1 text-sm text-base-content/50 hover:text-primary transition-colors tooltip"
+                    :data-tip="link.name"
                 >
-                    <ExternalLink class="w-4 h-4" />
-                    <span>{{ link.name }}</span>
+                    <component
+                        :is="IconHelper.getLinkIcon(link.name)"
+                        class="w-4 h-4 stroke-base-content"
+                        :class="link.name === 'website' ? '' : 'fill-base-content '"
+                    />
                 </a>
             </div>
         </div>
