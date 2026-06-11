@@ -633,14 +633,6 @@ export interface Polyline {
 }
 
 /**
- * DuplicateCheckinGroup
- * A group of check-ins with the same trip and origin stopover (duplicates)
- */
-export interface DuplicateCheckinGroup {
-  statuses?: StatusResource[];
-}
-
-/**
  * CheckinRequestBody
  * Fields for creating a transit checkin
  */
@@ -6104,30 +6096,6 @@ export class Api<
       }),
   };
   statuses = {
-    /**
-     * @description Temporary cleanup endpoint: returns groups of check-ins the authenticated user has checked in more than once for the same trip and origin stopover. Will be removed after 2026-05-31.
-     *
-     * @tags Status
-     * @name GetDuplicateCheckins
-     * @summary [Deprecated] Get duplicate check-ins of the authenticated user
-     * @request GET:/statuses/duplicates
-     * @deprecated
-     * @secure
-     */
-    getDuplicateCheckins: (params: RequestParams = {}) =>
-      this.request<
-        {
-          data?: DuplicateCheckinGroup[];
-        },
-        void
-      >({
-        path: `/statuses/duplicates`,
-        method: "GET",
-        secure: true,
-        format: "json",
-        ...params,
-      }),
-
     /**
      * @description Returns all currently active statuses that are visible to the (un)authenticated user
      *

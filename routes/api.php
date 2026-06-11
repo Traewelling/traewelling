@@ -81,7 +81,6 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::group(['middleware' => ['scope:read-statuses']], static function () {
             Route::get('dashboard', [StatusController::class, 'getDashboard']);
             Route::get('dashboard/future', [StatusController::class, 'getFutureCheckins']);
-            Route::get('statuses/duplicates', [StatusController::class, 'getDuplicateCheckins']);
         });
         Route::group(['middleware' => ['scope:write-statuses']], static function () {
             Route::delete('status/{id}', [StatusController::class, 'destroy'])->whereNumber('id');
