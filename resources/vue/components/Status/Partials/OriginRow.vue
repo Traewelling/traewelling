@@ -103,7 +103,7 @@ watch(
 
             <span class="ps-2">
                 <i class="fa fa-clock d-inline" aria-hidden="true" />&nbsp;
-                <DurationSpan :duration="duration.as('seconds')" class="d-inline" />
+                <DurationSpan :duration="duration.as('minutes')" class="d-inline" />
             </span>
 
             <span v-if="status.business !== Business.Value0" class="ps-2">
