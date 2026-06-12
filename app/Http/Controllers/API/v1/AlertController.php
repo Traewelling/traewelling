@@ -10,8 +10,6 @@ use App\Services\PrivacyPolicyService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use OpenApi\Attributes as OA;
@@ -89,46 +87,6 @@ class AlertController extends Controller
             $alert->setRelation('translations', collect([$translation]));
 
             $alerts->prepend($alert);
-        }
-
-        // TODO: remove following alert injection after 2026-05-31
-        $deadline = Carbon::create(2026, 5, 31)->endOfDay();
-        $userId = auth()->id();
-        if (now()->lte($deadline) && $userId !== null) {
-            $hasDuplicates = Cache::remember(
-                'duplicate-checkins-check:' . $userId,
-                now()->addMinutes(5),
-                function () use ($userId): bool {
-                    return DB::table(
-                        DB::table('train_checkins')
-                            ->select('trip_id')
-                            ->where('user_id', $userId)
-                            ->whereNotNull('origin_stopover_id')
-                            ->groupBy('trip_id', 'origin_stopover_id')
-                            ->havingRaw('COUNT(*) > 1')
-                            ->limit(1),
-                        'dups'
-                    )->exists();
-                }
-            );
-
-            if ($hasDuplicates) {
-                $alert = new Alert();
-                $alert->id = 'duplicate-checkins-cleanup';
-                $alert->type = 'warning';
-                $alert->active_from = Carbon::create(2026, 5, 6);
-                $alert->active_until = $deadline;
-                $alert->url = url('/statuses/duplicates');
-
-                $translation = new AlertTranslation();
-                $translation->locale = app()->getLocale();
-                $translation->title = __('checkin.duplicates.alert.title');
-                $translation->content = __('checkin.duplicates.alert.content');
-                $translation->url = url('/statuses/duplicates');
-                $alert->setRelation('translations', collect([$translation]));
-
-                $alerts->prepend($alert);
-            }
         }
 
         $upcomingPolicy = $this->privacyPolicyService->getUpcomingPolicy();

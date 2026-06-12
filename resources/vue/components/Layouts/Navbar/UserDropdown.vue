@@ -58,11 +58,6 @@ function logout() {
                 <a class="dropdown-item" href="/settings"> <i class="fas fa-cog" /> {{ trans('menu.settings') }} </a>
             </li>
             <li>
-                <a class="dropdown-item" href="/statuses/duplicates">
-                    <i class="fas fa-clone" /> {{ trans('checkin.duplicates.title') }}
-                </a>
-            </li>
-            <li>
                 <a class="dropdown-item" href="https://help.traewelling.de/faq/" target="_blank">
                     <i class="fa-solid fa-bug" aria-hidden="true" />
                     {{ trans('help') }}

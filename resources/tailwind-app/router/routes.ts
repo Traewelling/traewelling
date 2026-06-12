@@ -7,7 +7,6 @@ import Index from '../pages/Contribute/Index.vue';
 import Profile from '../pages/Contribute/Profile.vue';
 import SuggestEvent from '../pages/Contribute/SuggestEvent.vue';
 import Dashboard from '../pages/Dashboard/Dashboard.vue';
-import DuplicateCheckins from '../pages/DuplicateCheckins/DuplicateCheckins.vue';
 import EventList from '../pages/Events/EventList.vue';
 import EventView from '../pages/Events/EventView.vue';
 import Export from '../pages/Export/Export.vue';
@@ -43,12 +42,6 @@ const routes: Array<RouteRecordRaw> = [
         name: 'dashboard',
         component: Dashboard,
         meta: { title: 'menu.dashboard' },
-    },
-    {
-        path: '/statuses/duplicates', //TODO: remove after 2026-05-31
-        name: 'statuses-duplicates',
-        component: DuplicateCheckins,
-        meta: { title: 'checkin.duplicates.title' },
     },
     {
         path: '/contribute',

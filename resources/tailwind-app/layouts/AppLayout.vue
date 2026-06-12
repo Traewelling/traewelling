@@ -204,7 +204,6 @@
 import {
     Bell,
     ChartNoAxesCombined,
-    Copy,
     House,
     LifeBuoy,
     LogOut,
@@ -330,7 +329,6 @@ const userLinks = computed<
     },
     { name: 'menu.export', icon: Save, route: { name: 'export' } },
     { name: 'menu.settings', icon: Settings, route: { name: 'settings-profile' } },
-    { name: 'checkin.duplicates.title', icon: Copy, route: { name: 'statuses-duplicates' } },
     { name: 'tickets.title', icon: Ticket, route: { name: 'tickets' }, condition: user.isClosedBeta },
     { name: 'stationboard.submit-search', icon: Search, route: { name: 'search' } },
 ]);
