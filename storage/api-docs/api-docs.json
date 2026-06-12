@@ -6285,53 +6285,6 @@
                 ]
             }
         },
-        "/statuses/duplicates": {
-            "get": {
-                "tags": [
-                    "Status"
-                ],
-                "summary": "[Deprecated] Get duplicate check-ins of the authenticated user",
-                "description": "Temporary cleanup endpoint: returns groups of check-ins the authenticated user has checked in more than once for the same trip and origin stopover. Will be removed after 2026-05-31.",
-                "operationId": "getDuplicateCheckins",
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "required": [
-                                        "data"
-                                    ],
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/DuplicateCheckinGroup"
-                                            }
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Not logged in"
-                    }
-                },
-                "deprecated": true,
-                "security": [
-                    {
-                        "passport": [
-                            "read-statuses"
-                        ]
-                    },
-                    {
-                        "token": []
-                    }
-                ]
-            }
-        },
         "/statuses": {
             "get": {
                 "tags": [
@@ -10889,22 +10842,6 @@
                             }
                         },
                         "type": "object"
-                    }
-                },
-                "type": "object"
-            },
-            "DuplicateCheckinGroup": {
-                "title": "DuplicateCheckinGroup",
-                "description": "A group of check-ins with the same trip and origin stopover (duplicates)",
-                "required": [
-                    "statuses"
-                ],
-                "properties": {
-                    "statuses": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/StatusResource"
-                        }
                     }
                 },
                 "type": "object"
