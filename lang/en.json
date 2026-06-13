@@ -780,12 +780,13 @@
   "stats.extremes": "Extremes",
   "stats.favorite-lines": "Favourite Lines",
   "stats.favorite-routes": "Favourite Routes",
-  "stats.favorite-stations": "Favourite Stations",
+  "stats.favorite-stations": "Most Visited Stations",
+  "stats.breakdown": "Breakdown",
   "stats.last-month": "Last Month",
   "stats.last-week": "Last Week",
   "stats.last-year": "Last Year",
   "stats.longest-ride": "Longest Ride",
-  "stats.mean-distance": "Mean Distance",
+  "stats.mean-distance": "Avg. per Ride",
   "stats.month": "Month",
   "stats.monthly-breakdown": "Monthly Breakdown",
   "stats.shortest-ride": "Shortest Ride",
@@ -1332,6 +1333,7 @@
   "user.muted.noMutedUsers": "You have not muted any users.",
   "stats.from": "From",
   "stats.to": "To",
+  "stats.today": "today",
   "beta.banner.text": "You are viewing a new design that is still under development. You may encounter occasional errors. You can disable experimental features in your",
   "beta.banner.settings": "settings."
 }

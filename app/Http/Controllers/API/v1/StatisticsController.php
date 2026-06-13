@@ -14,6 +14,8 @@ use App\Http\Resources\StatisticsGlobalData;
 use App\Http\Resources\StatisticsTravelPurposeResource;
 use App\Http\Resources\StatusResource;
 use App\Models\Status;
+use App\Models\User;
+use App\Services\Statistics\StatisticsService;
 use Carbon\Carbon;
 use DateTimeZone;
 use Illuminate\Http\JsonResponse;
@@ -30,7 +32,7 @@ class StatisticsController extends Controller
 
     private LeaderboardBackend $leaderboardBackend;
 
-    public function __construct(LeaderboardBackend $leaderboard)
+    public function __construct(LeaderboardBackend $leaderboard, private readonly StatisticsService $statisticsService)
     {
         $this->leaderboardBackend = $leaderboard;
     }
@@ -318,18 +320,6 @@ class StatisticsController extends Controller
         $categories = StatisticBackend::getTopTravelCategoryByUser(user: auth()->user(), from: $from, until: $until);
         $operators = StatisticBackend::getTopTripOperatorByUser(user: auth()->user(), from: $from, until: $until);
         $travelTime = StatisticBackend::getDailyTravelTimeByUser(user: auth()->user(), from: $from, until: $until);
-        
-        // Advanced statistics
-        $advancedSummary = StatisticBackend::getAdvancedSummary(user: auth()->user(), from: $from, until: $until);
-        $distancePerYear = StatisticBackend::getDistancePerYear(user: auth()->user());
-        $distancePerMonth = StatisticBackend::getDistancePerMonth(user: auth()->user());
-        $distancePerWeek = StatisticBackend::getDistancePerWeek(user: auth()->user());
-        $lastWeek = StatisticBackend::getLastWeekStats(user: auth()->user());
-        $lastMonth = StatisticBackend::getLastMonthStats(user: auth()->user());
-        $lastYear = StatisticBackend::getLastYearStats(user: auth()->user());
-        $favoriteStations = StatisticBackend::getFavoriteStations(user: auth()->user(), from: $from, until: $until);
-        $favoriteLines = StatisticBackend::getFavoriteLines(user: auth()->user(), from: $from, until: $until);
-        $favoriteRoutes = StatisticBackend::getFavoriteRoutes(user: auth()->user(), from: $from, until: $until);
 
         $returnData = [
             'purpose' => $purposes,
@@ -342,22 +332,6 @@ class StatisticsController extends Controller
                     'duration' => $row->duration,
                 ];
             }),
-            'summary' => $advancedSummary,
-            'by_period' => [
-                'yearly' => $distancePerYear,
-                'monthly' => $distancePerMonth,
-                'weekly' => $distancePerWeek,
-            ],
-            'predefined_periods' => [
-                'last_week' => $lastWeek,
-                'last_month' => $lastMonth,
-                'last_year' => $lastYear,
-            ],
-            'favorites' => [
-                'stations' => $favoriteStations,
-                'lines'    => $favoriteLines,
-                'routes'   => $favoriteRoutes,
-            ],
         ];
 
         $additionalData = [
@@ -539,7 +513,7 @@ class StatisticsController extends Controller
         $globalStats = Cache::remember(
             key: CacheKey::getGlobalStatsKey($from, $until),
             ttl: config('trwl.cache.global-statistics-retention-seconds'), // 1 hour
-            callback: static fn () => StatisticBackend::getGlobalCheckInStats($from, $until)
+            callback: fn () => $this->statisticsService->getGlobalStats($from, $until)
         );
 
         $additionalData = [
@@ -550,5 +524,202 @@ class StatisticsController extends Controller
         ];
 
         return $this->sendResponse(data: new StatisticsGlobalData($globalStats), additional: $additionalData);
+    }
+
+    #[OA\Get(
+        path: '/statistics/overview',
+        operationId: 'getStatisticsOverview',
+        summary: 'Get a summary of personal statistics for a date range',
+        security: [['passport' => ['read-statistics']], ['token' => []]],
+        tags: ['Statistics'],
+        parameters: [
+            new OA\Parameter(name: 'from', description: 'Start date', in: 'query', example: '2024-01-01'),
+            new OA\Parameter(name: 'until', description: 'End date', in: 'query', example: '2024-12-31'),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            properties: [
+                                new OA\Property(property: 'summary', properties: [
+                                    new OA\Property(property: 'total_checkins', type: 'integer', example: 42),
+                                    new OA\Property(property: 'active_days', type: 'integer', example: 15),
+                                    new OA\Property(property: 'total_distance_km', type: 'number', format: 'float', example: 1234.56),
+                                    new OA\Property(property: 'mean_distance_km', type: 'number', format: 'float', example: 29.39),
+                                    new OA\Property(property: 'longest_ride', ref: StatusResource::class, nullable: true),
+                                    new OA\Property(property: 'shortest_ride', ref: StatusResource::class, nullable: true),
+                                ],
+                                    type: 'object',
+                                ),
+                            ],
+                            type: 'object',
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 401, description: 'Unauthorized'),
+        ],
+    )]
+    public function getOverview(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'from' => ['nullable', 'date'],
+            'until' => ['nullable', 'date', 'after_or_equal:from'],
+        ]);
+
+        $from = isset($validated['from']) ? Carbon::parse($validated['from']) : Carbon::now()->subWeeks(4);
+        $until = isset($validated['until']) ? Carbon::parse($validated['until']) : Carbon::now();
+
+        /** @var User $user */
+        $user = auth()->user();
+
+        $cacheKey = "stats.overview.{$user->id}.{$from->toDateString()}.{$until->toDateString()}";
+        $data = Cache::remember($cacheKey, 3600, function () use ($user, $from, $until) {
+            $summary = $this->statisticsService->getSummary($user, $from, $until);
+
+            $statusIds = array_filter([
+                $summary['longest_ride']['status_id'] ?? null,
+                $summary['shortest_ride']['status_id'] ?? null,
+            ]);
+
+            $statuses = empty($statusIds) ? collect() : Status::with([
+                'event',
+                'likes',
+                'user',
+                'createdByUser',
+                'checkin.originStopover.station',
+                'checkin.destinationStopover.station',
+                'checkin.trip.operator',
+                'checkin.trip.motisSourceLicense',
+                'checkin.statusTags',
+                'tags',
+                'mentions.mentioned',
+                'ticket',
+                'client',
+            ])->whereIn('id', $statusIds)->get()->keyBy('id');
+
+            $toStatusResource = static function (?array $ride) use ($statuses): ?array {
+                if ($ride === null) {
+                    return null;
+                }
+                $status = $statuses[$ride['status_id']] ?? null;
+
+                return $status ? (new StatusResource($status))->resolve() : null;
+            };
+
+            $summary['longest_ride'] = $toStatusResource($summary['longest_ride']);
+            $summary['shortest_ride'] = $toStatusResource($summary['shortest_ride']);
+
+            return ['summary' => $summary];
+        });
+
+        return $this->sendResponse(data: $data);
+    }
+
+    #[OA\Get(
+        path: '/statistics/history',
+        operationId: 'getStatisticsHistory',
+        summary: 'Get all-time checkin counts and distances grouped by year, month, and week',
+        security: [['passport' => ['read-statistics']], ['token' => []]],
+        tags: ['Statistics'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            properties: [
+                                new OA\Property(property: 'yearly', type: 'array', items: new OA\Items(
+                                    properties: [
+                                        new OA\Property(property: 'period', type: 'string', example: '2024'),
+                                        new OA\Property(property: 'period_type', type: 'string', example: 'year'),
+                                        new OA\Property(property: 'checkin_count', type: 'integer', example: 42),
+                                        new OA\Property(property: 'distance_km', type: 'number', format: 'float', example: 1234.56),
+                                    ],
+                                )),
+                                new OA\Property(property: 'monthly', type: 'array', items: new OA\Items()),
+                                new OA\Property(property: 'weekly', type: 'array', items: new OA\Items()),
+                            ],
+                            type: 'object',
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 401, description: 'Unauthorized'),
+        ],
+    )]
+    public function getHistory(): JsonResponse
+    {
+        /** @var User $user */
+        $user = auth()->user();
+
+        $cacheKey = "stats.history.{$user->id}";
+        $data = Cache::remember($cacheKey, 21600, fn () => $this->statisticsService->getHistory($user));
+
+        return $this->sendResponse(data: $data);
+    }
+
+    #[OA\Get(
+        path: '/statistics/favorites',
+        operationId: 'getStatisticsFavorites',
+        summary: 'Get favorite stations, lines, and routes for a date range',
+        security: [['passport' => ['read-statistics']], ['token' => []]],
+        tags: ['Statistics'],
+        parameters: [
+            new OA\Parameter(name: 'from', in: 'query', description: 'Start date', example: '2024-01-01'),
+            new OA\Parameter(name: 'until', in: 'query', description: 'End date', example: '2024-12-31'),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            properties: [
+                                new OA\Property(property: 'stations', type: 'array', items: new OA\Items(
+                                    properties: [
+                                        new OA\Property(property: 'station_id', type: 'integer', example: 1),
+                                        new OA\Property(property: 'name', type: 'string', example: 'Frankfurt Hbf'),
+                                        new OA\Property(property: 'count', type: 'integer', example: 12),
+                                    ],
+                                )),
+                                new OA\Property(property: 'lines', type: 'array', items: new OA\Items()),
+                                new OA\Property(property: 'routes', type: 'array', items: new OA\Items()),
+                            ],
+                            type: 'object',
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 401, description: 'Unauthorized'),
+        ],
+    )]
+    public function getFavorites(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'from' => ['nullable', 'date'],
+            'until' => ['nullable', 'date', 'after_or_equal:from'],
+        ]);
+
+        $from = isset($validated['from']) ? Carbon::parse($validated['from']) : Carbon::now()->subWeeks(4);
+        $until = isset($validated['until']) ? Carbon::parse($validated['until']) : Carbon::now();
+
+        /** @var User $user */
+        $user = auth()->user();
+
+        $cacheKey = "stats.favorites.{$user->id}.{$from->toDateString()}.{$until->toDateString()}";
+        $data = Cache::remember($cacheKey, 3600, fn () => $this->statisticsService->getFavorites($user, $from, $until));
+
+        return $this->sendResponse(data: $data);
     }
 }

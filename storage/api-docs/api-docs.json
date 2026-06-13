@@ -5431,6 +5431,263 @@
                 ]
             }
         },
+        "/statistics/overview": {
+            "get": {
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Get a summary of personal statistics for a date range",
+                "operationId": "getStatisticsOverview",
+                "parameters": [
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "description": "Start date",
+                        "example": "2024-01-01"
+                    },
+                    {
+                        "name": "until",
+                        "in": "query",
+                        "description": "End date",
+                        "example": "2024-12-31"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "summary": {
+                                                    "properties": {
+                                                        "total_checkins": {
+                                                            "type": "integer",
+                                                            "example": 42
+                                                        },
+                                                        "active_days": {
+                                                            "type": "integer",
+                                                            "example": 15
+                                                        },
+                                                        "total_distance_km": {
+                                                            "type": "number",
+                                                            "format": "float",
+                                                            "example": 1234.56
+                                                        },
+                                                        "mean_distance_km": {
+                                                            "type": "number",
+                                                            "format": "float",
+                                                            "example": 29.39
+                                                        },
+                                                        "longest_ride": {
+                                                            "oneOf": [
+                                                                {
+                                                                    "$ref": "#/components/schemas/StatusResource"
+                                                                }
+                                                            ],
+                                                            "nullable": true
+                                                        },
+                                                        "shortest_ride": {
+                                                            "oneOf": [
+                                                                {
+                                                                    "$ref": "#/components/schemas/StatusResource"
+                                                                }
+                                                            ],
+                                                            "nullable": true
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "read-statistics"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/statistics/history": {
+            "get": {
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Get all-time checkin counts and distances grouped by year, month, and week",
+                "operationId": "getStatisticsHistory",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "yearly": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "period": {
+                                                                "type": "string",
+                                                                "example": "2024"
+                                                            },
+                                                            "period_type": {
+                                                                "type": "string",
+                                                                "example": "year"
+                                                            },
+                                                            "checkin_count": {
+                                                                "type": "integer",
+                                                                "example": 42
+                                                            },
+                                                            "distance_km": {
+                                                                "type": "number",
+                                                                "format": "float",
+                                                                "example": 1234.56
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "monthly": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "weekly": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "read-statistics"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/statistics/favorites": {
+            "get": {
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Get favorite stations, lines, and routes for a date range",
+                "operationId": "getStatisticsFavorites",
+                "parameters": [
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "description": "Start date",
+                        "example": "2024-01-01"
+                    },
+                    {
+                        "name": "until",
+                        "in": "query",
+                        "description": "End date",
+                        "example": "2024-12-31"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "stations": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "station_id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "Frankfurt Hbf"
+                                                            },
+                                                            "count": {
+                                                                "type": "integer",
+                                                                "example": 12
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "lines": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "routes": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "read-statistics"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/dashboard": {
             "get": {
                 "tags": [

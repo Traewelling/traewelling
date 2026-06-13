@@ -3,7 +3,7 @@ import { trans } from 'laravel-vue-i18n';
 import { ChartNoAxesCombined } from 'lucide-vue-next';
 import { Notyf } from 'notyf';
 import { computed, inject, onMounted, ref, watch } from 'vue';
-import { Api, type StatisticsGlobalData } from '../../../types/Api.gen';
+import { Api, type StatisticsGlobalData, type StatusResource } from '../../../types/Api.gen';
 import AdvancedStats from '../../components/Stats/AdvancedStats.vue';
 import ChartDoughnut from '../../components/Stats/ChartDoughnut.vue';
 import ChartHorizontalBar from '../../components/Stats/ChartHorizontalBar.vue';
@@ -19,101 +19,35 @@ type StatsData = {
     categories: { name: string; duration: number; count: number }[];
     operators: { name: string; duration: number; count: number }[];
     time: { date: string; duration: number; count: number }[];
-    summary: AdvancedSummary | null;
-    by_period: {
-        yearly: PeriodData[];
-        monthly: PeriodData[];
-        weekly: PeriodData[];
-    };
-    predefined_periods: {
-        last_week: AdvancedSummary | null;
-        last_month: AdvancedSummary | null;
-        last_year: AdvancedSummary | null;
-    } | null;
-    favorites: {
-        stations: { station_id: number; name: string; count: number }[];
-        lines: { linename: string; number: string | null; count: number; distance_km: number }[];
-        routes: {
-            origin_id: number;
-            origin: string;
-            destination_id: number;
-            destination: string;
-            count: number;
-            distance_km: number;
-        }[];
-    } | null;
 };
 
-type RideSummary = {
-    id: number;
-    distance_km: number;
-    departure: string;
-    start: string;
-    end: string;
-    linename: string | null;
-    number: string | null;
-    operator: string | null;
-    origin: string | null;
-    destination: string | null;
+type PeriodData = { period: string; period_type: string; checkin_count: number; distance_km: number };
+
+type AdvancedData = {
+    summary: object | null;
+    by_period: { yearly: PeriodData[]; monthly: PeriodData[]; weekly: PeriodData[] };
+    favorites: object | null;
 };
 
-type AdvancedSummary = {
+type PeriodSummary = {
+    labelKey: string;
+    from: string;
+    until: string;
     total_checkins: number;
-    active_days: number;
     total_distance_km: number;
     mean_distance_km: number;
-    longest_ride: RideSummary | null;
-    shortest_ride: RideSummary | null;
-};
-
-type PeriodData = {
-    period: string;
-    period_type: string;
-    checkin_count: number;
-    distance_km: number;
-};
-
-type AdvancedStatsApiData = {
-    purpose?: { name?: string | number; duration?: number; count?: number }[];
-    categories?: { name?: string; duration?: number; count?: number }[];
-    operators?: { name?: string; duration?: number; count?: number }[];
-    time?: { date?: string; duration?: number; count?: number }[];
-    summary?: AdvancedSummary | null;
-    by_period?: {
-        yearly?: PeriodData[];
-        monthly?: PeriodData[];
-        weekly?: PeriodData[];
-    };
-    predefined_periods?: {
-        last_week?: AdvancedSummary | null;
-        last_month?: AdvancedSummary | null;
-        last_year?: AdvancedSummary | null;
-    } | null;
-    favorites?: {
-        stations?: { station_id: number; name: string; count: number }[];
-        lines?: { linename: string; number: string | null; count: number; distance_km: number }[];
-        routes?: {
-            origin_id: number;
-            origin: string;
-            destination_id: number;
-            destination: string;
-            count: number;
-            distance_km: number;
-        }[];
-    } | null;
+    longest_ride: StatusResource | null;
+    shortest_ride: StatusResource | null;
 };
 
 const loading = ref(true);
-const data = ref<StatsData>({
-    purpose: [],
-    categories: [],
-    operators: [],
-    time: [],
+const data = ref<StatsData>({ purpose: [], categories: [], operators: [], time: [] });
+const advancedData = ref<AdvancedData>({
     summary: null,
     by_period: { yearly: [], monthly: [], weekly: [] },
-    predefined_periods: null,
     favorites: null,
 });
+const periods = ref<PeriodSummary[] | null>(null);
 const globalStats = ref<StatisticsGlobalData | null>(null);
 const globalFrom = ref<Date | null>(null);
 const globalUntil = ref<Date | null>(null);
@@ -146,6 +80,7 @@ const transportKeyMap: Record<string, string> = {
     tram: 'transport_types.tram',
     taxi: 'transport_types.taxi',
     plane: 'transport_types.plane',
+    freightTrain: 'transport_types.freightTrain',
 };
 
 const purposeLabels = computed(() =>
@@ -175,8 +110,14 @@ function isPresetActive(days: number): boolean {
 async function fetchStats(): Promise<void> {
     loading.value = true;
     try {
-        const res = await api.statistics.getStatistics({ from: fromStr.value, until: untilStr.value });
-        const d = res.data.data as AdvancedStatsApiData | undefined;
+        const dateParams = { from: fromStr.value, until: untilStr.value };
+        const [mainRes, summaryRes, favoritesRes] = await Promise.all([
+            api.statistics.getStatistics(dateParams),
+            api.statistics.getStatisticsOverview(dateParams),
+            api.statistics.getStatisticsFavorites(dateParams),
+        ]);
+
+        const d = mainRes.data.data;
         data.value = {
             purpose: (d?.purpose ?? []).map((p) => ({
                 name: String(p.name ?? ''),
@@ -198,31 +139,46 @@ async function fetchStats(): Promise<void> {
                 duration: t.duration ?? 0,
                 count: t.count ?? 0,
             })),
-            summary: d?.summary ?? null,
-            by_period: {
-                yearly: d?.by_period?.yearly ?? [],
-                monthly: d?.by_period?.monthly ?? [],
-                weekly: d?.by_period?.weekly ?? [],
-            },
-            predefined_periods: d?.predefined_periods
-                ? {
-                      last_week: d.predefined_periods.last_week ?? null,
-                      last_month: d.predefined_periods.last_month ?? null,
-                      last_year: d.predefined_periods.last_year ?? null,
-                  }
-                : null,
-            favorites: d?.favorites
-                ? {
-                      stations: d.favorites.stations ?? [],
-                      lines: d.favorites.lines ?? [],
-                      routes: d.favorites.routes ?? [],
-                  }
-                : null,
         };
+
+        const s = summaryRes.data.data;
+        advancedData.value.summary = s?.summary ?? null;
+
+        advancedData.value.favorites = favoritesRes.data.data ?? null;
     } catch (e: unknown) {
         notyf.error(e instanceof Error ? e.message : trans('generic.error'));
     } finally {
         loading.value = false;
+    }
+}
+
+async function fetchPeriodStats(): Promise<void> {
+    try {
+        const res = await api.statistics.getStatisticsHistory();
+        advancedData.value.by_period = res.data.data ?? { yearly: [], monthly: [], weekly: [] };
+    } catch {
+        // non-critical, fail silently
+    }
+}
+
+async function fetchPeriods(): Promise<void> {
+    const now = new Date();
+    const toStr = (d: Date) => d.toISOString().split('T')[0];
+    const configs: { labelKey: string; from: string; until: string }[] = [
+        { labelKey: 'stats.last-week', from: toStr(new Date(now.getTime() - 7 * 86400000)), until: toStr(now) },
+        { labelKey: 'stats.last-month', from: toStr(new Date(now.getTime() - 30 * 86400000)), until: toStr(now) },
+        { labelKey: 'stats.last-year', from: toStr(new Date(now.getTime() - 365 * 86400000)), until: toStr(now) },
+    ];
+    try {
+        const results = await Promise.all(
+            configs.map(({ from, until }) => api.statistics.getStatisticsOverview({ from, until })),
+        );
+        periods.value = results.map((res, i) => {
+            const s = (res.data.data as { summary: PeriodSummary }).summary;
+            return { ...s, labelKey: configs[i].labelKey, from: configs[i].from, until: configs[i].until };
+        });
+    } catch {
+        // non-critical
     }
 }
 
@@ -242,6 +198,39 @@ async function fetchGlobalStats(): Promise<void> {
     } catch {
         // global stats are best-effort
     }
+}
+
+const PAGE_SIZE = 5;
+const yearlyPage = ref(0);
+const monthlyPage = ref(0);
+
+const yearlyRows = computed(() =>
+    [...(advancedData.value.by_period.yearly ?? [])].sort((a, b) => b.period.localeCompare(a.period)),
+);
+const monthlyRows = computed(() =>
+    [...(advancedData.value.by_period.monthly ?? [])].sort((a, b) => b.period.localeCompare(a.period)),
+);
+const yearlyPaged = computed(() =>
+    yearlyRows.value.slice(yearlyPage.value * PAGE_SIZE, (yearlyPage.value + 1) * PAGE_SIZE),
+);
+const monthlyPaged = computed(() =>
+    monthlyRows.value.slice(monthlyPage.value * PAGE_SIZE, (monthlyPage.value + 1) * PAGE_SIZE),
+);
+const yearlyTotalPages = computed(() => Math.ceil(yearlyRows.value.length / PAGE_SIZE));
+const monthlyTotalPages = computed(() => Math.ceil(monthlyRows.value.length / PAGE_SIZE));
+
+function getPeriodLabel(period: string, periodType: string): string {
+    if (periodType === 'month') {
+        return new Date(period + '-01').toLocaleDateString(undefined, { year: 'numeric', month: 'long' });
+    }
+    if (periodType === 'week') {
+        return `${trans('stats.week-short')} ${period.split('-W')[1]}`;
+    }
+    return period;
+}
+
+function avgDistance(distanceKm: number, checkins: number): string {
+    return checkins > 0 ? (distanceKm / checkins).toFixed(2) : '0.00';
 }
 
 function syncUrlParams(): void {
@@ -273,6 +262,8 @@ watch([from, until], () => {
 onMounted(() => {
     readUrlParams();
     fetchStats();
+    fetchPeriodStats();
+    fetchPeriods();
     fetchGlobalStats();
     window.addEventListener('popstate', readUrlParams);
 });
@@ -287,10 +278,6 @@ onMounted(() => {
                 {{ trans('stats') }}
             </h1>
         </div>
-        <p class="text-sm text-base-content/60 mb-4">
-            {{ trans('stats.personal', { fromDate: from.toLocaleDateString(), toDate: until.toLocaleDateString() }) }}
-        </p>
-
         <!-- Date range controls -->
         <div class="card bg-base-100 mb-6">
             <div class="card-body py-3">
@@ -344,7 +331,7 @@ onMounted(() => {
         </div>
 
         <template v-else>
-            <AdvancedStats :data="data.summary ? data : null" />
+            <AdvancedStats :data="advancedData.summary ? advancedData : null" />
 
             <!-- No data at all -->
             <div
@@ -404,7 +391,147 @@ onMounted(() => {
                 </div>
             </template>
 
-            <!-- Global stats -->
+            <!-- History breakdown (all-time, static) -->
+            <template v-if="advancedData.by_period.yearly?.length || advancedData.by_period.monthly?.length">
+                <div class="divider text-base-content/40 text-xs uppercase tracking-wide mt-6">
+                    {{ trans('stats.breakdown') }}
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div v-if="yearlyRows.length" class="card bg-base-100">
+                        <div class="card-body p-0 flex flex-col">
+                            <div class="px-4 py-3 border-b border-base-300">
+                                <h2 class="font-semibold">{{ trans('stats.yearly-breakdown') }}</h2>
+                            </div>
+                            <div class="overflow-x-auto flex-1">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>{{ trans('stats.year') }}</th>
+                                            <th class="text-right">{{ trans('stats.checkins') }}</th>
+                                            <th class="text-right">{{ trans('stats.distance') }}</th>
+                                            <th class="text-right">{{ trans('stats.avg') }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="row in yearlyPaged" :key="row.period">
+                                            <td>{{ getPeriodLabel(row.period, row.period_type) }}</td>
+                                            <td class="text-right">{{ row.checkin_count }}</td>
+                                            <td class="text-right">{{ row.distance_km }} km</td>
+                                            <td class="text-right">
+                                                {{ avgDistance(row.distance_km, row.checkin_count) }} km
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div
+                                v-if="yearlyTotalPages > 1"
+                                class="flex items-center justify-between px-4 py-2 border-t border-base-300"
+                            >
+                                <button class="btn btn-xs btn-ghost" :disabled="yearlyPage === 0" @click="yearlyPage--">
+                                    ‹
+                                </button>
+                                <span class="text-xs text-base-content/50">
+                                    {{ yearlyPage + 1 }} / {{ yearlyTotalPages }}
+                                </span>
+                                <button
+                                    class="btn btn-xs btn-ghost"
+                                    :disabled="yearlyPage >= yearlyTotalPages - 1"
+                                    @click="yearlyPage++"
+                                >
+                                    ›
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div v-if="monthlyRows.length" class="card bg-base-100">
+                        <div class="card-body p-0 flex flex-col">
+                            <div class="px-4 py-3 border-b border-base-300">
+                                <h2 class="font-semibold">{{ trans('stats.monthly-breakdown') }}</h2>
+                            </div>
+                            <div class="overflow-x-auto flex-1">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>{{ trans('stats.month') }}</th>
+                                            <th class="text-right">{{ trans('stats.checkins') }}</th>
+                                            <th class="text-right">{{ trans('stats.distance') }}</th>
+                                            <th class="text-right">{{ trans('stats.avg') }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="row in monthlyPaged" :key="row.period">
+                                            <td>{{ getPeriodLabel(row.period, row.period_type) }}</td>
+                                            <td class="text-right">{{ row.checkin_count }}</td>
+                                            <td class="text-right">{{ row.distance_km }} km</td>
+                                            <td class="text-right">
+                                                {{ avgDistance(row.distance_km, row.checkin_count) }} km
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div
+                                v-if="monthlyTotalPages > 1"
+                                class="flex items-center justify-between px-4 py-2 border-t border-base-300"
+                            >
+                                <button
+                                    class="btn btn-xs btn-ghost"
+                                    :disabled="monthlyPage === 0"
+                                    @click="monthlyPage--"
+                                >
+                                    ‹
+                                </button>
+                                <span class="text-xs text-base-content/50">
+                                    {{ monthlyPage + 1 }} / {{ monthlyTotalPages }}
+                                </span>
+                                <button
+                                    class="btn btn-xs btn-ghost"
+                                    :disabled="monthlyPage >= monthlyTotalPages - 1"
+                                    @click="monthlyPage++"
+                                >
+                                    ›
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Period comparison (Rückblick, static) -->
+            <div v-if="periods" class="mt-4">
+                <div class="divider text-base-content/40 text-xs uppercase tracking-wide">
+                    {{ trans('stats.time-comparison') }}
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div v-for="period in periods" :key="period.label" class="card bg-base-200">
+                        <div class="card-body py-4 gap-3">
+                            <div>
+                                <p class="text-xs text-base-content/50 uppercase tracking-wide font-medium">
+                                    {{ trans(period.labelKey) }}
+                                </p>
+                                <p class="text-xs text-base-content/40 mt-0.5">
+                                    {{ new Date(period.from).toLocaleDateString() }}
+                                    {{ trans('stats.to').toLowerCase() }}
+                                    {{ trans('stats.today') }}
+                                </p>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div class="text-center">
+                                    <p class="text-2xl font-bold leading-none">{{ period.total_checkins }}</p>
+                                    <p class="text-xs text-base-content/50 mt-1">{{ trans('stats.checkins') }}</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-2xl font-bold leading-none">{{ period.total_distance_km }}</p>
+                                    <p class="text-xs text-base-content/50 mt-1">km</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Global stats (always last) -->
             <div v-if="globalStats" class="mt-4">
                 <div class="divider text-base-content/40 text-xs uppercase tracking-wide">
                     {{ trans('stats.global') }}

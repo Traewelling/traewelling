@@ -6287,6 +6287,151 @@ export class Api<
         format: "json",
         ...params,
       }),
+
+    /**
+     * No description
+     *
+     * @tags Statistics
+     * @name GetStatisticsOverview
+     * @summary Get a summary of personal statistics for a date range
+     * @request GET:/statistics/overview
+     * @secure
+     */
+    getStatisticsOverview: (
+      query?: {
+        /**
+         * Start date
+         * @example "2024-01-01"
+         */
+        from?: any;
+        /**
+         * End date
+         * @example "2024-12-31"
+         */
+        until?: any;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data?: {
+            summary?: {
+              /** @example 42 */
+              total_checkins?: number;
+              /** @example 15 */
+              active_days?: number;
+              /**
+               * @format float
+               * @example 1234.56
+               */
+              total_distance_km?: number;
+              /**
+               * @format float
+               * @example 29.39
+               */
+              mean_distance_km?: number;
+              longest_ride?: StatusResource | null;
+              shortest_ride?: StatusResource | null;
+            };
+          };
+        },
+        void
+      >({
+        path: `/statistics/overview`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Statistics
+     * @name GetStatisticsHistory
+     * @summary Get all-time checkin counts and distances grouped by year, month, and week
+     * @request GET:/statistics/history
+     * @secure
+     */
+    getStatisticsHistory: (params: RequestParams = {}) =>
+      this.request<
+        {
+          data?: {
+            yearly?: {
+              /** @example "2024" */
+              period?: string;
+              /** @example "year" */
+              period_type?: string;
+              /** @example 42 */
+              checkin_count?: number;
+              /**
+               * @format float
+               * @example 1234.56
+               */
+              distance_km?: number;
+            }[];
+            monthly?: any[];
+            weekly?: any[];
+          };
+        },
+        void
+      >({
+        path: `/statistics/history`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Statistics
+     * @name GetStatisticsFavorites
+     * @summary Get favorite stations, lines, and routes for a date range
+     * @request GET:/statistics/favorites
+     * @secure
+     */
+    getStatisticsFavorites: (
+      query?: {
+        /**
+         * Start date
+         * @example "2024-01-01"
+         */
+        from?: any;
+        /**
+         * End date
+         * @example "2024-12-31"
+         */
+        until?: any;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data?: {
+            stations?: {
+              /** @example 1 */
+              station_id?: number;
+              /** @example "Frankfurt Hbf" */
+              name?: string;
+              /** @example 12 */
+              count?: number;
+            }[];
+            lines?: any[];
+            routes?: any[];
+          };
+        },
+        void
+      >({
+        path: `/statistics/favorites`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
   };
   dashboard = {
     /**
