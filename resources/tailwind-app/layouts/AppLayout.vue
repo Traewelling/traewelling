@@ -116,7 +116,8 @@
                 <p>
                     {{ trans('footer.developed') }}
                     <br />
-                    {{ trans('footer.source') }}
+                    <!-- v-html is intentional: content comes from our own i18n files -->
+                    <span v-html="trans('footer.source')"></span>
                     <br />
 
                     Version
