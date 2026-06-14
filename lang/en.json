@@ -316,7 +316,7 @@
   "footer.elsewhere": "Elsewhere",
   "footer.legal": "Legal",
   "footer.services": "Services",
-  "footer.source": "Source code licensed under AGPLv3.",
+  "footer.source": "<a href=\"https://github.com/traewelling/traewelling\" target=\"_blank\" class=\"link link-hover\">Source code</a> licensed under <a href=\"https://www.gnu.org/licenses/agpl-3.0.html\" target=\"_blank\" class=\"link link-hover\">AGPLv3</a>.",
   "generate-token": "Generate token",
   "generic.add": "Add",
   "generic.change": "Change",
