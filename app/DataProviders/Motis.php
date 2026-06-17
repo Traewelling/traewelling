@@ -391,7 +391,7 @@ class Motis extends Controller implements DataProviderInterface
      */
     public function fetchRawHafasTrip(string $tripId, string $lineName): ?array
     {
-        return $this->fetchJourney($tripId, true);
+        return $this->fetchJourney($tripId);
     }
 
     /**
