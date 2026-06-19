@@ -157,7 +157,10 @@ watch(
             <CheckinSuccessBanner v-if="checkinResult" :data="checkinResult" class="max-w-5xl mx-auto" />
 
             <!-- Date heading -->
-            <h2 class="text-base font-semibold text-base-content/60 mb-3 max-w-5xl mx-auto">
+            <h2
+                class="text-base font-semibold text-base-content/60 mb-3 max-w-5xl mx-auto"
+                :class="hasRightColumn ? '' : 'lg:max-w-2xl'"
+            >
                 {{ formattedDate }}
             </h2>
 
@@ -225,7 +228,7 @@ watch(
                 </div>
 
                 <!-- Right: co-passengers + ticket (closed-beta only, own status only) -->
-                <div class="w-full space-y-4" :class="hasRightColumn ? 'lg:w-80 shrink-0' : ''">
+                <div v-show="hasRightColumn" class="w-full lg:w-80 shrink-0 space-y-4">
                     <CoPassengers
                         :trip-id="status.checkin.trip"
                         :current-status-id="status.id"
