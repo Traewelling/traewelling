@@ -80,16 +80,21 @@ function formatTime(isoString: string | null | undefined): string {
                     </router-link>
                     <router-link
                         :to="{ name: 'single-status', params: { id: passenger.id } }"
-                        class="text-base-content/50 hover:text-base-content transition-colors block truncate"
+                        class="text-base-content/50 hover:text-base-content transition-colors block"
                     >
-                        {{ passenger.checkin.origin.name }}
-                        <span class="text-base-content/40">
-                            ({{ formatTime(getDepartureForStopover(passenger.checkin.origin).dateTime.toISO()) }})
+                        <span class="block truncate">
+                            {{ passenger.checkin.origin.name }}
+                            <span class="text-base-content/40">
+                                ({{ formatTime(getDepartureForStopover(passenger.checkin.origin).dateTime.toISO()) }})
+                            </span>
                         </span>
-                        &rarr;
-                        {{ passenger.checkin.destination.name }}
-                        <span class="text-base-content/40">
-                            ({{ formatTime(getArrivalForStopover(passenger.checkin.destination).dateTime.toISO()) }})
+                        <span class="block truncate">
+                            &rarr;&nbsp;{{ passenger.checkin.destination.name }}
+                            <span class="text-base-content/40">
+                                ({{
+                                    formatTime(getArrivalForStopover(passenger.checkin.destination).dateTime.toISO())
+                                }})
+                            </span>
                         </span>
                     </router-link>
                 </div>

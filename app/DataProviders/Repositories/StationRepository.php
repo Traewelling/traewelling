@@ -12,6 +12,7 @@ use App\Models\StationIdentifier;
 use App\Services\GeoService;
 use Illuminate\Database\Eloquent\Collection as DbCollection;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class StationRepository
 {
@@ -119,7 +120,35 @@ class StationRepository
             ]
         );
 
+        $ifopt = $this->extractIfoptFromMotisId($rawStation['stopId']);
+        if ($ifopt !== null) {
+            $this->ensureIfoptIdentifier($station, $ifopt);
+        }
+
         return $station;
+    }
+
+    /**
+     * Extracts the base IFOPT (country:area:stop, 3 parts) from a MOTIS stop identifier.
+     * MOTIS identifiers follow the pattern "{source}_{ifopt}[:{extra}...]".
+     * Works for de-DELFI, at-PTA-*, at-Railway-*, and similar sources.
+     * Returns null if no IFOPT pattern is found.
+     */
+    private function extractIfoptFromMotisId(string $motisId): ?string
+    {
+        $underscorePos = strpos($motisId, '_');
+        if ($underscorePos === false) {
+            return null;
+        }
+
+        $afterUnderscore = substr($motisId, $underscorePos + 1);
+        $parts = explode(':', $afterUnderscore);
+
+        if (count($parts) < 3 || !preg_match('/^[a-z]{2}$/i', $parts[0]) || !is_numeric($parts[2])) {
+            return null;
+        }
+
+        return implode(':', array_slice($parts, 0, 3));
     }
 
     public function getStationByrilIdentifier(string $rilIdentifier): ?Station
@@ -174,9 +203,33 @@ class StationRepository
             $ifopt = str_replace('de-DELFI_', '', $stationId);
             $station = $this->getStationByIfopt($ifopt);
             $this->updateStationIdentifier($station, $stationId, $source, StationIdentifierType::MOTIS, $latitude, $longitude);
+
+            if ($station !== null) {
+                $baseIfopt = $this->extractIfoptFromMotisId($stationId);
+                if ($baseIfopt !== null) {
+                    $this->ensureIfoptIdentifier($station, $baseIfopt);
+                }
+            }
         }
 
         return $station;
+    }
+
+    private function ensureIfoptIdentifier(Station $station, string $ifopt): void
+    {
+        $existing = StationIdentifier::where('type', StationIdentifierType::IFOPT)
+            ->where('identifier', $ifopt)
+            ->first();
+
+        if ($existing !== null) {
+            return;
+        }
+
+        StationIdentifier::create([
+            'type' => StationIdentifierType::IFOPT,
+            'identifier' => $ifopt,
+            'station_id' => $station->id,
+        ]);
     }
 
     public function resetRelevance(StationIdentifier $identifier): void
