@@ -27,6 +27,7 @@ import {
     getDepartureForStatus,
     getDepartureForStopover,
     StopoverTimeType,
+    timeTypeTooltip,
 } from '../../../vue/helpers/DateTimeHelper';
 import { useUserStore } from '../../../vue/stores/user';
 import { VISIBILITY_ICONS } from '../../helpers/visibility';
@@ -260,7 +261,11 @@ const inProgress = computed(() => progress.value > 0 && progress.value < 100);
                                     <span v-if="departure.originalTime" class="line-through text-base-content/40 mr-1">
                                         {{ fmtTime(departure.originalTime) }}
                                     </span>
-                                    <span :class="delayClass(departure)">
+                                    <span
+                                        class="tooltip tooltip-left"
+                                        :data-tip="trans(timeTypeTooltip(departure.type))"
+                                        :class="delayClass(departure)"
+                                    >
                                         {{ fmtTime(departure.time) }}
                                     </span>
                                 </div>
@@ -399,7 +404,11 @@ const inProgress = computed(() => progress.value > 0 && progress.value < 100);
                                     <span v-if="arrival.originalTime" class="line-through text-base-content/40 mr-1">
                                         {{ fmtTime(arrival.originalTime) }}
                                     </span>
-                                    <span :class="delayClass(arrival)">
+                                    <span
+                                        class="tooltip tooltip-left"
+                                        :data-tip="trans(timeTypeTooltip(arrival.type))"
+                                        :class="delayClass(arrival)"
+                                    >
                                         {{ fmtTime(arrival.time) }}
                                     </span>
                                 </div>

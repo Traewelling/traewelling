@@ -78,6 +78,16 @@ The old `message.status_id` and `message.lineName` fields are still present for 
 
 ---
 
+# 2026-06-12
+
+**Three new endpoints for personal statistics (all require `read-statistics` scope):**
+
+- `GET /api/v1/statistics/overview`: Returns a summary (total checkins, distance, active days) plus full `StatusResource` objects for the longest and shortest ride in the requested date range. Cached 1 hour per user and date range.
+- `GET /api/v1/statistics/history`: Returns all-time checkin counts and distances grouped by year, month (ISO `YYYY-MM`), and week (ISO `YYYY-Wnn`). Cached 6 hours per user.
+- `GET /api/v1/statistics/favorites`: Returns the top 10 most visited stations, most used lines, and most frequent origin-to-destination pairs for the requested date range. Cached 1 hour per user and date range.
+
+---
+
 # 2026-05-06
 
 **`PUT /api/v1/settings/profile` now supports partial updates:**
@@ -132,7 +142,7 @@ Operators have been migrated from integer IDs to UUIDs. The `OperatorResource` w
 
 # 2026-03-28
 
-- `DepartureResource`: added `cancelled` (bool) field — `true` when the departure is cancelled according to the data
+- `DepartureResource`: added `cancelled` (bool) field: `true` when the departure is cancelled according to the data
   provider
 
 # 2026-03-21
@@ -162,7 +172,7 @@ Added new `POST /api/v1/trips` endpoint for creating manual trips.
 
 ---
 
-# 2026-03-15 (Ticket management – closed beta)
+# 2026-03-15 (Ticket management: closed beta)
 
 Added new `GET|POST|PUT|DELETE /api/v1/tickets` endpoints for managing transit tickets.
 Only available to users with the `closed-beta` role.
@@ -197,7 +207,7 @@ The integer ID is **not** deprecated and will continue to work until further not
 
 The `EventDetailsResource` fields `trainDistance` and `trainDuration` are now **deprecated** and will be removed after *
 *2026-09-30**.
-Use `totalDistance` and `totalDuration` instead — both fields are now returned alongside the old ones.
+Use `totalDistance` and `totalDuration` instead: both fields are now returned alongside the old ones.
 
 The `CheckinSuccessResource.points.additional` field is now **deprecated** (always `null`) and will be removed after *
 *2026-09-30**.

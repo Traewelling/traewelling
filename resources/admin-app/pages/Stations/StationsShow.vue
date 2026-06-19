@@ -2,7 +2,7 @@
 import { ArrowLeft } from '@lucide/vue';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import { Api, type Station } from '../../../types/Api.gen';
+import { Api, type Station, type StationResource } from '../../../types/Api.gen';
 import BackendLayout from '../../layouts/BackendLayout.vue';
 import StationCoordinatesMap from './partials/StationCoordinatesMap.vue';
 import StationDetailsCard from './partials/StationDetailsCard.vue';
@@ -14,7 +14,7 @@ const route = useRoute();
 const stationId = computed(() => Number(route.params.id));
 
 const station = ref<Station | null>(null);
-const nearbyStations = ref<Station[]>([]);
+const nearbyStations = ref<StationResource[]>([]);
 const loading = ref(true);
 const error = ref<string | null>(null);
 
@@ -45,6 +45,7 @@ async function fetchStation(): Promise<void> {
             min_lon: lon - delta,
             max_lon: lon + delta,
             limit: 51,
+            withIdentifiers: true,
         });
         nearbyStations.value = (nearby.data.data ?? [])
             .filter((s) => s.id !== stationId.value)
@@ -131,6 +132,17 @@ watch(stationId, fetchStation);
                                                 >
                                                     {{ nearby.name }}
                                                 </router-link>
+                                                <div class="flex flex-wrap gap-1 mt-1">
+                                                    <span
+                                                        v-for="ident in nearby.identifiers.filter(
+                                                            (i) => i.type === 'ifopt',
+                                                        )"
+                                                        :key="ident.id"
+                                                        class="badge badge-ghost badge-sm font-mono"
+                                                    >
+                                                        {{ ident.identifier }}
+                                                    </span>
+                                                </div>
                                             </td>
                                             <td class="text-xs text-base-content/60 tabular-nums">
                                                 {{
