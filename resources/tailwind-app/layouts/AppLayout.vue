@@ -121,7 +121,7 @@
 
                     Version
                     <router-link :to="{ name: 'changelog' }" class="link link-hover">
-                        {{ config.appVersion?.substring(0, 11) }}
+                        {{ config.appVersion }}
                     </router-link>
                 </p>
             </aside>
