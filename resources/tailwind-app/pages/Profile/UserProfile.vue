@@ -5,6 +5,7 @@ import { DateTime } from 'luxon';
 import { Notyf } from 'notyf';
 import { computed, inject, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import profileBg from '../../../images/covers/profile-background.png';
 import { Api, StatusResource, StopoverResource, UserResource, ViewUserForbiddenReason } from '../../../types/Api.gen';
 import { getDepartureForStatus } from '../../../vue/helpers/DateTimeHelper';
 import { useUserStore } from '../../../vue/stores/user';
@@ -120,7 +121,10 @@ onMounted(() => {
 
 <template>
     <AppLayout :legacy="true" :fullscreen="true">
-        <div class="w-full bg-primary text-primary-content px-4 sm:px-6 lg:px-8 py-6">
+        <div
+            class="w-full bg-primary text-primary-content bg-center bg-cover px-4 sm:px-6 lg:px-8 py-6"
+            :style="{ backgroundImage: `url(${profileBg})` }"
+        >
             <div class="max-w-7xl mx-auto">
                 <!-- Loading skeleton -->
                 <template v-if="loadingUser">
