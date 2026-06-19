@@ -222,14 +222,6 @@ class StationRepository
             ->first();
 
         if ($existing !== null) {
-            if ($existing->station_id !== $station->id) {
-                Log::warning('IFOPT identifier already assigned to a different station, skipping backfill (need cleanup?)', [
-                    'ifopt' => $ifopt,
-                    'station_id' => $station->id,
-                    'existing_station_id' => $existing->station_id,
-                ]);
-            }
-
             return;
         }
 
