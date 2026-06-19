@@ -144,7 +144,7 @@ class StationRepository
         $afterUnderscore = substr($motisId, $underscorePos + 1);
         $parts = explode(':', $afterUnderscore);
 
-        if (count($parts) < 3 || !preg_match('/^[a-z]{2}$/i', $parts[0])) {
+        if (count($parts) < 3 || !preg_match('/^[a-z]{2}$/i', $parts[0]) || !is_numeric($parts[2])) {
             return null;
         }
 

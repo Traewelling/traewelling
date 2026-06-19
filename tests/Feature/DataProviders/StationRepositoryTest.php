@@ -177,6 +177,24 @@ class StationRepositoryTest extends FeatureTestCase
         ]);
     }
 
+    public function test_create_motis_station_identifier_does_not_backfill_swiss_sloid_as_ifopt(): void
+    {
+        $rawStation = [
+            'stopId' => 'ch-SBB_ch:1:sloid:8503000:0:1',
+            'name' => 'Zürich HB',
+            'lat' => 47.378,
+            'lon' => 8.540,
+            'areas' => [],
+        ];
+
+        $station = $this->repository->createMotisStationIdentifier($rawStation, DataProvider::TRANSITOUS);
+
+        $this->assertDatabaseMissing('station_identifiers', [
+            'station_id' => $station->id,
+            'type' => 'ifopt',
+        ]);
+    }
+
     public function test_ifopt_backfill_skips_and_logs_warning_when_ifopt_already_claimed_by_another_station(): void
     {
         $existingStation = Station::factory()->create();
