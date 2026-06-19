@@ -188,7 +188,7 @@ class StationRepositoryTest extends FeatureTestCase
 
         Log::shouldReceive('warning')
             ->once()
-            ->with('IFOPT identifier already assigned to a different station, skipping backfill', \Mockery::any());
+            ->with('IFOPT identifier already assigned to a different station, skipping backfill (need cleanup?)', \Mockery::any());
 
         $rawStation = [
             'stopId' => 'de-DELFI_de:99999:88888',
