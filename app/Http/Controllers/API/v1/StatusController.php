@@ -915,8 +915,8 @@ class StatusController extends Controller
         $latestStatuses = UserBackend::statusesForUser(Auth::user());
         if ($latestStatuses->count() > 0) {
             foreach ($latestStatuses as $status) {
-                if ($status->checkin->originStopover->departure->isPast()
-                    && $status->checkin->destinationStopover->arrival->isFuture()) {
+                if ($status->checkin->originStopover?->departure?->isPast()
+                    && $status->checkin->destinationStopover?->arrival?->isFuture()) {
                     return new StatusResource($status);
                 }
             }

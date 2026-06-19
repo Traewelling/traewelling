@@ -129,6 +129,9 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::get('/', [StatisticsController::class, 'getPersonalStatistics']);
             Route::get('/global', [StatisticsController::class, 'getGlobalStatistics']);
             Route::get('/daily/{date}', [StatisticsController::class, 'getPersonalDailyStatistics']);
+            Route::get('/overview', [StatisticsController::class, 'getOverview']);
+            Route::get('/history', [StatisticsController::class, 'getHistory']);
+            Route::get('/favorites', [StatisticsController::class, 'getFavorites']);
         });
         Route::group(['prefix' => 'export', 'middleware' => 'scope:write-exports'], static function () {
             Route::post('statuses', [ExportController::class, 'generateStatusExport']); // TODO: undocumented endpoint - document when stable
@@ -237,7 +240,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
 
         Route::apiResource('user.trusted', TrustedUserController::class)->only(['index', 'store', 'destroy']);
         Route::apiResource('reports', ReportController::class);
-        Route::apiResource('report', ReportController::class); // deprecated, use /reports — safe to remove after 2026-09-30
+        Route::apiResource('report', ReportController::class); // deprecated, use /reports: safe to remove after 2026-09-30
         Route::apiResource('operators', OperatorController::class)->only(['index']);
         Route::apiResource('alerts', AlertController::class);
         Route::put('/operators/{oldOperatorId}/merge/{newOperatorId}', [OperatorController::class, 'merge']); // currently admin/backend only
