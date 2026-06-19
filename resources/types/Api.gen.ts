@@ -6734,7 +6734,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: {
+          data: {
             summary?: {
               /** @example 42 */
               total_checkins?: number;
@@ -6777,7 +6777,7 @@ export class Api<
     getStatisticsHistory: (params: RequestParams = {}) =>
       this.request<
         {
-          data?: {
+          data: {
             yearly?: {
               /** @example "2024" */
               period?: string;
@@ -6830,7 +6830,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: {
+          data: {
             stations?: {
               /** @example 1 */
               station_id?: number;
