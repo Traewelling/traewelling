@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { Map, Train } from '@lucide/vue';
 import { transChoice } from 'laravel-vue-i18n';
-import { Map, Train } from 'lucide-vue-next';
 import { LngLat, LngLatBounds } from 'maplibre-gl';
 import { onUnmounted, ref } from 'vue';
 import { Api, EventResource, LivePointDto, MapProvider, StatusResource } from '../../../types/Api.gen';
@@ -93,7 +93,11 @@ onUnmounted(() => {
                         <GenericMap
                             :live-positions="livePositions"
                             :bounds="bounds"
-                            :map-provider="user.user?.mapProvider ?? MapProvider.Cargo"
+                            :map-provider="
+                                user.user?.mapProvider
+                                    ? MapProvider[user.user!.mapProvider as keyof typeof MapProvider]
+                                    : MapProvider.Cargo
+                            "
                         >
                             <EventMarker v-for="event in events" :key="event.id" :event="event" />
                         </GenericMap>

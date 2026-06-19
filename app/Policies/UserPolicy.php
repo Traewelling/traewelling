@@ -57,6 +57,11 @@ class UserPolicy
         return Response::allow();
     }
 
+    public function adminViewAny(User $user): bool
+    {
+        return $user->hasRole('admin');
+    }
+
     /**
      * Determine whether the user can update the model.
      */

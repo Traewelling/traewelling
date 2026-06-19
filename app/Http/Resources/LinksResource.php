@@ -11,6 +11,7 @@ use OpenApi\Attributes as OA;
     schema: 'Links',
     title: 'Links',
     description: 'Pagination links',
+    required: ['first', 'last', 'prev', 'next'],
     properties: [
         new OA\Property(property: 'first', type: 'string', format: 'uri', example: 'https://traewelling.de/api/v1/ENDPOINT?page=1', nullable: true),
         new OA\Property(property: 'last', type: 'string', format: 'uri', example: null, nullable: true),

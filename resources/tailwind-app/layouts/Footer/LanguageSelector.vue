@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { Globe } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { Globe } from 'lucide-vue-next';
 import { useConfigurationStore } from '../../../vue/stores/configuration';
 
 const config = useConfigurationStore();

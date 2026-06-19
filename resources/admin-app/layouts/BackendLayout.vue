@@ -1,17 +1,5 @@
 <script setup lang="ts">
-import {
-    Activity,
-    Bell,
-    BriefcaseBusiness,
-    CalendarDays,
-    Flag,
-    House,
-    MapPin,
-    Radio,
-    Scale,
-    Train,
-    Users,
-} from 'lucide-vue-next';
+import { Activity, Bell, BriefcaseBusiness, CalendarDays, Flag, House, MapPin, Radio, Train, Users } from '@lucide/vue';
 import { type FunctionalComponent } from 'vue';
 import { useUserStore } from '../../vue/stores/user';
 
@@ -40,7 +28,6 @@ const navLinks: {
     { label: 'Operators', icon: BriefcaseBusiness, href: '/admin/operators', roles: ['admin'] },
     { label: 'Activity', icon: Activity, href: '/admin/activity', roles: ['admin'] },
     { label: 'Reports', icon: Flag, href: '/admin/reports', roles: ['admin'] },
-    { label: 'Licenses', icon: Scale, href: '/admin/sources', roles: ['admin'] },
     { label: 'Alerts', icon: Bell, href: '/admin/alerts', roles: ['admin'] },
 ];
 
@@ -61,10 +48,10 @@ function isActive(href: string): boolean {
             <!-- Navbar -->
             <div class="navbar bg-primary text-primary-content shadow-lg shrink-0">
                 <div class="navbar-start">
-                    <a href="/admin" class="btn btn-ghost text-lg font-bold">
+                    <RouterLink to="/admin" class="btn btn-ghost text-lg font-bold">
                         <img src="/images/icons/logo.svg" alt="Träwelling" class="w-7 h-7" />
                         TRWL Backend
-                    </a>
+                    </RouterLink>
                 </div>
 
                 <div class="navbar-center hidden xl:flex">
@@ -77,14 +64,14 @@ function isActive(href: string): boolean {
                             "
                             :key="link.href"
                         >
-                            <a
-                                :href="link.href"
+                            <RouterLink
+                                :to="link.href"
                                 class="gap-1.5 px-2 py-1.5"
                                 :class="isActive(link.href) ? 'active' : ''"
                             >
                                 <component :is="link.icon" class="w-4 h-4" />
                                 {{ link.label }}
-                            </a>
+                            </RouterLink>
                         </li>
                     </ul>
                 </div>
@@ -132,10 +119,10 @@ function isActive(href: string): boolean {
                     "
                     :key="link.href"
                 >
-                    <a :href="link.href" :class="isActive(link.href) ? 'active' : ''">
+                    <RouterLink :to="link.href" :class="isActive(link.href) ? 'active' : ''">
                         <component :is="link.icon" class="w-4 h-4" />
                         {{ link.label }}
-                    </a>
+                    </RouterLink>
                 </li>
                 <li class="mt-auto">
                     <a href="/dashboard" class="gap-2">

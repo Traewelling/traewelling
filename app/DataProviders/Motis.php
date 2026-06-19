@@ -357,7 +357,10 @@ class Motis extends Controller implements DataProviderInterface
     private function fetchJourney(string $tripId): ?array
     {
         try {
-            $response = Http::withUserAgent(VersionController::getUserAgent())->get(self::API_URL . '/v5/trip', ['tripId' => $tripId]);
+            $response = Http::withUserAgent(VersionController::getUserAgent())->get(self::API_URL . '/v5/trip', [
+                'tripId' => $tripId,
+                'joinInterlinedLegs' => 'false',
+            ]);
 
             if ($response->ok()) {
                 CacheKey::increment(HCK::TRIPS_SUCCESS);
@@ -388,7 +391,7 @@ class Motis extends Controller implements DataProviderInterface
      */
     public function fetchRawHafasTrip(string $tripId, string $lineName): ?array
     {
-        return $this->fetchJourney($tripId, true);
+        return $this->fetchJourney($tripId);
     }
 
     /**
@@ -400,11 +403,40 @@ class Motis extends Controller implements DataProviderInterface
         if ($rawJourney === null) {
             throw new DataProviderException(__('messages.exception.motis.trip-not-found'));
         }
-        // get cached data from departure board
-        $leg = $rawJourney['legs'][0];
 
-        $journey = Trip::updateOrCreate(['trip_id' => $tripID], $this->hydrator->getTripData($leg, $lineName, $this->source));
-        $this->tripRepository->tryToSaveStopovers($journey, $this->hydrator->parseLegToNewStopovers($leg, $this->source));
+        $legs = $rawJourney['legs'];
+
+        $matchingIndex = 0;
+        foreach ($legs as $index => $leg) {
+            if ($leg['tripId'] === $tripID) {
+                $matchingIndex = $index;
+                break;
+            }
+        }
+
+        $primaryLeg = $legs[$matchingIndex];
+        $journey = Trip::updateOrCreate(['trip_id' => $tripID], $this->hydrator->getTripData($primaryLeg, $lineName, $this->source));
+        $this->tripRepository->tryToSaveStopovers($journey, $this->hydrator->parseLegToNewStopovers($primaryLeg, $this->source));
+
+        $seenTripIds = [$tripID];
+        $previousTrip = $journey;
+        foreach (array_slice($legs, $matchingIndex + 1) as $interlinedLeg) {
+            if (!($interlinedLeg['interlineWithPreviousLeg'] ?? false)) {
+                break;
+            }
+            if (in_array($interlinedLeg['tripId'], $seenTripIds, true)) {
+                break;
+            }
+            $interlinedTrip = Trip::updateOrCreate(
+                ['trip_id' => $interlinedLeg['tripId']],
+                $this->hydrator->getTripData($interlinedLeg, $interlinedLeg['displayName'] ?? $lineName, $this->source)
+            );
+            $this->tripRepository->tryToSaveStopovers($interlinedTrip, $this->hydrator->parseLegToNewStopovers($interlinedLeg, $this->source));
+
+            $seenTripIds[] = $interlinedLeg['tripId'];
+            $previousTrip->update(['continuation_trip_id' => $interlinedTrip->id]);
+            $previousTrip = $interlinedTrip;
+        }
 
         return $journey;
     }

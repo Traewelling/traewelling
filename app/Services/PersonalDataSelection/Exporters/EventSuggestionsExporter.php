@@ -17,4 +17,19 @@ class EventSuggestionsExporter extends AbstractExporter
     protected string $model = EventSuggestion::class;
 
     protected string $whereColumn = 'user_id';
+
+    protected array $columns = [
+        'id',
+        'user_id',
+        'name',
+        'host',
+        'url',
+        'station_id',
+        'begin',
+        'end',
+        'hashtag',
+        'processed',
+        'created_at',
+        'updated_at',
+    ];
 }

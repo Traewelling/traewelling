@@ -12,6 +12,7 @@ use stdClass;
 #[OA\Schema(
     title: 'LivePointDto',
     description: 'All necessary information to calculate live position',
+    required: ['point', 'polyline', 'arrival', 'departure', 'lineName', 'statusId'],
     xml: new OA\Xml(name: 'LivePointDto'),
 )]
 readonly class LivePointDto implements JsonSerializable
@@ -28,6 +29,7 @@ readonly class LivePointDto implements JsonSerializable
         ref: '#/components/schemas/FeatureCollection',
         title: 'polyline',
         description: 'geojson point collection of the next line segment',
+        nullable: true,
     )]
     public ?stdClass $polyline;
 

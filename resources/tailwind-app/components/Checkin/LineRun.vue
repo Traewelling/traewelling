@@ -4,6 +4,8 @@ import { DateTime } from 'luxon';
 import { onMounted, ref, watch } from 'vue';
 import { Api, StopoverResource, TripResource } from '../../../types/Api.gen';
 
+type ContinuationTrip = NonNullable<TripResource['continuationTrip']>;
+
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 
 const props = defineProps<{
@@ -19,6 +21,7 @@ const emit = defineEmits<{
 }>();
 
 const stopovers = ref<StopoverResource[]>([]);
+const continuationTrip = ref<ContinuationTrip | null>(null);
 const attribution = ref<string | null>(null);
 const loading = ref(false);
 const error = ref(false);
@@ -50,16 +53,19 @@ async function fetchLineRun(): Promise<void> {
         const trip: TripResource = res.data?.data as TripResource;
 
         const givenDeparture = DateTime.fromISO(props.plannedWhen);
-        stopovers.value = (trip.stopovers ?? []).filter((item) => {
-            let time: DateTime | null = null;
-            if (item.arrivalPlanned) time = DateTime.fromISO(item.arrivalPlanned);
-            else if (item.departurePlanned) time = DateTime.fromISO(item.departurePlanned);
-            if (!time) return true;
-            if (time.toMillis() < givenDeparture.toMillis()) return false;
-            if (time.toMillis() > givenDeparture.toMillis()) return true;
-            return Number(props.startId) !== Number(item.id);
+        const allStopovers = trip.stopovers ?? [];
+        const startIndex = allStopovers.findIndex((item) => {
+            if (Number(item.id) !== Number(props.startId)) return false;
+            const dep = item.departurePlanned
+                ? DateTime.fromISO(item.departurePlanned)
+                : item.arrivalPlanned
+                  ? DateTime.fromISO(item.arrivalPlanned)
+                  : null;
+            return dep !== null && dep.toMillis() === givenDeparture.toMillis();
         });
+        stopovers.value = startIndex !== -1 ? allStopovers.slice(startIndex + 1) : allStopovers;
 
+        continuationTrip.value = (trip.continuationTrip as ContinuationTrip) ?? null;
         attribution.value = trip.dataSource?.attribution ?? null;
 
         if (props.fastCheckinId) {
@@ -115,6 +121,19 @@ watch(() => props.tripId, fetchLineRun);
             </button>
         </li>
     </ul>
+
+    <p v-if="continuationTrip" class="px-4 py-2 text-sm text-base-content/50 text-center mb-0">
+        {{ trans('stationboard.continues-as') }}
+        <span
+            class="badge badge-sm font-mono ml-1"
+            :style="{
+                backgroundColor: continuationTrip.routeColor ? `#${continuationTrip.routeColor}` : undefined,
+                color: continuationTrip.routeTextColor ? `#${continuationTrip.routeTextColor}` : undefined,
+            }"
+            >{{ continuationTrip.lineName }}</span
+        >
+        {{ continuationTrip.destination?.name }}
+    </p>
 
     <div v-if="attribution" class="px-4 pb-4 pt-2">
         <!-- eslint-disable-next-line vue/no-v-html -->

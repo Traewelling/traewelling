@@ -11,6 +11,7 @@ use OpenApi\Attributes as OA;
     schema: 'PaginationMeta',
     title: 'Meta',
     description: 'Pagination meta data',
+    required: ['current_page', 'from', 'path', 'per_page', 'to'],
     properties: [
         new OA\Property(property: 'current_page', type: 'integer', example: 2),
         new OA\Property(property: 'from', type: 'integer', example: 16),

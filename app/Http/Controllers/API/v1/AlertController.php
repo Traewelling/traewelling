@@ -6,17 +6,20 @@ use App\Http\Requests\StoreAlertRequest;
 use App\Http\Resources\AlertResource;
 use App\Models\Alert;
 use App\Models\AlertTranslation;
+use App\Services\PrivacyPolicyService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use OpenApi\Attributes as OA;
 
 class AlertController extends Controller
 {
+    public function __construct(
+        private readonly PrivacyPolicyService $privacyPolicyService,
+    ) {}
+
     #[OA\Get(
         path: '/alerts',
         operationId: 'getAlerts',
@@ -31,6 +34,7 @@ class AlertController extends Controller
                 response: 200,
                 description: 'List of alerts',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -85,44 +89,26 @@ class AlertController extends Controller
             $alerts->prepend($alert);
         }
 
-        // TODO: remove following alert injection after 2026-05-31
-        $deadline = Carbon::create(2026, 5, 31)->endOfDay();
-        $userId = auth()->id();
-        if (now()->lte($deadline) && $userId !== null) {
-            $hasDuplicates = Cache::remember(
-                'duplicate-checkins-check:' . $userId,
-                now()->addMinutes(5),
-                function () use ($userId): bool {
-                    return DB::table(
-                        DB::table('train_checkins')
-                            ->select('trip_id')
-                            ->where('user_id', $userId)
-                            ->whereNotNull('origin_stopover_id')
-                            ->groupBy('trip_id', 'origin_stopover_id')
-                            ->havingRaw('COUNT(*) > 1')
-                            ->limit(1),
-                        'dups'
-                    )->exists();
-                }
-            );
+        $upcomingPolicy = $this->privacyPolicyService->getUpcomingPolicy();
+        $user = auth()->user();
 
-            if ($hasDuplicates) {
-                $alert = new Alert();
-                $alert->id = 'duplicate-checkins-cleanup';
-                $alert->type = 'warning';
-                $alert->active_from = Carbon::create(2026, 5, 6);
-                $alert->active_until = $deadline;
-                $alert->url = url('/statuses/duplicates');
+        if ($upcomingPolicy !== null && $user !== null && !$this->privacyPolicyService->hasUserAcceptedPolicy($user, $upcomingPolicy)) {
+            $alert = new Alert();
+            $alert->id = 'privacy-policy-upcoming';
+            $alert->type = 'warning';
+            $alert->active_from = now();
+            $alert->active_until = $upcomingPolicy->valid_at;
 
-                $translation = new AlertTranslation();
-                $translation->locale = app()->getLocale();
-                $translation->title = __('checkin.duplicates.alert.title');
-                $translation->content = __('checkin.duplicates.alert.content');
-                $translation->url = url('/statuses/duplicates');
-                $alert->setRelation('translations', collect([$translation]));
+            $translation = new AlertTranslation();
+            $translation->locale = app()->getLocale();
+            $translation->title = __('privacy.upcoming-alert.title');
+            $translation->content = __('privacy.upcoming-alert.content', [
+                'date' => $upcomingPolicy->valid_at->isoFormat('LL'),
+            ]);
+            $translation->url = url('/gdpr-intercept');
+            $alert->setRelation('translations', collect([$translation]));
 
-                $alerts->prepend($alert);
-            }
+            $alerts->prepend($alert);
         }
 
         return AlertResource::collection($alerts);
@@ -138,7 +124,14 @@ class AlertController extends Controller
             new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid')),
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Alert details.', content: new OA\JsonContent(properties: [new OA\Property(property: 'data', ref: '#/components/schemas/AlertResource')])),
+            new OA\Response(
+                response: 200,
+                description: 'Alert details.',
+                content: new OA\JsonContent(
+                    required: ['data'],
+                    properties: [new OA\Property(property: 'data', ref: '#/components/schemas/AlertResource')]
+                )
+            ),
             new OA\Response(response: 403, description: 'Forbidden.'),
             new OA\Response(response: 404, description: 'Not found.'),
         ],
@@ -175,7 +168,14 @@ class AlertController extends Controller
         ),
         tags: ['Notifications'],
         responses: [
-            new OA\Response(response: 201, description: 'Alert created.', content: new OA\JsonContent(properties: [new OA\Property(property: 'data', ref: '#/components/schemas/AlertResource')])),
+            new OA\Response(
+                response: 201,
+                description: 'Alert created.',
+                content: new OA\JsonContent(
+                    required: ['data'],
+                    properties: [new OA\Property(property: 'data', ref: '#/components/schemas/AlertResource')]
+                )
+            ),
             new OA\Response(response: 403, description: 'Forbidden.'),
             new OA\Response(response: 422, description: 'Validation error.'),
         ],
@@ -217,7 +217,14 @@ class AlertController extends Controller
             new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid')),
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Alert updated.', content: new OA\JsonContent(properties: [new OA\Property(property: 'data', ref: '#/components/schemas/AlertResource')])),
+            new OA\Response(
+                response: 200,
+                description: 'Alert updated.',
+                content: new OA\JsonContent(
+                    required: ['data'],
+                    properties: [new OA\Property(property: 'data', ref: '#/components/schemas/AlertResource')]
+                )
+            ),
             new OA\Response(response: 403, description: 'Forbidden.'),
             new OA\Response(response: 404, description: 'Not found.'),
             new OA\Response(response: 422, description: 'Validation error.'),

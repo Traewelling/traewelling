@@ -21,6 +21,8 @@ use OpenApi\Attributes as OA;
         'points',
         'mastodonUrl',
         'privateProfile',
+        'points_enabled',
+        'likes_enabled',
         'pointsEnabled',
         'userInvisibleToMe',
         'muted',
@@ -145,6 +147,7 @@ use OpenApi\Attributes as OA;
             description: 'Bio of the user',
             type: 'string',
             example: 'Hi there! I am Gertrud!',
+            nullable: true,
         ),
         new OA\Property(
             property: 'profileLinks',

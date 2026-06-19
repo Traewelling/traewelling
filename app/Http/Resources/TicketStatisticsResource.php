@@ -13,6 +13,7 @@ use OpenApi\Attributes as OA;
     schema: 'TicketStatisticsResource',
     title: 'TicketStatisticsResource',
     description: 'Usage statistics for a single ticket',
+    required: ['tripCount', 'distance', 'duration', 'firstUsed', 'lastUsed', 'costPerTrip', 'costPerKm', 'costPerHour', 'purposes', 'categories', 'operators'],
     properties: [
         new OA\Property(property: 'tripCount', description: 'Total number of trips assigned to this ticket', type: 'integer', example: 42),
         new OA\Property(property: 'distance', description: 'Total distance of all assigned trips in meters', type: 'integer', example: 123400),

@@ -112,8 +112,20 @@ function appLayout(): string
         return 'layouts.app-embed';
     }
 
-    return auth()->user()?->hasRole('open-beta')
+    return isNewLayout()
         ? 'layouts.tailwind-vue-layout'
+        : 'layouts.app';
+}
+
+function isNewLayout(): bool
+{
+    return (bool) auth()->user()?->hasRole('open-beta');
+}
+
+function minimalLayout(): string
+{
+    return isNewLayout()
+        ? 'layouts.minimal-tailwind'
         : 'layouts.app';
 }
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ChartLine, Medal } from 'lucide-vue-next';
+import { ChartLine, Medal } from '@lucide/vue';
 import { DateTime } from 'luxon';
 import { onMounted, ref } from 'vue';
 import { Api, LeaderboardUserResource } from '../../../types/Api.gen';
@@ -28,6 +28,7 @@ function fetchData() {
                 usersLeaderboard.value = data.data;
                 loading.value--;
             });
+            select(selected.value);
         })
         .catch(() => {
             loading.value--;

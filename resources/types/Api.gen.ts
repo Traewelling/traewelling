@@ -63,6 +63,26 @@ export enum StatusVisibility {
 }
 
 /**
+ * StatusTagKey
+ * StatusTagKey
+ * @example "trwl:social_status"
+ */
+export enum StatusTagKey {
+  TrwlSeat = "trwl:seat",
+  TrwlWagon = "trwl:wagon",
+  TrwlTicket = "trwl:ticket",
+  TrwlTravelClass = "trwl:travel_class",
+  TrwlLocomotiveClass = "trwl:locomotive_class",
+  TrwlWagonClass = "trwl:wagon_class",
+  TrwlRole = "trwl:role",
+  TrwlVehicleNumber = "trwl:vehicle_number",
+  TrwlPassengerRights = "trwl:passenger_rights",
+  TrwlJourneyNumber = "trwl:journey_number",
+  TrwlPrice = "trwl:price",
+  TrwlSocialStatus = "trwl:social_status",
+}
+
+/**
  * StationIdentifierType
  * The type of the station identifier to look up. Not all types are available for every station. Subject to unannounced change.
  *     * motis – all transitous.org/motis supplied identifiers
@@ -174,6 +194,43 @@ export enum HafasTravelType {
 }
 
 /**
+ * ExportableFileType
+ * The file type to export the data in. The available columns depend on the file type.
+ */
+export enum ExportableFileType {
+  Pdf = "pdf",
+  CsvHuman = "csv_human",
+  CsvMachine = "csv_machine",
+  Json = "json",
+}
+
+/**
+ * ExportableColumn
+ * Columns that can be exported in the export file.
+ */
+export enum ExportableColumn {
+  StatusId = "status_id",
+  JourneyType = "journey_type",
+  LineName = "line_name",
+  JourneyNumber = "journey_number",
+  OriginName = "origin_name",
+  OriginCoordinates = "origin_coordinates",
+  DeparturePlanned = "departure_planned",
+  DepartureReal = "departure_real",
+  DestinationName = "destination_name",
+  DestinationCoordinates = "destination_coordinates",
+  ArrivalPlanned = "arrival_planned",
+  ArrivalReal = "arrival_real",
+  Duration = "duration",
+  Distance = "distance",
+  Points = "points",
+  Body = "body",
+  TravelType = "travel_type",
+  StatusTags = "status_tags",
+  Operator = "operator",
+}
+
+/**
  * DataProvider
  * What type of data provider did the user specify? (users need to be in closed-beta for this to take effect)
  * @example "cargo"
@@ -237,6 +294,8 @@ export interface ConfigurationInformation {
   features: Feature[];
   /** A list of supported languages in the application. */
   languages: Language[];
+  /** Cooldown time in days between gdpr exports */
+  gdprExportCooldown: number;
 }
 
 /** Represents a language with its code and name. */
@@ -262,10 +321,10 @@ export interface Coordinate {
    * @format float
    * @example "Feature"
    */
-  type?: number;
+  type: number;
   /** @example "{}" */
-  properties?: object;
-  geometry?: {
+  properties: object;
+  geometry: {
     /** @example "Point" */
     type?: string;
     coordinates?: any[];
@@ -281,8 +340,8 @@ export interface FeatureCollection {
    * type
    * @example "FeatureCollection"
    */
-  type?: string;
-  features?: Coordinate[];
+  type: string;
+  features: Coordinate[];
 }
 
 /**
@@ -321,30 +380,33 @@ export interface LivePointDto {
    * point
    * current point, if stopping at a station
    */
-  point?: Coordinate | null;
-  /** featurecollection of multiple GeoJson points */
-  polyline?: FeatureCollection;
+  point: Coordinate | null;
+  /**
+   * polyline
+   * geojson point collection of the next line segment
+   */
+  polyline: FeatureCollection | null;
   /**
    * arrival
    * arrival at end of polyline in UNIX time format
    * @format integer
    * @example 1692538680
    */
-  arrival?: number;
+  arrival: number;
   /**
    * departure
    * departure at start of polyline in UNIX time format
    * @format integer
    * @example 1692538740
    */
-  departure?: number;
+  departure: number;
   /**
    * lineName
    * name of line
    * @format string
    * @example "ICE 123"
    */
-  lineName?: string;
+  lineName: string;
   /**
    * statusId
    * ID of status
@@ -352,7 +414,7 @@ export interface LivePointDto {
    * @format int
    * @example 12345
    */
-  statusId?: number;
+  statusId: number;
 }
 
 /**
@@ -386,44 +448,44 @@ export interface Station {
    * id
    * @example "4711"
    */
-  id?: number;
+  id: number;
   /**
    * name
    * name of the station
    * @example "Karlsruhe Hbf"
    */
-  name?: string;
+  name: string;
   /**
    * latitude
    * latitude of the station
    * @format float
    * @example "48.991591"
    */
-  latitude?: number;
+  latitude: number;
   /**
    * longitude
    * longitude of the station
    * @format float
    * @example "8.400538"
    */
-  longitude?: number;
+  longitude: number;
   /**
    * ibnr
    * IBNR of the station
    * @example "8000191"
    */
-  ibnr?: number | null;
+  ibnr: number | null;
   /**
    * rilIdentifier
    * Identifier specified in 'Richtline 100' of the Deutsche Bahn
    * @example "RK"
    */
-  rilIdentifier?: string | null;
+  rilIdentifier: string | null;
   /**
    * identifiers
    * List of external station identifiers (IBNR, RIL100, IFOPT, Wikidata, MOTIS). Null when not loaded.
    */
-  identifiers?: StationIdentifierResource[] | null;
+  identifiers: StationIdentifierResource[] | null;
 }
 
 /** WebhookDayStatsDto */
@@ -484,12 +546,12 @@ export interface BearerTokenResponse {
    * Bearer Token. Use in Authentication-Header with prefix 'Bearer '. (space is needed)
    * @example "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9..."
    */
-  token?: string;
+  token: string;
   /**
    * End of life for this token.
    * @example "2023-10-19T15:15:06+02:00"
    */
-  expires_at?: string;
+  expires_at: string;
 }
 
 /**
@@ -502,48 +564,48 @@ export interface EventSuggestion {
    * @maxLength 255
    * @example "Eröffnung der Nebenbahn in Knuffingen"
    */
-  name?: string;
+  name: string;
   /**
    * host of the event
    * @example "MiWuLa"
    */
-  host?: string | null;
+  host: string | null;
   /**
    * Timestamp for the start of the event
    * @format date-time
    * @example "2022-06-01T00:00:00+02:00"
    */
-  begin?: string;
+  begin: string;
   /**
    * Timestamp for the end of the event
    * @format date-time
    * @example "2022-08-31T23:59:00+02:00"
    */
-  end?: string;
+  end: string;
   /**
    * external URL for this event
    * @maxLength 255
    * @example "https://www.example.com/event"
    */
-  url?: string | null;
+  url: string | null;
   /**
    * hashtag for this event
    * @maxLength 40
    * @example "gpn21"
    */
-  hashtag?: string | null;
+  hashtag: string | null;
   /**
    * Query string for the nearest station. Deprecated: use nearestStationId instead.
    * @deprecated
    * @maxLength 255
    * @example "Berlin Hbf"
    */
-  nearestStation?: string | null;
+  nearestStation: string | null;
   /**
    * ID of the nearest station to this event
    * @example 1
    */
-  nearestStationId?: number | null;
+  nearestStationId: number | null;
 }
 
 /** LikeResponse */
@@ -553,7 +615,7 @@ export interface LikeResponse {
    * @format int32
    * @example 12
    */
-  count?: number;
+  count: number;
 }
 
 /**
@@ -611,7 +673,7 @@ export interface StatusAssignTicketBody {
    * @format uuid
    * @example "00000000-0000-0000-0000-000000000000"
    */
-  ticketId?: string | null;
+  ticketId: string | null;
 }
 
 /**
@@ -620,24 +682,16 @@ export interface StatusAssignTicketBody {
  */
 export interface Polyline {
   /** @example "Feature" */
-  type?: string;
-  geometry?: {
+  type: string;
+  geometry: {
     /** @example "LineString" */
     type?: string;
     coordinates?: any[];
   };
-  properties?: {
+  properties: {
     /** @example 1337 */
     statusId?: number;
   };
-}
-
-/**
- * DuplicateCheckinGroup
- * A group of check-ins with the same trip and origin stopover (duplicates)
- */
-export interface DuplicateCheckinGroup {
-  statuses?: StatusResource[];
 }
 
 /**
@@ -804,6 +858,26 @@ export interface UpdateProfileInformationRequest {
   timezone?: string;
 }
 
+/** ActivityLog */
+export interface ActivityLogResource {
+  id: number;
+  causer: {
+    id: number;
+    name: string;
+    username: string;
+  } | null;
+  description: string;
+  subjectType: string | null;
+  subjectFullType: string | null;
+  subjectId: number | null;
+  changes: {
+    old: Record<string, any>;
+    attributes: Record<string, any>;
+  };
+  /** @format date-time */
+  createdAt: string;
+}
+
 /** AdminStatusResource */
 export interface AdminStatusResource {
   /** @example 12345 */
@@ -820,7 +894,7 @@ export interface AdminStatusResource {
   /** User model with just basic information */
   user: LightUserResource;
   checkin: TransportResource | null;
-  stopovers: StopoverResource[] | null;
+  stopovers: StopoverResource[];
   /** @format date-time */
   createdAt: string;
   /** @format date-time */
@@ -831,42 +905,106 @@ export interface AdminStatusResource {
 
 /** AdminStopover */
 export interface AdminStopoverResource {
-  id?: number;
-  station?: {
+  id: number;
+  station: {
     id?: number;
     name?: string;
   };
   /** @format date-time */
-  arrivalPlanned?: string | null;
+  arrivalPlanned: string | null;
   /** @format date-time */
-  arrivalReal?: string | null;
+  arrivalReal: string | null;
   /** @format date-time */
-  departurePlanned?: string | null;
+  departurePlanned: string | null;
   /** @format date-time */
-  departureReal?: string | null;
+  departureReal: string | null;
   /** @format uuid */
-  routeSegmentId?: string | null;
-  routeSegmentType?: "identifier" | "station" | null;
+  routeSegmentId: string | null;
+  routeSegmentType: "identifier" | "station" | null;
   /** @format uuid */
-  stationIdentifierId?: string | null;
+  stationIdentifierId: string | null;
 }
 
 /** AdminTrip */
 export interface AdminTripResource {
-  id?: number;
-  tripId?: string;
-  category?: string;
-  mode?: string | null;
-  number?: string | null;
-  lineName?: string | null;
-  journeyNumber?: number | null;
-  operator?: string | null;
-  source?: string | null;
-  user?: LightUserResource | null;
+  id: number;
+  tripId: string;
+  checkinsCount: number | null;
+  category: string;
+  mode: string | null;
+  number: string | null;
+  lineName: string | null;
+  routeColor: string | null;
+  journeyNumber: number | null;
+  operator: string | null;
+  source: string | null;
+  user: LightUserResource | null;
   /** @format date-time */
-  lastRefreshed?: string | null;
-  stopovers?: AdminStopoverResource[];
-  statuses?: AdminStatusResource[];
+  lastRefreshed: string | null;
+  origin: {
+    id?: number;
+    name?: string;
+  } | null;
+  destination: {
+    id?: number;
+    name?: string;
+  } | null;
+  stopovers: AdminStopoverResource[];
+  statuses: AdminStatusResource[];
+}
+
+/** AdminUserListItem */
+export interface AdminUserListResource {
+  id: number;
+  username: string;
+  displayName: string;
+  email: string | null;
+  /** @format date-time */
+  emailVerifiedAt: string | null;
+  mastodonUrl: string | null;
+  /** @format date-time */
+  lastLogin: string | null;
+  /** @format date-time */
+  createdAt: string;
+}
+
+/** AdminUserResource */
+export interface AdminUserResource {
+  id: number;
+  username: string;
+  displayName: string;
+  email: string | null;
+  /** @format date-time */
+  emailVerifiedAt: string | null;
+  hasPassword: boolean;
+  mastodonUrl: string | null;
+  /** @format date-time */
+  lastLogin: string | null;
+  /** @format date-time */
+  createdAt: string;
+  /** Total distance in metres */
+  trainDistance: number;
+  /** Total duration in minutes */
+  trainDuration: number;
+  points: number;
+  roles: string[];
+  allRoles: {
+    name: string;
+    permissions: string[];
+  }[];
+  mailChanges: {
+    id: string;
+    oldEmail: string;
+    newEmail: string;
+    /** @format date-time */
+    createdAt: string | null;
+  }[];
+  /** @format date-time */
+  privacyPolicyCurrent: string | null;
+  /** @format date-time */
+  privacyPolicyFuture: string | null;
+  privacyPolicyFutureExists: boolean;
+  recentStatuses: AdminStatusResource[];
 }
 
 export interface AlertResource {
@@ -954,20 +1092,20 @@ export interface PointsCalculation {
    * @format float
    * @example 0.5
    */
-  base?: number;
+  base: number;
   /**
    * Points for the travelled distance
    * @format float
    * @example 0.25
    */
-  distance?: number;
+  distance: number;
   /**
    * @format float
    * @example 0.25
    */
-  factor?: number;
+  factor: number;
   /** What is the reason for the points calculation factor? (0=in time => 100%, 1=good enough => 25%, 2=not sufficient (1 point), 3=forced => no points, 4=manual trip => no points, 5=points disabled) */
-  reason?: PointReason;
+  reason: PointReason;
 }
 
 /**
@@ -979,22 +1117,22 @@ export interface Points {
    * points
    * @example 1
    */
-  points?: number;
-  calculation?: PointsCalculation;
+  points: number;
+  calculation: PointsCalculation;
   /**
    * Deprecated. Always null.
    * @deprecated
    */
-  additional?: any[] | null;
+  additional: any[] | null;
 }
 
 /** CheckinResponse */
 export interface CheckinSuccessResource {
-  status?: StatusResource;
+  status: StatusResource;
   /** Points model */
-  points?: Points;
+  points: Points;
   /** Statuses of other people on this connection */
-  alsoOnThisConnection?: StatusResource[];
+  alsoOnThisConnection: StatusResource[];
 }
 
 /** Client */
@@ -1058,7 +1196,7 @@ export interface ContributionHistory {
   /** @example 1 */
   levelAfter: number;
   /** @example "Event approved: GPN 22" */
-  note?: string | null;
+  note: string | null;
   /**
    * @format date-time
    * @example "2026-02-15T12:00:00Z"
@@ -1071,7 +1209,7 @@ export interface DataSourceResource {
   /** @example "foobar" */
   id: string;
   /** @example "Provided by foobar under CC BY 4.0" */
-  attribution: string;
+  attribution: string | null;
 }
 
 /**
@@ -1175,7 +1313,7 @@ export interface DepartureResource {
    * @deprecated
    * @example null
    */
-  provenance?: string | null;
+  provenance: string | null;
   line: {
     /** @example "line" */
     type?: string;
@@ -1236,32 +1374,32 @@ export interface DepartureResource {
    * Deprecated. Always null.
    * @deprecated
    */
-  remarks?: any[] | null;
+  remarks: any[] | null;
   /**
    * Deprecated. Always null.
    * @deprecated
    */
-  origin?: object | null;
+  origin: object | null;
   /**
    * Deprecated. Use direction instead.
    * @deprecated
    */
-  destination?: object;
+  destination: object;
   /**
    * Deprecated. Always null.
    * @deprecated
    */
-  currentTripPosition?: object | null;
+  currentTripPosition: object | null;
   /**
    * Deprecated. Always null.
    * @deprecated
    */
-  loadFactor?: string | null;
+  loadFactor: string | null;
   /**
    * Whether this departure is cancelled
    * @example false
    */
-  cancelled?: boolean;
+  cancelled: boolean;
   station: StationResource;
 }
 
@@ -1271,63 +1409,63 @@ export interface DepartureResource {
  */
 export interface EventAdminResource {
   /** @example 1 */
-  id?: number;
+  id: number;
   /** @example "Berlin Bahnhofsfest" */
-  name?: string;
+  name: string;
   /** @example "berlin_bahnhofsfest" */
-  slug?: string;
+  slug: string;
   /** @example "BahnhofsFest" */
-  hashtag?: string | null;
+  hashtag: string | null;
   /** @example "DB AG" */
-  host?: string | null;
+  host: string | null;
   /** @example "https://example.com" */
-  url?: string | null;
+  url: string | null;
   /**
    * @format date
    * @example "2025-06-01"
    */
-  checkin_start?: string;
+  checkin_start: string;
   /**
    * @format date
    * @example "2025-06-30"
    */
-  checkin_end?: string;
+  checkin_end: string;
   /** @format date */
-  event_start?: string | null;
+  event_start: string | null;
   /** @format date */
-  event_end?: string | null;
-  status?: "future" | "current" | "past";
-  station?: Station | null;
+  event_end: string | null;
+  status: "future" | "current" | "past";
+  station: Station | null;
 }
 
 /** EventDetails */
 export interface EventDetailsResource {
   /** @example 39 */
-  id?: number;
+  id: number;
   /** @example "9_euro_ticket" */
-  slug?: string;
+  slug: string;
   /**
    * distance travelled in meters
    * @example 12345
    */
-  totalDistance?: number;
+  totalDistance: number;
   /**
    * duration travelled in minutes
    * @example 12345
    */
-  totalDuration?: number;
+  totalDuration: number;
   /**
    * Deprecated. Use totalDistance instead.
    * @deprecated
    * @example 12345
    */
-  trainDistance?: number;
+  trainDistance: number;
   /**
    * Deprecated. Use totalDuration instead.
    * @deprecated
    * @example 12345
    */
-  trainDuration?: number;
+  trainDuration: number;
 }
 
 /** Event */
@@ -1357,6 +1495,10 @@ export interface EventResource {
   /** @example true */
   isPride: boolean;
   station: StationResource | null;
+  /** @example 12345 */
+  totalDistance: number;
+  /** @example 12345 */
+  totalDuration: number;
 }
 
 /**
@@ -1365,33 +1507,33 @@ export interface EventResource {
  */
 export interface EventSuggestionResource {
   /** @example 1 */
-  id?: number;
+  id: number;
   /** @example "Berliner Fahrradfest" */
-  name?: string;
-  host?: string | null;
-  url?: string | null;
-  hashtag?: string | null;
+  name: string;
+  host: string | null;
+  url: string | null;
+  hashtag: string | null;
   /**
    * @format date
    * @example "2025-07-01"
    */
-  begin?: string;
+  begin: string;
   /**
    * @format date
    * @example "2025-07-03"
    */
-  end?: string;
-  station?: {
+  end: string;
+  station: {
     id?: number;
     name?: string;
   } | null;
-  user?: {
+  user: {
     id?: number;
     username?: string;
   } | null;
-  processed?: boolean;
+  processed: boolean;
   /** @format date-time */
-  created_at?: string;
+  created_at: string;
 }
 
 export interface IcsEntryResource {
@@ -1415,7 +1557,7 @@ export interface IcsEntryResource {
    * @format date-time
    * @example "2024-01-01T12:00:00Z"
    */
-  createdAt?: string | null;
+  createdAt: string | null;
   /**
    * The ISO 8601 timestamp when the ICS token was last accessed
    * @format date-time
@@ -1462,7 +1604,7 @@ export interface LightUserResource {
   /** @example "https://traewelling.de/@Gertrud123/picture" */
   profilePicture: string;
   /** @example {"server":"mastodon.social","user_id":1234567} */
-  mastodon?: object;
+  mastodon: object;
   /** @example false */
   preventIndex: boolean;
 }
@@ -1477,22 +1619,22 @@ export interface Links {
    * @format uri
    * @example "https://traewelling.de/api/v1/ENDPOINT?page=1"
    */
-  first?: string | null;
+  first: string | null;
   /**
    * @format uri
    * @example null
    */
-  last?: string | null;
+  last: string | null;
   /**
    * @format uri
    * @example null
    */
-  prev?: string | null;
+  prev: string | null;
   /**
    * @format uri
    * @example "https://traewelling.de/api/v1/ENDPOINT?page=2"
    */
-  next?: string | null;
+  next: string | null;
 }
 
 /**
@@ -1511,9 +1653,9 @@ export interface OAuthClientResource {
   /** @example false */
   webhooksEnabled: boolean;
   /** @example "https://example.com/webhook" */
-  authorizedWebhookUrl?: string | null;
+  authorizedWebhookUrl: string | null;
   /** @example "https://example.com/privacy" */
-  privacyPolicyUrl?: string | null;
+  privacyPolicyUrl: string | null;
   /** @example 3 */
   activeTokensCount: number;
   /** @example true */
@@ -1522,7 +1664,7 @@ export interface OAuthClientResource {
    * Only present immediately after creation or secret regeneration
    * @example "abc123"
    */
-  plainSecret?: string | null;
+  plainSecret: string | null;
   /**
    * @format date-time
    * @example "2026-01-01T00:00:00Z"
@@ -1536,7 +1678,7 @@ export interface OperatorIdentifierResource {
   /** @example "de:db-regio-ag" */
   identifier: string;
   /** @example "DB Regio AG" */
-  name?: string | null;
+  name: string | null;
 }
 
 export interface OperatorResource {
@@ -1574,18 +1716,18 @@ export interface PaginationMeta {
    * Shared OA schema for Laravel pagination meta data. Not a real resource.
    * @example 2
    */
-  current_page?: number;
+  current_page: number;
   /** @example 16 */
-  from?: number;
+  from: number;
   /**
    * @format url
    * @example "https://traewelling.de/api/v1/ENDPOINT"
    */
-  path?: string;
+  path: string;
   /** @example 15 */
-  per_page?: number;
+  per_page: number;
   /** @example 30 */
-  to?: number;
+  to: number;
 }
 
 export interface PrivacyPolicy {
@@ -1622,6 +1764,28 @@ export interface PrivacyPolicy {
    * @example false
    */
   hasOldAcceptance: boolean;
+  /** Next privacy policy that is not yet in effect, if any. */
+  upcoming: {
+    /**
+     * @format uuid
+     * @example "00000000-0000-0000-0000-000000000000"
+     */
+    id?: string;
+    /**
+     * @format date-time
+     * @example "2022-01-05T16:26:14.000000Z"
+     */
+    validFrom?: string;
+    /** @example "This is the english privacy policy" */
+    en?: string;
+    /** @example "Dies ist die deutsche Datenschutzerklärung" */
+    de?: string;
+    /**
+     * @format date-time
+     * @example null
+     */
+    acceptedAt?: string | null;
+  } | null;
 }
 
 /**
@@ -1659,7 +1823,7 @@ export interface ReportResource {
   reporter: LightUserResource | null;
   /** @format date-time */
   created_at: string;
-  activities?:
+  activities:
     | {
         id?: number;
         description?: string;
@@ -1705,9 +1869,9 @@ export interface RouteSegmentResource {
    * Number of custom waypoints, or null if none set
    * @example 4
    */
-  customWaypointsCount?: number | null;
+  customWaypointsCount: number | null;
   /** Custom waypoint coordinates used as BRouter input, or null if not set. */
-  customWaypoints?:
+  customWaypoints:
     | {
         lat?: number;
         lng?: number;
@@ -1717,7 +1881,7 @@ export interface RouteSegmentResource {
    * Number of trips using this segment.
    * @example 12
    */
-  tripsCount?: number | null;
+  tripsCount: number | null;
 }
 
 export interface SessionResource {
@@ -1760,25 +1924,25 @@ export interface StationIdentifierResource {
    * @format uuid
    * @example "550e8400-e29b-41d4-a716-446655440000"
    */
-  id?: string;
+  id: string;
   /** @example "de_db_ril100" */
-  type?: string;
+  type: string;
   /** @example "RK" */
-  identifier?: string;
+  identifier: string;
   /** @example "Karlsruhe Hbf" */
-  name?: string | null;
+  name: string | null;
   /** @example "db" */
-  origin?: string | null;
+  origin: string | null;
   /**
    * @format float
    * @example 48.993207
    */
-  latitude?: number | null;
+  latitude: number | null;
   /**
    * @format float
    * @example 8.400977
    */
-  longitude?: number | null;
+  longitude: number | null;
 }
 
 /** Station */
@@ -1804,11 +1968,11 @@ export interface StationResource {
    */
   rilIdentifier: string | null;
   areas: AreaResource[];
-  identifiers?: StationIdentifierResource[];
+  identifiers: StationIdentifierResource[];
   /** @example "60" */
-  time_offset?: number | null;
+  time_offset: number | null;
   /** @format date-time */
-  created_at?: string | null;
+  created_at: string | null;
 }
 
 /** StatisticsGlobalData */
@@ -1860,7 +2024,7 @@ export interface StatusResource {
    * @example true
    */
   isLikable: boolean;
-  client: ClientResource;
+  client: ClientResource | null;
   checkin: TransportResource;
   event: EventResource | null;
   /** User model with just basic information */
@@ -1869,13 +2033,13 @@ export interface StatusResource {
   createdBy: LightUserResource | null;
   tags: StatusTagResource[];
   /** The ticket assigned to this status. Only present for the status owner. */
-  ticket?: TicketResource | null;
+  ticket: TicketResource | null;
   /** A note left by the moderation team, e.g. a warning or hint explaining why this status was moderated. Only present for the status owner. */
-  moderation_notes?: string | null;
+  moderation_notes: string | null;
   /** Whether the visibility is locked by an admin and cannot be changed by the owner. Only present for the status owner. */
-  lock_visibility?: boolean | null;
+  lock_visibility: boolean | null;
   /** Whether the status body is hidden from other users by an admin. Only present for the status owner. */
-  hide_body?: boolean | null;
+  hide_body: boolean | null;
   /**
    * creation date of this status
    * @format datetime
@@ -1886,12 +2050,20 @@ export interface StatusResource {
 
 /** StatusTagResource */
 export interface StatusTagResource {
+  /** regex:/^\w[^\/\n\r%?\<>]*$/ */
+  key: StatusTagKey | string;
+  /** Values allowed for the tag trwl:social_status */
+  value: "open" | "open_find_me" | "open_lets_hang" | "do_not_disturb" | string;
+  /** @example "1" */
+  visibility: number;
+}
+
+/** StatusTagSuggestionResource */
+export interface StatusTagSuggestionResource {
   /** @example "trwl:vehicle_number" */
   key: string;
   /** @example "94 80 0450 921 D-AVG" */
   value: string;
-  /** @example "1" */
-  visibility: number;
 }
 
 /** StopoverResource */
@@ -2041,17 +2213,17 @@ export interface TicketResource {
    * Number of trips assigned to this ticket
    * @example 42
    */
-  tripCount?: number;
+  tripCount: number;
   /**
    * Total distance of all trips assigned to this ticket in meters
    * @example 12340
    */
-  totalDistance?: number;
+  totalDistance: number;
   /**
    * Total duration of all trips assigned to this ticket in minutes
    * @example 1020
    */
-  totalDuration?: number;
+  totalDuration: number;
 }
 
 /**
@@ -2063,49 +2235,49 @@ export interface TicketStatisticsResource {
    * Total number of trips assigned to this ticket
    * @example 42
    */
-  tripCount?: number;
+  tripCount: number;
   /**
    * Total distance of all assigned trips in meters
    * @example 123400
    */
-  distance?: number;
+  distance: number;
   /**
    * Total duration of all assigned trips in minutes
    * @example 1020
    */
-  duration?: number;
+  duration: number;
   /**
    * Date of the first trip using this ticket (YYYY-MM-DD)
    * @format date
    * @example "2026-01-03"
    */
-  firstUsed?: string | null;
+  firstUsed: string | null;
   /**
    * Date of the most recent trip using this ticket (YYYY-MM-DD)
    * @format date
    * @example "2026-03-14"
    */
-  lastUsed?: string | null;
+  lastUsed: string | null;
   /**
    * Ticket price divided by number of trips. Null if no price set.
    * @format float
    * @example 76.17
    */
-  costPerTrip?: number | null;
+  costPerTrip: number | null;
   /**
    * Ticket price per kilometer. Null if no price set or total distance is zero.
    * @format float
    * @example 0.26
    */
-  costPerKm?: number | null;
+  costPerKm: number | null;
   /**
    * Ticket price per hour of travel. Null if no price set or total duration is zero.
    * @format float
    * @example 4.48
    */
-  costPerHour?: number | null;
+  costPerHour: number | null;
   /** Trip counts and distances grouped by travel purpose */
-  purposes?: {
+  purposes: {
     /**
      * Business value (0=private, 1=business, 2=commute)
      * @example "2"
@@ -2120,7 +2292,7 @@ export interface TicketStatisticsResource {
     distance?: number;
   }[];
   /** Trip counts and distances grouped by transport category */
-  categories?: {
+  categories: {
     /**
      * Transport category (e.g. nationalExpress, tram, bus)
      * @example "nationalExpress"
@@ -2135,7 +2307,7 @@ export interface TicketStatisticsResource {
     distance?: number;
   }[];
   /** Distance grouped by operator, top 10 by distance */
-  operators?: {
+  operators: {
     /**
      * Operator name
      * @example "DB Fernverkehr"
@@ -2201,19 +2373,19 @@ export interface TransportResource {
    * Hex color code of the route, if available
    * @example "FFEE00"
    */
-  routeColor?: string | null;
+  routeColor: string | null;
   /**
    * Hex color code of the route text, if available
    * @example "FFFFFF"
    */
-  routeTextColor?: string | null;
+  routeTextColor: string | null;
   /** @example 85639 */
   journeyNumber: number;
   /**
    * Manual journey number, if set by the user. This is intended for use cases like ICE lines in germany that have line number but are more widely known by their train number
    * @example "ICE 4"
    */
-  manualJourneyNumber?: string | null;
+  manualJourneyNumber: string | null;
   /**
    * Distance in meters
    * @example 10000
@@ -2238,34 +2410,36 @@ export interface TransportResource {
   manualArrival: string | null;
   origin: StopoverResource;
   destination: StopoverResource;
-  operator?: OperatorResource | null;
-  dataSource?: DataSourceResource | null;
+  operator: OperatorResource | null;
+  dataSource: DataSourceResource | null;
 }
 
 /** TripResource */
 export interface TripResource {
   /** @example 1 */
-  id?: number;
+  id: number;
   /**
    * Internal trip identifier (use this for the checkin flow)
    * @example "00000000-0000-0000-0000-000000000000"
    */
-  tripId?: string;
+  tripId: string;
   /** Category of transport. */
-  category?: HafasTravelType;
-  mode?: MotisCategory | null;
+  category: HafasTravelType;
+  mode: MotisCategory | null;
   /** @example "4-a6s4-4" */
-  number?: string;
+  number: string;
   /** @example "S 4" */
-  lineName?: string;
+  lineName: string;
   /** @example "34427" */
-  journeyNumber?: number;
+  journeyNumber: number;
   /** train station model */
-  origin?: Station;
+  origin: Station;
   /** train station model */
-  destination?: Station;
-  stopovers?: StopoverResource[];
-  dataSource?: DataSourceResource | null;
+  destination: Station;
+  stopovers: StopoverResource[];
+  dataSource: DataSourceResource | null;
+  /** If this trip is an interlined through-running service, this contains the immediately following trip (different line name/color, no transfer required). */
+  continuationTrip: TripResource | null;
 }
 
 /** TrustedUser */
@@ -2288,7 +2462,7 @@ export interface UserAuthResource {
    * @format uuid
    * @example "00000000-0000-0000-0000-000000000000"
    */
-  uuid?: string;
+  uuid: string;
   /** @example "Gertrud" */
   displayName: string;
   /** @example "Gertrud123" */
@@ -2310,7 +2484,7 @@ export interface UserAuthResource {
   /** @example true */
   likes_enabled: boolean;
   /** @example true */
-  pointsEnabled?: boolean;
+  pointsEnabled: boolean;
   /** @example "default" */
   mapProvider: string;
   home: StationResource;
@@ -2320,6 +2494,11 @@ export interface UserAuthResource {
   defaultStatusVisibility: number;
   /** @example ["admin","open-beta","closed-beta"] */
   roles: string[];
+  /**
+   * @format date-time
+   * @example "2024-01-01T00:00:00Z"
+   */
+  recentGdprExport: string | null;
 }
 
 /**
@@ -2371,7 +2550,7 @@ export interface UserProfileSettingsResource {
    * Number of days to hide the user's location history. Null if disabled.
    * @example 1
    */
-  privacyHideDays?: number | null;
+  privacyHideDays: number | null;
   /** @example true */
   password: boolean;
   /** @example "gertrud@traewelling.de" */
@@ -2463,12 +2642,12 @@ export interface UserResource {
    * Does this profile allow points? Only offer the UI to show points at any status if this setting is set to true. If set to false, the points will always be displayed as 0
    * @example true
    */
-  points_enabled?: boolean;
+  points_enabled: boolean;
   /**
    * Does this profile allow likes? Only offer the UI to like any status if this setting is set to true. If set to false, the likes API will return 403.
    * @example true
    */
-  likes_enabled?: boolean;
+  likes_enabled: boolean;
   /**
    * Does this profile allow points? Only offer the UI to show points at any status if this setting is set to true. If set to false, the points will always be displayed as 0
    * @example true
@@ -2513,7 +2692,7 @@ export interface UserResource {
    * Bio of the user
    * @example "Hi there! I am Gertrud!"
    */
-  bio: string;
+  bio: string | null;
   /** Profile links of the user */
   profileLinks: ProfileLinkResource[];
 }
@@ -2900,6 +3079,39 @@ export class Api<
   };
   admin = {
     /**
+     * @description Requires "view activity" permission. Returns the last 3 months of activity log entries, excluding system entries.
+     *
+     * @tags Admin
+     * @name GetAdminActivity
+     * @summary List activity log
+     * @request GET:/admin/activity
+     * @secure
+     */
+    getAdminActivity: (
+      query?: {
+        cursor?: string;
+        /** Full class name to filter by subject type, requires subjectId */
+        subjectType?: string;
+        /** Subject ID to filter by, requires subjectType */
+        subjectId?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data: ActivityLogResource[];
+        },
+        void
+      >({
+        path: `/admin/activity`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * No description
      *
      * @tags Admin
@@ -2918,7 +3130,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: EventAdminResource[];
+          data: EventAdminResource[];
         },
         void
       >({
@@ -2943,7 +3155,7 @@ export class Api<
       this.request<
         {
           /** Full event data for admin management */
-          data?: EventAdminResource;
+          data: EventAdminResource;
         },
         void
       >({
@@ -2969,7 +3181,7 @@ export class Api<
       this.request<
         {
           /** Full event data for admin management */
-          data?: EventAdminResource;
+          data: EventAdminResource;
         },
         void
       >({
@@ -2997,7 +3209,7 @@ export class Api<
       this.request<
         {
           /** Full event data for admin management */
-          data?: EventAdminResource;
+          data: EventAdminResource;
         },
         void
       >({
@@ -3044,7 +3256,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: EventSuggestionResource[];
+          data: EventSuggestionResource[];
         },
         void
       >({
@@ -3068,7 +3280,7 @@ export class Api<
     getAdminEventSuggestion: (id: number, params: RequestParams = {}) =>
       this.request<
         {
-          data?: {
+          data: {
             /** Event suggestion submitted by a user */
             suggestion?: EventSuggestionResource;
             parallelEvents?: {
@@ -3110,7 +3322,7 @@ export class Api<
       this.request<
         {
           /** Full event data for admin management */
-          data?: EventAdminResource;
+          data: EventAdminResource;
         },
         void
       >({
@@ -3252,6 +3464,35 @@ export class Api<
       }),
 
     /**
+     * @description Admin only. Returns a cursor-paginated list of all trips with checkin counts.
+     *
+     * @tags Admin
+     * @name GetAdminTrips
+     * @summary List trips
+     * @request GET:/admin/trips
+     * @secure
+     */
+    getAdminTrips: (
+      query?: {
+        cursor?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data: AdminTripResource[];
+        },
+        void
+      >({
+        path: `/admin/trips`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * @description Admin only. Returns full trip details including stopovers with route segment info and checkins.
      *
      * @tags Admin
@@ -3263,7 +3504,7 @@ export class Api<
     getAdminTrip: (id: number, params: RequestParams = {}) =>
       this.request<
         {
-          data?: AdminTripResource;
+          data: AdminTripResource;
         },
         void
       >({
@@ -3290,6 +3531,110 @@ export class Api<
         secure: true,
         ...params,
       }),
+
+    /**
+     * @description Admin only. Returns a cursor-paginated list of all users, optionally filtered by a search query.
+     *
+     * @tags Admin
+     * @name GetAdminUsers
+     * @summary List users
+     * @request GET:/admin/users
+     * @secure
+     */
+    getAdminUsers: (
+      query?: {
+        cursor?: string;
+        query?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data: AdminUserListResource[];
+        },
+        void
+      >({
+        path: `/admin/users`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Admin only. Returns full details for a single user including stats, roles, mail changes, and recent statuses.
+     *
+     * @tags Admin
+     * @name GetAdminUser
+     * @summary Get user details
+     * @request GET:/admin/users/{id}
+     * @secure
+     */
+    getAdminUser: (id: number, params: RequestParams = {}) =>
+      this.request<
+        {
+          data: AdminUserResource;
+        },
+        void
+      >({
+        path: `/admin/users/${id}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Admin only. Updates the email address for a user and sends a verification notification.
+     *
+     * @tags Admin
+     * @name UpdateAdminUserEmail
+     * @summary Update user email
+     * @request PUT:/admin/users/{id}/email
+     * @secure
+     */
+    updateAdminUserEmail: (
+      id: number,
+      data: {
+        /** @format email */
+        email: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, void>({
+        path: `/admin/users/${id}/email`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description Admin only. Syncs roles for a user. The admin role is protected and cannot be removed.
+     *
+     * @tags Admin
+     * @name UpdateAdminUserRoles
+     * @summary Update user roles
+     * @request PUT:/admin/users/{id}/roles
+     * @secure
+     */
+    updateAdminUserRoles: (
+      id: number,
+      data: {
+        roles: string[];
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, void>({
+        path: `/admin/users/${id}/roles`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
   };
   alerts = {
     /**
@@ -3310,7 +3655,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: AlertResource[];
+          data: AlertResource[];
         },
         any
       >({
@@ -3349,7 +3694,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: AlertResource;
+          data: AlertResource;
         },
         void
       >({
@@ -3374,7 +3719,7 @@ export class Api<
     getAlert: (id: string, params: RequestParams = {}) =>
       this.request<
         {
-          data?: AlertResource;
+          data: AlertResource;
         },
         void
       >({
@@ -3414,7 +3759,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: AlertResource;
+          data: AlertResource;
         },
         void
       >({
@@ -3457,7 +3802,7 @@ export class Api<
     getApplications: (params: RequestParams = {}) =>
       this.request<
         {
-          data?: OAuthClientResource[];
+          data: OAuthClientResource[];
         },
         void
       >({
@@ -3484,7 +3829,7 @@ export class Api<
       this.request<
         {
           /** OAuth application owned by the authenticated user */
-          data?: OAuthClientResource;
+          data: OAuthClientResource;
         },
         void
       >({
@@ -3514,7 +3859,7 @@ export class Api<
       this.request<
         {
           /** OAuth application owned by the authenticated user */
-          data?: OAuthClientResource;
+          data: OAuthClientResource;
         },
         void
       >({
@@ -3560,7 +3905,7 @@ export class Api<
       this.request<
         {
           /** Webhook call log statistics for an OAuth application over the last 7 days */
-          data?: WebhookStatsResource;
+          data: WebhookStatsResource;
         },
         void
       >({
@@ -3585,7 +3930,7 @@ export class Api<
       this.request<
         {
           /** @example "success" */
-          status?: any;
+          status: any;
         },
         void
       >({
@@ -3608,7 +3953,7 @@ export class Api<
     getAuthenticatedUser: (params: RequestParams = {}) =>
       this.request<
         {
-          data?: UserAuthResource;
+          data: UserAuthResource;
         },
         void
       >({
@@ -3631,7 +3976,7 @@ export class Api<
     refreshToken: (params: RequestParams = {}) =>
       this.request<
         {
-          data?: BearerTokenResponse;
+          data: BearerTokenResponse;
         },
         void
       >({
@@ -3692,7 +4037,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: ContributionHistory[];
+          data: ContributionHistory[];
         },
         void
       >({
@@ -3717,7 +4062,7 @@ export class Api<
     getEvent: (slug?: string, params: RequestParams = {}) =>
       this.request<
         {
-          data?: EventResource;
+          data: EventResource;
         },
         void
       >({
@@ -3740,7 +4085,7 @@ export class Api<
     getEventDetails: (slug?: string, params: RequestParams = {}) =>
       this.request<
         {
-          data?: EventDetailsResource;
+          data: EventDetailsResource;
         },
         void
       >({
@@ -3770,11 +4115,11 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: StatusResource[];
+          data: StatusResource[];
           /** Pagination links */
-          links?: Links;
+          links: Links;
           /** Pagination meta data */
-          meta?: PaginationMeta;
+          meta: PaginationMeta;
         },
         void
       >({
@@ -3841,11 +4186,11 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: EventResource[];
+          data: EventResource[];
           /** Pagination links */
-          links?: Links;
+          links: Links;
           /** Pagination meta data */
-          meta?: PaginationMeta;
+          meta: PaginationMeta;
         },
         void
       >({
@@ -3853,6 +4198,71 @@ export class Api<
         method: "GET",
         query: query,
         secure: true,
+        format: "json",
+        ...params,
+      }),
+  };
+  export = {
+    /**
+     * @description Requests a full GDPR data export. The export is processed asynchronously and delivered via email. Only available when the GDPR export feature is enabled for the account. Subject to a per-user cooldown (see `gdprExportCooldown` in the configuration endpoint). The `recentGdprExport` field on the authenticated user resource reflects the last request timestamp.
+     *
+     * @tags Export
+     * @name RequestGdprExport
+     * @summary Request a GDPR data export
+     * @request POST:/export/gdpr
+     * @secure
+     */
+    requestGdprExport: (params: RequestParams = {}) =>
+      this.request<
+        {
+          /** @example "Export successfully requested." */
+          message: string;
+        },
+        void
+      >({
+        path: `/export/gdpr`,
+        method: "POST",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Generates a downloadable export of the authenticated user's statuses. Supported formats are `pdf`, `csv_human` (human-readable column headings), `csv_machine` (machine-readable column headings), and `json`. The `columns` parameter selects which fields to include and is required for PDF and CSV formats; it is ignored for JSON. The date range may not exceed 365 days, and the result set is capped at 2000 trips.
+     *
+     * @tags Export
+     * @name GenerateStatusExport
+     * @summary Export statuses as PDF, CSV or JSON
+     * @request POST:/export/statuses
+     * @secure
+     */
+    generateStatusExport: (
+      data: {
+        /**
+         * Start date of the export period (inclusive)
+         * @format date
+         * @example "2024-01-01"
+         */
+        from: string;
+        /**
+         * End date of the export period (inclusive)
+         * @format date
+         * @example "2024-01-31"
+         */
+        until: string;
+        /** Columns to include. Required for pdf/csv formats, ignored for json. */
+        columns?: ExportableColumn[];
+        /** The file type to export the data in. The available columns depend on the file type. */
+        filetype: ExportableFileType;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<File, void>({
+        path: `/export/statuses`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),
@@ -3871,7 +4281,7 @@ export class Api<
       this.request<
         {
           /** User model */
-          data?: UserResource;
+          data: UserResource;
         },
         void
       >({
@@ -3895,7 +4305,7 @@ export class Api<
       this.request<
         {
           /** User model */
-          data?: UserResource;
+          data: UserResource;
         },
         void
       >({
@@ -3927,11 +4337,11 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: UserResource[];
+          data: UserResource[];
           /** Pagination links */
-          links?: Links;
+          links: Links;
           /** Pagination meta data */
-          meta?: PaginationMeta;
+          meta: PaginationMeta;
         },
         void
       >({
@@ -3964,11 +4374,11 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: UserResource[];
+          data: UserResource[];
           /** Pagination links */
-          links?: Links;
+          links: Links;
           /** Pagination meta data */
-          meta?: PaginationMeta;
+          meta: PaginationMeta;
         },
         any
       >({
@@ -4001,11 +4411,11 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: UserResource[];
+          data: UserResource[];
           /** Pagination links */
-          links?: Links;
+          links: Links;
           /** Pagination meta data */
-          meta?: PaginationMeta;
+          meta: PaginationMeta;
         },
         any
       >({
@@ -4108,7 +4518,7 @@ export class Api<
     trustedUserIndex: (user: string, params: RequestParams = {}) =>
       this.request<
         {
-          data?: TrustedUserResource[];
+          data: TrustedUserResource[];
         },
         void
       >({
@@ -4161,7 +4571,7 @@ export class Api<
     trustedByUserIndex: (params: RequestParams = {}) =>
       this.request<
         {
-          data?: TrustedUserResource[];
+          data: TrustedUserResource[];
         },
         void
       >({
@@ -4209,11 +4619,11 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: StatusResource[];
+          data: StatusResource[];
           /** Pagination links */
-          links?: Links;
+          links: Links;
           /** Pagination meta data */
-          meta?: PaginationMeta;
+          meta: PaginationMeta;
         },
         void
       >({
@@ -4245,14 +4655,14 @@ export class Api<
       this.request<
         {
           /** User model */
-          data?: UserResource;
+          data: UserResource;
         },
         void | {
           /** @example "User not accessible." */
           message: string;
-          reason?: ViewUserForbiddenReason;
+          reason: ViewUserForbiddenReason;
           /** User model */
-          user?: UserResource;
+          user: UserResource;
         }
       >({
         path: `/user/${username}`,
@@ -4276,7 +4686,7 @@ export class Api<
       this.request<
         {
           /** User model */
-          data?: UserResource;
+          data: UserResource;
         },
         void
       >({
@@ -4300,7 +4710,7 @@ export class Api<
       this.request<
         {
           /** User model */
-          data?: UserResource;
+          data: UserResource;
         },
         void
       >({
@@ -4324,7 +4734,7 @@ export class Api<
       this.request<
         {
           /** User model */
-          data?: UserResource;
+          data: UserResource;
         },
         void
       >({
@@ -4348,7 +4758,7 @@ export class Api<
       this.request<
         {
           /** User model */
-          data?: UserResource;
+          data: UserResource;
         },
         void
       >({
@@ -4378,11 +4788,11 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: UserResource[];
+          data: UserResource[];
           /** Pagination links */
-          links?: Links;
+          links: Links;
           /** Pagination meta data */
-          meta?: PaginationMeta;
+          meta: PaginationMeta;
         },
         void
       >({
@@ -4416,11 +4826,11 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: UserResource[];
+          data: UserResource[];
           /** Pagination links */
-          links?: Links;
+          links: Links;
           /** Pagination meta data */
-          meta?: PaginationMeta;
+          meta: PaginationMeta;
         },
         void
       >({
@@ -4529,7 +4939,7 @@ export class Api<
     getLikesForStatus: (id?: number, params: RequestParams = {}) =>
       this.request<
         {
-          data?: UserResource[];
+          data: UserResource[];
         },
         void
       >({
@@ -4552,7 +4962,7 @@ export class Api<
     addLikeToStatus: (id?: number, params: RequestParams = {}) =>
       this.request<
         {
-          data?: LikeResponse;
+          data: LikeResponse;
         },
         void
       >({
@@ -4575,7 +4985,7 @@ export class Api<
     removeLikeFromStatus: (id?: number, params: RequestParams = {}) =>
       this.request<
         {
-          data?: LikeResponse;
+          data: LikeResponse;
         },
         void
       >({
@@ -4587,7 +4997,7 @@ export class Api<
       }),
 
     /**
-     * @description Returns paginated list of statuses, filtered by given parameters
+     * @description Returns cursor-paginated statuses filtered by given parameters. The departure window (from..to) defaults to the last 7 days and must not exceed 365 days.
      *
      * @tags Status
      * @name ListStatuses
@@ -4606,6 +5016,18 @@ export class Api<
          * @example 42
          */
         user_id?: number;
+        /**
+         * Lower bound for departure (date, e.g. 2024-01-01). Defaults to 7 days before "to".
+         * @format date
+         * @example "2024-01-01"
+         */
+        from?: string;
+        /**
+         * Upper bound for departure (date, e.g. 2024-01-31). Defaults to now+20min. Range from..to must not exceed 365 days.
+         * @format date
+         * @example "2024-01-31"
+         */
+        to?: string;
         /**
          * Filter by origin station name
          * @example "Central Station"
@@ -4631,7 +5053,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: StatusResource[];
+          data: StatusResource[];
         },
         any
       >({
@@ -4664,7 +5086,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: StatusResource;
+          data: StatusResource;
         },
         void
       >({
@@ -4692,7 +5114,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: StatusResource;
+          data: StatusResource;
         },
         void
       >({
@@ -4734,7 +5156,7 @@ export class Api<
     getTagsForStatus: (statusId?: number, params: RequestParams = {}) =>
       this.request<
         {
-          data?: StatusTagResource[];
+          data: StatusTagResource[];
         },
         void
       >({
@@ -4761,7 +5183,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: StatusTagResource;
+          data: StatusTagResource;
         },
         void
       >({
@@ -4791,7 +5213,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: StatusTagResource;
+          data: StatusTagResource;
         },
         void
       >({
@@ -4821,7 +5243,7 @@ export class Api<
       this.request<
         {
           /** @example "success" */
-          status?: string;
+          status: string;
         },
         void
       >({
@@ -4871,9 +5293,9 @@ export class Api<
         {
           data: Notification[];
           /** Pagination links */
-          links?: Links;
+          links: Links;
           /** Pagination meta data */
-          meta?: PaginationMeta;
+          meta: PaginationMeta;
         },
         void
       >({
@@ -4945,7 +5367,7 @@ export class Api<
       this.request<
         {
           /** @example "success" */
-          status?: string;
+          status: string;
         },
         void
       >({
@@ -4974,7 +5396,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: OperatorResource[];
+          data: OperatorResource[];
         },
         void
       >({
@@ -5009,16 +5431,14 @@ export class Api<
      * @description Get the current privacy policy
      *
      * @tags Privacy Policy
-     * @name AppHttpControllersApiV1PrivacyPolicyController
+     * @name GetCurrentPrivacyPolicy
      * @summary Get the current privacy policy
      * @request GET:/privacy-policies/current
      */
-    appHttpControllersApiV1PrivacyPolicyController: (
-      params: RequestParams = {},
-    ) =>
+    getCurrentPrivacyPolicy: (params: RequestParams = {}) =>
       this.request<
         {
-          data?: PrivacyPolicy;
+          data: PrivacyPolicy;
         },
         any
       >({
@@ -5063,7 +5483,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: ReportResource[];
+          data: ReportResource[];
         },
         void
       >({
@@ -5118,7 +5538,7 @@ export class Api<
     getReport: (id: string, params: RequestParams = {}) =>
       this.request<
         {
-          data?: ReportResource;
+          data: ReportResource;
         },
         void
       >({
@@ -5173,7 +5593,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: RouteSegmentResource[];
+          data: RouteSegmentResource[];
         },
         void
       >({
@@ -5218,7 +5638,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: RouteSegmentResource;
+          data: RouteSegmentResource;
         },
         void
       >({
@@ -5241,7 +5661,7 @@ export class Api<
     getRouteSegment: (id: string, params: RequestParams = {}) =>
       this.request<
         {
-          data?: RouteSegmentResource;
+          data: RouteSegmentResource;
         },
         void
       >({
@@ -5302,12 +5722,12 @@ export class Api<
     ) =>
       this.request<
         {
-          coordinates?: {
-            lat?: number;
-            lng?: number;
+          coordinates: {
+            lat: number;
+            lng: number;
           }[];
           /** Distance in meters */
-          distance?: number;
+          distance: number;
         },
         void
       >({
@@ -5339,12 +5759,12 @@ export class Api<
     ) =>
       this.request<
         {
-          polyline?: string;
+          polyline: string;
           /** Distance in meters */
-          distance?: number;
-          customWaypoints?: {
-            lat?: number;
-            lng?: number;
+          distance: number;
+          customWaypoints: {
+            lat: number;
+            lng: number;
           }[];
         },
         void
@@ -5370,7 +5790,7 @@ export class Api<
     getSessions: (params: RequestParams = {}) =>
       this.request<
         {
-          data?: SessionResource[];
+          data: SessionResource[];
         },
         any
       >({
@@ -5548,7 +5968,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: UserProfileSettingsResource;
+          data: UserProfileSettingsResource;
         },
         void
       >({
@@ -5588,7 +6008,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: UserProfileSettingsResource;
+          data: UserProfileSettingsResource;
         },
         void
       >({
@@ -5646,7 +6066,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: UserProfileSettingsResource;
+          data: UserProfileSettingsResource;
         },
         void
       >({
@@ -5681,7 +6101,7 @@ export class Api<
       this.request<
         {
           /** @example "Profile picture updated successfully." */
-          message?: string;
+          message: string;
         },
         void
       >({
@@ -5707,7 +6127,7 @@ export class Api<
       this.request<
         {
           /** @example "Profile picture deleted successfully." */
-          message?: string;
+          message: string;
         },
         void
       >({
@@ -5784,7 +6204,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: StationResource;
+          data: StationResource;
         },
         void
       >({
@@ -5828,7 +6248,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: StationResource;
+          data: StationResource;
         },
         void
       >({
@@ -5907,7 +6327,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: StationResource[];
+          data: StationResource[];
         },
         void
       >({
@@ -6036,7 +6456,7 @@ export class Api<
     getLeaderboard: (params: RequestParams = {}) =>
       this.request<
         {
-          data?: LeaderboardUserResource[];
+          data: LeaderboardUserResource[];
         },
         void
       >({
@@ -6059,7 +6479,7 @@ export class Api<
     getLeaderboardByDistance: (params: RequestParams = {}) =>
       this.request<
         {
-          data?: LeaderboardUserResource[];
+          data: LeaderboardUserResource[];
         },
         void
       >({
@@ -6082,7 +6502,7 @@ export class Api<
     getLeaderboardByFriends: (params: RequestParams = {}) =>
       this.request<
         {
-          data?: LeaderboardUserResource[];
+          data: LeaderboardUserResource[];
         },
         void
       >({
@@ -6105,7 +6525,7 @@ export class Api<
     getMonthlyLeaderboard: (month?: string, params: RequestParams = {}) =>
       this.request<
         {
-          data?: LeaderboardUserResource[];
+          data: LeaderboardUserResource[];
         },
         void
       >({
@@ -6143,7 +6563,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: {
+          data: {
             /** The purpose of travel */
             purpose?: {
               /** What type of travel (0=private, 1=business, 2=commute) did the user specify? */
@@ -6228,7 +6648,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: {
+          data: {
             statuses?: StatusResource[];
             polylines?: FeatureCollection[];
             /** @example "74026" */
@@ -6271,12 +6691,12 @@ export class Api<
     getGlobalStatistics: (params: RequestParams = {}) =>
       this.request<
         {
-          data?: StatisticsGlobalData;
-          meta?: {
+          data: StatisticsGlobalData;
+          meta: {
             /** @example "2021-01-01T00:00:00.000000Z" */
-            from?: any;
+            from: any;
             /** @example "2021-02-01T00:00:00.000000Z" */
-            until?: any;
+            until: any;
           };
         },
         any
@@ -6452,11 +6872,11 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: StatusResource[];
+          data: StatusResource[];
           /** Pagination links */
-          links?: Links;
+          links: Links;
           /** Pagination meta data */
-          meta?: PaginationMeta;
+          meta: PaginationMeta;
         },
         void
       >({
@@ -6486,11 +6906,11 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: StatusResource[];
+          data: StatusResource[];
           /** Pagination links */
-          links?: Links;
+          links: Links;
           /** Pagination meta data */
-          meta?: PaginationMeta;
+          meta: PaginationMeta;
         },
         void
       >({
@@ -6504,30 +6924,6 @@ export class Api<
   };
   statuses = {
     /**
-     * @description Temporary cleanup endpoint: returns groups of check-ins the authenticated user has checked in more than once for the same trip and origin stopover. Will be removed after 2026-05-31.
-     *
-     * @tags Status
-     * @name GetDuplicateCheckins
-     * @summary [Deprecated] Get duplicate check-ins of the authenticated user
-     * @request GET:/statuses/duplicates
-     * @deprecated
-     * @secure
-     */
-    getDuplicateCheckins: (params: RequestParams = {}) =>
-      this.request<
-        {
-          data?: DuplicateCheckinGroup[];
-        },
-        void
-      >({
-        path: `/statuses/duplicates`,
-        method: "GET",
-        secure: true,
-        format: "json",
-        ...params,
-      }),
-
-    /**
      * @description Returns all currently active statuses that are visible to the (un)authenticated user
      *
      * @tags Status
@@ -6539,7 +6935,7 @@ export class Api<
     getActiveStatuses: (params: RequestParams = {}) =>
       this.request<
         {
-          data?: StatusResource[];
+          data: StatusResource[];
         },
         void
       >({
@@ -6566,7 +6962,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: StatusResource;
+          data: StatusResource;
         },
         void
       >({
@@ -6594,7 +6990,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: {
+          data: {
             "1337"?: StatusTagResource[];
             "4711"?: StatusTagResource[];
           };
@@ -6621,7 +7017,7 @@ export class Api<
     getLivePositionsForActiveStatuses: (params: RequestParams = {}) =>
       this.request<
         {
-          data?: LivePointDto[];
+          data: LivePointDto[];
         },
         void
       >({
@@ -6644,7 +7040,7 @@ export class Api<
     getLivePositionsForStatuses: (ids?: string, params: RequestParams = {}) =>
       this.request<
         {
-          data?: LivePointDto[];
+          data: LivePointDto[];
         },
         void
       >({
@@ -6668,7 +7064,7 @@ export class Api<
     getPolylines: (ids?: string, params: RequestParams = {}) =>
       this.request<
         {
-          data?: {
+          data: {
             /** @example "FeatureCollection" */
             type?: any;
             features?: Polyline[];
@@ -6704,6 +7100,30 @@ export class Api<
         void
       >({
         path: `/stopovers/${ids}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+  };
+  tags = {
+    /**
+     * @description Returns tag suggestions based on the user's most recently used key:value pairs and the most frequently used key:value pairs in the last 3 days (minimum 2 uses).
+     *
+     * @tags Status
+     * @name GetTagSuggestions
+     * @summary Get tag suggestions for the authenticated user
+     * @request GET:/tags/suggestions
+     * @secure
+     */
+    getTagSuggestions: (params: RequestParams = {}) =>
+      this.request<
+        {
+          data: StatusTagSuggestionResource[];
+        },
+        void
+      >({
+        path: `/tags/suggestions`,
         method: "GET",
         secure: true,
         format: "json",
@@ -6781,7 +7201,7 @@ export class Api<
       this.request<
         {
           /** A transit ticket / Fahrkarte */
-          data?: TicketResource;
+          data: TicketResource;
         },
         void
       >({
@@ -6807,7 +7227,7 @@ export class Api<
       this.request<
         {
           /** A transit ticket / Fahrkarte */
-          data?: TicketResource;
+          data: TicketResource;
         },
         void
       >({
@@ -6855,7 +7275,7 @@ export class Api<
       this.request<
         {
           /** A transit ticket / Fahrkarte */
-          data?: TicketResource;
+          data: TicketResource;
         },
         void
       >({
@@ -6898,7 +7318,7 @@ export class Api<
       this.request<
         {
           /** Usage statistics for a single ticket */
-          data?: TicketStatisticsResource;
+          data: TicketStatisticsResource;
         },
         void
       >({
@@ -6935,34 +7355,34 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: DepartureResource[];
-          meta?: {
+          data: DepartureResource[];
+          meta: {
             /** train station model */
-            station?: Station;
-            times?: {
+            station: Station;
+            times: {
               /**
                * @format date-time
                * @example "2020-01-01T12:00:00.000Z"
                */
-              now?: string;
+              now: string;
               /**
                * @format date-time
                * @example "2020-01-01T11:45:00.000Z"
                */
-              prev?: string;
+              prev: string;
               /**
                * @format date-time
                * @example "2020-01-01T12:15:00.000Z"
                */
-              next?: string;
+              next: string;
             };
             /** List of licenses that were filtered out */
-            removedLicenses?: (string | LicenseDto)[];
+            removedLicenses: (string | LicenseDto)[];
             /**
              * Number of removed entries due to license filtering
              * @example 2
              */
-            removedCount?: number;
+            removedCount: number;
           };
         },
         void
@@ -6987,7 +7407,7 @@ export class Api<
     setHomeStation: (id: any, params: RequestParams = {}) =>
       this.request<
         {
-          data?: any;
+          data: any;
         },
         void
       >({
@@ -7025,7 +7445,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: TripResource;
+          data: TripResource;
         },
         void
       >({
@@ -7063,7 +7483,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: any[];
+          data: any[];
         },
         void
       >({
@@ -7087,13 +7507,29 @@ export class Api<
     createCheckin: (data: CheckinRequestBody, params: RequestParams = {}) =>
       this.request<
         CheckinSuccessResource,
-        void | {
-          /** @example "You are not allowed to check in the following users: 1" */
-          message?: string;
-          meta?: {
-            invalidUsers?: number[];
-          };
-        }
+        | void
+        | {
+            /** @example "You are not allowed to check in the following users: 1" */
+            message: string;
+            meta: {
+              invalidUsers: number[];
+            };
+          }
+        | {
+            /**
+             * Deprecated: use data.conflicts instead
+             * @deprecated
+             */
+            message: {
+              /** @deprecated */
+              status_id: number | null;
+              /** @deprecated */
+              lineName: string | null;
+            };
+            data: {
+              conflicts: StatusResource[];
+            };
+          }
       >({
         path: `/trains/checkin`,
         method: "POST",
@@ -7116,7 +7552,7 @@ export class Api<
     trainStationAutocomplete: (query?: any, params: RequestParams = {}) =>
       this.request<
         {
-          data?: StationResource[];
+          data: StationResource[];
         },
         void
       >({
@@ -7139,7 +7575,7 @@ export class Api<
     trainStationHistory: (params: RequestParams = {}) =>
       this.request<
         {
-          data?: StationResource[];
+          data: StationResource[];
         },
         void
       >({
@@ -7163,7 +7599,7 @@ export class Api<
     getTripStatuses: (id: number, params: RequestParams = {}) =>
       this.request<
         {
-          data?: StatusResource[];
+          data: StatusResource[];
         },
         void
       >({
@@ -7198,7 +7634,7 @@ export class Api<
       this.request<
         {
           /** GeoJSON Feature (LineString) */
-          data?: object;
+          data: object;
         },
         void
       >({
@@ -7268,7 +7704,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: TripResource;
+          data: TripResource;
         },
         void
       >({
@@ -7294,7 +7730,7 @@ export class Api<
     getBlockedUsers: (params: RequestParams = {}) =>
       this.request<
         {
-          data?: LightUserResource[];
+          data: LightUserResource[];
         },
         void
       >({
@@ -7317,7 +7753,7 @@ export class Api<
     getMutedUsers: (params: RequestParams = {}) =>
       this.request<
         {
-          data?: LightUserResource[];
+          data: LightUserResource[];
         },
         void
       >({

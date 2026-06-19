@@ -11,6 +11,7 @@ use OpenApi\Attributes as OA;
 #[OA\Schema(
     schema: 'PointsCalculation',
     title: 'PointsCalculation',
+    required: ['base', 'distance', 'factor', 'reason'],
     properties: [
         new OA\Property(property: 'base', description: 'Basepoints for this type of vehicle', type: 'number', format: 'float', example: 0.5),
         new OA\Property(property: 'distance', description: 'Points for the travelled distance', type: 'number', format: 'float', example: 0.25),
@@ -22,6 +23,7 @@ use OpenApi\Attributes as OA;
     schema: 'Points',
     title: 'Points',
     description: 'Points model',
+    required: ['points', 'calculation', 'additional'],
     properties: [
         new OA\Property(property: 'points', description: 'points', type: 'integer', example: 1),
         new OA\Property(property: 'calculation', ref: '#/components/schemas/PointsCalculation'),
@@ -30,6 +32,7 @@ use OpenApi\Attributes as OA;
 )]
 #[OA\Schema(
     title: 'CheckinResponse',
+    required: ['status', 'points', 'alsoOnThisConnection'],
     properties: [
         new OA\Property(
             property: 'status',

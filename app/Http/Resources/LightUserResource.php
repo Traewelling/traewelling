@@ -15,7 +15,7 @@ use OpenApi\Attributes as OA;
 #[OA\Schema(
     title: 'LightUser',
     description: 'User model with just basic information',
-    required: ['id', 'uuid', 'displayName', 'username', 'profilePicture', 'preventIndex'],
+    required: ['id', 'uuid', 'displayName', 'username', 'profilePicture', 'mastodon', 'preventIndex'],
     properties: [
         new OA\Property(property: 'id', type: 'integer', example: 1),
         new OA\Property(property: 'uuid', description: 'UUID', type: 'string', format: 'uuid', example: '00000000-0000-0000-0000-000000000000'),

@@ -10,6 +10,7 @@ import {
     CheckinSuccessResource,
     DepartureResource,
     EventResource,
+    StatusResource,
     StopoverResource,
 } from '../../../types/Api.gen';
 import { useActiveCheckin } from '../../../vue/stores/activeCheckin';
@@ -40,6 +41,7 @@ const toot = ref(false);
 const chainPost = ref(false);
 const loading = ref(false);
 const collision = ref(false);
+const collisionCheckins = ref<StatusResource[]>([]);
 const selectedEvent = ref<EventResource | null>(null);
 const selectedFriendIds = ref<number[]>([]);
 const tagEditor = ref<InstanceType<typeof TagEditor> | null>(null);
@@ -103,8 +105,9 @@ async function checkIn(): Promise<void> {
     } catch (e) {
         const status = typeof e === 'object' && e !== null && 'status' in e ? (e as { status: number }).status : 0;
         if (status === 409) {
+            const err = e as { error?: { data?: { conflicts?: StatusResource[] } } };
             collision.value = true;
-            notyf.error(trans('checkin.conflict'));
+            collisionCheckins.value = err.error?.data?.conflicts ?? [];
         } else {
             const msg =
                 typeof e === 'object' && e !== null && 'error' in e
@@ -121,8 +124,39 @@ async function checkIn(): Promise<void> {
 <template>
     <div class="flex flex-col gap-4 p-4">
         <!-- Collision warning -->
-        <div v-if="collision" class="alert alert-warning text-sm">
-            <span>{{ trans('checkin.conflict.question') }}</span>
+        <div v-if="collision" class="alert alert-warning flex flex-col gap-2 text-sm" role="alert">
+            <div class="flex items-start gap-2">
+                <i class="fa-solid fa-triangle-exclamation mt-0.5 shrink-0" />
+                <div class="flex flex-col gap-1">
+                    <p class="font-semibold">{{ trans('checkin.conflict') }}</p>
+                    <ul v-if="collisionCheckins.length" class="flex flex-col gap-1">
+                        <li v-for="conflict in collisionCheckins" :key="conflict.id">
+                            <a
+                                :href="'/status/' + conflict.id"
+                                target="_blank"
+                                rel="noopener"
+                                class="link link-hover flex flex-wrap items-baseline gap-x-1"
+                            >
+                                <strong>{{ conflict.checkin?.lineName }}</strong>
+                                <span v-if="conflict.checkin?.origin?.departurePlanned" class="opacity-70">
+                                    {{ DateTime.fromISO(conflict.checkin.origin.departurePlanned).toFormat('HH:mm') }}
+                                </span>
+                                <span v-if="conflict.checkin?.origin?.name">{{ conflict.checkin.origin.name }}</span>
+                                <span v-if="conflict.checkin?.destination?.name">
+                                    &rarr; {{ conflict.checkin.destination.name }}
+                                </span>
+                                <span v-if="conflict.checkin?.destination?.arrivalPlanned" class="opacity-70">
+                                    {{
+                                        DateTime.fromISO(conflict.checkin.destination.arrivalPlanned).toFormat('HH:mm')
+                                    }}
+                                </span>
+                                <i class="fa-solid fa-arrow-up-right-from-square text-xs opacity-50" />
+                            </a>
+                        </li>
+                    </ul>
+                    <p>{{ trans('checkin.conflict.question') }}</p>
+                </div>
+            </div>
         </div>
 
         <!-- Status text -->
@@ -171,12 +205,14 @@ async function checkIn(): Promise<void> {
             </label>
         </div>
 
-        <!-- Extra options: event, friends, tags -->
+        <!-- Extra options: event, friends -->
         <div class="flex flex-wrap gap-2 items-start">
             <EventPicker v-model="selectedEvent" :timestamp="departureTimestamp" />
             <FriendPicker v-model="selectedFriendIds" />
-            <TagEditor ref="tagEditor" />
         </div>
+
+        <!-- Tags -->
+        <TagEditor ref="tagEditor" />
 
         <!-- Submit -->
         <button
@@ -186,7 +222,7 @@ async function checkIn(): Promise<void> {
             @click="checkIn"
         >
             <span v-if="loading" class="loading loading-spinner loading-sm" />
-            {{ trans('stationboard.btn-checkin') }}
+            {{ collision ? trans('checkin.conflict.force') : trans('stationboard.btn-checkin') }}
         </button>
     </div>
 </template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { Computer, Smartphone, Tablet } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { Computer, Smartphone, Tablet } from 'lucide-vue-next';
 import { FunctionalComponent, ref } from 'vue';
 import { Api, SessionResource } from '../../../../../types/Api.gen';
 import SettingsListRow from '../../SettingsListRow.vue';

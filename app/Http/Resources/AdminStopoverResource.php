@@ -10,6 +10,7 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(
     title: 'AdminStopover',
+    required: ['id', 'station', 'arrivalPlanned', 'arrivalReal', 'departurePlanned', 'departureReal', 'routeSegmentId', 'routeSegmentType', 'stationIdentifierId'],
     properties: [
         new OA\Property(property: 'id', type: 'integer'),
         new OA\Property(

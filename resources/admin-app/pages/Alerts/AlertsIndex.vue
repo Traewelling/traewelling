@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { PencilLine, Plus, Trash2 } from 'lucide-vue-next';
+import { PencilLine, Plus, Trash2 } from '@lucide/vue';
 import { onMounted, ref } from 'vue';
-import { Api, type AlertResource } from '../../../types/Api.gen';
+import { type AlertResource, Api } from '../../../types/Api.gen';
 import BackendLayout from '../../layouts/BackendLayout.vue';
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });

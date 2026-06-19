@@ -48,4 +48,15 @@ export default defineConfigWithVueTs(
             'vue/block-lang': 'off',
         },
     },
+    {
+        files: ['scripts/**/*.{js,mjs,cjs}'],
+        languageOptions: {
+            globals: {
+                ...globals.node,
+            },
+        },
+        rules: {
+            'no-console': 'off',
+        },
+    },
 );

@@ -1,67 +1,65 @@
-@extends('layouts.app')
+@extends('layouts.minimal-tailwind')
 
 @section('meta-robots', 'noindex')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-7">
-            <div class="card">
-                <div class="card-header">{{ __('user.header-reset-pw') }}</div>
-
-                <div class="card-body">
-                    <form method="POST" action="{{ route('password.update') }}">
+    <div class="bg-base-200 flex min-h-screen items-center w-full">
+        <div class="card mx-auto w-full max-w-5xl shadow-xl">
+            <div class="bg-base-100 md:rounded-xl">
+                <div class="px-10 py-24">
+                    <h1 class="text-3xl font-bold self-center">{{ __('user.header-reset-pw') }}</h1>
+                    <form method="POST" action="{{ route('password.update') }}" class="flex flex-col gap-4">
                         @csrf
-
                         <input type="hidden" name="token" value="{{ $token }}">
 
-                        <div class="form-group row">
-                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('user.email') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ $email ?? old('email') }}" required autocomplete="email" autofocus>
-
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                        <fieldset class="fieldset">
+                            <div class="label">
+                                {{ __('user.email') }}
                             </div>
-                        </div>
 
-                        <div class="form-group row">
-                            <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('user.password') }}</label>
+                            <input id="email" type="email" class="input w-full @error('email') input-error @enderror"
+                                   name="email" required autocomplete="email" autofocus
+                                   value="{{ $email ?? old('email') }}">
 
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
+                            @error('email')
+                            <p class="validator-hint visible text-error" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </p>
+                            @enderror
+                        </fieldset>
 
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                        <fieldset class="fieldset">
+                            <div class="label">
+                                <span class="label-text">{{ __('user.password') }}</span>
                             </div>
-                        </div>
 
-                        <div class="form-group row">
-                            <label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ __('settings.confirm-password') }}</label>
+                            <input type="password"
+                                   class="input validator w-full @error('password') input-error @enderror" id="password"
+                                   name="password" required
+                                   value="{{ old('email') }}" autocomplete="new-password" minlength="8"/>
+                            @error('password')
+                            <p class="validator-hint text-error visible">
+                                {{ $message }}
+                            </p>
+                            @enderror
+                        </fieldset>
 
-                            <div class="col-md-6">
-                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
+                        <fieldset class="fieldset">
+                            <div class="label">
+                                <span class="label-text">{{ __('settings.confirm-password') }}</span>
                             </div>
-                        </div>
 
-                        <div class="form-group row mb-0">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('user.header-reset-pw') }}
-                                </button>
-                            </div>
-                        </div>
+                            <input type="password" class="input w-full" id="password-confirm"
+                                   name="password_confirmation" required
+                                   value="{{ old('email') }}" autocomplete="new-password" minlength="8"/>
+                        </fieldset>
+
+                        <button type="submit" class="btn btn-primary">
+                            {{ __('user.header-reset-pw') }}
+                        </button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-</div>
 @endsection

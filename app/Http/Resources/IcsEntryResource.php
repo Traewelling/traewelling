@@ -7,7 +7,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Attributes as OA;
 
 #[OA\Schema(
-    required: ['id', 'token', 'name', 'created', 'lastAccessed'],
+    required: ['id', 'token', 'name', 'createdAt', 'lastAccessed'],
     type: 'object',
     properties: [
         new OA\Property(

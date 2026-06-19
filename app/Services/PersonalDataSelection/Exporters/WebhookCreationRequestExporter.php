@@ -17,4 +17,13 @@ class WebhookCreationRequestExporter extends AbstractExporter
     protected string $model = WebhookCreationRequest::class;
 
     protected string $whereColumn = 'user_id';
+
+    protected array $columns = [
+        'id',
+        'user_id',
+        'oauth_client_id',
+        'revoked',
+        'expires_at',
+        'events',
+    ];
 }

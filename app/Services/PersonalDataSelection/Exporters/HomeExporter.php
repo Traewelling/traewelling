@@ -14,5 +14,17 @@ class HomeExporter extends AbstractExporter
     protected string $fileName = 'home.json';
 
     protected string $relation = 'home';
-    // todo: columns
+
+    protected array $columns = [
+        'id',
+        'name',
+        'latitude',
+        'longitude',
+        'created_at',
+        'updated_at',
+        'time_offset',
+        'shift_time',
+        'source',
+        'relevance',
+    ];
 }

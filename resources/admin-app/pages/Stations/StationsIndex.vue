@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ExternalLink } from 'lucide-vue-next';
+import { ExternalLink } from '@lucide/vue';
 import { ref, watch } from 'vue';
 import { Api, type Station } from '../../../types/Api.gen';
 import BackendLayout from '../../layouts/BackendLayout.vue';

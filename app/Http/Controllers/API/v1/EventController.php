@@ -19,6 +19,7 @@ use OpenApi\Attributes as OA;
     schema: 'EventSuggestion',
     title: 'EventSuggestion',
     description: 'Fields for suggesting an event',
+    required: ['name', 'host', 'begin', 'end', 'url', 'hashtag', 'nearestStation', 'nearestStationId'],
     properties: [
         new OA\Property(property: 'name', description: 'name of the event', type: 'string', example: 'Eröffnung der Nebenbahn in Knuffingen', maxLength: 255),
         new OA\Property(property: 'host', description: 'host of the event', type: 'string', example: 'MiWuLa', nullable: true),
@@ -61,6 +62,7 @@ class EventController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -100,6 +102,7 @@ class EventController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -146,6 +149,7 @@ class EventController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data', 'links', 'meta'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -153,10 +157,7 @@ class EventController extends Controller
                             items: new OA\Items(ref: '#/components/schemas/StatusResource'),
                         ),
                         new OA\Property(property: 'links', ref: '#/components/schemas/Links'),
-                        new OA\Property(
-                            property: 'meta',
-                            ref: '#/components/schemas/PaginationMeta',
-                        ),
+                        new OA\Property(property: 'meta', ref: '#/components/schemas/PaginationMeta'),
                     ],
                 ),
             ),
@@ -222,6 +223,7 @@ class EventController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data', 'links', 'meta'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -229,10 +231,7 @@ class EventController extends Controller
                             items: new OA\Items(ref: '#/components/schemas/EventResource'),
                         ),
                         new OA\Property(property: 'links', ref: '#/components/schemas/Links'),
-                        new OA\Property(
-                            property: 'meta',
-                            ref: '#/components/schemas/PaginationMeta',
-                        ),
+                        new OA\Property(property: 'meta', ref: '#/components/schemas/PaginationMeta'),
                     ],
                 ),
             ),

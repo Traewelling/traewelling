@@ -26,7 +26,6 @@ use OpenApi\Attributes as OA;
             property: 'stopovers',
             type: 'array',
             items: new OA\Items(ref: StopoverResource::class),
-            nullable: true,
         ),
         new OA\Property(property: 'createdAt', type: 'string', format: 'date-time'),
         new OA\Property(property: 'updatedAt', type: 'string', format: 'date-time'),

@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { Copy, RefreshCw } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { Copy, RefreshCw } from 'lucide-vue-next';
 import { Notyf } from 'notyf';
 import { inject, ref } from 'vue';
 import { Api } from '../../../../../types/Api.gen';

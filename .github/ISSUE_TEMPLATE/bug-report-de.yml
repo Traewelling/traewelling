@@ -12,7 +12,7 @@ body:
 
         Wenn es **kein** Datenproblem ist, sondern die **Software Träwelling** sich falsch verhält, fülle bitte dieses Formular aus.
 
-        Bitte prüfe außerdem die [offenen Issues](https://github.com/Traewelling/traewelling/issues) **und** die [experimentellen Features](https://github.com/Traewelling/traewelling/issues/3660), um Duplikate zu vermeiden.  
+        Bitte prüfe außerdem die [offenen Issues](https://github.com/Traewelling/traewelling/issues), um Duplikate zu vermeiden.  
         **Hinweis:** Falls experimentelle Features aktiviert sind, kannst du sie bei Bedarf in deinen Einstellungen deaktivieren: https://traewelling.de/settings/profile
 
   - type: checkboxes

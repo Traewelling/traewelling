@@ -43,7 +43,6 @@ use Spatie\PersonalDataExport\PersonalDataSelection;
  * @property string|null $avatar
  * @property string|null $email
  * @property \Illuminate\Support\Carbon|null $email_verified_at
- * @property \Illuminate\Support\Carbon|null $privacy_ack_at
  * @property string|null $password
  * @property int|null $home_id
  * @property string|null $remember_token
@@ -178,6 +177,11 @@ use Spatie\PersonalDataExport\PersonalDataSelection;
  *
  * @property-read Collection<int, PrivacyPolicyAcceptance> $privacyPolicyAcceptances
  * @property-read int|null $privacy_policy_acceptances_count
+ * @property-read Collection<int, Permission> $teams
+ * @property-read int|null $teams_count
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User team($teams, bool $without = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutTeam($teams)
  *
  * @mixin \Eloquent
  */

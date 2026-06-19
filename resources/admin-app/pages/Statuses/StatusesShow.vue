@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowLeft, Save } from 'lucide-vue-next';
+import { ArrowLeft, Save } from '@lucide/vue';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { type AdminStatusResource, Api } from '../../../types/Api.gen';

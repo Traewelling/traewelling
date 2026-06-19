@@ -14,5 +14,13 @@ class ProfileLinksExporter extends AbstractExporter
     protected string $fileName = 'profile_links.json';
 
     protected string $relation = 'profileLinks';
-    // todo: columns
+
+    protected array $columns = [
+        'id',
+        'user_id',
+        'name',
+        'url',
+        'created_at',
+        'updated_at',
+    ];
 }

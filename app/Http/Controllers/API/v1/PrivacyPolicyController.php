@@ -18,7 +18,7 @@ class PrivacyPolicyController extends Controller
 
     #[OA\Get(
         path: '/privacy-policies/current',
-        operationId: PrivacyPolicyController::class,
+        operationId: 'getCurrentPrivacyPolicy',
         description: 'Get the current privacy policy',
         summary: 'Get the current privacy policy',
         tags: ['Privacy Policy'],
@@ -27,6 +27,7 @@ class PrivacyPolicyController extends Controller
                 response: 200,
                 description: 'Success',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',

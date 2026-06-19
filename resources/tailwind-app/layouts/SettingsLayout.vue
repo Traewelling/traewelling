@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { Activity, LayoutGrid, Lock, ShieldUser, User, UserRoundKey, Users } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { Activity, LayoutGrid, Lock, ShieldUser, User, UserRoundKey, Users } from 'lucide-vue-next';
 import AppLayout from './AppLayout.vue';
 
 const tabs = [

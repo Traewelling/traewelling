@@ -7,13 +7,13 @@ import Index from '../pages/Contribute/Index.vue';
 import Profile from '../pages/Contribute/Profile.vue';
 import SuggestEvent from '../pages/Contribute/SuggestEvent.vue';
 import Dashboard from '../pages/Dashboard/Dashboard.vue';
-import DuplicateCheckins from '../pages/DuplicateCheckins/DuplicateCheckins.vue';
 import EventList from '../pages/Events/EventList.vue';
 import EventView from '../pages/Events/EventView.vue';
 import Export from '../pages/Export/Export.vue';
 import Leaderboard from '../pages/Leaderboard/Leaderboard.vue';
 import MonthlyLeaderboard from '../pages/Leaderboard/MonthlyLeaderboard.vue';
 import Notifications from '../pages/Notifications/Notifications.vue';
+import PrivacyPolicy from '../pages/PrivacyPolicy/PrivacyPolicy.vue';
 import UserProfile from '../pages/Profile/UserProfile.vue';
 import Search from '../pages/Search/Search.vue';
 import Account from '../pages/Settings/Account/Account.vue';
@@ -42,12 +42,6 @@ const routes: Array<RouteRecordRaw> = [
         name: 'dashboard',
         component: Dashboard,
         meta: { title: 'menu.dashboard' },
-    },
-    {
-        path: '/statuses/duplicates', //TODO: remove after 2026-05-31
-        name: 'statuses-duplicates',
-        component: DuplicateCheckins,
-        meta: { title: 'checkin.duplicates.title' },
     },
     {
         path: '/contribute',
@@ -243,6 +237,7 @@ const routes: Array<RouteRecordRaw> = [
     },
     {
         path: '/settings',
+        name: 'settings',
         redirect: '/settings/profile',
     },
     {
@@ -251,6 +246,18 @@ const routes: Array<RouteRecordRaw> = [
         component: ErrorPage,
         props: { code: 404, standalone: true },
         meta: { title: 'error.404' },
+    },
+    {
+        path: '/legal/privacy-policy',
+        name: 'privacy-policy',
+        component: PrivacyPolicy,
+        meta: { title: 'privacy.title' },
+    },
+    {
+        path: '/gdpr-intercept',
+        name: 'gdpr-intercept',
+        component: PrivacyPolicy,
+        meta: { title: 'privacy.title' },
     },
 ];
 

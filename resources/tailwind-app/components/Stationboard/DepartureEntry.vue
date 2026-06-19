@@ -77,7 +77,7 @@ const platform = computed((): string | null => props.item.platform ?? props.item
 
             <!-- Platform badge -->
             <div v-if="platform" class="flex-shrink-0">
-                <span class="badge badge-ghost badge-sm text-xs">{{ platform }}</span>
+                <span class="badge badge-info badge-soft badge-sm text-xs">{{ platform }}</span>
             </div>
 
             <!-- Time -->

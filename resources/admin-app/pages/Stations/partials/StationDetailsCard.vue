@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Pencil, X } from 'lucide-vue-next';
+import { Pencil, X } from '@lucide/vue';
 import { ref } from 'vue';
 import { Api, type Station } from '../../../../types/Api.gen';
 

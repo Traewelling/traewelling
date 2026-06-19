@@ -22,6 +22,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property string|null $human_name
+ * @property string|null $attribution_text
  * @property string|null $license_id
  * @property int $force_active
  * @property-read License|null $manualLicense
@@ -45,6 +46,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MotisSourceLicense whereSourceUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MotisSourceLicense whereSpdx($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MotisSourceLicense whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|MotisSourceLicense whereAttributionText($value)
  *
  * @mixin \Eloquent
  */
@@ -58,6 +60,7 @@ class MotisSourceLicense extends Model
         'country',
         'name',
         'human_name',
+        'attribution_text',
         'sources',
         'license_url',
         'source_url',

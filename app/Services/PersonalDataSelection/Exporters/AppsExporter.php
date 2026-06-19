@@ -17,5 +17,21 @@ class AppsExporter extends AbstractExporter
     protected string $fileName = 'apps.json';
 
     protected string $relation = 'oAuthClients';
-    // todo: columns
+
+    protected array $columns = [
+        'id',
+        'user_id',
+        'name',
+        'grant_types',
+        'provider',
+        'redirect',
+        'personal_access_client',
+        'password_client',
+        'revoked',
+        'created_at',
+        'updated_at',
+        'authorized_webhook_url',
+        'privacy_policy_url',
+        'webhooks_enabled',
+    ];
 }

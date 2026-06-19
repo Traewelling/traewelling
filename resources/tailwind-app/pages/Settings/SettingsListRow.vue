@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ChevronRight, TriangleAlert } from 'lucide-vue-next';
+import { ChevronRight, TriangleAlert } from '@lucide/vue';
 
 defineProps<{
     title: string;

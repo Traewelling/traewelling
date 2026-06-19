@@ -51,6 +51,81 @@
                 }
             }
         },
+        "/admin/activity": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "List activity log",
+                "description": "Requires \"view activity\" permission. Returns the last 3 months of activity log entries, excluding system entries.",
+                "operationId": "getAdminActivity",
+                "parameters": [
+                    {
+                        "name": "cursor",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "subjectType",
+                        "in": "query",
+                        "description": "Full class name to filter by subject type, requires subjectId",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "subjectId",
+                        "in": "query",
+                        "description": "Subject ID to filter by, requires subjectType",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated activity log",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ActivityLogResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/admin/events": {
             "get": {
                 "tags": [
@@ -95,6 +170,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -143,6 +221,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/EventAdminResource"
@@ -193,6 +274,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/EventAdminResource"
@@ -251,6 +335,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/EventAdminResource"
@@ -340,6 +427,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -390,6 +480,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "properties": {
@@ -484,6 +577,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/EventAdminResource"
@@ -804,6 +900,60 @@
                 ]
             }
         },
+        "/admin/trips": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "List trips",
+                "description": "Admin only. Returns a cursor-paginated list of all trips with checkin counts.",
+                "operationId": "getAdminTrips",
+                "parameters": [
+                    {
+                        "name": "cursor",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated list of trips",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/AdminTripResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/admin/trips/{id}": {
             "get": {
                 "tags": [
@@ -828,6 +978,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/AdminTripResource"
@@ -894,6 +1047,246 @@
                 ]
             }
         },
+        "/admin/users": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "List users",
+                "description": "Admin only. Returns a cursor-paginated list of all users, optionally filtered by a search query.",
+                "operationId": "getAdminUsers",
+                "parameters": [
+                    {
+                        "name": "cursor",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "query",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated list of users",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/AdminUserListResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/admin/users/{id}": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Get user details",
+                "description": "Admin only. Returns full details for a single user including stats, roles, mail changes, and recent statuses.",
+                "operationId": "getAdminUser",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/AdminUserResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/admin/users/{id}/email": {
+            "put": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Update user email",
+                "description": "Admin only. Updates the email address for a user and sends a verification notification.",
+                "operationId": "updateAdminUserEmail",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "Email updated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/admin/users/{id}/roles": {
+            "put": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Update user roles",
+                "description": "Admin only. Syncs roles for a user. The admin role is protected and cannot be removed.",
+                "operationId": "updateAdminUserRoles",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "roles"
+                                ],
+                                "properties": {
+                                    "roles": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "Roles updated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/alerts": {
             "get": {
                 "tags": [
@@ -926,6 +1319,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -1015,6 +1411,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/AlertResource"
@@ -1066,6 +1465,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/AlertResource"
@@ -1177,6 +1579,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/AlertResource"
@@ -1258,6 +1663,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -1304,6 +1712,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/OAuthClientResource"
@@ -1362,6 +1773,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/OAuthClientResource"
@@ -1448,6 +1862,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/WebhookStatsResource"
@@ -1488,6 +1905,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "status"
+                                    ],
                                     "properties": {
                                         "status": {
                                             "example": "success"
@@ -1527,6 +1947,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/UserAuthResource"
@@ -1565,6 +1988,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/BearerTokenResponse"
@@ -1664,6 +2090,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -1735,6 +2164,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/EventResource"
@@ -1789,6 +2221,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/EventDetailsResource"
@@ -1852,6 +2287,11 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -1954,6 +2394,11 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -2028,6 +2473,153 @@
                 ]
             }
         },
+        "/export/gdpr": {
+            "post": {
+                "tags": [
+                    "Export"
+                ],
+                "summary": "Request a GDPR data export",
+                "description": "Requests a full GDPR data export. The export is processed asynchronously and delivered via email. Only available when the GDPR export feature is enabled for the account. Subject to a per-user cooldown (see `gdprExportCooldown` in the configuration endpoint). The `recentGdprExport` field on the authenticated user resource reflects the last request timestamp.",
+                "operationId": "requestGdprExport",
+                "responses": {
+                    "200": {
+                        "description": "Export requested successfully – will be delivered by email when ready",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "message"
+                                    ],
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Export successfully requested."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Feature not available for this account, or cooldown period has not elapsed"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-exports"
+                        ]
+                    },
+                    {
+                        "token": [
+                            "write-exports"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/export/statuses": {
+            "post": {
+                "tags": [
+                    "Export"
+                ],
+                "summary": "Export statuses as PDF, CSV or JSON",
+                "description": "Generates a downloadable export of the authenticated user's statuses. Supported formats are `pdf`, `csv_human` (human-readable column headings), `csv_machine` (machine-readable column headings), and `json`. The `columns` parameter selects which fields to include and is required for PDF and CSV formats; it is ignored for JSON. The date range may not exceed 365 days, and the result set is capped at 2000 trips.",
+                "operationId": "generateStatusExport",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "from",
+                                    "until",
+                                    "filetype"
+                                ],
+                                "properties": {
+                                    "from": {
+                                        "description": "Start date of the export period (inclusive)",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-01-01"
+                                    },
+                                    "until": {
+                                        "description": "End date of the export period (inclusive)",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-01-31"
+                                    },
+                                    "columns": {
+                                        "description": "Columns to include. Required for pdf/csv formats, ignored for json.",
+                                        "type": "array",
+                                        "items": {
+                                            "$ref": "#/components/schemas/ExportableColumn"
+                                        }
+                                    },
+                                    "filetype": {
+                                        "$ref": "#/components/schemas/ExportableFileType"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "File attachment ready for download",
+                        "content": {
+                            "application/pdf": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            },
+                            "text/csv": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Date range exceeds the 365-day maximum"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "406": {
+                        "description": "Result set exceeds the 2000-trip limit – narrow the date range"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-exports"
+                        ]
+                    },
+                    {
+                        "token": [
+                            "write-exports"
+                        ]
+                    }
+                ]
+            }
+        },
         "/user/{id}/follow": {
             "post": {
                 "tags": [
@@ -2060,6 +2652,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/UserResource"
@@ -2122,6 +2717,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/UserResource"
@@ -2179,6 +2777,11 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -2242,6 +2845,11 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -2299,6 +2907,11 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -2664,6 +3277,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -2724,6 +3340,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/LikeResponse"
@@ -2785,6 +3404,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/LikeResponse"
@@ -2879,7 +3501,9 @@
                             "application/json": {
                                 "schema": {
                                     "required": [
-                                        "data"
+                                        "data",
+                                        "links",
+                                        "meta"
                                     ],
                                     "properties": {
                                         "data": {
@@ -3047,6 +3671,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "status"
+                                    ],
                                     "properties": {
                                         "status": {
                                             "type": "string",
@@ -3098,6 +3725,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -3172,13 +3802,16 @@
                 ],
                 "summary": "Get the current privacy policy",
                 "description": "Get the current privacy policy",
-                "operationId": "App\\Http\\Controllers\\API\\v1\\PrivacyPolicyController",
+                "operationId": "getCurrentPrivacyPolicy",
                 "responses": {
                     "200": {
                         "description": "Success",
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/Privacy Policy"
@@ -3256,6 +3889,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -3383,6 +4019,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/ReportResource"
@@ -3508,6 +4147,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -3586,6 +4228,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/RouteSegmentResource"
@@ -3635,6 +4280,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/RouteSegmentResource"
@@ -3784,10 +4432,18 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "coordinates",
+                                        "distance"
+                                    ],
                                     "properties": {
                                         "coordinates": {
                                             "type": "array",
                                             "items": {
+                                                "required": [
+                                                    "lat",
+                                                    "lng"
+                                                ],
                                                 "properties": {
                                                     "lat": {
                                                         "type": "number"
@@ -3881,6 +4537,11 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "polyline",
+                                        "distance",
+                                        "customWaypoints"
+                                    ],
                                     "properties": {
                                         "polyline": {
                                             "type": "string"
@@ -3892,6 +4553,10 @@
                                         "customWaypoints": {
                                             "type": "array",
                                             "items": {
+                                                "required": [
+                                                    "lat",
+                                                    "lng"
+                                                ],
                                                 "properties": {
                                                     "lat": {
                                                         "type": "number"
@@ -3938,6 +4603,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -4046,6 +4714,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/UserProfileSettingsResource"
@@ -4119,6 +4790,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/UserProfileSettingsResource"
@@ -4215,6 +4889,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/UserProfileSettingsResource"
@@ -4276,6 +4953,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "message"
+                                    ],
                                     "properties": {
                                         "message": {
                                             "type": "string",
@@ -4314,6 +4994,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "message"
+                                    ],
                                     "properties": {
                                         "message": {
                                             "type": "string",
@@ -4454,6 +5137,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/StationResource"
@@ -4540,6 +5226,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/StationResource"
@@ -4680,6 +5369,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -4950,6 +5642,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -4995,6 +5690,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -5040,6 +5738,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -5096,6 +5797,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -5155,6 +5859,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "properties": {
@@ -5314,6 +6021,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "properties": {
@@ -5397,11 +6107,19 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data",
+                                        "meta"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/StatisticsGlobalData"
                                         },
                                         "meta": {
+                                            "required": [
+                                                "from",
+                                                "until"
+                                            ],
                                             "properties": {
                                                 "from": {
                                                     "example": "2021-01-01T00:00:00.000000Z"
@@ -5713,6 +6431,11 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -5776,6 +6499,11 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -5814,50 +6542,6 @@
                 ]
             }
         },
-        "/statuses/duplicates": {
-            "get": {
-                "tags": [
-                    "Status"
-                ],
-                "summary": "[Deprecated] Get duplicate check-ins of the authenticated user",
-                "description": "Temporary cleanup endpoint: returns groups of check-ins the authenticated user has checked in more than once for the same trip and origin stopover. Will be removed after 2026-05-31.",
-                "operationId": "getDuplicateCheckins",
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/DuplicateCheckinGroup"
-                                            }
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Not logged in"
-                    }
-                },
-                "deprecated": true,
-                "security": [
-                    {
-                        "passport": [
-                            "read-statuses"
-                        ]
-                    },
-                    {
-                        "token": []
-                    }
-                ]
-            }
-        },
         "/statuses": {
             "get": {
                 "tags": [
@@ -5872,6 +6556,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -5915,6 +6602,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -5969,6 +6659,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -6004,7 +6697,7 @@
                     "Status"
                 ],
                 "summary": "[Auth optional] List and filter statuses",
-                "description": "Returns paginated list of statuses, filtered by given parameters",
+                "description": "Returns cursor-paginated statuses filtered by given parameters. The departure window (from..to) defaults to the last 7 days and must not exceed 365 days.",
                 "operationId": "listStatuses",
                 "parameters": [
                     {
@@ -6024,6 +6717,28 @@
                             "type": "integer"
                         },
                         "example": 42
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "description": "Lower bound for departure (date, e.g. 2024-01-01). Defaults to 7 days before \"to\".",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        },
+                        "example": "2024-01-01"
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "description": "Upper bound for departure (date, e.g. 2024-01-31). Defaults to now+20min. Range from..to must not exceed 365 days.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        },
+                        "example": "2024-01-31"
                     },
                     {
                         "name": "origin_text",
@@ -6068,6 +6783,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -6119,6 +6837,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/StatusResource"
@@ -6184,6 +6905,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/StatusResource"
@@ -6294,6 +7018,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/StatusResource"
@@ -6345,6 +7072,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "properties": {
@@ -6503,6 +7233,52 @@
                 ]
             }
         },
+        "/tags/suggestions": {
+            "get": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "Get tag suggestions for the authenticated user",
+                "description": "Returns tag suggestions based on the user's most recently used key:value pairs and the most frequently used key:value pairs in the last 3 days (minimum 2 uses).",
+                "operationId": "getTagSuggestions",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/StatusTagSuggestionResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/status/{statusId}/tags": {
             "get": {
                 "tags": [
@@ -6528,6 +7304,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -6596,6 +7375,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/StatusTagResource"
@@ -6656,6 +7438,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "properties": {
@@ -6721,7 +7506,7 @@
                     {
                         "name": "tagKey",
                         "in": "path",
-                        "description": "Key of StatusTag",
+                        "description": "Key of StatusTag, regex:/^\\w[^\\/\\n\\r%?\\<>]*$/",
                         "schema": {
                             "type": "string"
                         },
@@ -6743,6 +7528,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/StatusTagResource"
@@ -6797,7 +7585,7 @@
                     {
                         "name": "tagKey",
                         "in": "path",
-                        "description": "Key of StatusTag",
+                        "description": "Key of StatusTag, regex:/^\\w[^\\/\\n\\r%?\\<>]*$/",
                         "schema": {
                             "type": "string"
                         },
@@ -6810,6 +7598,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "status"
+                                    ],
                                     "properties": {
                                         "status": {
                                             "type": "string",
@@ -6960,6 +7751,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/TicketResource"
@@ -7016,6 +7810,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/TicketResource"
@@ -7109,6 +7906,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/TicketResource"
@@ -7210,6 +8010,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/TicketStatisticsResource"
@@ -7423,6 +8226,10 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data",
+                                        "meta"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -7431,11 +8238,22 @@
                                             }
                                         },
                                         "meta": {
+                                            "required": [
+                                                "station",
+                                                "times",
+                                                "removedLicenses",
+                                                "removedCount"
+                                            ],
                                             "properties": {
                                                 "station": {
                                                     "$ref": "#/components/schemas/Station"
                                                 },
                                                 "times": {
+                                                    "required": [
+                                                        "now",
+                                                        "prev",
+                                                        "next"
+                                                    ],
                                                     "properties": {
                                                         "now": {
                                                             "type": "string",
@@ -7538,6 +8356,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/TripResource"
@@ -7603,6 +8424,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -7680,12 +8504,19 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "message",
+                                        "meta"
+                                    ],
                                     "properties": {
                                         "message": {
                                             "type": "string",
                                             "example": "You are not allowed to check in the following users: 1"
                                         },
                                         "meta": {
+                                            "required": [
+                                                "invalidUsers"
+                                            ],
                                             "properties": {
                                                 "invalidUsers": {
                                                     "type": "array",
@@ -7704,7 +8535,55 @@
                         }
                     },
                     "409": {
-                        "description": "Checkin collision"
+                        "description": "Checkin collision",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "message": {
+                                            "description": "Deprecated: use data.conflicts instead",
+                                            "required": [
+                                                "status_id",
+                                                "lineName"
+                                            ],
+                                            "properties": {
+                                                "status_id": {
+                                                    "type": "integer",
+                                                    "nullable": true,
+                                                    "deprecated": true
+                                                },
+                                                "lineName": {
+                                                    "type": "string",
+                                                    "nullable": true,
+                                                    "deprecated": true
+                                                }
+                                            },
+                                            "type": "object",
+                                            "deprecated": true
+                                        },
+                                        "data": {
+                                            "required": [
+                                                "conflicts"
+                                            ],
+                                            "properties": {
+                                                "conflicts": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/StatusResource"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -7741,6 +8620,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "App\\Models\\Station"
@@ -7798,6 +8680,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -7844,6 +8729,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -7899,6 +8787,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -7970,6 +8861,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "description": "GeoJSON Feature (LineString)",
@@ -8092,6 +8986,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/TripResource"
@@ -8141,6 +9038,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -8247,6 +9147,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -8418,6 +9321,11 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -8493,6 +9401,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/UserResource"
@@ -8512,7 +9423,9 @@
                             "application/json": {
                                 "schema": {
                                     "required": [
-                                        "message"
+                                        "message",
+                                        "reason",
+                                        "user"
                                     ],
                                     "properties": {
                                         "message": {
@@ -8580,6 +9493,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/UserResource"
@@ -8649,6 +9565,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/UserResource"
@@ -8720,6 +9639,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/UserResource"
@@ -8786,6 +9708,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/UserResource"
@@ -8835,6 +9760,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -8878,6 +9806,9 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -8938,6 +9869,11 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -9010,6 +9946,11 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
@@ -9250,7 +10191,8 @@
                     "appUrl",
                     "features",
                     "languages",
-                    "version"
+                    "version",
+                    "gdprExportCooldown"
                 ],
                 "properties": {
                     "appName": {
@@ -9286,6 +10228,10 @@
                         "items": {
                             "$ref": "#/components/schemas/Language"
                         }
+                    },
+                    "gdprExportCooldown": {
+                        "description": "Cooldown time in days between gdpr exports",
+                        "type": "integer"
                     }
                 },
                 "type": "object"
@@ -9313,6 +10259,11 @@
             "Coordinate": {
                 "title": "Coordinate",
                 "description": "GeoJson Coordinates",
+                "required": [
+                    "type",
+                    "properties",
+                    "geometry"
+                ],
                 "properties": {
                     "type": {
                         "type": "number",
@@ -9347,6 +10298,10 @@
             "FeatureCollection": {
                 "title": "FeatureCollection",
                 "description": "featurecollection of multiple GeoJson points",
+                "required": [
+                    "type",
+                    "features"
+                ],
                 "properties": {
                     "type": {
                         "title": "type",
@@ -9404,6 +10359,14 @@
             "LivePointDto": {
                 "title": "LivePointDto",
                 "description": "All necessary information to calculate live position",
+                "required": [
+                    "point",
+                    "polyline",
+                    "arrival",
+                    "departure",
+                    "lineName",
+                    "statusId"
+                ],
                 "properties": {
                     "point": {
                         "oneOf": [
@@ -9416,7 +10379,14 @@
                         "description": "current point, if stopping at a station"
                     },
                     "polyline": {
-                        "$ref": "#/components/schemas/FeatureCollection"
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/FeatureCollection"
+                            }
+                        ],
+                        "nullable": true,
+                        "title": "polyline",
+                        "description": "geojson point collection of the next line segment"
                     },
                     "arrival": {
                         "title": "arrival",
@@ -9492,6 +10462,15 @@
             "Station": {
                 "title": "Station",
                 "description": "train station model",
+                "required": [
+                    "id",
+                    "name",
+                    "latitude",
+                    "longitude",
+                    "ibnr",
+                    "rilIdentifier",
+                    "identifiers"
+                ],
                 "properties": {
                     "id": {
                         "title": "id",
@@ -9643,6 +10622,43 @@
                     "transitous"
                 ]
             },
+            "ExportableColumn": {
+                "title": "ExportableColumn",
+                "description": "Columns that can be exported in the export file.",
+                "type": "string",
+                "enum": [
+                    "status_id",
+                    "journey_type",
+                    "line_name",
+                    "journey_number",
+                    "origin_name",
+                    "origin_coordinates",
+                    "departure_planned",
+                    "departure_real",
+                    "destination_name",
+                    "destination_coordinates",
+                    "arrival_planned",
+                    "arrival_real",
+                    "duration",
+                    "distance",
+                    "points",
+                    "body",
+                    "travel_type",
+                    "status_tags",
+                    "operator"
+                ]
+            },
+            "ExportableFileType": {
+                "title": "ExportableFileType",
+                "description": "The file type to export the data in. The available columns depend on the file type.",
+                "type": "string",
+                "enum": [
+                    "pdf",
+                    "csv_human",
+                    "csv_machine",
+                    "json"
+                ]
+            },
             "HafasTravelType": {
                 "title": "category",
                 "description": "Category of transport.",
@@ -9747,6 +10763,26 @@
                     "IFOPT",
                     "DE_DB_RIL100",
                     "DE_DB_IBNR"
+                ]
+            },
+            "StatusTagKey": {
+                "title": "StatusTagKey",
+                "description": "StatusTagKey",
+                "type": "string",
+                "example": "trwl:social_status",
+                "enum": [
+                    "trwl:seat",
+                    "trwl:wagon",
+                    "trwl:ticket",
+                    "trwl:travel_class",
+                    "trwl:locomotive_class",
+                    "trwl:wagon_class",
+                    "trwl:role",
+                    "trwl:vehicle_number",
+                    "trwl:passenger_rights",
+                    "trwl:journey_number",
+                    "trwl:price",
+                    "trwl:social_status"
                 ]
             },
             "StatusVisibility": {
@@ -9855,6 +10891,10 @@
             },
             "BearerTokenResponse": {
                 "title": "BearerTokenResponse",
+                "required": [
+                    "token",
+                    "expires_at"
+                ],
                 "properties": {
                     "token": {
                         "description": "Bearer Token. Use in Authentication-Header with prefix 'Bearer '. (space is needed)",
@@ -9872,6 +10912,16 @@
             "EventSuggestion": {
                 "title": "EventSuggestion",
                 "description": "Fields for suggesting an event",
+                "required": [
+                    "name",
+                    "host",
+                    "begin",
+                    "end",
+                    "url",
+                    "hashtag",
+                    "nearestStation",
+                    "nearestStationId"
+                ],
                 "properties": {
                     "name": {
                         "description": "name of the event",
@@ -9930,6 +10980,9 @@
             },
             "LikeResponse": {
                 "title": "LikeResponse",
+                "required": [
+                    "count"
+                ],
                 "properties": {
                     "count": {
                         "description": "Amount of likes",
@@ -9996,6 +11049,9 @@
             "StatusAssignTicketBody": {
                 "title": "StatusAssignTicketBody",
                 "description": "Assign or remove a ticket from a status",
+                "required": [
+                    "ticketId"
+                ],
                 "properties": {
                     "ticketId": {
                         "description": "UUID of the ticket to assign, or null to remove the assignment",
@@ -10010,6 +11066,11 @@
             "Polyline": {
                 "title": "Polyline",
                 "description": "Polyline of a single status as GeoJSON Feature",
+                "required": [
+                    "type",
+                    "geometry",
+                    "properties"
+                ],
                 "properties": {
                     "type": {
                         "type": "string",
@@ -10038,19 +11099,6 @@
                             }
                         },
                         "type": "object"
-                    }
-                },
-                "type": "object"
-            },
-            "DuplicateCheckinGroup": {
-                "title": "DuplicateCheckinGroup",
-                "description": "A group of check-ins with the same trip and origin stopover (duplicates)",
-                "properties": {
-                    "statuses": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/StatusResource"
-                        }
                     }
                 },
                 "type": "object"
@@ -10296,6 +11344,85 @@
                 },
                 "type": "object"
             },
+            "ActivityLogResource": {
+                "title": "ActivityLog",
+                "required": [
+                    "id",
+                    "causer",
+                    "description",
+                    "subjectType",
+                    "subjectFullType",
+                    "subjectId",
+                    "changes",
+                    "createdAt"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "causer": {
+                        "required": [
+                            "id",
+                            "name",
+                            "username"
+                        ],
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "username": {
+                                "type": "string"
+                            }
+                        },
+                        "type": "object",
+                        "nullable": true
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "subjectType": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "subjectFullType": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "subjectId": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "changes": {
+                        "required": [
+                            "old",
+                            "attributes"
+                        ],
+                        "properties": {
+                            "old": {
+                                "type": "object",
+                                "additionalProperties": {
+                                    "nullable": true
+                                }
+                            },
+                            "attributes": {
+                                "type": "object",
+                                "additionalProperties": {
+                                    "nullable": true
+                                }
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
             "AdminStatusResource": {
                 "title": "AdminStatusResource",
                 "required": [
@@ -10361,8 +11488,7 @@
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/StopoverResource"
-                        },
-                        "nullable": true
+                        }
                     },
                     "createdAt": {
                         "type": "string",
@@ -10393,6 +11519,17 @@
             },
             "AdminStopoverResource": {
                 "title": "AdminStopover",
+                "required": [
+                    "id",
+                    "station",
+                    "arrivalPlanned",
+                    "arrivalReal",
+                    "departurePlanned",
+                    "departureReal",
+                    "routeSegmentId",
+                    "routeSegmentType",
+                    "stationIdentifierId"
+                ],
                 "properties": {
                     "id": {
                         "type": "integer"
@@ -10451,12 +11588,35 @@
             },
             "AdminTripResource": {
                 "title": "AdminTrip",
+                "required": [
+                    "id",
+                    "tripId",
+                    "checkinsCount",
+                    "category",
+                    "mode",
+                    "number",
+                    "lineName",
+                    "routeColor",
+                    "journeyNumber",
+                    "operator",
+                    "source",
+                    "user",
+                    "lastRefreshed",
+                    "origin",
+                    "destination",
+                    "stopovers",
+                    "statuses"
+                ],
                 "properties": {
                     "id": {
                         "type": "integer"
                     },
                     "tripId": {
                         "type": "string"
+                    },
+                    "checkinsCount": {
+                        "type": "integer",
+                        "nullable": true
                     },
                     "category": {
                         "type": "string"
@@ -10470,6 +11630,10 @@
                         "nullable": true
                     },
                     "lineName": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "routeColor": {
                         "type": "string",
                         "nullable": true
                     },
@@ -10498,6 +11662,30 @@
                         "format": "date-time",
                         "nullable": true
                     },
+                    "origin": {
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "name": {
+                                "type": "string"
+                            }
+                        },
+                        "type": "object",
+                        "nullable": true
+                    },
+                    "destination": {
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "name": {
+                                "type": "string"
+                            }
+                        },
+                        "type": "object",
+                        "nullable": true
+                    },
                     "stopovers": {
                         "type": "array",
                         "items": {
@@ -10505,6 +11693,199 @@
                         }
                     },
                     "statuses": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AdminStatusResource"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "AdminUserListResource": {
+                "title": "AdminUserListItem",
+                "required": [
+                    "id",
+                    "username",
+                    "displayName",
+                    "email",
+                    "emailVerifiedAt",
+                    "mastodonUrl",
+                    "lastLogin",
+                    "createdAt"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "displayName": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "emailVerifiedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "mastodonUrl": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "lastLogin": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "AdminUserResource": {
+                "title": "AdminUserResource",
+                "required": [
+                    "id",
+                    "username",
+                    "displayName",
+                    "email",
+                    "emailVerifiedAt",
+                    "hasPassword",
+                    "mastodonUrl",
+                    "lastLogin",
+                    "createdAt",
+                    "trainDistance",
+                    "trainDuration",
+                    "points",
+                    "roles",
+                    "allRoles",
+                    "mailChanges",
+                    "privacyPolicyCurrent",
+                    "privacyPolicyFuture",
+                    "privacyPolicyFutureExists",
+                    "recentStatuses"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "displayName": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "emailVerifiedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "hasPassword": {
+                        "type": "boolean"
+                    },
+                    "mastodonUrl": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "lastLogin": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "trainDistance": {
+                        "description": "Total distance in metres",
+                        "type": "number"
+                    },
+                    "trainDuration": {
+                        "description": "Total duration in minutes",
+                        "type": "number"
+                    },
+                    "points": {
+                        "type": "integer"
+                    },
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "allRoles": {
+                        "type": "array",
+                        "items": {
+                            "required": [
+                                "name",
+                                "permissions"
+                            ],
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "permissions": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "mailChanges": {
+                        "type": "array",
+                        "items": {
+                            "required": [
+                                "id",
+                                "oldEmail",
+                                "newEmail",
+                                "createdAt"
+                            ],
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "oldEmail": {
+                                    "type": "string"
+                                },
+                                "newEmail": {
+                                    "type": "string"
+                                },
+                                "createdAt": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "nullable": true
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "privacyPolicyCurrent": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "privacyPolicyFuture": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "privacyPolicyFutureExists": {
+                        "type": "boolean"
+                    },
+                    "recentStatuses": {
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/AdminStatusResource"
@@ -10673,6 +12054,12 @@
             },
             "PointsCalculation": {
                 "title": "PointsCalculation",
+                "required": [
+                    "base",
+                    "distance",
+                    "factor",
+                    "reason"
+                ],
                 "properties": {
                     "base": {
                         "description": "Basepoints for this type of vehicle",
@@ -10700,6 +12087,11 @@
             "Points": {
                 "title": "Points",
                 "description": "Points model",
+                "required": [
+                    "points",
+                    "calculation",
+                    "additional"
+                ],
                 "properties": {
                     "points": {
                         "description": "points",
@@ -10721,6 +12113,11 @@
             },
             "CheckinSuccessResource": {
                 "title": "CheckinResponse",
+                "required": [
+                    "status",
+                    "points",
+                    "alsoOnThisConnection"
+                ],
                 "properties": {
                     "status": {
                         "$ref": "#/components/schemas/StatusResource"
@@ -10806,6 +12203,7 @@
                     "xpChange",
                     "levelBefore",
                     "levelAfter",
+                    "note",
                     "createdAt"
                 ],
                 "properties": {
@@ -10864,7 +12262,8 @@
                     },
                     "attribution": {
                         "type": "string",
-                        "example": "Provided by foobar under CC BY 4.0"
+                        "example": "Provided by foobar under CC BY 4.0",
+                        "nullable": true
                     }
                 },
                 "type": "object"
@@ -10882,6 +12281,13 @@
                     "plannedPlatform",
                     "direction",
                     "line",
+                    "provenance",
+                    "remarks",
+                    "origin",
+                    "destination",
+                    "currentTripPosition",
+                    "loadFactor",
+                    "cancelled",
                     "station"
                 ],
                 "properties": {
@@ -11106,6 +12512,20 @@
             "EventAdminResource": {
                 "title": "EventAdminResource",
                 "description": "Full event data for admin management",
+                "required": [
+                    "id",
+                    "name",
+                    "slug",
+                    "hashtag",
+                    "host",
+                    "url",
+                    "checkin_start",
+                    "checkin_end",
+                    "event_start",
+                    "event_end",
+                    "status",
+                    "station"
+                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -11175,6 +12595,14 @@
             },
             "EventDetailsResource": {
                 "title": "EventDetails",
+                "required": [
+                    "id",
+                    "slug",
+                    "totalDistance",
+                    "totalDuration",
+                    "trainDistance",
+                    "trainDuration"
+                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -11221,7 +12649,9 @@
                     "begin",
                     "end",
                     "station",
-                    "isPride"
+                    "isPride",
+                    "totalDuration",
+                    "totalDistance"
                 ],
                 "properties": {
                     "id": {
@@ -11272,6 +12702,14 @@
                             }
                         ],
                         "nullable": true
+                    },
+                    "totalDistance": {
+                        "type": "integer",
+                        "example": 12345
+                    },
+                    "totalDuration": {
+                        "type": "integer",
+                        "example": 12345
                     }
                 },
                 "type": "object"
@@ -11279,6 +12717,19 @@
             "EventSuggestionResource": {
                 "title": "EventSuggestionResource",
                 "description": "Event suggestion submitted by a user",
+                "required": [
+                    "id",
+                    "name",
+                    "host",
+                    "url",
+                    "hashtag",
+                    "begin",
+                    "end",
+                    "station",
+                    "user",
+                    "processed",
+                    "created_at"
+                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -11349,7 +12800,7 @@
                     "id",
                     "token",
                     "name",
-                    "created",
+                    "createdAt",
                     "lastAccessed"
                 ],
                 "properties": {
@@ -11423,6 +12874,7 @@
                     "displayName",
                     "username",
                     "profilePicture",
+                    "mastodon",
                     "preventIndex"
                 ],
                 "properties": {
@@ -11465,6 +12917,12 @@
             "Links": {
                 "title": "Links",
                 "description": "Pagination links",
+                "required": [
+                    "first",
+                    "last",
+                    "prev",
+                    "next"
+                ],
                 "properties": {
                     "first": {
                         "description": "Shared OA schema for Laravel pagination links. Not a real resource.",
@@ -11503,8 +12961,11 @@
                     "redirect",
                     "confidential",
                     "webhooksEnabled",
+                    "authorizedWebhookUrl",
+                    "privacyPolicyUrl",
                     "activeTokensCount",
                     "hasWebhooks",
+                    "plainSecret",
                     "createdAt"
                 ],
                 "properties": {
@@ -11563,7 +13024,8 @@
             "OperatorIdentifierResource": {
                 "required": [
                     "type",
-                    "identifier"
+                    "identifier",
+                    "name"
                 ],
                 "properties": {
                     "type": {
@@ -11631,6 +13093,13 @@
             "PaginationMeta": {
                 "title": "Meta",
                 "description": "Pagination meta data",
+                "required": [
+                    "current_page",
+                    "from",
+                    "path",
+                    "per_page",
+                    "to"
+                ],
                 "properties": {
                     "current_page": {
                         "description": "Shared OA schema for Laravel pagination meta data. Not a real resource.",
@@ -11664,7 +13133,8 @@
                     "de",
                     "en",
                     "acceptedAt",
-                    "hasOldAcceptance"
+                    "hasOldAcceptance",
+                    "upcoming"
                 ],
                 "properties": {
                     "id": {
@@ -11700,6 +13170,37 @@
                         "description": "True if the user has accepted a previous (now outdated) version of the privacy policy.",
                         "type": "boolean",
                         "example": false
+                    },
+                    "upcoming": {
+                        "description": "Next privacy policy that is not yet in effect, if any.",
+                        "properties": {
+                            "id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "00000000-0000-0000-0000-000000000000"
+                            },
+                            "validFrom": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "2022-01-05T16:26:14.000000Z"
+                            },
+                            "en": {
+                                "type": "string",
+                                "example": "This is the english privacy policy"
+                            },
+                            "de": {
+                                "type": "string",
+                                "example": "Dies ist die deutsche Datenschutzerklärung"
+                            },
+                            "acceptedAt": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": null,
+                                "nullable": true
+                            }
+                        },
+                        "type": "object",
+                        "nullable": true
                     }
                 },
                 "type": "object"
@@ -11741,7 +13242,8 @@
                     "reason",
                     "description",
                     "reporter",
-                    "created_at"
+                    "created_at",
+                    "activities"
                 ],
                 "properties": {
                     "id": {
@@ -11839,7 +13341,10 @@
                     "duration",
                     "pathType",
                     "polyline",
-                    "polylinePrecision"
+                    "polylinePrecision",
+                    "customWaypointsCount",
+                    "customWaypoints",
+                    "tripsCount"
                 ],
                 "properties": {
                     "id": {
@@ -11982,6 +13487,15 @@
             },
             "StationIdentifierResource": {
                 "title": "StationIdentifier",
+                "required": [
+                    "id",
+                    "type",
+                    "identifier",
+                    "name",
+                    "origin",
+                    "latitude",
+                    "longitude"
+                ],
                 "properties": {
                     "id": {
                         "type": "string",
@@ -12030,7 +13544,10 @@
                     "longitude",
                     "ibnr",
                     "rilIdentifier",
-                    "areas"
+                    "areas",
+                    "identifiers",
+                    "time_offset",
+                    "created_at"
                 ],
                 "properties": {
                     "id": {
@@ -12134,7 +13651,11 @@
                     "tags",
                     "checkin",
                     "user",
-                    "createdBy"
+                    "createdBy",
+                    "ticket",
+                    "moderation_notes",
+                    "lock_visibility",
+                    "hide_body"
                 ],
                 "properties": {
                     "id": {
@@ -12174,7 +13695,12 @@
                         "example": true
                     },
                     "client": {
-                        "$ref": "#/components/schemas/ClientResource"
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/ClientResource"
+                            }
+                        ],
+                        "nullable": true
                     },
                     "checkin": {
                         "$ref": "#/components/schemas/TransportResource"
@@ -12247,16 +13773,56 @@
                 ],
                 "properties": {
                     "key": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/StatusTagKey"
+                            },
+                            {
+                                "description": "regex:/^\\w[^\\/\\n\\r%?\\<>]*$/",
+                                "type": "string",
+                                "example": "custom_tag"
+                            }
+                        ]
+                    },
+                    "value": {
+                        "oneOf": [
+                            {
+                                "description": "Values allowed for the tag trwl:social_status",
+                                "type": "string",
+                                "enum": [
+                                    "open",
+                                    "open_find_me",
+                                    "open_lets_hang",
+                                    "do_not_disturb"
+                                ]
+                            },
+                            {
+                                "type": "string",
+                                "example": "94 80 0450 921 D-AVG"
+                            }
+                        ]
+                    },
+                    "visibility": {
+                        "type": "integer",
+                        "example": "1"
+                    }
+                },
+                "type": "object"
+            },
+            "StatusTagSuggestionResource": {
+                "title": "StatusTagSuggestionResource",
+                "required": [
+                    "key",
+                    "value"
+                ],
+                "properties": {
+                    "key": {
                         "type": "string",
                         "example": "trwl:vehicle_number"
                     },
                     "value": {
                         "type": "string",
                         "example": "94 80 0450 921 D-AVG"
-                    },
-                    "visibility": {
-                        "type": "integer",
-                        "example": "1"
                     }
                 },
                 "type": "object"
@@ -12408,7 +13974,10 @@
                     "validUntil",
                     "price",
                     "currency",
-                    "createdAt"
+                    "createdAt",
+                    "tripCount",
+                    "totalDistance",
+                    "totalDuration"
                 ],
                 "properties": {
                     "id": {
@@ -12476,6 +14045,19 @@
             "TicketStatisticsResource": {
                 "title": "TicketStatisticsResource",
                 "description": "Usage statistics for a single ticket",
+                "required": [
+                    "tripCount",
+                    "distance",
+                    "duration",
+                    "firstUsed",
+                    "lastUsed",
+                    "costPerTrip",
+                    "costPerKm",
+                    "costPerHour",
+                    "purposes",
+                    "categories",
+                    "operators"
+                ],
                 "properties": {
                     "tripCount": {
                         "description": "Total number of trips assigned to this ticket",
@@ -12655,7 +14237,10 @@
                     "category",
                     "number",
                     "lineName",
+                    "routeColor",
+                    "routeTextColor",
                     "journeyNumber",
+                    "manualJourneyNumber",
                     "distance",
                     "points",
                     "duration",
@@ -12663,7 +14248,9 @@
                     "manualArrival",
                     "origin",
                     "destination",
-                    "mode"
+                    "mode",
+                    "operator",
+                    "dataSource"
                 ],
                 "properties": {
                     "trip": {
@@ -12768,6 +14355,20 @@
             },
             "TripResource": {
                 "title": "TripResource",
+                "required": [
+                    "id",
+                    "tripId",
+                    "category",
+                    "mode",
+                    "number",
+                    "lineName",
+                    "journeyNumber",
+                    "origin",
+                    "destination",
+                    "stopovers",
+                    "dataSource",
+                    "continuationTrip"
+                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -12820,6 +14421,15 @@
                             }
                         ],
                         "nullable": true
+                    },
+                    "continuationTrip": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/TripResource"
+                            }
+                        ],
+                        "nullable": true,
+                        "description": "If this trip is an interlined through-running service, this contains the immediately following trip (different line name/color, no transfer required)."
                     }
                 },
                 "type": "object"
@@ -12847,6 +14457,7 @@
                 "title": "UserAuth",
                 "required": [
                     "id",
+                    "uuid",
                     "displayName",
                     "username",
                     "profilePicture",
@@ -12857,11 +14468,13 @@
                     "privateProfile",
                     "preventIndex",
                     "likes_enabled",
+                    "pointsEnabled",
                     "mapProvider",
                     "home",
                     "language",
                     "defaultStatusVisibility",
-                    "roles"
+                    "roles",
+                    "recentGdprExport"
                 ],
                 "properties": {
                     "id": {
@@ -12944,6 +14557,12 @@
                             "open-beta",
                             "closed-beta"
                         ]
+                    },
+                    "recentGdprExport": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T00:00:00Z",
+                        "nullable": true
                     }
                 },
                 "type": "object"
@@ -13022,6 +14641,7 @@
                     "privateProfile",
                     "preventIndex",
                     "defaultStatusVisibility",
+                    "privacyHideDays",
                     "password",
                     "email",
                     "emailVerified",
@@ -13141,6 +14761,8 @@
                     "points",
                     "mastodonUrl",
                     "privateProfile",
+                    "points_enabled",
+                    "likes_enabled",
                     "pointsEnabled",
                     "userInvisibleToMe",
                     "muted",
@@ -13254,7 +14876,8 @@
                     "bio": {
                         "description": "Bio of the user",
                         "type": "string",
-                        "example": "Hi there! I am Gertrud!"
+                        "example": "Hi there! I am Gertrud!",
+                        "nullable": true
                     },
                     "profileLinks": {
                         "description": "Profile links of the user",
@@ -13523,6 +15146,10 @@
         {
             "name": "Admin",
             "description": "Admin"
+        },
+        {
+            "name": "Export",
+            "description": "Export"
         },
         {
             "name": "Privacy Policy",

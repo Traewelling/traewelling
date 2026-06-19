@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { Plus, Tag, Trash2 } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { Plus, Tag, Trash2 } from 'lucide-vue-next';
-import { computed, ref } from 'vue';
-import { Api, StatusTagResource } from '../../../types/Api.gen';
+import { computed, onMounted, ref } from 'vue';
+import { Api, StatusTagResource, StatusTagSuggestionResource } from '../../../types/Api.gen';
 import { TrwlTag } from '../../../types/TrwlTags';
 import { getEnumValues, getTitle, keys } from '../../../vue/helpers/StatusTag';
 import { getVisibilityOptions } from '../../helpers/visibility';
@@ -12,7 +12,24 @@ const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 const CUSTOM_SENTINEL = '__custom__';
 
 const tags = ref<TrwlTag[]>([]);
-const open = ref(false);
+const showAddForm = ref(false);
+const suggestions = ref<StatusTagSuggestionResource[]>([]);
+
+const availableSuggestions = computed(() => suggestions.value.filter((s) => !tags.value.some((t) => t.key === s.key)));
+
+onMounted(async () => {
+    try {
+        const res = await api.tags.getTagSuggestions();
+        suggestions.value = (res.data?.data ?? []) as StatusTagSuggestionResource[];
+    } catch {
+        // ignore
+    }
+});
+
+function applySuggestion(suggestion: StatusTagSuggestionResource): void {
+    if (tags.value.some((t) => t.key === suggestion.key)) return;
+    tags.value.push({ key: suggestion.key!, value: suggestion.value!, visibility: 0 });
+}
 
 const selectedKey = ref<string>(keys[0]);
 const isCustomKey = ref(false);
@@ -71,106 +88,132 @@ defineExpose({ postTags });
 </script>
 
 <template>
-    <div class="relative">
-        <div v-if="open" class="fixed inset-0 z-40" @click="open = false" />
+    <div class="flex flex-col gap-2">
+        <!-- Suggestions -->
+        <div v-if="availableSuggestions.length" class="flex flex-wrap gap-1">
+            <button
+                v-for="s in availableSuggestions"
+                :key="s.key + ':' + s.value"
+                type="button"
+                class="badge badge-outline gap-1 cursor-pointer hover:badge-primary transition-colors"
+                @click="applySuggestion(s)"
+            >
+                <Plus class="w-2.5 h-2.5" />
+                <span class="text-xs">{{ getTitle(s.key!) }}: {{ s.value }}</span>
+            </button>
+        </div>
+
+        <!-- Current tags -->
+        <div v-if="tags.length" class="flex flex-col gap-1">
+            <div v-for="(tag, i) in tags" :key="tag.key" class="flex items-center gap-1">
+                <span class="text-base-content/60 text-xs flex-shrink-0 w-20 truncate" :title="getTitle(tag.key)">
+                    {{ getTitle(tag.key) }}
+                </span>
+                <select
+                    v-if="getEnumValues(tag.key)"
+                    v-model="tags[i].value"
+                    class="select select-bordered select-xs flex-1 min-w-0"
+                >
+                    <option v-for="opt in getEnumValues(tag.key)" :key="opt.value" :value="opt.value">
+                        {{ opt.label }}
+                    </option>
+                </select>
+                <input
+                    v-else
+                    v-model="tags[i].value"
+                    type="text"
+                    class="input input-bordered input-xs flex-1 min-w-0"
+                />
+                <select v-model="tags[i].visibility" class="select select-bordered select-xs w-24 flex-shrink-0">
+                    <option v-for="opt in visibilityOptions" :key="opt.value" :value="opt.value">
+                        {{ opt.label }}
+                    </option>
+                </select>
+                <button type="button" class="btn btn-ghost btn-xs btn-square flex-shrink-0" @click="removeTag(tag.key)">
+                    <Trash2 class="w-3 h-3" />
+                </button>
+            </div>
+        </div>
+
+        <!-- Add tag toggle -->
         <button
+            v-if="!showAddForm"
             type="button"
-            class="btn btn-sm gap-1"
-            :class="tags.length ? 'btn-primary' : 'btn-ghost'"
-            @click="open = !open"
+            class="btn btn-sm btn-ghost btn-outline w-full"
+            @click="showAddForm = true"
         >
             <Tag class="w-4 h-4" />
-            <span v-if="tags.length" class="text-xs">{{ tags.length }}</span>
+            {{ trans('tag.add') }}
         </button>
 
-        <div
-            v-if="open"
-            class="absolute bottom-full left-0 z-50 mb-1 w-80 border border-base-300 rounded-box p-3 flex flex-col gap-3 bg-base-100 shadow-lg"
-        >
-            <!-- Existing tags -->
-            <div v-if="tags.length" class="flex flex-col gap-1">
-                <div
-                    v-for="tag in tags"
-                    :key="tag.key"
-                    class="flex items-center gap-2 text-sm bg-base-200 rounded px-2 py-1"
+        <!-- Add tag form (inline) -->
+        <div v-else class="flex flex-col gap-2">
+            <div class="flex gap-2 flex-wrap">
+                <select
+                    v-model="selectedKey"
+                    class="select select-bordered select-sm flex-1 min-w-[130px]"
+                    @change="onKeyChange"
                 >
-                    <span class="text-base-content/60 flex-shrink-0">{{ getTitle(tag.key) }}</span>
-                    <span class="flex-1 truncate font-medium">{{ tag.value }}</span>
-                    <button type="button" class="btn btn-ghost btn-xs btn-square" @click="removeTag(tag.key)">
-                        <Trash2 class="w-3 h-3" />
-                    </button>
-                </div>
-            </div>
+                    <option v-for="key in availableKeys" :key="key" :value="key">
+                        {{ getTitle(key) }}
+                    </option>
+                    <option :value="CUSTOM_SENTINEL">{{ trans('tag.custom_key') }}</option>
+                </select>
 
-            <!-- Add tag form -->
-            <div class="flex flex-col gap-2">
-                <div class="flex gap-2 flex-wrap">
+                <template v-if="!isCustomKey">
                     <select
-                        v-model="selectedKey"
+                        v-if="isEnum"
+                        v-model="inputValue"
                         class="select select-bordered select-sm flex-1 min-w-[130px]"
-                        @change="onKeyChange"
                     >
-                        <option v-for="key in availableKeys" :key="key" :value="key">
-                            {{ getTitle(key) }}
-                        </option>
-                        <option :value="CUSTOM_SENTINEL">{{ trans('tag.custom_key') }}</option>
-                    </select>
-
-                    <template v-if="!isCustomKey">
-                        <select
-                            v-if="isEnum"
-                            v-model="inputValue"
-                            class="select select-bordered select-sm flex-1 min-w-[130px]"
-                        >
-                            <option v-for="opt in enumValues" :key="opt.value" :value="opt.value">
-                                {{ opt.label }}
-                            </option>
-                        </select>
-                        <input
-                            v-else
-                            v-model="inputValue"
-                            type="text"
-                            class="input input-bordered input-sm flex-1 min-w-[130px]"
-                            :placeholder="trans('tag.value')"
-                            @keydown.enter.prevent="addTag"
-                        />
-                    </template>
-
-                    <select v-model="tagVisibility" class="select select-bordered select-sm w-[100px]">
-                        <option v-for="opt in visibilityOptions" :key="opt.value" :value="opt.value">
+                        <option v-for="opt in enumValues" :key="opt.value" :value="opt.value">
                             {{ opt.label }}
                         </option>
                     </select>
-                </div>
-
-                <!-- Custom key row -->
-                <div v-if="isCustomKey" class="flex gap-2">
                     <input
-                        v-model="customKeyInput"
-                        type="text"
-                        class="input input-bordered input-sm flex-1"
-                        :placeholder="trans('tag.custom_key.placeholder')"
-                        @keydown.enter.prevent="addTag"
-                    />
-                    <input
+                        v-else
                         v-model="inputValue"
                         type="text"
-                        class="input input-bordered input-sm flex-1"
+                        class="input input-bordered input-sm flex-1 min-w-[130px]"
                         :placeholder="trans('tag.value')"
                         @keydown.enter.prevent="addTag"
                     />
-                </div>
+                </template>
 
-                <button
-                    type="button"
-                    class="btn btn-sm btn-outline w-full"
-                    :disabled="!inputValue || (isCustomKey && !customKeyInput.trim())"
-                    @click="addTag"
-                >
-                    <Plus class="w-4 h-4" />
-                    {{ trans('tag.add') }}
-                </button>
+                <select v-model="tagVisibility" class="select select-bordered select-sm w-[100px]">
+                    <option v-for="opt in visibilityOptions" :key="opt.value" :value="opt.value">
+                        {{ opt.label }}
+                    </option>
+                </select>
             </div>
+
+            <!-- Custom key row -->
+            <div v-if="isCustomKey" class="flex gap-2">
+                <input
+                    v-model="customKeyInput"
+                    type="text"
+                    class="input input-bordered input-sm flex-1"
+                    :placeholder="trans('tag.custom_key.placeholder')"
+                    @keydown.enter.prevent="addTag"
+                />
+                <input
+                    v-model="inputValue"
+                    type="text"
+                    class="input input-bordered input-sm flex-1"
+                    :placeholder="trans('tag.value')"
+                    @keydown.enter.prevent="addTag"
+                />
+            </div>
+
+            <button
+                type="button"
+                class="btn btn-sm btn-outline w-full"
+                :disabled="!inputValue || (isCustomKey && !customKeyInput.trim())"
+                @click="addTag"
+            >
+                <Plus class="w-4 h-4" />
+                {{ trans('tag.add') }}
+            </button>
         </div>
     </div>
 </template>

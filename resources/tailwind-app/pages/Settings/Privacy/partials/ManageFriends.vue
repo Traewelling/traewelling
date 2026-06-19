@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { Plus, Trash2 } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
 import _ from 'lodash';
-import { Plus, Trash2 } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
 import { Api, TrustedUserResource, UserProfileSettingsResource, UserResource } from '../../../../../types/Api.gen';
 import SettingsListRow from '../../SettingsListRow.vue';

@@ -7,6 +7,7 @@ use App\Services\PersonalDataSelection\Exporters\ActivityLogExporter;
 use App\Services\PersonalDataSelection\Exporters\AppsExporter;
 use App\Services\PersonalDataSelection\Exporters\Base\Exporter;
 use App\Services\PersonalDataSelection\Exporters\BlocksExporter;
+use App\Services\PersonalDataSelection\Exporters\ContributionHistoryExporter;
 use App\Services\PersonalDataSelection\Exporters\EventsExporter;
 use App\Services\PersonalDataSelection\Exporters\EventSuggestionsExporter;
 use App\Services\PersonalDataSelection\Exporters\FollowingsExporter;
@@ -16,21 +17,25 @@ use App\Services\PersonalDataSelection\Exporters\FollowsRequestsExporter;
 use App\Services\PersonalDataSelection\Exporters\HomeExporter;
 use App\Services\PersonalDataSelection\Exporters\IcsTokenExporter;
 use App\Services\PersonalDataSelection\Exporters\LikesExporter;
+use App\Services\PersonalDataSelection\Exporters\MailChangeExporter;
 use App\Services\PersonalDataSelection\Exporters\MentionExporter;
 use App\Services\PersonalDataSelection\Exporters\MutesExporter;
 use App\Services\PersonalDataSelection\Exporters\NotificationsExporter;
 use App\Services\PersonalDataSelection\Exporters\PasswordResetsExporter;
 use App\Services\PersonalDataSelection\Exporters\PermissionExporter;
+use App\Services\PersonalDataSelection\Exporters\PrivacyAckExporter;
 use App\Services\PersonalDataSelection\Exporters\ProfileLinksExporter;
 use App\Services\PersonalDataSelection\Exporters\ReportsExporter;
 use App\Services\PersonalDataSelection\Exporters\RoleExporter;
 use App\Services\PersonalDataSelection\Exporters\SessionExporter;
 use App\Services\PersonalDataSelection\Exporters\SocialProfileExporter;
 use App\Services\PersonalDataSelection\Exporters\StatusExporter;
+use App\Services\PersonalDataSelection\Exporters\TicketExporter;
 use App\Services\PersonalDataSelection\Exporters\TokenExporter;
 use App\Services\PersonalDataSelection\Exporters\TripsExporter;
 use App\Services\PersonalDataSelection\Exporters\TrustedUsersExporter;
 use App\Services\PersonalDataSelection\Exporters\UserDataExporter;
+use App\Services\PersonalDataSelection\Exporters\WebhookCallLogExporter;
 use App\Services\PersonalDataSelection\Exporters\WebhookCreationRequestExporter;
 use App\Services\PersonalDataSelection\Exporters\WebhookExporter;
 use Spatie\PersonalDataExport\PersonalDataSelection;
@@ -49,6 +54,7 @@ class UserGdprDataService
                 ActivityLogExporter::class,
                 AppsExporter::class,
                 BlocksExporter::class,
+                ContributionHistoryExporter::class,
                 EventsExporter::class,
                 EventSuggestionsExporter::class,
                 FollowRequestsExporter::class,
@@ -73,7 +79,11 @@ class UserGdprDataService
                 TripsExporter::class,
                 TrustedUsersExporter::class,
                 UserDataExporter::class,
+                PrivacyAckExporter::class,
+                TicketExporter::class,
+                MailChangeExporter::class,
                 WebhookCreationRequestExporter::class,
+                WebhookCallLogExporter::class,
                 WebhookExporter::class,
             ],
             $export

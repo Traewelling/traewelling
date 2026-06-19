@@ -18,7 +18,6 @@ import TripCreationForm from '../vue/components/TripCreation/TripCreationForm.vu
 import ActiveJourneys from '../vue/views/ActiveJourneys.vue';
 import Dashboard from '../vue/views/Dashboard.vue';
 import StationMap from '../vue/views/Debug/StationMap.vue';
-import DuplicateCheckins from '../vue/views/DuplicateCheckins.vue';
 import EventPage from '../vue/views/Event.vue';
 import Profile from '../vue/views/Profile/Profile.vue';
 import SingleStatus from '../vue/views/SingleStatus.vue';
@@ -126,7 +125,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (document.getElementById('vue-content')) {
         const contentApp = createApp({});
         contentApp.component('VueDashboard', Dashboard);
-        contentApp.component('VueDuplicateCheckins', DuplicateCheckins); //TODO: remove after 2026-05-31
         contentApp.component('StatsDashboard', StatsDashboard);
         contentApp.component('TripCreationForm', TripCreationForm);
         contentApp.component('SingleStatus', SingleStatus);

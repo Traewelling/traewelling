@@ -16,7 +16,7 @@ class ReportsExporter extends AbstractExporter
     protected string $tableName = 'reports';
 
     protected array $columns = [
-        'subject_type', 'subject_id', 'reason', 'description', 'reporter_id',
+        'subject_type', 'subject_id', 'reason', 'description', 'reporter_id', 'created_at',
     ];
 
     protected string $whereColumn = 'reporter_id';

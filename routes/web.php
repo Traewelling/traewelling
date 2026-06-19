@@ -137,11 +137,6 @@ Route::middleware(['auth', 'privacy'])->group(function () {
     Route::view('/dashboard', 'vue.dashboard')
         ->name('dashboard');
 
-    Route::get('/statuses/duplicates', fn () => appLayout() === 'layouts.tailwind-vue-layout'
-        ? view('vue.spa')
-        : view('vue.duplicate-checkins')
-    )->name('statuses.duplicates'); // TODO: remove after 2026-05-31
-
     Route::post('/status/update', [StatusController::class, 'updateStatus'])
         ->name('status.update'); // TODO: Replace with API Endpoint
 
@@ -157,9 +152,6 @@ Route::middleware(['auth', 'privacy'])->group(function () {
     Route::redirect('/trains/stationboard', '/stationboard')->name('trains.stationboard');
 
     Route::get('/search/', [FrontendUserController::class, 'searchUser'])->name('userSearch');
-
-    Route::get('/embed/search', [FrontendUserController::class, 'searchUser'])->name('embed.search');
-
 });
 
 Route::get('/sitemap.xml', [SitemapController::class, 'renderSitemap']);

@@ -13,7 +13,6 @@ use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\StopoverResource;
-use App\Models\Checkin;
 use App\Models\Status;
 use App\Models\Stopover;
 use App\Models\Ticket;
@@ -53,6 +52,7 @@ use OpenApi\Attributes as OA;
     schema: 'StatusAssignTicketBody',
     title: 'StatusAssignTicketBody',
     description: 'Assign or remove a ticket from a status',
+    required: ['ticketId'],
     properties: [
         new OA\Property(property: 'ticketId', description: 'UUID of the ticket to assign, or null to remove the assignment', type: 'string', format: 'uuid', example: '00000000-0000-0000-0000-000000000000', nullable: true),
     ],
@@ -61,6 +61,7 @@ use OpenApi\Attributes as OA;
     schema: 'Polyline',
     title: 'Polyline',
     description: 'Polyline of a single status as GeoJSON Feature',
+    required: ['type', 'geometry', 'properties'],
     properties: [
         new OA\Property(property: 'type', type: 'string', example: 'Feature'),
         new OA\Property(
@@ -103,6 +104,7 @@ class StatusController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data', 'links', 'meta'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -147,6 +149,7 @@ class StatusController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data', 'links', 'meta'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -154,10 +157,7 @@ class StatusController extends Controller
                             items: new OA\Items(ref: '#/components/schemas/StatusResource'),
                         ),
                         new OA\Property(property: 'links', ref: '#/components/schemas/Links'),
-                        new OA\Property(
-                            property: 'meta',
-                            ref: '#/components/schemas/PaginationMeta',
-                        ),
+                        new OA\Property(property: 'meta', ref: '#/components/schemas/PaginationMeta'),
                     ],
                 ),
             ),
@@ -168,103 +168,6 @@ class StatusController extends Controller
     public static function getFutureCheckins(): AnonymousResourceCollection
     {
         return StatusResource::collection(StatusBackend::getFutureCheckins());
-    }
-
-    #[OA\Schema(
-        schema: 'DuplicateCheckinGroup',
-        title: 'DuplicateCheckinGroup',
-        description: 'A group of check-ins with the same trip and origin stopover (duplicates)',
-        properties: [
-            new OA\Property(
-                property: 'statuses',
-                type: 'array',
-                items: new OA\Items(ref: StatusResource::class),
-            ),
-        ],
-    )]
-    #[OA\Get(
-        path: '/statuses/duplicates',
-        operationId: 'getDuplicateCheckins',
-        description: 'Temporary cleanup endpoint: returns groups of check-ins the authenticated user has checked in more than once for the same trip and origin stopover. Will be removed after 2026-05-31.',
-        summary: '[Deprecated] Get duplicate check-ins of the authenticated user',
-        security: [['passport' => ['read-statuses']], ['token' => []]],
-        tags: ['Status'],
-        responses: [
-            new OA\Response(
-                response: 200,
-                description: 'successful operation',
-                content: new OA\JsonContent(
-                    properties: [
-                        new OA\Property(
-                            property: 'data',
-                            type: 'array',
-                            items: new OA\Items(ref: '#/components/schemas/DuplicateCheckinGroup'),
-                        ),
-                    ],
-                ),
-            ),
-            new OA\Response(response: 401, description: 'Not logged in'),
-        ],
-        deprecated: true,
-    )]
-    public function getDuplicateCheckins(): JsonResponse
-    {
-        // TODO: remove endpoint after 2026-05-31
-        $userId = Auth::id();
-
-        $duplicatePairs = DB::table('train_checkins')
-            ->select('trip_id', 'origin_stopover_id')
-            ->where('user_id', $userId)
-            ->whereNotNull('origin_stopover_id')
-            ->groupBy('trip_id', 'origin_stopover_id')
-            ->havingRaw('COUNT(*) > 1');
-
-        $checkinRows = DB::table('train_checkins')
-            ->joinSub($duplicatePairs, 'dup_pairs', function ($join): void {
-                $join->on('train_checkins.trip_id', '=', 'dup_pairs.trip_id')
-                    ->on('train_checkins.origin_stopover_id', '=', 'dup_pairs.origin_stopover_id');
-            })
-            ->where('train_checkins.user_id', $userId)
-            ->select('train_checkins.status_id', 'train_checkins.trip_id', 'train_checkins.origin_stopover_id')
-            ->orderBy('train_checkins.trip_id')
-            ->orderBy('train_checkins.origin_stopover_id')
-            ->orderBy('train_checkins.id')
-            ->get();
-
-        if ($checkinRows->isEmpty()) {
-            return response()->json(['data' => []]);
-        }
-
-        $statuses = Status::with([
-            'event',
-            'likes',
-            'user',
-            'createdByUser',
-            'checkin.originStopover.station',
-            'checkin.destinationStopover.station',
-            'checkin.trip.operator',
-            'checkin.trip.motisSourceLicense',
-            'checkin.statusTags',
-            'tags',
-            'mentions.mentioned',
-            'ticket',
-            'client',
-        ])
-            ->whereIn('id', $checkinRows->pluck('status_id'))
-            ->get()
-            ->keyBy('id');
-
-        $groups = $checkinRows
-            ->groupBy(fn ($row) => $row->trip_id . ':' . $row->origin_stopover_id)
-            ->map(fn ($rows) => [
-                'statuses' => $rows
-                    ->map(fn ($row) => new StatusResource($statuses->get($row->status_id)))
-                    ->filter()
-                    ->values(),
-            ])
-            ->values();
-
-        return response()->json(['data' => $groups]);
     }
 
     #[OA\Get(
@@ -279,6 +182,7 @@ class StatusController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -308,6 +212,7 @@ class StatusController extends Controller
                 response: '200',
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -346,6 +251,7 @@ class StatusController extends Controller
                 response: '200',
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -366,7 +272,7 @@ class StatusController extends Controller
     #[OA\Get(
         path: '/status',
         operationId: 'listStatuses',
-        description: 'Returns paginated list of statuses, filtered by given parameters',
+        description: 'Returns cursor-paginated statuses filtered by given parameters. The departure window (from..to) defaults to the last 7 days and must not exceed 365 days.',
         summary: '[Auth optional] List and filter statuses',
         tags: ['Status'],
         parameters: [
@@ -383,6 +289,22 @@ class StatusController extends Controller
                 in: 'query',
                 schema: new OA\Schema(type: 'integer'),
                 example: 42,
+            ),
+            new OA\Parameter(
+                name: 'from',
+                description: 'Lower bound for departure (date, e.g. 2024-01-01). Defaults to 7 days before "to".',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'string', format: 'date'),
+                example: '2024-01-01',
+            ),
+            new OA\Parameter(
+                name: 'to',
+                description: 'Upper bound for departure (date, e.g. 2024-01-31). Defaults to now+20min. Range from..to must not exceed 365 days.',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'string', format: 'date'),
+                example: '2024-01-31',
             ),
             new OA\Parameter(
                 name: 'origin_text',
@@ -418,6 +340,7 @@ class StatusController extends Controller
                 response: 200,
                 description: 'list of matching statuses',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -432,11 +355,10 @@ class StatusController extends Controller
     public function list(Request $request): AnonymousResourceCollection
     {
         $validated = $request->validate([
-            // generic filters
             'body' => ['nullable', 'string', 'max:32'],
             'user_id' => ['nullable', 'integer', 'exists:users,id'],
-
-            // Filters for origin/destination
+            'from' => ['nullable', 'date'],
+            'to' => ['nullable', 'date'],
             'origin_text' => ['nullable', 'string', 'max:64'],
             'origin_id' => ['nullable', 'integer', 'exists:train_stations,id'],
             'destination_text' => ['nullable', 'string', 'max:64'],
@@ -444,35 +366,69 @@ class StatusController extends Controller
         ]);
 
         $user = auth()->user();
-        $query = Status::query()->orderByDesc('created_at');
+        $isOwnSearch = isset($validated['user_id']) && (int) $validated['user_id'] === $user->id;
+
+        if ($isOwnSearch) {
+            // own search ignores day limit (=> less checkins to search)
+            $to = isset($validated['to']) ? Carbon::parse($validated['to'])->endOfDay() : null;
+            $from = isset($validated['from']) ? Carbon::parse($validated['from'])->startOfDay() : null;
+
+            if ($from !== null && $to !== null && $from->isAfter($to)) {
+                throw ValidationException::withMessages(['from' => [__('errors.date-range-order')]]);
+            }
+        } else {
+            $to = isset($validated['to']) ? Carbon::parse($validated['to'])->endOfDay() : now()->addMinutes(20);
+            $from = isset($validated['from']) ? Carbon::parse($validated['from'])->startOfDay() : $to->copy()->subDays(7);
+
+            if ($from->isAfter($to)) {
+                throw ValidationException::withMessages(['from' => [__('errors.date-range-order')]]);
+            }
+            if ($from->diffInDays($to) > 365) {
+                throw ValidationException::withMessages(['from' => [__('errors.date-range-max')]]);
+            }
+        }
+
+        $query = Status::query()->orderByDesc('train_checkins.departure');
 
         if (isset($validated['body'])) {
             $query->where('body', 'like', '%' . $validated['body'] . '%');
         }
 
-        $query->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
+        $hasOriginFilter = isset($validated['origin_text']) || isset($validated['origin_id']);
+        $hasDestinationFilter = isset($validated['destination_text']) || isset($validated['destination_id']);
+
+        $checkinJoin = in_array(DB::connection()->getDriverName(), ['mysql', 'mariadb'], true)
+            ? DB::raw('`train_checkins` FORCE INDEX (idx_tc_departure_status)')
+            : 'train_checkins'; // force best index in mysql and mariadb, but fall back here for sqlite / tests
+
+        $query->join($checkinJoin, 'train_checkins.status_id', '=', 'statuses.id')
             ->join('users', 'statuses.user_id', '=', 'users.id')
-            ->join('train_stopovers as origin_stopover', 'train_checkins.origin_stopover_id', '=', 'origin_stopover.id')
-            ->join('train_stations as origin_station', 'origin_stopover.train_station_id', '=', 'origin_station.id')
-            ->join('train_stopovers as destination_stopover', 'train_checkins.destination_stopover_id', '=', 'destination_stopover.id')
-            ->join('train_stations as destination_station', 'destination_stopover.train_station_id', '=', 'destination_station.id')
-            ->when(isset($validated['origin_text']), function ($q) use ($validated) {
-                $q->where('origin_station.name', 'like', '%' . $validated['origin_text'] . '%');
-            })
-            ->when(isset($validated['origin_id']), function ($q) use ($validated) {
-                $q->where('origin_station.id', $validated['origin_id']);
-            })
-            ->when(isset($validated['destination_text']), function ($q) use ($validated) {
-                $q->where('destination_station.name', 'like', '%' . $validated['destination_text'] . '%');
-            })
-            ->when(isset($validated['destination_id']), function ($q) use ($validated) {
-                $q->where('destination_station.id', $validated['destination_id']);
-            })
-            ->when(isset($validated['user_id']), function ($q) use ($validated) {
-                $q->where('users.id', $validated['user_id']);
-            })
+            ->when($hasOriginFilter, fn ($q) => $q
+                ->join('train_stopovers as origin_stopover', 'train_checkins.origin_stopover_id', '=', 'origin_stopover.id')
+                ->join('train_stations as origin_station', 'origin_stopover.train_station_id', '=', 'origin_station.id')
+            )
+            ->when($hasDestinationFilter, fn ($q) => $q
+                ->join('train_stopovers as destination_stopover', 'train_checkins.destination_stopover_id', '=', 'destination_stopover.id')
+                ->join('train_stations as destination_station', 'destination_stopover.train_station_id', '=', 'destination_station.id')
+            )
+            ->when(isset($validated['origin_text']), fn ($q) => $q
+                ->where('origin_station.name', 'like', '%' . $validated['origin_text'] . '%')
+            )
+            ->when(isset($validated['origin_id']), fn ($q) => $q
+                ->where('origin_station.id', $validated['origin_id'])
+            )
+            ->when(isset($validated['destination_text']), fn ($q) => $q
+                ->where('destination_station.name', 'like', '%' . $validated['destination_text'] . '%')
+            )
+            ->when(isset($validated['destination_id']), fn ($q) => $q
+                ->where('destination_station.id', $validated['destination_id'])
+            )
+            ->when(isset($validated['user_id']), fn ($q) => $q
+                ->where('users.id', $validated['user_id'])
+            )
             ->where(\App\Http\Controllers\Backend\Transport\StatusController::filterStatusVisibility($user))
-            ->where('train_checkins.departure', '<', now()->addMinutes(20))
+            ->when($from !== null, fn ($q) => $q->where('train_checkins.departure', '>=', $from))
+            ->when($to !== null, fn ($q) => $q->where('train_checkins.departure', '<=', $to))
             ->whereNotIn('statuses.user_id', $user->mutedUsers()->select('muted_id'))
             ->whereNotIn('statuses.user_id', $user->blockedUsers()->select('blocked_id'))
             ->whereNotIn('statuses.user_id', $user->blockedByUsers()->select('user_id'))
@@ -510,6 +466,7 @@ class StatusController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [new OA\Property(property: 'data', ref: '#/components/schemas/StatusResource')],
                 ),
             ),
@@ -602,6 +559,7 @@ class StatusController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [new OA\Property(property: 'data', ref: '#/components/schemas/StatusResource')],
                 ),
             ),
@@ -762,6 +720,7 @@ class StatusController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [new OA\Property(property: 'data', ref: '#/components/schemas/StatusResource')],
                 ),
             ),
@@ -823,6 +782,7 @@ class StatusController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',

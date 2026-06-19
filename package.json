@@ -9,7 +9,8 @@
         "lint": "npx eslint . --fix",
         "lint:check": "npx eslint .",
         "format": "prettier --write resources/",
-        "format:check": "prettier --check resources/"
+        "format:check": "prettier --check resources/",
+        "api:check-no-optional": "node scripts/check-api-optional-properties.mjs"
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",
@@ -44,7 +45,8 @@
     "dependencies": {
         "@fortawesome/fontawesome-free": "^7.1.0",
         "@indoorequal/vue-maplibre-gl": "^8.4.2",
-        "@vuepic/vue-datepicker": "^12.0.0",
+        "@lucide/vue": "^1.17.0",
+        "@vuepic/vue-datepicker": "^14.0.0",
         "apexcharts": "^5.0.0",
         "autoprefixer": "^10.4.20",
         "axios": "^1.8.2",
@@ -57,7 +59,6 @@
         "leaflet": "^1.9.4",
         "Leaflet-MovingMaker": "^0.0.1",
         "lgbtq.css": "^2.0.7",
-        "lucide-vue-next": "^1.0.0",
         "luxon": "^3.4.4",
         "maplibre-gl": "^5.11.0",
         "marked": "^18.0.0",

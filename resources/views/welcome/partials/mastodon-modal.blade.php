@@ -9,7 +9,9 @@
             <input type="text" placeholder="{{ __('user.mastodon-instance-url') }}" name="domain" required
                    class="input input-bordered w-full join-item"/>
             <button type="submit" class="btn btn-primary join-item">
-                <i class="fab fa-mastodon"></i>
+                <figure class="w-4 fill-white">
+                    @include('welcome.partials.mastodon-icon')
+                </figure>
                 {{ __('user.login') }}
             </button>
         </form>

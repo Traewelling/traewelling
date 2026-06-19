@@ -92,6 +92,7 @@ class UserController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data', 'links', 'meta'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -99,10 +100,7 @@ class UserController extends Controller
                             items: new OA\Items(ref: '#/components/schemas/StatusResource'),
                         ),
                         new OA\Property(property: 'links', ref: '#/components/schemas/Links'),
-                        new OA\Property(
-                            property: 'meta',
-                            ref: '#/components/schemas/PaginationMeta',
-                        ),
+                        new OA\Property(property: 'meta', ref: '#/components/schemas/PaginationMeta'),
                     ],
                 ),
             ),
@@ -158,6 +156,7 @@ class UserController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [new OA\Property(property: 'data', ref: '#/components/schemas/UserResource')],
                 ),
             ),
@@ -166,7 +165,7 @@ class UserController extends Controller
                 response: 403,
                 description: 'Forbidden, User is blocked',
                 content: new OA\JsonContent(
-                    required: ['message'],
+                    required: ['message', 'reason', 'user'],
                     properties: [
                         new OA\Property(
                             property: 'message',
@@ -229,6 +228,7 @@ class UserController extends Controller
                 response: 201,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [new OA\Property(property: 'data', ref: '#/components/schemas/UserResource')],
                 ),
             ),
@@ -286,6 +286,7 @@ class UserController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [new OA\Property(property: 'data', ref: '#/components/schemas/UserResource')],
                 ),
             ),
@@ -343,6 +344,7 @@ class UserController extends Controller
                 response: 201,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [new OA\Property(property: 'data', ref: '#/components/schemas/UserResource')],
                 ),
             ),
@@ -399,6 +401,7 @@ class UserController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [new OA\Property(property: 'data', ref: '#/components/schemas/UserResource')],
                 ),
             ),
@@ -443,6 +446,7 @@ class UserController extends Controller
                 response: 200,
                 description: self::OA_DESC_SUCCESS,
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [new OA\Property(property: 'data', type: 'array', items: new OA\Items(ref: LightUserResource::class))],
                 )
             ),
@@ -466,6 +470,8 @@ class UserController extends Controller
                 response: 200,
                 description: self::OA_DESC_SUCCESS,
                 content: new OA\JsonContent(
+
+                    required: ['data'],
                     properties: [new OA\Property(property: 'data', type: 'array', items: new OA\Items(ref: LightUserResource::class))],
                 )
             ),
@@ -504,6 +510,7 @@ class UserController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data', 'links', 'meta'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -511,10 +518,7 @@ class UserController extends Controller
                             items: new OA\Items(ref: '#/components/schemas/UserResource'),
                         ),
                         new OA\Property(property: 'links', ref: '#/components/schemas/Links'),
-                        new OA\Property(
-                            property: 'meta',
-                            ref: '#/components/schemas/PaginationMeta',
-                        ),
+                        new OA\Property(property: 'meta', ref: '#/components/schemas/PaginationMeta'),
                     ],
                 ),
             ),
@@ -563,6 +567,7 @@ class UserController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data', 'links', 'meta'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -570,10 +575,7 @@ class UserController extends Controller
                             items: new OA\Items(ref: '#/components/schemas/UserResource'),
                         ),
                         new OA\Property(property: 'links', ref: '#/components/schemas/Links'),
-                        new OA\Property(
-                            property: 'meta',
-                            ref: '#/components/schemas/PaginationMeta',
-                        ),
+                        new OA\Property(property: 'meta', ref: '#/components/schemas/PaginationMeta'),
                     ],
                 ),
             ),

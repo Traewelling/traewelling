@@ -44,9 +44,11 @@ class AdminEventSuggestionController extends Controller
             new OA\Response(
                 response: 200,
                 description: 'Paginated list of suggestions.',
-                content: new OA\JsonContent(properties: [
-                    new OA\Property(property: 'data', type: 'array', items: new OA\Items(ref: '#/components/schemas/EventSuggestionResource')),
-                ]),
+                content: new OA\JsonContent(
+                    required: ['data'],
+                    properties: [
+                        new OA\Property(property: 'data', type: 'array', items: new OA\Items(ref: '#/components/schemas/EventSuggestionResource')),
+                    ]),
             ),
             new OA\Response(response: 403, description: 'Forbidden.'),
         ],
@@ -71,27 +73,29 @@ class AdminEventSuggestionController extends Controller
             new OA\Response(
                 response: 200,
                 description: 'Suggestion with parallel events.',
-                content: new OA\JsonContent(properties: [
-                    new OA\Property(
-                        property: 'data',
-                        properties: [
-                            new OA\Property(property: 'suggestion', ref: '#/components/schemas/EventSuggestionResource'),
-                            new OA\Property(
-                                property: 'parallelEvents',
-                                type: 'array',
-                                items: new OA\Items(properties: [
-                                    new OA\Property(property: 'id', type: 'integer'),
-                                    new OA\Property(property: 'name', type: 'string'),
-                                    new OA\Property(property: 'slug', type: 'string'),
-                                    new OA\Property(property: 'checkin_start', type: 'string', format: 'date'),
-                                    new OA\Property(property: 'checkin_end', type: 'string', format: 'date'),
-                                    new OA\Property(property: 'similarity', type: 'number', format: 'float'),
-                                ]),
-                            ),
-                        ],
-                        type: 'object',
-                    ),
-                ]),
+                content: new OA\JsonContent(
+                    required: ['data'],
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            properties: [
+                                new OA\Property(property: 'suggestion', ref: '#/components/schemas/EventSuggestionResource'),
+                                new OA\Property(
+                                    property: 'parallelEvents',
+                                    type: 'array',
+                                    items: new OA\Items(properties: [
+                                        new OA\Property(property: 'id', type: 'integer'),
+                                        new OA\Property(property: 'name', type: 'string'),
+                                        new OA\Property(property: 'slug', type: 'string'),
+                                        new OA\Property(property: 'checkin_start', type: 'string', format: 'date'),
+                                        new OA\Property(property: 'checkin_end', type: 'string', format: 'date'),
+                                        new OA\Property(property: 'similarity', type: 'number', format: 'float'),
+                                    ]),
+                                ),
+                            ],
+                            type: 'object',
+                        ),
+                    ]),
             ),
             new OA\Response(response: 403, description: 'Forbidden.'),
             new OA\Response(response: 404, description: 'Not found.'),
@@ -135,9 +139,11 @@ class AdminEventSuggestionController extends Controller
             new OA\Response(
                 response: 201,
                 description: 'Event created from suggestion.',
-                content: new OA\JsonContent(properties: [
-                    new OA\Property(property: 'data', ref: '#/components/schemas/EventAdminResource'),
-                ]),
+                content: new OA\JsonContent(
+                    required: ['data'],
+                    properties: [
+                        new OA\Property(property: 'data', ref: '#/components/schemas/EventAdminResource'),
+                    ]),
             ),
             new OA\Response(response: 403, description: 'Forbidden.'),
             new OA\Response(response: 422, description: 'Validation error.'),

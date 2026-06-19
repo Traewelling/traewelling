@@ -17,6 +17,7 @@ class ConfigurationInfoController extends Controller
             appDebug: config('app.debug'),
             appUrl: config('app.url'),
             version: VersionController::getVersion() ?: 'unknown',
+            gdprExportCooldown: config('trwl.gdpr_export.days'),
             features: $this->getFeatures(),
             languages: $this->getLanguages(),
         );

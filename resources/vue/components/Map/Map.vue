@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import { DateTime } from 'luxon';
 import { GeoJSONFeature } from 'maplibre-gl';
-import { computed, PropType, ref } from 'vue';
+import { computed, onMounted, PropType, ref } from 'vue';
 import { Api, EventResource, LivePointDto, MapProvider, StatusResource } from '../../../types/Api.gen';
 import { useUserStore } from '../../stores/user';
 import EventMarker from './EventMarker.vue';
@@ -24,7 +25,7 @@ const events = ref<EventResource[]>([]);
 const mapProvider = computed<MapProvider>(() => userStore.user?.mapProvider ?? MapProvider.Cargo);
 
 if (props.statuses.length === 1) {
-    lineColor.value = props.statuses[0].train.routeColor ? '#' + props.statuses[0].train.routeColor : '#c72730';
+    lineColor.value = props.statuses[0].checkin.routeColor ? '#' + props.statuses[0].checkin.routeColor : '#c72730';
     api.polyline
         .getPolylines(props.statuses.map((s) => s.id.toString()).join(','))
         .then((response) => {
@@ -37,23 +38,56 @@ if (props.statuses.length === 1) {
         });
 }
 
-api.positions
-    .getLivePositionsForStatuses(props.statuses.map((s) => s.id.toString()).join(','))
-    .then((response) => {
-        livePositions.value = response.data.data || [];
-    })
-    .catch((error) => {
-        console.error('Error fetching live positions:', error);
+function filterActiveStatuses() {
+    return props.statuses.filter((s) => {
+        const arrival =
+            s.checkin.manualArrival ??
+            s.checkin.destination.arrivalReal ??
+            s.checkin.destination.arrivalPlanned ??
+            s.checkin.destination.departureReal ??
+            s.checkin.destination.departurePlanned;
+        if (arrival) {
+            return DateTime.fromISO(arrival) > DateTime.now();
+        }
     });
+}
 
-api.events
-    .getEvents()
-    .then((response) => {
-        events.value = response.data.data || [];
-    })
-    .catch((error) => {
-        console.error('Error fetching events:', error);
-    });
+function fetchPositions() {
+    api.positions
+        .getLivePositionsForStatuses(
+            filterActiveStatuses()
+                .map((s) => s.id.toString())
+                .join(','),
+        )
+        .then((response) => {
+            livePositions.value = response.data.data || [];
+        })
+        .catch((error) => {
+            console.error('Error fetching live positions:', error);
+        });
+}
+
+function fetchEvents() {
+    api.events
+        .getEvents()
+        .then((response) => {
+            events.value = response.data.data || [];
+        })
+        .catch((error) => {
+            console.error('Error fetching events:', error);
+        });
+}
+
+onMounted(() => {
+    fetchPositions();
+    fetchEvents();
+    const interval = setInterval(() => {
+        fetchPositions();
+    }, 30000); // Refresh every 30 seconds
+
+    // Clear the interval when the component is unmounted
+    return () => clearInterval(interval);
+});
 </script>
 
 <template>

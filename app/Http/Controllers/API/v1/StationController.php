@@ -151,6 +151,7 @@ class StationController extends Controller
                 response: 200,
                 description: 'Updated station',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [new OA\Property(property: 'data', ref: '#/components/schemas/StationResource')],
                 ),
             ),
@@ -256,6 +257,7 @@ class StationController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
@@ -400,6 +402,7 @@ class StationController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',

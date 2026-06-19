@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { Pencil, Plus, Ticket, Trash2 } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { Pencil, Plus, Ticket, Trash2 } from 'lucide-vue-next';
 import { Notyf } from 'notyf';
 import { inject, onMounted, ref } from 'vue';
 import { Api, TicketResource } from '../../../types/Api.gen';

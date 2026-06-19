@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ExternalLink, PencilLine, Plus, Trash2 } from 'lucide-vue-next';
+import { ExternalLink, PencilLine, Plus, Trash2 } from '@lucide/vue';
 import { onMounted, ref, watch } from 'vue';
 import { Api, type EventAdminResource } from '../../../types/Api.gen';
 import { useUserStore } from '../../../vue/stores/user';

@@ -11,6 +11,7 @@ use OpenApi\Attributes as OA;
     title: 'UserAuth',
     required: [
         'id',
+        'uuid',
         'displayName',
         'username',
         'profilePicture',
@@ -21,11 +22,13 @@ use OpenApi\Attributes as OA;
         'privateProfile',
         'preventIndex',
         'likes_enabled',
+        'pointsEnabled',
         'mapProvider',
         'home',
         'language',
         'defaultStatusVisibility',
         'roles',
+        'recentGdprExport',
     ],
     properties: [
         new OA\Property(property: 'id', type: 'integer', example: '1'),
@@ -64,6 +67,7 @@ use OpenApi\Attributes as OA;
             items: new OA\Items(type: 'string'),
             example: ['admin', 'open-beta', 'closed-beta'],
         ),
+        new OA\Property(property: 'recentGdprExport', type: 'string', format: 'date-time', example: '2024-01-01T00:00:00Z', nullable: true),
     ],
 )]
 class UserAuthResource extends JsonResource
@@ -92,6 +96,7 @@ class UserAuthResource extends JsonResource
             'language' => $this->language,
             'defaultStatusVisibility' => $this->default_status_visibility,
             'roles' => $this->roles->pluck('name'),
+            'recentGdprExport' => $this->recent_gdpr_export?->toIso8601String(),
         ];
     }
 }

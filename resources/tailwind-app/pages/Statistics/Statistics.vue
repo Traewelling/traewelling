@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { ChartNoAxesCombined } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { ChartNoAxesCombined } from 'lucide-vue-next';
 import { Notyf } from 'notyf';
 import { computed, inject, onMounted, ref, watch } from 'vue';
 import { Api, type StatisticsGlobalData, type StatusResource } from '../../../types/Api.gen';

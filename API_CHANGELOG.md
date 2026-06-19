@@ -38,6 +38,43 @@ Check back here regularly to stay ahead of removals.
 | 2026-04-01 | `DepartureResource.stop.*` is deprecated → use `DepartureResource.station` instead                                                                                                                                | 2026-09-30 | [#4663](https://github.com/Traewelling/traewelling/pull/4663) |
 | 2026-04-07 | `OperatorResource.identifier` is deprecated: legacy HAFAS operator ID, always `null` for new operators                                                                                                            | 2026-09-30 | [#4675](https://github.com/Traewelling/traewelling/pull/4675) |
 | 2026-04-07 | `OperatorResource.id` is deprecated as integer: will become a UUID after 2026-09-30. prefer `uuid` instead while migration-period                                                                                 | 2026-09-30 | [#4676](https://github.com/Traewelling/traewelling/pull/4676) |
+| 2026-05-14 | `POST /api/v1/trains/checkin` 409 response: `message.status_id` and `message.lineName` are deprecated. Use `data.conflicts` (full `StatusResource` array) instead                                                 | 2026-10-31 | [#4677](https://github.com/Traewelling/traewelling/pull/4677) |
+
+---
+
+# 2026-05-19
+
+**`GET /api/v1/trains/trip`: new `continuationTrip` field on `TripResource`:**
+The response now includes an optional `continuationTrip` field (nullable `TripResource`).
+This is set when the trip is part of an interlined through-running service i.e. the physical vehicle continues under a different line name and colour without any transfer required (e.g. S5 becoming S7).
+The nested object contains the full trip data for the immediately following leg, including its own stopovers, line colour, and destination.
+Users can check into each leg independently.
+
+---
+
+# 2026-05-18
+
+**`GET /api/v1/status`: new `from`/`to` parameters and performance fix:**
+The endpoint now accepts optional `from` and `to` date parameters (ISO 8601 date format, e.g. `2024-01-01`) to control the departure time window.
+Without parameters, the window defaults to the last 7 days up to now+20 minutes.
+The window between `from` and `to` must not exceed 365 days. 
+Exception: when `user_id` is set to the authenticated user's own ID, no time limit applies and `from`/`to` are fully optional.
+The previously implicit hard upper bound of `now()+20min` is now the default value of `to` and can be overridden.
+Results are ordered by departure descending (previously: status creation date descending).
+
+(Background: This query was very painful on the production database and causes some headache...)
+
+---
+
+# 2026-05-14
+
+**New endpoint `GET /api/v1/tags/suggestions`:**
+Returns tag suggestions for the authenticated user, intended for use in the check-in flow.
+Suggestions are currently derived from two sources: the 3 most recently used key:value pairs, and the 3 most frequently used key:value pairs in the last 3 days (minimum 2 uses).
+
+**`POST /api/v1/trains/checkin` 409 response now includes all conflicting check-ins as full status objects:**
+The response now contains `data.conflicts`, an array of full `StatusResource` objects for all overlapping check-ins.
+The old `message.status_id` and `message.lineName` fields are still present for backward compatibility but deprecated.
 
 ---
 

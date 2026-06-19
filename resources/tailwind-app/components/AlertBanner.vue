@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { AlertTriangle, CheckCircle, Info, XCircle } from '@lucide/vue';
 import { getActiveLanguage } from 'laravel-vue-i18n';
-import { AlertTriangle, CheckCircle, Info, XCircle } from 'lucide-vue-next';
 import { onMounted, ref } from 'vue';
 import { AlertResource, AlertTranslationResource, Api } from '../../types/Api.gen';
 
