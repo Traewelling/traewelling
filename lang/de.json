@@ -71,6 +71,8 @@
   "contribute.profile.total_xp": "Gesamt-XP",
   "contribute.profile.xp": "Erfahrung (XP)",
   "contribute.suggest_event.description": "Du kennst eine bevorstehende Veranstaltung? Schlage sie der Community vor! Für genehmigte Vorschläge erhältst du XP.",
+  "contribute.suggest_event.wiki_hint": "Bitte beachte auch unsere Hinweise zu {link}.",
+  "contribute.suggest_event.wiki_link_text": "Event-Vorschlägen",
   "contribute.suggest_event.error": "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
   "contribute.suggest_event.field_begin": "Wann beginnt das Event?",
   "contribute.suggest_event.field_end": "Wann endet das Event?",
