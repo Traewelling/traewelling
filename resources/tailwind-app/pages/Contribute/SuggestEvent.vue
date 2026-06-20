@@ -4,8 +4,25 @@
             <h1 class="font-title text-2xl md:text-3xl lg:text-4xl font-bold mb-2">
                 {{ trans('contribute.suggest_event.title') }}
             </h1>
-            <p class="mb-6 opacity-80">
+            <p class="mb-4 opacity-80">
                 {{ trans('contribute.suggest_event.description') }}
+            </p>
+            <p class="mb-6 text-sm opacity-80">
+                <i18n-t keypath="contribute.suggest_event.wiki_hint" scope="global">
+                    <template #link>
+                        <a
+                            :href="
+                                getActiveLanguage() === 'de'
+                                    ? 'https://help.traewelling.de/features/events/'
+                                    : 'https://help.traewelling.de/en/features/events/'
+                            "
+                            target="_blank"
+                            class="link link-primary font-semibold"
+                        >
+                            {{ trans('contribute.suggest_event.wiki_link_text') }}
+                        </a>
+                    </template>
+                </i18n-t>
             </p>
 
             <div v-if="successMessage" role="alert" class="alert alert-success mb-6">
@@ -209,7 +226,7 @@
 
 <script setup lang="ts">
 import { ArrowLeft, CircleCheck, CircleX, MapPin, Search, TriangleAlert, X } from '@lucide/vue';
-import { trans } from 'laravel-vue-i18n';
+import { getActiveLanguage, trans } from 'laravel-vue-i18n';
 import { DateTime } from 'luxon';
 import { onBeforeUnmount, onMounted, reactive, ref } from 'vue';
 import ContributeLayout from '../../layouts/ContributeLayout.vue';
