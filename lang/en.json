@@ -872,6 +872,7 @@
   "tag.title.trwl:wagon": "Carriage",
   "tag.title.trwl:wagon_class": "Wagon class",
   "tag.add": "Add tag",
+  "tag.save": "Save tag",
   "tag.key": "Type",
   "tag.custom_key": "Custom type",
   "tag.custom_key.placeholder": "e.g. occupancy",
