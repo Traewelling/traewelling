@@ -50,7 +50,7 @@
                         <User class="inline-block w-6 h-6" />
                         {{ user.user.username }}
                     </div>
-                    <ul tabindex="-1" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                    <ul tabindex="-1" class="dropdown-content menu bg-base-100 rounded-box z-50 w-52 p-2 shadow-sm">
                         <li v-for="link in userLinks" :key="link.name">
                             <router-link v-show="link.condition === undefined || link.condition" :to="link.route">
                                 <component :is="link.icon" class="inline-block w-6 h-6 mr-2" />
