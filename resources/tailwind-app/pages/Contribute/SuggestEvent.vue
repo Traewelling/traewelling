@@ -9,22 +9,16 @@
             </p>
             <p class="mb-6 text-sm opacity-80">
                 <i18n-t keypath="contribute.suggest_event.wiki_hint" scope="global">
-                    <template #link>
-                        <a
-                            :href="
-                                getActiveLanguage() === 'de'
-                                    ? 'https://help.traewelling.de/features/events/'
-                                    : 'https://help.traewelling.de/en/features/events/'
-                            "
-                            target="_blank"
-                            class="link link-primary font-semibold"
-                        >
-                            {{ trans('contribute.suggest_event.wiki_link_text') }}
-                        </a>
-                    </template>
-                </i18n-t>
+                <template #link>
+                <HelpPageLink 
+    help-page="/features/events/" 
+    class="link link-primary font-semibold"
+>
+    {{ trans('contribute.suggest_event.wiki_link_text') }}
+</HelpPageLink>
+            </template>
+            </i18n-t>
             </p>
-
             <div v-if="successMessage" role="alert" class="alert alert-success mb-6">
                 <CircleCheck class="h-6 w-6" />
                 <span>{{ successMessage }}</span>
@@ -226,10 +220,11 @@
 
 <script setup lang="ts">
 import { ArrowLeft, CircleCheck, CircleX, MapPin, Search, TriangleAlert, X } from '@lucide/vue';
-import { getActiveLanguage, trans } from 'laravel-vue-i18n';
+import { trans } from 'laravel-vue-i18n';
 import { DateTime } from 'luxon';
 import { onBeforeUnmount, onMounted, reactive, ref } from 'vue';
 import ContributeLayout from '../../layouts/ContributeLayout.vue';
+import HelpPageLink from '../../../vue/components/Helpers/HelpPageLink.vue';
 
 interface StationArea {
     name: string;
