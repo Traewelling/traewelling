@@ -36,8 +36,8 @@ type PeriodSummary = {
     total_checkins: number;
     total_distance_km: number;
     mean_distance_km: number;
-    longest_ride: StatusResource | null;
-    shortest_ride: StatusResource | null;
+    longest_checkin_by_distance: StatusResource | null;
+    shortest_checkin_by_distance: StatusResource | null;
 };
 
 const loading = ref(true);
