@@ -42,6 +42,15 @@ Check back here regularly to stay ahead of removals.
 
 ---
 
+# 2026-06-21
+
+**`GET /api/v1/statistics/overview`: `longest_ride` and `shortest_ride` renamed and two new duration fields added:**
+`longest_ride` is now `longest_checkin_by_distance` and `shortest_ride` is now `shortest_checkin_by_distance` selected by distance as before.
+Two new fields added: `longest_checkin_by_duration` (check-in with most travel time) and `shortest_checkin_by_duration` (check-in with least travel time).
+These fields were introduced in #4799 and have (hopefully) no known external consumers so the rename is immediate with no transition period.
+
+---
+
 # 2026-05-19
 
 **`GET /api/v1/trains/trip`: new `continuationTrip` field on `TripResource`:**
