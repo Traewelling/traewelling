@@ -12,7 +12,6 @@ use App\Models\StationIdentifier;
 use App\Services\GeoService;
 use Illuminate\Database\Eloquent\Collection as DbCollection;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 
 class StationRepository
 {

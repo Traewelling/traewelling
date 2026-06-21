@@ -10,7 +10,6 @@ use App\Enum\StationIdentifierType;
 use App\Models\Station;
 use App\Models\StationIdentifier;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Log;
 use Tests\FeatureTestCase;
 
 class StationRepositoryTest extends FeatureTestCase
