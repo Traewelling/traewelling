@@ -32,7 +32,7 @@ const split = ref<SplitDistance>(metersToDistance(props.distance));
                 {{ trans('distance.megameters.short') }}
             </small>
         </span>
-        <span v-if="split.kilometers > 0" class="tooltip" :data-tip="trans('distance.kilometers')">
+        <span v-if="split.kilometers > 0" class="tooltip cursor-default" :data-tip="`${props.distance} m`">
             {{ split.kilometers }}
             <small class="opacity-65 me-1">
                 {{ trans('distance.kilometers.short') }}

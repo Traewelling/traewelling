@@ -91,14 +91,18 @@ class StatisticsService
         $aggregate = $this->repository->checkinAggregate($user, $from, $until);
         $longest = $this->repository->longestRide($user, $from, $until);
         $shortest = $this->repository->shortestRide($user, $from, $until);
+        $longestByDuration = $this->repository->longestRideByDuration($user, $from, $until);
+        $shortestByDuration = $this->repository->shortestRideByDuration($user, $from, $until);
 
         return [
             'total_checkins' => (int) ($aggregate->total_checkins ?? 0),
             'active_days' => (int) ($aggregate->active_days ?? 0),
             'total_distance_km' => round(($aggregate->total_distance_meters ?? 0) / 1000, 2),
             'mean_distance_km' => round(($aggregate->mean_distance_meters ?? 0) / 1000, 2),
-            'longest_ride' => $this->toRideArray($longest),
-            'shortest_ride' => $this->toRideArray($shortest),
+            'longest_checkin_by_distance' => $this->toRideArray($longest),
+            'shortest_checkin_by_distance' => $this->toRideArray($shortest),
+            'longest_checkin_by_duration' => $this->toRideArray($longestByDuration),
+            'shortest_checkin_by_duration' => $this->toRideArray($shortestByDuration),
         ];
     }
 

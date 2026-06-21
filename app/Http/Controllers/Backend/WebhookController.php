@@ -16,6 +16,7 @@ use Carbon\Carbon;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\MissingValue;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -144,6 +145,12 @@ abstract class WebhookController extends Controller
      */
     private static function freezeJsonObjects(?array $data): ?array
     {
+        // Missing values actually cannot be frozen, because toArray fails on them
+        // Sidenote: Signer fails on them as well
+        $relevant = array_filter($data, function ($value) {
+            return !($value instanceof JsonResource && $value->resource instanceof MissingValue);
+        });
+
         return array_map(function ($value) {
             $request = Container::getInstance()->make('request');
 
@@ -155,6 +162,7 @@ abstract class WebhookController extends Controller
                 if (is_null($value->resource)) {
                     return null;
                 }
+
                 $result = $value->toArray($request);
                 if (is_null($result)) {
                     return null;
@@ -164,6 +172,6 @@ abstract class WebhookController extends Controller
             }
 
             return $value;
-        }, $data);
+        }, $relevant);
     }
 }

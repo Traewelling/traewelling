@@ -9,8 +9,10 @@ interface AdvancedSummary {
     active_days: number;
     total_distance_km: number;
     mean_distance_km: number;
-    longest_ride: StatusResource | null;
-    shortest_ride: StatusResource | null;
+    longest_checkin_by_distance: StatusResource | null;
+    shortest_checkin_by_distance: StatusResource | null;
+    longest_checkin_by_duration: StatusResource | null;
+    shortest_checkin_by_duration: StatusResource | null;
 }
 
 interface AdvancedStatsData {
@@ -73,19 +75,39 @@ const hasData = computed(() => props.data !== null && props.data !== undefined &
             </div>
         </div>
 
-        <div v-if="data!.summary.longest_ride || data!.summary.shortest_ride" class="space-y-3">
+        <div
+            v-if="
+                data!.summary.longest_checkin_by_duration ||
+                data!.summary.shortest_checkin_by_duration ||
+                data!.summary.longest_checkin_by_distance ||
+                data!.summary.shortest_checkin_by_distance
+            "
+            class="space-y-3"
+        >
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div v-if="data!.summary.longest_ride">
+                <div v-if="data!.summary.longest_checkin_by_duration">
+                    <p class="text-xs font-medium text-base-content/60 uppercase tracking-wide mb-1">
+                        {{ trans('stats.longest-checkin-by-duration') }}
+                    </p>
+                    <StatusCard :status="data!.summary.longest_checkin_by_duration" :show-map="false" />
+                </div>
+                <div v-if="data!.summary.shortest_checkin_by_duration">
+                    <p class="text-xs font-medium text-base-content/60 uppercase tracking-wide mb-1">
+                        {{ trans('stats.shortest-checkin-by-duration') }}
+                    </p>
+                    <StatusCard :status="data!.summary.shortest_checkin_by_duration" :show-map="false" />
+                </div>
+                <div v-if="data!.summary.longest_checkin_by_distance">
                     <p class="text-xs font-medium text-base-content/60 uppercase tracking-wide mb-1">
                         {{ trans('stats.longest-ride') }}
                     </p>
-                    <StatusCard :status="data!.summary.longest_ride" :show-map="false" />
+                    <StatusCard :status="data!.summary.longest_checkin_by_distance" :show-map="false" />
                 </div>
-                <div v-if="data!.summary.shortest_ride">
+                <div v-if="data!.summary.shortest_checkin_by_distance">
                     <p class="text-xs font-medium text-base-content/60 uppercase tracking-wide mb-1">
                         {{ trans('stats.shortest-ride') }}
                     </p>
-                    <StatusCard :status="data!.summary.shortest_ride" :show-map="false" />
+                    <StatusCard :status="data!.summary.shortest_checkin_by_distance" :show-map="false" />
                 </div>
             </div>
         </div>

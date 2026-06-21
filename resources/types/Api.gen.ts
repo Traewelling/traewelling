@@ -6750,8 +6750,10 @@ export class Api<
                * @example 29.39
                */
               mean_distance_km?: number;
-              longest_ride?: StatusResource | null;
-              shortest_ride?: StatusResource | null;
+              longest_checkin_by_distance?: StatusResource | null;
+              shortest_checkin_by_distance?: StatusResource | null;
+              longest_checkin_by_duration?: StatusResource | null;
+              shortest_checkin_by_duration?: StatusResource | null;
             };
           };
         },
