@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import { trans } from 'laravel-vue-i18n';
+import { ref } from 'vue';
 import { metersToDistance, SplitDistance } from '../../../vue/helpers/DistanceHelper';
 
 const props = defineProps({
