@@ -17,29 +17,37 @@ class CheckinSeeder extends Seeder
         $trips = Trip::with('stopovers')->get();
         $events = Event::all();
 
-        for ($i = 0; $i < 10; $i++) {
-            $user = $users->random();
-            $trip = $trips->random();
+        $combinations = [];
+        foreach ($users as $user) { // prevent unique constraint errors by collecting before
+            foreach ($trips as $trip) {
+                $originStopover = $trip->stopovers
+                    ->where('train_station_id', $trip->originStation->id)
+                    ->first();
+                $destinationStopover = $trip->stopovers
+                    ->where('train_station_id', $trip->destinationStation->id)
+                    ->first();
 
-            $originStopover = $trip->stopovers->where('train_station_id', $trip->originStation->id)->first();
-            $destinationStopover = $trip->stopovers->where('train_station_id', $trip->destinationStation->id)->first();
+                if ($originStopover === null || $destinationStopover === null) {
+                    continue;
+                }
 
-            if ($originStopover === null || $destinationStopover === null) {
-                continue;
+                $combinations[] = compact('user', 'trip', 'originStopover', 'destinationStopover');
             }
+        }
 
+        foreach (array_slice($combinations, 0, 10) as $combo) {
             $checkin = Checkin::factory()
-                ->for($user)
+                ->for($combo['user'])
                 ->create([
-                    'trip_id' => $trip->trip_id,
-                    'origin_stopover_id' => $originStopover->id,
-                    'destination_stopover_id' => $destinationStopover->id,
-                    'departure' => $trip->departure,
-                    'arrival' => $trip->arrival,
+                    'trip_id' => $combo['trip']->trip_id,
+                    'origin_stopover_id' => $combo['originStopover']->id,
+                    'destination_stopover_id' => $combo['destinationStopover']->id,
+                    'departure' => $combo['trip']->departure,
+                    'arrival' => $combo['trip']->arrival,
                 ]);
 
             $checkin->status->update([
-                'event_id' => random_int(0, 1) ? $events->random()->id : null,
+                'event_id' => $events->isNotEmpty() ? $events->first()->id : null,
             ]);
 
             StatusTag::factory(['status_id' => $checkin->status_id])->create();
