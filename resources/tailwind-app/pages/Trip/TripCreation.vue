@@ -542,7 +542,7 @@ onMounted(() => {
 
             <!-- Right column: map + actions -->
             <div class="flex flex-col gap-4 lg:flex-1">
-                <div class="card bg-base-100 shadow-sm overflow-hidden">
+                <div class="card bg-base-100 shadow-sm overflow-hidden isolate">
                     <GenericMap
                         :bounds="mapBounds"
                         :preview-polyline="routePolyline"
