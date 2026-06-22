@@ -40,7 +40,7 @@ function updateDays() {
         <div class="modal-box">
             <form @submit.prevent="updateDays">
                 <h3 class="text-lg font-bold">{{ trans('settings.visibility.hide') }}</h3>
-                <input v-model.number="input" type="number" class="input w-full mt-4" min="0" />
+                <input v-model.number="input" type="number" class="input w-full mt-4" min="0" max="365" />
                 <span>{{ trans('empty-input-disable-function') }}</span>
                 <div class="modal-action">
                     <form method="dialog">

@@ -54,7 +54,7 @@ class UpdateProfileInformationRequest extends FormRequest
             'displayName' => ['sometimes', 'string', 'max:50'],
             'privateProfile' => ['sometimes', 'boolean', 'nullable'],
             'preventIndex' => ['sometimes', 'boolean', 'nullable'],
-            'privacyHideDays' => ['sometimes', 'integer', 'nullable', 'gte:1'],
+            'privacyHideDays' => ['sometimes', 'integer', 'nullable', 'gte:1', 'lte:365'],
             'defaultStatusVisibility' => [
                 'sometimes',
                 'nullable',
