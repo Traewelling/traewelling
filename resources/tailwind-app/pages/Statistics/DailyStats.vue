@@ -177,10 +177,10 @@ onUnmounted(() => {
             </div>
 
             <!-- Map + statuses -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:items-start">
                 <!-- Map -->
                 <div v-if="polylineFeatures.length" class="card bg-base-100 overflow-hidden">
-                    <div class="h-96 lg:h-full min-h-80">
+                    <div class="h-96 min-h-80">
                         <GenericMap :poly-lines="polylineFeatures" class="h-full w-full" />
                     </div>
                 </div>

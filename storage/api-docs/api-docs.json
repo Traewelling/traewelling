@@ -6202,7 +6202,7 @@
                                                             "format": "float",
                                                             "example": 29.39
                                                         },
-                                                        "longest_ride": {
+                                                        "longest_checkin_by_distance": {
                                                             "oneOf": [
                                                                 {
                                                                     "$ref": "#/components/schemas/StatusResource"
@@ -6210,7 +6210,23 @@
                                                             ],
                                                             "nullable": true
                                                         },
-                                                        "shortest_ride": {
+                                                        "shortest_checkin_by_distance": {
+                                                            "oneOf": [
+                                                                {
+                                                                    "$ref": "#/components/schemas/StatusResource"
+                                                                }
+                                                            ],
+                                                            "nullable": true
+                                                        },
+                                                        "longest_checkin_by_duration": {
+                                                            "oneOf": [
+                                                                {
+                                                                    "$ref": "#/components/schemas/StatusResource"
+                                                                }
+                                                            ],
+                                                            "nullable": true
+                                                        },
+                                                        "shortest_checkin_by_duration": {
                                                             "oneOf": [
                                                                 {
                                                                     "$ref": "#/components/schemas/StatusResource"

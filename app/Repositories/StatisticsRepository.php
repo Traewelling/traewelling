@@ -52,9 +52,9 @@ class StatisticsRepository
         $result = $query->first();
 
         return new GlobalCheckinStats(
-            $result->distance ?? 0,
-            $result->duration ?? 0,
-            $result->userCount ?? 0,
+            (int) ($result->distance ?? 0),
+            (int) ($result->duration ?? 0),
+            (int) ($result->userCount ?? 0),
         );
     }
 
@@ -161,6 +161,7 @@ class StatisticsRepository
     {
         return $this->rideBaseQuery($user, $from, $until)
             ->orderByDesc('train_checkins.distance')
+            ->orderByDesc('train_checkins.id')
             ->first();
     }
 
@@ -168,6 +169,23 @@ class StatisticsRepository
     {
         return $this->rideBaseQuery($user, $from, $until)
             ->orderBy('train_checkins.distance')
+            ->orderBy('train_checkins.id')
+            ->first();
+    }
+
+    public function longestRideByDuration(User $user, Carbon $from, Carbon $until): ?object
+    {
+        return $this->rideBaseQuery($user, $from, $until)
+            ->orderByDesc(DB::raw(self::diffSeconds('train_checkins.departure', 'train_checkins.arrival')))
+            ->orderByDesc('train_checkins.id')
+            ->first();
+    }
+
+    public function shortestRideByDuration(User $user, Carbon $from, Carbon $until): ?object
+    {
+        return $this->rideBaseQuery($user, $from, $until)
+            ->orderBy(DB::raw(self::diffSeconds('train_checkins.departure', 'train_checkins.arrival')))
+            ->orderBy('train_checkins.id')
             ->first();
     }
 

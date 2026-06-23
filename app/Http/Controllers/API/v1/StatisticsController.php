@@ -553,8 +553,10 @@ class StatisticsController extends Controller
                                     new OA\Property(property: 'active_days', type: 'integer', example: 15),
                                     new OA\Property(property: 'total_distance_km', type: 'number', format: 'float', example: 1234.56),
                                     new OA\Property(property: 'mean_distance_km', type: 'number', format: 'float', example: 29.39),
-                                    new OA\Property(property: 'longest_ride', ref: StatusResource::class, nullable: true),
-                                    new OA\Property(property: 'shortest_ride', ref: StatusResource::class, nullable: true),
+                                    new OA\Property(property: 'longest_checkin_by_distance', ref: StatusResource::class, nullable: true),
+                                    new OA\Property(property: 'shortest_checkin_by_distance', ref: StatusResource::class, nullable: true),
+                                    new OA\Property(property: 'longest_checkin_by_duration', ref: StatusResource::class, nullable: true),
+                                    new OA\Property(property: 'shortest_checkin_by_duration', ref: StatusResource::class, nullable: true),
                                 ],
                                     type: 'object',
                                 ),
@@ -586,8 +588,10 @@ class StatisticsController extends Controller
             $summary = $this->statisticsService->getSummary($user, $from, $until);
 
             $statusIds = array_filter([
-                $summary['longest_ride']['status_id'] ?? null,
-                $summary['shortest_ride']['status_id'] ?? null,
+                $summary['longest_checkin_by_distance']['status_id'] ?? null,
+                $summary['shortest_checkin_by_distance']['status_id'] ?? null,
+                $summary['longest_checkin_by_duration']['status_id'] ?? null,
+                $summary['shortest_checkin_by_duration']['status_id'] ?? null,
             ]);
 
             $statuses = empty($statusIds) ? collect() : Status::with([
@@ -615,8 +619,10 @@ class StatisticsController extends Controller
                 return $status ? (new StatusResource($status))->resolve() : null;
             };
 
-            $summary['longest_ride'] = $toStatusResource($summary['longest_ride']);
-            $summary['shortest_ride'] = $toStatusResource($summary['shortest_ride']);
+            $summary['longest_checkin_by_distance'] = $toStatusResource($summary['longest_checkin_by_distance']);
+            $summary['shortest_checkin_by_distance'] = $toStatusResource($summary['shortest_checkin_by_distance']);
+            $summary['longest_checkin_by_duration'] = $toStatusResource($summary['longest_checkin_by_duration']);
+            $summary['shortest_checkin_by_duration'] = $toStatusResource($summary['shortest_checkin_by_duration']);
 
             return ['summary' => $summary];
         });

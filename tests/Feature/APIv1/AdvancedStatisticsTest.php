@@ -42,8 +42,10 @@ class AdvancedStatisticsTest extends ApiTestCase
                     'active_days',
                     'total_distance_km',
                     'mean_distance_km',
-                    'longest_ride',
-                    'shortest_ride',
+                    'longest_checkin_by_distance',
+                    'shortest_checkin_by_distance',
+                    'longest_checkin_by_duration',
+                    'shortest_checkin_by_duration',
                 ],
             ],
         ]);
@@ -66,8 +68,44 @@ class AdvancedStatisticsTest extends ApiTestCase
                 ],
             ],
         ]);
-        $this->assertNull($response->json('data.summary.longest_ride'));
-        $this->assertNull($response->json('data.summary.shortest_ride'));
+        $this->assertNull($response->json('data.summary.longest_checkin_by_distance'));
+        $this->assertNull($response->json('data.summary.shortest_checkin_by_distance'));
+        $this->assertNull($response->json('data.summary.longest_checkin_by_duration'));
+        $this->assertNull($response->json('data.summary.shortest_checkin_by_duration'));
+    }
+
+    public function test_overview_duration_fields_return_correct_checkins(): void
+    {
+        $user = User::factory()->create();
+        Passport::actingAs($user, ['*']);
+
+        $short = Checkin::factory([
+            'user_id' => $user->id,
+            'distance' => 10000,
+            'departure' => now()->subHour(),
+            'arrival' => now(),
+        ])->create();
+        $short->status->update(['user_id' => $user->id]);
+
+        $long = Checkin::factory([
+            'user_id' => $user->id,
+            'distance' => 20000,
+            'departure' => now()->subHours(5),
+            'arrival' => now(),
+        ])->create();
+        $long->status->update(['user_id' => $user->id]);
+
+        $response = $this->getJson('/api/v1/statistics/overview');
+
+        $response->assertOk();
+        $this->assertSame(
+            $long->status_id,
+            $response->json('data.summary.longest_checkin_by_duration.id'),
+        );
+        $this->assertSame(
+            $short->status_id,
+            $response->json('data.summary.shortest_checkin_by_duration.id'),
+        );
     }
 
     public function test_overview_counts_only_own_checkins(): void
