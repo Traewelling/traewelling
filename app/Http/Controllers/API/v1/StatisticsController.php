@@ -588,10 +588,10 @@ class StatisticsController extends Controller
             $summary = $this->statisticsService->getSummary($user, $from, $until);
 
             $statusIds = array_filter([
-                $summary['longest_checkin_by_distance']['status_id'] ?? null,
-                $summary['shortest_checkin_by_distance']['status_id'] ?? null,
-                $summary['longest_checkin_by_duration']['status_id'] ?? null,
-                $summary['shortest_checkin_by_duration']['status_id'] ?? null,
+                $summary['longest_checkin_by_distance'],
+                $summary['shortest_checkin_by_distance'],
+                $summary['longest_checkin_by_duration'],
+                $summary['shortest_checkin_by_duration'],
             ]);
 
             $statuses = empty($statusIds) ? collect() : Status::with([
@@ -610,11 +610,8 @@ class StatisticsController extends Controller
                 'client',
             ])->whereIn('id', $statusIds)->get()->keyBy('id');
 
-            $toStatusResource = static function (?array $ride) use ($statuses): ?array {
-                if ($ride === null) {
-                    return null;
-                }
-                $status = $statuses[$ride['status_id']] ?? null;
+            $toStatusResource = static function (?int $statusId) use ($statuses): ?array {
+                $status = $statusId !== null ? ($statuses[$statusId] ?? null) : null;
 
                 return $status ? (new StatusResource($status))->resolve() : null;
             };

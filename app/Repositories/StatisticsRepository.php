@@ -157,58 +157,36 @@ class StatisticsRepository
             ->first();
     }
 
-    public function longestRide(User $user, Carbon $from, Carbon $until): ?object
-    {
-        return $this->rideBaseQuery($user, $from, $until)
-            ->orderByDesc('train_checkins.distance')
-            ->orderByDesc('train_checkins.id')
-            ->first();
-    }
-
-    public function shortestRide(User $user, Carbon $from, Carbon $until): ?object
-    {
-        return $this->rideBaseQuery($user, $from, $until)
-            ->orderBy('train_checkins.distance')
-            ->orderBy('train_checkins.id')
-            ->first();
-    }
-
-    public function longestRideByDuration(User $user, Carbon $from, Carbon $until): ?object
-    {
-        return $this->rideBaseQuery($user, $from, $until)
-            ->orderByDesc(DB::raw(self::diffSeconds('train_checkins.departure', 'train_checkins.arrival')))
-            ->orderByDesc('train_checkins.id')
-            ->first();
-    }
-
-    public function shortestRideByDuration(User $user, Carbon $from, Carbon $until): ?object
-    {
-        return $this->rideBaseQuery($user, $from, $until)
-            ->orderBy(DB::raw(self::diffSeconds('train_checkins.departure', 'train_checkins.arrival')))
-            ->orderBy('train_checkins.id')
-            ->first();
-    }
-
-    private function rideBaseQuery(User $user, Carbon $from, Carbon $until): Builder
+    public function longestRideStatusId(User $user, Carbon $from, Carbon $until): ?int
     {
         return $this->checkinBase($user, $from, $until)
-            ->join('hafas_trips', 'train_checkins.trip_id', '=', 'hafas_trips.trip_id')
-            ->leftJoin('operators', 'operators.id', '=', 'hafas_trips.operator_id')
-            ->leftJoin('train_stations as origin_station', 'origin_station.id', '=', 'hafas_trips.origin_id')
-            ->leftJoin('train_stations as destination_station', 'destination_station.id', '=', 'hafas_trips.destination_id')
-            ->select([
-                'train_checkins.id',
-                'train_checkins.status_id',
-                'train_checkins.distance',
-                'train_checkins.departure',
-                'hafas_trips.departure as start',
-                'hafas_trips.arrival as end',
-                'hafas_trips.linename',
-                'hafas_trips.number',
-                'operators.name as operator_name',
-                'origin_station.name as origin_name',
-                'destination_station.name as destination_name',
-            ]);
+            ->orderByDesc('train_checkins.distance')
+            ->orderByDesc('train_checkins.id')
+            ->value('train_checkins.status_id');
+    }
+
+    public function shortestRideStatusId(User $user, Carbon $from, Carbon $until): ?int
+    {
+        return $this->checkinBase($user, $from, $until)
+            ->orderBy('train_checkins.distance')
+            ->orderBy('train_checkins.id')
+            ->value('train_checkins.status_id');
+    }
+
+    public function longestRideByDurationStatusId(User $user, Carbon $from, Carbon $until): ?int
+    {
+        return $this->checkinBase($user, $from, $until)
+            ->orderByDesc(DB::raw(self::diffSeconds('train_checkins.departure', 'train_checkins.arrival')))
+            ->orderByDesc('train_checkins.id')
+            ->value('train_checkins.status_id');
+    }
+
+    public function shortestRideByDurationStatusId(User $user, Carbon $from, Carbon $until): ?int
+    {
+        return $this->checkinBase($user, $from, $until)
+            ->orderBy(DB::raw(self::diffSeconds('train_checkins.departure', 'train_checkins.arrival')))
+            ->orderBy('train_checkins.id')
+            ->value('train_checkins.status_id');
     }
 
     public function distanceByYear(User $user): Collection
