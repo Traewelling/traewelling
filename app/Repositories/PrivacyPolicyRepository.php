@@ -7,14 +7,15 @@ use App\Models\PrivacyPolicyAcceptance;
 use App\Models\User;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class PrivacyPolicyRepository
 {
     public function getPrivacyPolicyValidAt(CarbonInterface $validAt): PrivacyPolicy
     {
-        return PrivacyPolicy::where('valid_at', '<=', $validAt->toIso8601ZuluString())
+        return Cache::remember('privacy_policy.current', 300, fn () => PrivacyPolicy::where('valid_at', '<=', $validAt->toIso8601ZuluString())
             ->orderByDesc('valid_at')
-            ->first();
+            ->first());
     }
 
     public function getUpcomingPrivacyPolicy(): ?PrivacyPolicy

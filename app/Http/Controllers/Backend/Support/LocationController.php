@@ -366,7 +366,7 @@ class LocationController
 
     private function getPolylineBetween(bool $preserveKeys = true): stdClass|FeatureCollection
     {
-        $this->trip->loadMissing(['stopovers.station']);
+        $this->trip->loadMissing(['stopovers.station', 'stopovers.routeSegment', 'stopovers.stationIdentifier']);
         $lineString = $this->getPolylineFromRouteSegments();
         if ($lineString) {
             return $lineString;
