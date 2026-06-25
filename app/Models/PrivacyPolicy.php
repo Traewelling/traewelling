@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * @property int $id
@@ -39,6 +40,13 @@ class PrivacyPolicy extends Model
     use HasFactory, HasUuids;
 
     protected $fillable = ['body_md_de', 'body_md_en', 'valid_at'];
+
+    protected static function booted(): void
+    {
+        static::saved(static function (): void {
+            Cache::forget('privacy_policy.current.' . now()->format('Y-m-d-H'));
+        });
+    }
 
     protected $casts = [
         'valid_at' => 'datetime',
