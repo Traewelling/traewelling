@@ -44,7 +44,7 @@ function alertClass(type: AlertResource['type']): string {
             <CheckCircle v-else-if="alert.type === 'success'" class="w-5 h-5 shrink-0" />
             <AlertTriangle v-else-if="alert.type === 'warning'" class="w-5 h-5 shrink-0" />
             <XCircle v-else-if="alert.type === 'danger'" class="w-5 h-5 shrink-0" />
-            <div>
+            <div class="min-w-0 overflow-hidden">
                 <p v-if="translation(alert)?.title" class="font-semibold">{{ translation(alert)?.title }}</p>
                 <p v-if="translation(alert)?.content" class="text-sm whitespace-pre-wrap">
                     {{ translation(alert)?.content }}
@@ -53,7 +53,7 @@ function alertClass(type: AlertResource['type']): string {
                     v-if="translation(alert)?.url || alert.url"
                     :href="translation(alert)?.url || alert.url || ''"
                     target="_blank"
-                    class="link text-sm mt-1 inline-block"
+                    class="link text-sm mt-1 break-all"
                 >
                     {{ translation(alert)?.url || alert.url }}
                 </a>
