@@ -343,6 +343,22 @@ class PrometheusServiceProvider extends ServiceProvider
 
                 return $result;
             });
+
+        Prometheus::addGauge('api_response_time_min_ms')
+            ->helpText('Minimum API response time in milliseconds for the previous completed minute')
+            ->value(function () {
+                $bucket = (int) floor(time() / 60) - 1;
+
+                return Cache::get(CacheKey::getApiResponseMinTimeKey($bucket), 0);
+            });
+
+        Prometheus::addGauge('api_response_time_max_ms')
+            ->helpText('Maximum API response time in the previous completed minute')
+            ->value(function () {
+                $bucket = (int) floor(time() / 60) - 1;
+
+                return Cache::get(CacheKey::getApiResponseMaxTimeKey($bucket), 0);
+            });
     }
 
     public function oAuthMetrics(): void

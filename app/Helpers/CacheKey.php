@@ -26,6 +26,10 @@ class CacheKey
 
     public const string LEADERBOARD_GLOBAL_DISTANCE = 'LeaderboardGlobalDistance';
 
+    private const string API_RESPONSE_MIN_TIME = 'prom_api_response_min_time_%d';
+
+    private const string API_RESPONSE_MAX_TIME = 'prom_api_response_max_time_%d';
+
     private const string API_RESPONSE_TIME_SUM = 'prom_api_rt_sum_%d';
 
     private const string API_RESPONSE_TIME_COUNT = 'prom_api_rt_count_%d';
@@ -193,5 +197,15 @@ class CacheKey
     public static function getApiResponseCodeKey(int $minuteBucket, int $statusCode): string
     {
         return sprintf(self::API_RESPONSE_CODE, $minuteBucket, $statusCode);
+    }
+
+    public static function getApiResponseMinTimeKey(int $minuteBucket): string
+    {
+        return sprintf(self::API_RESPONSE_MIN_TIME, $minuteBucket);
+    }
+
+    public static function getApiResponseMaxTimeKey(int $minuteBucket): string
+    {
+        return sprintf(self::API_RESPONSE_MAX_TIME, $minuteBucket);
     }
 }

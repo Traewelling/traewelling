@@ -20,6 +20,8 @@ class RecordApiResponseTime
 
         $sumKey = CacheKey::getApiResponseTimeSumKey($bucket);
         $countKey = CacheKey::getApiResponseTimeCountKey($bucket);
+        $minKey = CacheKey::getApiResponseMinTimeKey($bucket);
+        $maxKey = CacheKey::getApiResponseMaxTimeKey($bucket);
 
         $statusCode = $response->getStatusCode();
         $rcKey = CacheKey::getApiResponseCodeKey($bucket, $statusCode);
@@ -33,6 +35,15 @@ class RecordApiResponseTime
         }
         if (!Cache::add($rcKey, 1, $ttl)) {
             Cache::increment($rcKey);
+        }
+        $currentMin = Cache::get($minKey);
+        if ($currentMin === null || $durationMs < $currentMin) {
+            Cache::put($minKey, $durationMs, $ttl);
+        }
+
+        $currentMax = Cache::get($maxKey);
+        if ($currentMax === null || $durationMs > $currentMax) {
+            Cache::put($maxKey, $durationMs, $ttl);
         }
 
         return $response;
