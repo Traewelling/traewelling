@@ -409,7 +409,6 @@ class PrometheusServiceProvider extends ServiceProvider
                         ->groupBy('oauth_clients.name')
                         ->selectRaw('count(distinct oauth_access_tokens.user_id) AS total, oauth_clients.name AS name')
                         ->where('oauth_access_tokens.revoked', '!=', 0)
-                        ->whereNotNull('oauth_access_tokens.expires_at', 'or')
                         ->orderBy('total', 'desc')
                         ->limit(20)
                         ->get()
