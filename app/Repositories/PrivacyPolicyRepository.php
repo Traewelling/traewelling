@@ -13,7 +13,9 @@ class PrivacyPolicyRepository
 {
     public function getPrivacyPolicyValidAt(CarbonInterface $validAt): PrivacyPolicy
     {
-        return Cache::remember('privacy_policy.current', 300, fn () => PrivacyPolicy::where('valid_at', '<=', $validAt->toIso8601ZuluString())
+        $cacheKey = 'privacy_policy.current.' . $validAt->format('Y-m-d-H');
+
+        return Cache::remember($cacheKey, 300, fn () => PrivacyPolicy::where('valid_at', '<=', $validAt->toIso8601ZuluString())
             ->orderByDesc('valid_at')
             ->first());
     }
