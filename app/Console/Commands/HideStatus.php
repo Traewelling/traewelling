@@ -15,6 +15,8 @@ class HideStatus extends Command
 
     protected $description = 'Hide older statuses based on planned arrival time.';
 
+    private const int CHUNK_SIZE = 500;
+
     public function handle(): int
     {
         $users = User::whereNotNull('privacy_hide_days')
@@ -28,28 +30,38 @@ class HideStatus extends Command
         }
 
         foreach ($users as $user) {
-            $cutoff = now()->subDays((int) $user->privacy_hide_days);
+            $hideDays = (int) $user->privacy_hide_days;
+            $cutoff = now()->subDays($hideDays);
 
             $this->info(sprintf(
                 'Hiding statuses for %s (cutoff: %s, days: %d)',
                 $user->username,
                 $cutoff->toDateTimeString(),
-                (int) $user->privacy_hide_days
+                $hideDays,
             ));
 
-            $rows = DB::table('statuses as s')
+            $totalRows = 0;
+
+            DB::table('statuses as s')
+                ->select('s.id')
                 ->join('train_checkins as tc', 'tc.status_id', '=', 's.id')
                 ->join('train_stopovers as dso', 'dso.id', '=', 'tc.destination_stopover_id')
                 ->where('s.user_id', $user->id)
                 ->where('s.visibility', '!=', StatusVisibility::PRIVATE->value)
                 ->whereNotNull('dso.arrival_planned')
                 ->where('dso.arrival_planned', '<', $cutoff)
-                ->update([
-                    's.visibility' => StatusVisibility::PRIVATE->value,
-                    's.updated_at' => now(),
-                ]);
+                ->orderBy('s.id')
+                ->chunk(self::CHUNK_SIZE, function ($rows) use (&$totalRows): void {
+                    DB::table('statuses')
+                        ->whereIn('id', collect($rows)->pluck('id')->all())
+                        ->update([
+                            'visibility' => StatusVisibility::PRIVATE->value,
+                            'updated_at' => now(),
+                        ]);
+                    $totalRows += count($rows);
+                });
 
-            $this->info("Hid {$rows} statuses");
+            $this->info("Hid {$totalRows} statuses");
         }
 
         return Command::SUCCESS;
