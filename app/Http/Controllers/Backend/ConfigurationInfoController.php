@@ -7,12 +7,13 @@ use App\Dto\ConfigurationInformation\ConfigurationInformation;
 use App\Dto\ConfigurationInformation\Language;
 use App\Enum\ConfigurationFeatureEnum;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Cache;
 
 class ConfigurationInfoController extends Controller
 {
     public function getConfigurationInfo(): ConfigurationInformation
     {
-        return new ConfigurationInformation(
+        return Cache::remember('app_configuration_info', 3600, fn () => new ConfigurationInformation(
             appName: config('app.name'),
             appDebug: config('app.debug'),
             appUrl: config('app.url'),
@@ -20,7 +21,7 @@ class ConfigurationInfoController extends Controller
             gdprExportCooldown: config('trwl.gdpr_export.days'),
             features: $this->getFeatures(),
             languages: $this->getLanguages(),
-        );
+        ));
     }
 
     private function getFeatures(): array

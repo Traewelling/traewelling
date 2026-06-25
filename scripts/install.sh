@@ -163,6 +163,7 @@ finish_application() {
   echo -e "${YELLOW}Clearing relevant caches...${RESET}"
   php artisan cache:forget changelog
   php artisan cache:forget changelog_parsed
+  php artisan cache:forget app_configuration_info
 
   echo -e "${YELLOW}Disabling maintenance mode...${RESET}"
   php artisan up

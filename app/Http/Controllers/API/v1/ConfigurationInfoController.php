@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Dto\ConfigurationInformation\ConfigurationInformation;
+use Illuminate\Http\JsonResponse;
 use OpenApi\Attributes as OA;
 
 #[OA\Tag(
@@ -32,8 +33,10 @@ class ConfigurationInfoController
             ),
         ]
     )]
-    public function getConfigurationInfo(): ConfigurationInformation
+    public function getConfigurationInfo(): JsonResponse
     {
-        return $this->backendController->getConfigurationInfo();
+        return response()
+            ->json($this->backendController->getConfigurationInfo())
+            ->header('Cache-Control', 'public, max-age=3600');
     }
 }
