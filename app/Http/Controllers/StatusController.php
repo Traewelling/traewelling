@@ -7,6 +7,7 @@ use App\Enum\StatusVisibility;
 use App\Events\StatusUpdateEvent;
 use App\Exceptions\RateLimitExceededException;
 use App\Exceptions\StatusAlreadyLikedException;
+use App\Helpers\CacheKey;
 use App\Http\Controllers\API\v1\Controller as APIController;
 use App\Http\Controllers\Backend\Support\LocationController;
 use App\Models\Event;
@@ -21,6 +22,7 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
@@ -75,27 +77,31 @@ class StatusController extends Controller
      */
     public static function getActiveStatuses(): ?Collection
     {
-        return Status::with([
-            'event',
-            'likes',
-            'user.blockedByUsers',
-            'user.blockedUsers',
-            'user.followers',
-            'createdByUser',
-            'checkin.originStopover.station',
-            'checkin.destinationStopover.station',
-            'checkin.trip.stopovers.station',
-            'checkin.trip.stopovers.stationIdentifier',
-            'checkin.trip.stopovers.routeSegment',
-            'checkin.trip.polyline',
-            'tags',
-        ])
-            ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
-            ->where('train_checkins.departure', '>', now()->subHours(config('trwl.max_journey_hours'))) // to reduce the amount of data the database has to process
-            ->where('train_checkins.departure', '<', now())
-            ->where('train_checkins.arrival', '>', now())
-            ->select('statuses.*')
-            ->get()
+        $statuses = Cache::remember(CacheKey::ACTIVE_STATUSES_RAW, 30, function () {
+            return Status::with([
+                'event',
+                'likes',
+                'user.blockedByUsers',
+                'user.blockedUsers',
+                'user.followers',
+                'createdByUser',
+                'checkin.originStopover.station',
+                'checkin.destinationStopover.station',
+                'checkin.trip.stopovers.station',
+                'checkin.trip.stopovers.stationIdentifier',
+                'checkin.trip.stopovers.routeSegment',
+                'checkin.trip.polyline',
+                'tags',
+            ])
+                ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
+                ->where('train_checkins.departure', '>', now()->subHours(config('trwl.max_journey_hours')))
+                ->where('train_checkins.departure', '<', now())
+                ->where('train_checkins.arrival', '>', now())
+                ->select('statuses.*')
+                ->get();
+        });
+
+        return $statuses
             ->filter(function (Status $status) {
                 return Gate::allows('view', $status) && $status->visibility !== StatusVisibility::UNLISTED;
             })

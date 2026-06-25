@@ -26,6 +26,8 @@ class CacheKey
 
     public const string LEADERBOARD_GLOBAL_DISTANCE = 'LeaderboardGlobalDistance';
 
+    public const string ACTIVE_STATUSES_RAW = 'active-statuses-raw';
+
     private const string API_RESPONSE_MIN_TIME = 'prom_api_response_min_time_%d';
 
     private const string API_RESPONSE_MAX_TIME = 'prom_api_response_max_time_%d';
