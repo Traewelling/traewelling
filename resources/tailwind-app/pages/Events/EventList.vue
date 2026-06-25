@@ -12,34 +12,43 @@ const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 
 const events = ref<CalendarEvent[]>([]);
 
-function fetchEvents(date: Date) {
-    loading.value = true;
-    const startOfMonth = new Date(date.getFullYear(), date.getMonth() - 1, 1);
-    const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 2, 0);
-    api.events
-        .getEvents({
-            from: startOfMonth.toISOString().split('T')[0],
-            until: endOfMonth.toISOString().split('T')[0],
-        })
-        .then((response) => {
-            loading.value = false;
-            events.value = [];
-            response.data.data?.forEach((event) => {
-                const start = new Date(event.begin);
-                const end = new Date(event.end);
-                for (let d = start; d <= end; d.setDate(d.getDate() + 1)) {
-                    events.value.push({
-                        date: new Date(d),
-                        title: event.name,
-                        style: event.isPride ? 'rainbow' : undefined,
-                        event: event,
-                    });
-                }
+function appendEvents(apiEvents: (typeof events.value)[number]['event'][]) {
+    apiEvents?.forEach((event) => {
+        if (!event) return;
+        const start = new Date(event.begin);
+        const end = new Date(event.end);
+        for (let d = start; d <= end; d.setDate(d.getDate() + 1)) {
+            events.value.push({
+                date: new Date(d),
+                title: event.name,
+                style: event.isPride ? 'rainbow' : undefined,
+                event: event,
             });
-        })
-        .catch(() => {
-            loading.value = false;
-        });
+        }
+    });
+}
+
+async function fetchEvents(date: Date) {
+    loading.value = true;
+    events.value = [];
+
+    const params = {
+        from: new Date(date.getFullYear(), date.getMonth() - 1, 1).toISOString().split('T')[0],
+        until: new Date(date.getFullYear(), date.getMonth() + 2, 0).toISOString().split('T')[0],
+    };
+
+    try {
+        let page = 1;
+        let hasNextPage = true;
+        while (hasNextPage) {
+            const response = await api.events.getEvents({ ...params, page });
+            appendEvents(response.data.data);
+            hasNextPage = !!response.data.links?.next;
+            page++;
+        }
+    } finally {
+        loading.value = false;
+    }
 }
 </script>
 
