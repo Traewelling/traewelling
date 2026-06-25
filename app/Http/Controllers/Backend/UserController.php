@@ -6,6 +6,7 @@ use App\Exceptions\UserAlreadyBlockedException;
 use App\Exceptions\UserAlreadyMutedException;
 use App\Exceptions\UserNotBlockedException;
 use App\Exceptions\UserNotMutedException;
+use App\Helpers\CacheKey;
 use App\Http\Controllers\Controller;
 use App\Models\Follow;
 use App\Models\Like;
@@ -16,6 +17,7 @@ use App\Services\ProfilePictureService;
 use Exception;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 use InvalidArgumentException;
 
@@ -57,6 +59,7 @@ abstract class UserController extends Controller
                 'blocked_id' => $userToBeBlocked->id,
             ]);
             $user->load('blockedUsers');
+            Cache::forget(CacheKey::ACTIVE_STATUSES_RAW);
 
             return true;
         } catch (Exception $exception) {
@@ -77,6 +80,7 @@ abstract class UserController extends Controller
 
         $queryCount = UserBlock::where('user_id', $user->id)->where('blocked_id', $userToBeUnblocked->id)->delete();
         $user->load('blockedUsers');
+        Cache::forget(CacheKey::ACTIVE_STATUSES_RAW);
 
         return $queryCount === 1;
     }
