@@ -51,8 +51,6 @@ class AuthController extends Controller
     }
 
     /**
-     * @return UserAuthResource
-     *
      * @api v1
      */
     #[OA\Get(
@@ -80,8 +78,10 @@ class AuthController extends Controller
             new OA\Response(response: 401, description: 'Unauthorized'),
         ],
     )]
-    public function user(Request $request)
+    public function user(Request $request): UserAuthResource
     {
+        $request->user()->loadMissing(['home', 'roles']);
+
         return new UserAuthResource($request->user());
     }
 

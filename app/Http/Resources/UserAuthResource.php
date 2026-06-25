@@ -2,8 +2,10 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Checkin;
 use App\Models\User;
 use App\Services\ProfilePictureService;
+use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Attributes as OA;
 
@@ -72,9 +74,19 @@ use OpenApi\Attributes as OA;
 )]
 class UserAuthResource extends JsonResource
 {
+    private function getCheckinStats(): object
+    {
+        return Checkin::where('user_id', $this->id)
+            ->selectRaw('SUM(distance) as total_distance, SUM(duration) as total_duration, SUM(CASE WHEN departure >= ? THEN points ELSE 0 END) as recent_points', [
+                Carbon::now()->subDays(7)->format('Y-m-d H:i:s'),
+            ])
+            ->first();
+    }
+
     public function toArray($request): array
     {
         $pointsEnabled = $request->user()?->points_enabled ?? true;
+        $stats = $this->getCheckinStats();
 
         /** @var User $this */
         return [
@@ -83,9 +95,9 @@ class UserAuthResource extends JsonResource
             'displayName' => (string) $this->name,
             'username' => (string) $this->username,
             'profilePicture' => resolve(ProfilePictureService::class)->getUrlForUserId($this->id),
-            'totalDistance' => (float) $this->train_distance,
-            'totalDuration' => (int) $this->train_duration,
-            'points' => (int) $pointsEnabled ? $this->points : 0,
+            'totalDistance' => (float) $stats->total_distance,
+            'totalDuration' => (int) $stats->total_duration,
+            'points' => (int) $pointsEnabled ? $stats->recent_points : 0,
             'mastodonUrl' => $this->mastodonUrl ?? null,
             'privateProfile' => (bool) $this->private_profile,
             'preventIndex' => $this->prevent_index,
