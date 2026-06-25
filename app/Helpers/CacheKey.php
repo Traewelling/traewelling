@@ -26,6 +26,12 @@ class CacheKey
 
     public const string LEADERBOARD_GLOBAL_DISTANCE = 'LeaderboardGlobalDistance';
 
+    private const string API_RESPONSE_TIME_SUM = 'prom_api_rt_sum_%d';
+
+    private const string API_RESPONSE_TIME_COUNT = 'prom_api_rt_count_%d';
+
+    private const string API_RESPONSE_CODE = 'prom_api_rc_%d_%d';
+
     // dynamic keys
     private const string LEADERBOARD_FRIENDS = 'LeaderboardFriends';
 
@@ -172,5 +178,20 @@ class CacheKey
     public static function getPasswordResetThrottleKey(?User $user, string $emailFallback = ''): string
     {
         return 'password_reset_' . ($user?->id ?? sha1($emailFallback));
+    }
+
+    public static function getApiResponseTimeSumKey(int $minuteBucket): string
+    {
+        return sprintf(self::API_RESPONSE_TIME_SUM, $minuteBucket);
+    }
+
+    public static function getApiResponseTimeCountKey(int $minuteBucket): string
+    {
+        return sprintf(self::API_RESPONSE_TIME_COUNT, $minuteBucket);
+    }
+
+    public static function getApiResponseCodeKey(int $minuteBucket, int $statusCode): string
+    {
+        return sprintf(self::API_RESPONSE_CODE, $minuteBucket, $statusCode);
     }
 }
