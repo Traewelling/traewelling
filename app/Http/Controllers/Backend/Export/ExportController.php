@@ -34,6 +34,7 @@ abstract class ExportController extends Controller
         ])
             ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
             ->where('statuses.user_id', $user->id)
+            ->where('train_checkins.user_id', $user->id)
             ->where('train_checkins.departure', '>=', $timestampFrom->startOfDay())
             ->where('train_checkins.departure', '<=', $timestampTo->endOfDay())
             ->select(['statuses.*'])
