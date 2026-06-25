@@ -872,6 +872,7 @@
   "tag.title.trwl:wagon": "Wagen",
   "tag.title.trwl:wagon_class": "Wagengattung",
   "tag.add": "Tag hinzufügen",
+  "tag.save": "Tag speichern",
   "tag.key": "Typ",
   "tag.custom_key": "Eigener Typ",
   "tag.custom_key.placeholder": "z. B. Auslastung",

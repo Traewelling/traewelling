@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Plus, Tag, Trash2 } from '@lucide/vue';
+import { Check, Plus, Tag, Trash2 } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
 import { computed, onMounted, ref } from 'vue';
 import { Api, StatusTagResource, StatusTagSuggestionResource } from '../../../types/Api.gen';
@@ -43,6 +43,10 @@ const availableKeys = computed(() => keys.filter((k) => !tags.value.some((t) => 
 
 const visibilityOptions = computed(getVisibilityOptions);
 
+const hasUnsavedInput = computed(
+    () => showAddForm.value && !!inputValue.value && (!isCustomKey.value || !!customKeyInput.value.trim()),
+);
+
 function onKeyChange(): void {
     isCustomKey.value = selectedKey.value === CUSTOM_SENTINEL;
     customKeyInput.value = '';
@@ -81,6 +85,9 @@ function removeTag(key: string): void {
 }
 
 async function postTags(statusId: number): Promise<void> {
+    if (hasUnsavedInput.value) {
+        addTag();
+    }
     await Promise.all(tags.value.map((tag) => api.status.createSingleStatusTag(tag as StatusTagResource, statusId)));
 }
 
@@ -207,12 +214,14 @@ defineExpose({ postTags });
 
             <button
                 type="button"
-                class="btn btn-sm btn-outline w-full"
+                class="btn btn-sm w-full"
+                :class="hasUnsavedInput ? 'btn-primary' : 'btn-outline'"
                 :disabled="!inputValue || (isCustomKey && !customKeyInput.trim())"
                 @click="addTag"
             >
-                <Plus class="w-4 h-4" />
-                {{ trans('tag.add') }}
+                <Check v-if="hasUnsavedInput" class="w-4 h-4" />
+                <Plus v-else class="w-4 h-4" />
+                {{ hasUnsavedInput ? trans('tag.save') : trans('tag.add') }}
             </button>
         </div>
     </div>
