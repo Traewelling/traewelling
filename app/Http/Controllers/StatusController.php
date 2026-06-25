@@ -86,6 +86,7 @@ class StatusController extends Controller
             'checkin.destinationStopover.station',
             'checkin.trip.stopovers.station',
             'checkin.trip.stopovers.stationIdentifier',
+            'checkin.trip.stopovers.routeSegment',
             'checkin.trip.polyline',
             'tags',
         ])
