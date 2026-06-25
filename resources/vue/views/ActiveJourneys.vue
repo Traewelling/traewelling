@@ -74,11 +74,11 @@ fetchStatusPositions();
 
 setInterval(() => {
     fetchStatusPositions(false);
-}, 20000); // Refresh live positions every 20 seconds
+}, 60000); // Refresh live positions every 60 seconds
 
 setInterval(() => {
     fetchStatuses();
-}, 10000); // Refresh the map every 10 seconds
+}, 60000); // Refresh the map every 60 seconds
 </script>
 
 <template>

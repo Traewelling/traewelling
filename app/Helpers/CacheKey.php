@@ -28,6 +28,8 @@ class CacheKey
 
     public const string ACTIVE_STATUSES_RAW = 'active-statuses-raw';
 
+    public const string LIVE_POSITION_STATUS_PREFIX = 'live-position-status-';
+
     private const string API_RESPONSE_MIN_TIME = 'prom_api_response_min_time_%d';
 
     private const string API_RESPONSE_MAX_TIME = 'prom_api_response_max_time_%d';

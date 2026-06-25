@@ -77,7 +77,7 @@ class StatusController extends Controller
      */
     public static function getActiveStatuses(): ?Collection
     {
-        $statuses = Cache::remember(CacheKey::ACTIVE_STATUSES_RAW, 30, function () {
+        $statuses = Cache::remember(CacheKey::ACTIVE_STATUSES_RAW, 60, function () {
             return Status::with([
                 'event',
                 'likes',
@@ -129,8 +129,9 @@ class StatusController extends Controller
     public static function getLivePositionForStatus(string $ids): array
     {
         $ids = explode(',', $ids);
+        sort($ids);
 
-        $statuses = Status::with([
+        $statuses = Cache::remember(CacheKey::LIVE_POSITION_STATUS_PREFIX . implode(',', $ids), 60, fn () => Status::with([
             'user.blockedByUsers',
             'user.blockedUsers',
             'user.followers',
@@ -141,10 +142,8 @@ class StatusController extends Controller
             'checkin.trip.polyline',
         ])
             ->whereIn('id', $ids)
-            ->get()
-            ->filter(function (Status $status) {
-                return Gate::allows('view', $status) && $status->visibility !== StatusVisibility::UNLISTED;
-            })
+            ->get())
+            ->filter(fn (Status $status) => Gate::allows('view', $status) && $status->visibility !== StatusVisibility::UNLISTED)
             ->values();
 
         $result = [];
