@@ -28,6 +28,14 @@ const PROM_CACHE_TTL_SHORT = 120;
 
 class PrometheusServiceProvider extends ServiceProvider
 {
+    /** HTTP status codes tracked by the api_response_codes metric. */
+    private const array API_STATUS_CODES = [
+        200, 201, 202, 204,
+        301, 302, 304,
+        400, 401, 403, 404, 405, 406, 408, 409, 410, 422, 429,
+        500, 501, 503,
+    ];
+
     /**
      * The queue manager instance.
      *
@@ -47,6 +55,7 @@ class PrometheusServiceProvider extends ServiceProvider
         $this->queueMetrics();
         $this->hafasMetrics();
         $this->oAuthMetrics();
+        $this->apiMetrics();
 
         Prometheus::addGauge('absent_webhooks_deleted')
             ->helpText('How many webhooks were responded with Gone and were thus deleted from our side?')
@@ -295,6 +304,44 @@ class PrometheusServiceProvider extends ServiceProvider
                 }
 
                 return array_map(fn ($value, $key) => [$value, [$key]], $values, array_keys($values));
+            });
+    }
+
+    private function apiMetrics(): void
+    {
+        Prometheus::addGauge('api_response_time_avg_ms')
+            ->helpText('Average API response time in milliseconds for the previous completed minute')
+            ->value(function () {
+                $bucket = (int) floor(time() / 60) - 1;
+                $sum = Cache::get(CacheKey::getApiResponseTimeSumKey($bucket), 0);
+                $count = Cache::get(CacheKey::getApiResponseTimeCountKey($bucket), 0);
+
+                return $count > 0 ? round($sum / $count, 2) : 0;
+            });
+
+        Prometheus::addGauge('api_response_hits')
+            ->helpText('Number of API requests in the previous completed minute')
+            ->value(function () {
+                $bucket = (int) floor(time() / 60) - 1;
+
+                return Cache::get(CacheKey::getApiResponseTimeCountKey($bucket), 0);
+            });
+
+        Prometheus::addGauge('api_response_codes')
+            ->helpText('Number of API responses per HTTP status code in the previous completed minute')
+            ->label('status_code')
+            ->value(function () {
+                $bucket = (int) floor(time() / 60) - 1;
+                $result = [];
+
+                foreach (self::API_STATUS_CODES as $code) {
+                    $count = Cache::get(CacheKey::getApiResponseCodeKey($bucket, $code), 0);
+                    if ($count > 0) {
+                        $result[] = [$count, [(string) $code]];
+                    }
+                }
+
+                return $result;
             });
     }
 
