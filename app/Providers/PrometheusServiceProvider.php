@@ -9,7 +9,9 @@ use App\Http\Controllers\Backend\StatisticController as StatisticBackend;
 use App\Models\PolyLine;
 use App\Models\Station;
 use App\Models\StationIdentifier;
+use App\Models\Status;
 use App\Models\Trip;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Contracts\Queue\Factory;
 use Illuminate\Support\Facades\Cache;
@@ -210,6 +212,18 @@ class PrometheusServiceProvider extends ServiceProvider
                         ->count();
                 });
             });
+
+        Prometheus::addGauge('users_total')
+            ->helpText('Current count of non-deleted registered users.')
+            ->value(function () {
+                return Cache::remember('prom_users_total', PROM_CACHE_TTL, fn () => User::count());
+            });
+
+        Prometheus::addGauge('statuses_total')
+            ->helpText('Current count of non-deleted check-ins (statuses).')
+            ->value(function () {
+                return Cache::remember('prom_statuses_total', PROM_CACHE_TTL, fn () => Status::count());
+            });
     }
 
     public function queueMetrics(): void
@@ -271,31 +285,6 @@ class PrometheusServiceProvider extends ServiceProvider
                 return $this->getHafasByType(HCK::getSuccesses());
             });
 
-        Prometheus::addGauge('hafas_cache_hits')
-            ->helpText('How many hafas requests have been served from cache?')
-            ->labels(['request_name'])
-            ->value(function () {
-                $values = [];
-                foreach (HCK::getSuccesses() as $key => $name) {
-                    $key = CacheKey::getHafasCacheHitKey($key);
-                    $values[$name] = Cache::get($key, 0);
-                }
-
-                return array_map(fn ($value, $key) => [$value, [$key]], $values, array_keys($values));
-            });
-
-        Prometheus::addGauge('hafas_cache_sets')
-            ->helpText('How many hafas requests have been stored in cache?')
-            ->labels(['request_name'])
-            ->value(function () {
-                $values = [];
-                foreach (HCK::getSuccesses() as $key => $name) {
-                    $key = CacheKey::getHafasCacheSetKey($key);
-                    $values[$name] = Cache::get($key, 0);
-                }
-
-                return array_map(fn ($value, $key) => [$value, [$key]], $values, array_keys($values));
-            });
     }
 
     public function oAuthMetrics(): void
@@ -337,14 +326,14 @@ class PrometheusServiceProvider extends ServiceProvider
             });
 
         Prometheus::addGauge('oauth_revoked_tokens')
-            ->helpText('How many revoked access tokens do the clients have?')
+            ->helpText('How many revoked access tokens do the clients have? Use total_tokens - revoked_tokens to get active token count per app.')
             ->labels(['app_name'])
             ->value(function () {
                 return Cache::remember('prom_oauth_revoked_tokens', PROM_CACHE_TTL, function () {
                     return DB::table('oauth_access_tokens')
                         ->join('oauth_clients', 'oauth_access_tokens.client_id', '=', 'oauth_clients.id')
                         ->groupBy('oauth_clients.name')
-                        ->selectRaw('count(distinct oauth_access_tokens.user_id) AS total, oauth_clients.name AS name')
+                        ->selectRaw('count(*) AS total, oauth_clients.name AS name')
                         ->where('oauth_access_tokens.revoked', '!=', 0)
                         ->orderBy('total', 'desc')
                         ->limit(20)
