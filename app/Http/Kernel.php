@@ -3,7 +3,6 @@
 namespace App\Http;
 
 use App\Http\Middleware\Api\JsonMiddleware;
-use App\Http\Middleware\Api\RecordApiResponseTime;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\CheckForMaintenanceMode;
 use App\Http\Middleware\EncryptCookies;
@@ -75,7 +74,6 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            RecordApiResponseTime::class,
             'throttle:500,5', // 500 requests per 5 minutes
             JsonMiddleware::class,
             'bindings',

@@ -30,16 +30,6 @@ class CacheKey
 
     public const string LIVE_POSITION_STATUS_PREFIX = 'live-position-status-';
 
-    private const string API_RESPONSE_MIN_TIME = 'prom_api_response_min_time_%d';
-
-    private const string API_RESPONSE_MAX_TIME = 'prom_api_response_max_time_%d';
-
-    private const string API_RESPONSE_TIME_SUM = 'prom_api_rt_sum_%d';
-
-    private const string API_RESPONSE_TIME_COUNT = 'prom_api_rt_count_%d';
-
-    private const string API_RESPONSE_CODE = 'prom_api_rc_%d_%d';
-
     // dynamic keys
     private const string LEADERBOARD_FRIENDS = 'LeaderboardFriends';
 
@@ -186,30 +176,5 @@ class CacheKey
     public static function getPasswordResetThrottleKey(?User $user, string $emailFallback = ''): string
     {
         return 'password_reset_' . ($user?->id ?? sha1($emailFallback));
-    }
-
-    public static function getApiResponseTimeSumKey(int $minuteBucket): string
-    {
-        return sprintf(self::API_RESPONSE_TIME_SUM, $minuteBucket);
-    }
-
-    public static function getApiResponseTimeCountKey(int $minuteBucket): string
-    {
-        return sprintf(self::API_RESPONSE_TIME_COUNT, $minuteBucket);
-    }
-
-    public static function getApiResponseCodeKey(int $minuteBucket, int $statusCode): string
-    {
-        return sprintf(self::API_RESPONSE_CODE, $minuteBucket, $statusCode);
-    }
-
-    public static function getApiResponseMinTimeKey(int $minuteBucket): string
-    {
-        return sprintf(self::API_RESPONSE_MIN_TIME, $minuteBucket);
-    }
-
-    public static function getApiResponseMaxTimeKey(int $minuteBucket): string
-    {
-        return sprintf(self::API_RESPONSE_MAX_TIME, $minuteBucket);
     }
 }

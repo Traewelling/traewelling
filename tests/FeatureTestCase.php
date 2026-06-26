@@ -14,14 +14,6 @@ abstract class FeatureTestCase extends BaseTestCase
 {
     use CreatesApplication;
 
-    public function setUpTheTestEnvironment(): void
-    {
-        parent::setUpTheTestEnvironment();
-        if (!defined('LARAVEL_START')) {
-            define('LARAVEL_START', microtime(true));
-        }
-    }
-
     const AACHEN_HBF = [
         'type' => 'stop',
         'id' => '8000001',
