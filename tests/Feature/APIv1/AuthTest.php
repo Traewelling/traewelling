@@ -32,5 +32,14 @@ class AuthTest extends ApiTestCase
             'Authorization' => 'Bearer ' . $token->accessToken,
         ]);
         $response->assertOk();
+        $response->assertJsonStructure(['data' => [
+            'id', 'uuid', 'displayName', 'username', 'profilePicture',
+            'totalDistance', 'totalDuration', 'points',
+            'privateProfile', 'preventIndex', 'likes_enabled', 'pointsEnabled',
+            'mapProvider', 'language', 'defaultStatusVisibility', 'roles',
+        ]]);
+        $this->assertIsInt($response->json('data.id'));
+        $this->assertIsInt($response->json('data.points'));
+        $this->assertIsInt($response->json('data.totalDuration'));
     }
 }
