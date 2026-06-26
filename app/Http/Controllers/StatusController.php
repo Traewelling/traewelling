@@ -10,6 +10,7 @@ use App\Exceptions\StatusAlreadyLikedException;
 use App\Helpers\CacheKey;
 use App\Http\Controllers\API\v1\Controller as APIController;
 use App\Http\Controllers\Backend\Support\LocationController;
+use App\Http\Controllers\Backend\Transport\StatusController as TransportStatusController;
 use App\Models\Event;
 use App\Models\Follow;
 use App\Models\Like;
@@ -20,8 +21,8 @@ use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Pagination\Paginator;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
@@ -68,55 +69,90 @@ class StatusController extends Controller
             ->firstOrFail();
     }
 
-    /**
-     * This method returns the current active statuses for all users where the viewer is allowed to see.
-     *
-     * @api v1
-     *
-     * @frontend
-     */
-    public static function getActiveStatuses(): ?Collection
+    private static function getActiveStatusIds(): array
     {
-        $statuses = Cache::remember(CacheKey::ACTIVE_STATUSES_RAW, 60, function () {
-            return Status::with([
-                'event',
-                'likes',
-                'user.blockedByUsers',
-                'user.blockedUsers',
-                'user.followers',
-                'createdByUser',
-                'checkin.originStopover.station',
-                'checkin.destinationStopover.station',
-                'checkin.trip.stopovers.station',
-                'checkin.trip.stopovers.stationIdentifier',
-                'checkin.trip.stopovers.routeSegment',
-                'checkin.trip.polyline',
-                'tags',
-            ])
-                ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
+        return Cache::remember(CacheKey::ACTIVE_STATUSES_RAW, 60, function () {
+            return Status::join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
                 ->where('train_checkins.departure', '>', now()->subHours(config('trwl.max_journey_hours')))
                 ->where('train_checkins.departure', '<', now())
                 ->where('train_checkins.arrival', '>', now())
-                ->select('statuses.*')
-                ->get();
+                ->pluck('statuses.id')
+                ->toArray();
         });
+    }
 
-        return $statuses
-            ->filter(function (Status $status) {
-                return Gate::allows('view', $status) && $status->visibility !== StatusVisibility::UNLISTED;
-            })
+    public static function getActiveStatuses(): Collection
+    {
+        $ids = self::getActiveStatusIds();
+
+        if (empty($ids)) {
+            return collect();
+        }
+
+        $user = auth()->user();
+
+        $query = Status::with([
+            'event',
+            'likes',
+            'mentions',
+            'client',
+            'user',
+            'createdByUser',
+            'tags',
+            'checkin.originStopover.station',
+            'checkin.destinationStopover.station',
+            'checkin.statusTags',
+            'checkin.trip.operator',
+            'checkin.trip.motisSourceLicense',
+        ])
+            ->join('users', 'statuses.user_id', '=', 'users.id')
+            ->whereIn('statuses.id', $ids)
+            ->where(TransportStatusController::filterStatusVisibility($user))
+            ->whereNotIn('statuses.visibility', [StatusVisibility::UNLISTED->value])
+            ->select('statuses.*');
+
+        if ($user !== null) {
+            $query->whereNotIn('statuses.user_id', $user->mutedUsers()->select('muted_id'))
+                ->whereNotIn('statuses.user_id', $user->blockedUsers()->select('blocked_id'))
+                ->whereNotIn('statuses.user_id', $user->blockedByUsers()->select('user_id'));
+        }
+
+        return $query->get()
             ->reject(fn (Status $status) => $status->checkin === null)
-            ->sortByDesc(function (Status $status) {
-                return $status->checkin->departure;
-            })->values();
+            ->sortByDesc(fn (Status $status) => $status->checkin->departure)
+            ->values();
     }
 
     public static function getLivePositions(): array
     {
-        $statuses = self::getActiveStatuses();
+        $ids = self::getActiveStatusIds();
+
+        if (empty($ids)) {
+            return [];
+        }
+
+        $user = auth()->user();
+
+        $query = Status::with([
+            'checkin.originStopover',
+            'checkin.destinationStopover',
+            'checkin.trip.stopovers.station',
+            'checkin.trip.polyline',
+        ])
+            ->join('users', 'statuses.user_id', '=', 'users.id')
+            ->whereIn('statuses.id', $ids)
+            ->where(TransportStatusController::filterStatusVisibility($user))
+            ->whereNotIn('statuses.visibility', [StatusVisibility::UNLISTED->value])
+            ->select('statuses.*');
+
+        if ($user !== null) {
+            $query->whereNotIn('statuses.user_id', $user->mutedUsers()->select('muted_id'))
+                ->whereNotIn('statuses.user_id', $user->blockedUsers()->select('blocked_id'))
+                ->whereNotIn('statuses.user_id', $user->blockedByUsers()->select('user_id'));
+        }
 
         $result = [];
-        foreach ($statuses as $status) {
+        foreach ($query->get() as $status) {
             $position = LocationController::forStatus($status)->calculateLivePosition();
             if ($position) {
                 $result[] = $position;
@@ -232,7 +268,7 @@ class StatusController extends Controller
             ->select('statuses.*')
             ->join('users', 'statuses.user_id', '=', 'users.id')
             ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
-            ->where(Backend\Transport\StatusController::filterStatusVisibility(auth()->user()))
+            ->where(TransportStatusController::filterStatusVisibility(auth()->user()))
             ->orderBy('train_checkins.departure', 'desc');
 
         if (auth()->check()) {
