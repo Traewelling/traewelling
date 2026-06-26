@@ -97,7 +97,7 @@ class UserAuthResource extends JsonResource
             'profilePicture' => resolve(ProfilePictureService::class)->getUrlForUserId($this->id),
             'totalDistance' => (float) $stats->total_distance,
             'totalDuration' => (int) $stats->total_duration,
-            'points' => (int) $pointsEnabled ? $stats->recent_points : 0,
+            'points' => (int) ($pointsEnabled ? $stats->recent_points : 0),
             'mastodonUrl' => $this->mastodonUrl ?? null,
             'privateProfile' => (bool) $this->private_profile,
             'preventIndex' => $this->prevent_index,
