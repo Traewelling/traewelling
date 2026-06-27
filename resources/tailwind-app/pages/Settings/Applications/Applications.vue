@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ChartBar, ExternalLink, Pencil, Plus, Trash2 } from '@lucide/vue';
+import { ChartBar, ExternalLink, Info, Pencil, Plus, Trash2 } from '@lucide/vue';
 import { trans, transChoice } from 'laravel-vue-i18n';
 import { Notyf } from 'notyf';
 import { inject, ref } from 'vue';
@@ -183,6 +183,45 @@ fetchApps();
 
         <!-- Personal access token -->
         <PersonalAccessToken />
+
+        <!-- API usage guidelines -->
+        <div class="bg-base-200 rounded-box p-4 mt-6 text-sm">
+            <div class="flex items-center gap-2 font-semibold mb-3">
+                <Info class="size-4 shrink-0 text-info" />
+                {{ trans('api-usage.title') }}
+            </div>
+            <ul class="list-disc list-inside space-y-2 text-base-content/80">
+                <li>{{ trans('api-usage.prefer-applications') }}</li>
+                <li>{{ trans('api-usage.no-token-sharing') }}</li>
+                <li>{{ trans('api-usage.rate-limit') }}</li>
+                <li>
+                    {{ trans('api-usage.user-agent') }}
+                    <br />
+                    <code class="text-xs opacity-60 ml-4">{{ trans('api-usage.user-agent-example') }}</code>
+                </li>
+                <li>{{ trans('api-usage.legal') }}</li>
+                <li>
+                    {{ trans('api-usage.changes') }}
+                    <a
+                        href="https://github.com/Traewelling/traewelling/blob/develop/API_CHANGELOG.md"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="link"
+                        >{{ trans('api-usage.changelog-link') }}</a
+                    >
+                    <span class="opacity-40 mx-1">|</span>
+                    <a
+                        href="https://github.com/Traewelling/traewelling/discussions/2619"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="link"
+                        >{{ trans('api-usage.discussion-link') }}</a
+                    >
+                </li>
+                <li>{{ trans('api-usage.liability') }}</li>
+                <li>{{ trans('api-usage.abuse') }}</li>
+            </ul>
+        </div>
 
         <!-- Create/Edit Modal -->
         <ApplicationForm :app="editingApp" :open="formOpen" @close="formOpen = false" @saved="onSaved" />
