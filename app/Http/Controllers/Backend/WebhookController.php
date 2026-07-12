@@ -148,7 +148,8 @@ abstract class WebhookController extends Controller
         // Missing values actually cannot be frozen, because toArray fails on them
         // Sidenote: Signer fails on them as well
         $relevant = array_filter($data, function ($value) {
-            return !($value instanceof JsonResource && $value->resource instanceof MissingValue);
+            return !($value instanceof JsonResource && $value->resource instanceof MissingValue)
+                   && !($value instanceof MissingValue);
         });
 
         return array_map(function ($value) {
