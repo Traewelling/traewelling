@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
-import { ref, watch } from 'vue';
+import { Notyf } from 'notyf';
+import { inject, ref, watch } from 'vue';
 import { Api, UserProfileSettingsResource } from '../../../../../types/Api.gen';
 import SettingsListRow from '../../SettingsListRow.vue';
 
@@ -9,6 +10,7 @@ const props = defineProps<{
 }>();
 const emits = defineEmits(['image-updated']);
 
+const notyf = inject('notyf') as Notyf;
 const modal = ref<HTMLDialogElement>();
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 const imageUpload = ref<File | null>(null);
@@ -28,13 +30,18 @@ watch(imageUpload, (newValue) => {
 });
 function updateProfileImage() {
     const data = { image: imageUploadBase64.value };
-    api.settings.uploadProfilePicture(data).then((response) => {
-        response.json().then((data) => {
-            imageUploadBase64.value = '';
-            emits('image-updated', data.data);
+    api.settings
+        .uploadProfilePicture(data)
+        .then((response) => {
+            response.json().then((data) => {
+                imageUploadBase64.value = '';
+                emits('image-updated', data.data);
+            });
+            modal.value?.close();
+        })
+        .catch((error) => {
+            notyf.error(error?.error?.message || trans('generic.error'));
         });
-        modal.value?.close();
-    });
 }
 
 function deleteProfileImage() {

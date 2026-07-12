@@ -9,6 +9,7 @@ use Exception;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
 use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\Exceptions\DecoderException;
 use Intervention\Image\Format;
 use Intervention\Image\ImageManager as Image;
 
@@ -82,8 +83,14 @@ class ProfilePictureService
     {
         $filename = strtr(':userId_:time.png', [':userId' => $user->id, ':time' => time()]);
 
-        Image::usingDriver(new Driver())->decode($avatar)
-            ->resize(400, 400)
+        try {
+            $image = Image::usingDriver(new Driver())->decode($avatar);
+        } catch (DecoderException) {
+            // unsupported format (e.g. SVG) or corrupt image data
+            return false;
+        }
+
+        $image->resize(400, 400)
             ->save(public_path('/uploads/avatars/' . $filename));
 
         if ($user->avatar) {

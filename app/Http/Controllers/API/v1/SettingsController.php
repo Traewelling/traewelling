@@ -341,20 +341,23 @@ class SettingsController extends Controller
                     ]
                 )
             ),
-            new OA\Response(response: 400, description: 'Bad Request'),
+            new OA\Response(response: 400, description: 'Bad Request (e.g. unsupported image format)'),
             new OA\Response(response: 401, description: 'Unauthorized'),
+            new OA\Response(response: 422, description: 'Unprocessable Entity'),
         ]
     )]
     public function uploadProfilePicture(Request $request): JsonResponse
     {
+        $validated = $request->validate(['image' => ['required', 'string']]);
+
         if (auth()->user()->can('disallow-social-interaction')) {
             return response()->json(null, 403);
         }
-        if ($this->profilePictureService->update(auth()->user(), $request->input('image'))) {
+        if ($this->profilePictureService->update(auth()->user(), $validated['image'])) {
             return $this->sendResponse(['message' => __('settings.saved')]);
         }
 
-        return $this->sendError('', 400);
+        return $this->sendError(__('errors.unsupported-image'), 400);
     }
 
     #[OA\Post(

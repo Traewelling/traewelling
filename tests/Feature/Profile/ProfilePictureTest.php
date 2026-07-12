@@ -119,6 +119,33 @@ class ProfilePictureTest extends ApiTestCase
         }
     }
 
+    public function test_upload_rejects_unsupported_image_format(): void
+    {
+        $user = User::factory(['avatar' => null])->create();
+        Passport::actingAs($user, ['*']);
+
+        $svg = 'data:image/svg+xml;base64,'
+            . base64_encode('<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"></svg>');
+
+        $response = $this->postJson('/api/v1/settings/profile-picture', [
+            'image' => $svg,
+        ]);
+
+        $response->assertStatus(400);
+        $response->assertJsonPath('message', __('errors.unsupported-image'));
+        $this->assertNull($user->fresh()->avatar);
+    }
+
+    public function test_upload_requires_image(): void
+    {
+        $user = User::factory()->create();
+        Passport::actingAs($user, ['*']);
+
+        $response = $this->postJson('/api/v1/settings/profile-picture', []);
+
+        $response->assertUnprocessable();
+    }
+
     public function test_delete_requires_authentication(): void
     {
         $response = $this->deleteJson('/api/v1/settings/profile-picture');
