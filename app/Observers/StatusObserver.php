@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Enum\WebhookEvent;
+use App\Events\StatusDeleteEvent;
 use App\Helpers\CacheKey;
 use App\Http\Controllers\Backend\Support\MentionHelper;
 use App\Http\Controllers\Backend\WebhookController;
@@ -22,6 +23,13 @@ class StatusObserver
         MentionHelper::createMentions($status);
     }
 
+    public function deleting(Status $status): void
+    {
+        // the checkin is cascade-deleted with the status on database level:
+        // load it now, so listeners of the deleted event can still access it
+        $status->loadMissing('checkin');
+    }
+
     public function deleted(Status $status): void
     {
         CacheKey::increment(CacheKey::STATUS_DELETED);
@@ -32,5 +40,6 @@ class StatusObserver
         );
 
         DeleteStatusNotifications::dispatch($status->id);
+        StatusDeleteEvent::dispatch($status);
     }
 }
