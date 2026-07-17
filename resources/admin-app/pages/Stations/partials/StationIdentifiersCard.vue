@@ -3,6 +3,7 @@ import { ArrowRightLeft, Pencil, Plus } from '@lucide/vue';
 import { ref } from 'vue';
 import { Api, type Station, type StationIdentifier, StationIdentifierType } from '../../../../types/Api.gen';
 import { IDENTIFIER_TYPES, type IdentifierType } from '../../../../types/StationIdentifier';
+import StationMoveTargetModal from './StationMoveTargetModal.vue';
 
 const props = defineProps<{
     stationId: number;
@@ -16,18 +17,11 @@ const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 
 const moveModalOpen = ref(false);
 const movingIdentifier = ref<StationIdentifier | null>(null);
-const moveTargetId = ref('');
-const moveSearchQuery = ref('');
-const moveSearchResults = ref<Station[]>([]);
-const moveSearching = ref(false);
 const moving = ref(false);
 const moveError = ref<string | null>(null);
 
 function openMoveModal(ident: StationIdentifier): void {
     movingIdentifier.value = ident;
-    moveTargetId.value = '';
-    moveSearchQuery.value = '';
-    moveSearchResults.value = [...props.nearbyStations];
     moveError.value = null;
     moveModalOpen.value = true;
 }
@@ -37,35 +31,13 @@ function closeMoveModal(): void {
     movingIdentifier.value = null;
 }
 
-let moveSearchTimer: ReturnType<typeof setTimeout> | null = null;
-
-async function searchMoveStations(): Promise<void> {
-    if (moveSearchTimer) clearTimeout(moveSearchTimer);
-    const q = moveSearchQuery.value.trim();
-    if (!q) {
-        moveSearchResults.value = [...props.nearbyStations];
-        return;
-    }
-    moveSearchTimer = setTimeout(async () => {
-        moveSearching.value = true;
-        try {
-            const res = await api.stations.indexStation({ query: q, limit: 10 });
-            moveSearchResults.value = (res.data.data ?? []).filter((s) => s.id !== props.stationId);
-        } catch {
-            // keep previous results on error
-        } finally {
-            moveSearching.value = false;
-        }
-    }, 300);
-}
-
-async function confirmMove(): Promise<void> {
-    if (!movingIdentifier.value || !moveTargetId.value) return;
+async function confirmMove(targetId: number): Promise<void> {
+    if (!movingIdentifier.value) return;
     moving.value = true;
     moveError.value = null;
     try {
         await api.stations.moveStationIdentifier(props.stationId, movingIdentifier.value.id!, {
-            target_station_id: Number(moveTargetId.value),
+            target_station_id: targetId,
         });
         closeMoveModal();
         emit('changed');
@@ -254,78 +226,19 @@ function identifierLink(type: string | undefined, value: string | undefined): st
     </div>
 
     <!-- Move modal -->
-    <div v-if="moveModalOpen" class="modal modal-open" role="dialog">
-        <div class="modal-box max-w-lg">
-            <h3 class="font-bold text-lg mb-1">Move Identifier</h3>
-            <p class="text-sm text-base-content/60 mb-4">
-                Move
-                <span class="font-mono">{{ movingIdentifier?.identifier }}</span>
-                (<span class="font-mono">{{ movingIdentifier?.type }}</span
-                >) to another station.
-            </p>
-
-            <div class="form-control mb-3">
-                <label class="label pb-1"><span class="label-text">Search target station</span></label>
-                <div class="flex gap-2">
-                    <input
-                        v-model="moveSearchQuery"
-                        type="text"
-                        placeholder="Name or ID..."
-                        class="input input-sm input-bordered flex-1"
-                        @input="searchMoveStations"
-                    />
-                    <span v-if="moveSearching" class="loading loading-spinner loading-sm self-center" />
-                </div>
-            </div>
-
-            <div class="overflow-y-auto max-h-64 border border-base-300 rounded-lg mb-4">
-                <table class="table table-xs w-full">
-                    <thead class="sticky top-0 bg-base-200 z-10">
-                        <tr>
-                            <th class="w-4"></th>
-                            <th>ID</th>
-                            <th>Name</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr
-                            v-for="s in moveSearchResults"
-                            :key="s.id"
-                            class="hover cursor-pointer"
-                            :class="{ 'bg-primary/10': String(s.id) === String(moveTargetId) }"
-                            @click="moveTargetId = String(s.id)"
-                        >
-                            <td>
-                                <input
-                                    type="radio"
-                                    class="radio radio-xs radio-primary"
-                                    :value="String(s.id)"
-                                    :checked="String(s.id) === String(moveTargetId)"
-                                    @change="moveTargetId = String(s.id)"
-                                />
-                            </td>
-                            <td class="font-mono text-xs">{{ s.id }}</td>
-                            <td class="text-sm">{{ s.name }}</td>
-                        </tr>
-                        <tr v-if="!moveSearchResults.length">
-                            <td colspan="3" class="text-center text-base-content/50 py-3">No stations found.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div v-if="moveError" role="alert" class="alert alert-error alert-sm mb-3 py-2 text-sm">
-                {{ moveError }}
-            </div>
-
-            <div class="modal-action mt-0">
-                <button class="btn btn-ghost btn-sm" :disabled="moving" @click="closeMoveModal">Cancel</button>
-                <button class="btn btn-primary btn-sm" :disabled="!moveTargetId || moving" @click="confirmMove">
-                    <span v-if="moving" class="loading loading-spinner loading-xs" />
-                    Move
-                </button>
-            </div>
-        </div>
-        <div class="modal-backdrop" @click="closeMoveModal" />
-    </div>
+    <StationMoveTargetModal
+        :open="moveModalOpen"
+        title="Move Identifier"
+        :station-id="stationId"
+        :nearby-stations="nearbyStations"
+        :moving="moving"
+        :error="moveError"
+        @close="closeMoveModal"
+        @confirm="confirmMove"
+    >
+        Move
+        <span class="font-mono">{{ movingIdentifier?.identifier }}</span>
+        (<span class="font-mono">{{ movingIdentifier?.type }}</span
+        >) to another station.
+    </StationMoveTargetModal>
 </template>

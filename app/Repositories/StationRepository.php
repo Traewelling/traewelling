@@ -6,6 +6,7 @@ namespace App\Repositories;
 
 use App\Dto\StationUsageDto;
 use App\Enum\StationIdentifierType;
+use App\Models\Checkin;
 use App\Models\Event;
 use App\Models\EventSuggestion;
 use App\Models\RouteSegment;
@@ -156,6 +157,64 @@ class StationRepository
         return StationIdentifier::where('id', $identifierId)
             ->where('station_id', $stationId)
             ->first();
+    }
+
+    public function moveStopoversToStation(Station $source, Station $target): int
+    {
+        $merged = 0;
+        $potentialDuplicates = Stopover::where('train_station_id', $source->id)->get();
+        foreach ($potentialDuplicates as $sourceStopover) {
+            $duplicate = Stopover::where('train_station_id', $target->id)
+                ->where('trip_id', $sourceStopover->trip_id)
+                ->where('departure_planned', $sourceStopover->departure_planned)
+                ->where('arrival_planned', $sourceStopover->arrival_planned)
+                ->first();
+
+            if ($duplicate) {
+                Checkin::where('origin_stopover_id', $sourceStopover->id)->update(['origin_stopover_id' => $duplicate->id]);
+                Checkin::where('destination_stopover_id', $sourceStopover->id)->update(['destination_stopover_id' => $duplicate->id]);
+                $sourceStopover->delete();
+                $merged++;
+            }
+        }
+
+        return $merged + Stopover::where('train_station_id', $source->id)->update(['train_station_id' => $target->id]);
+    }
+
+    public function moveTripTerminalsToStation(Station $source, Station $target): int
+    {
+        return Trip::where('origin_id', $source->id)->update(['origin_id' => $target->id])
+               + Trip::where('destination_id', $source->id)->update(['destination_id' => $target->id]);
+    }
+
+    public function moveEventsToStation(Station $source, Station $target): int
+    {
+        return Event::where('station_id', $source->id)->update(['station_id' => $target->id]);
+    }
+
+    public function moveEventSuggestionsToStation(Station $source, Station $target): int
+    {
+        return EventSuggestion::where('station_id', $source->id)->update(['station_id' => $target->id]);
+    }
+
+    public function moveHomeUsersToStation(Station $source, Station $target): int
+    {
+        return User::where('home_id', $source->id)->update(['home_id' => $target->id]);
+    }
+
+    /**
+     * @param  bool  $onlyWithoutIdentifier  move only segment sides that are not bound to a station
+     *                                       identifier; identifier-bound sides follow their identifier
+     *                                       when that identifier is moved
+     */
+    public function moveRouteSegmentsToStation(Station $source, Station $target, bool $onlyWithoutIdentifier = false): int
+    {
+        return RouteSegment::where('from_station_id', $source->id)
+            ->when($onlyWithoutIdentifier, fn ($query) => $query->whereNull('from_identifier_id'))
+            ->update(['from_station_id' => $target->id])
+               + RouteSegment::where('to_station_id', $source->id)
+                   ->when($onlyWithoutIdentifier, fn ($query) => $query->whereNull('to_identifier_id'))
+                   ->update(['to_station_id' => $target->id]);
     }
 
     public function getUsageCounts(Station $station): StationUsageDto

@@ -109,7 +109,7 @@ watch(stationId, fetchStation);
 
                 <!-- Right column -->
                 <div class="space-y-4">
-                    <StationUsageCard :station="station" />
+                    <StationUsageCard :station="station" :nearby-stations="nearbyStations" />
 
                     <!-- Nearby stations -->
                     <div class="card bg-base-100 shadow">

@@ -2,9 +2,16 @@
 
 namespace Tests\Feature\APIv1;
 
+use App\Enum\HafasTravelType;
+use App\Enum\TripSource;
+use App\Models\Checkin;
+use App\Models\Event;
+use App\Models\EventSuggestion;
 use App\Models\RouteSegment;
 use App\Models\Station;
 use App\Models\StationIdentifier;
+use App\Models\Stopover;
+use App\Models\Trip;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Passport\Passport;
@@ -157,6 +164,163 @@ class StationTest extends ApiTestCase
         $station = Station::factory()->create();
 
         $this->getJson('/api/v1/stations/' . $station->id . '/usages')->assertForbidden();
+    }
+
+    public function test_admin_can_move_station_references(): void
+    {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        Passport::actingAs($admin, ['*']);
+
+        $source = Station::factory()->create();
+        $target = Station::factory()->create();
+        $other = Station::factory()->create();
+
+        $trip = Trip::create([
+            'trip_id' => 'usage-move-trip',
+            'category' => HafasTravelType::REGIONAL,
+            'number' => 'RB 1',
+            'linename' => 'RB 1',
+            'origin_id' => $source->id,
+            'destination_id' => $other->id,
+            'departure' => '2026-07-17T10:00:00Z',
+            'arrival' => '2026-07-17T11:00:00Z',
+            'source' => TripSource::TRANSITOUS,
+        ]);
+        $stopover = Stopover::factory()->create(['trip_id' => $trip->trip_id, 'train_station_id' => $source->id]);
+        $event = Event::factory()->create(['station_id' => $source->id]);
+        $eventSuggestion = EventSuggestion::factory()->create(['station_id' => $source->id]);
+        $identifier = StationIdentifier::factory()->create(['station_id' => $source->id]);
+        $unboundSegment = RouteSegment::factory()->create(['from_station_id' => $source->id, 'to_station_id' => $other->id]);
+        $boundSegment = RouteSegment::factory()->create([
+            'from_station_id' => $source->id,
+            'to_station_id' => $other->id,
+            'from_identifier_id' => $identifier->id,
+        ]);
+        $homeUser = User::factory()->create(['home_id' => $source->id]);
+
+        $response = $this->putJson("/api/v1/stations/{$source->id}/usages/move", ['target_station_id' => $target->id]);
+
+        $response->assertOk();
+        $response->assertJson(['data' => [
+            'stopovers' => 1,
+            'trips' => 1,
+            'events' => 1,
+            'eventSuggestions' => 1,
+            'routeSegments' => 1,
+            'homeUsers' => 1,
+        ]]);
+
+        $this->assertDatabaseHas('train_stopovers', ['id' => $stopover->id, 'train_station_id' => $target->id]);
+        $this->assertDatabaseHas('hafas_trips', ['trip_id' => $trip->trip_id, 'origin_id' => $target->id, 'destination_id' => $other->id]);
+        $this->assertDatabaseHas('events', ['id' => $event->id, 'station_id' => $target->id]);
+        $this->assertDatabaseHas('event_suggestions', ['id' => $eventSuggestion->id, 'station_id' => $target->id]);
+        $this->assertDatabaseHas('route_segments', ['id' => $unboundSegment->id, 'from_station_id' => $target->id]);
+        // identifier-bound segment side must follow its identifier, not this move
+        $this->assertDatabaseHas('route_segments', ['id' => $boundSegment->id, 'from_station_id' => $source->id]);
+        $this->assertDatabaseHas('users', ['id' => $homeUser->id, 'home_id' => $target->id]);
+        // identifiers are not moved by this endpoint
+        $this->assertDatabaseHas('station_identifiers', ['id' => $identifier->id, 'station_id' => $source->id]);
+    }
+
+    public function test_move_station_references_merges_duplicate_stopovers(): void
+    {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        Passport::actingAs($admin, ['*']);
+
+        $source = Station::factory()->create();
+        $target = Station::factory()->create();
+
+        $trip = Trip::create([
+            'trip_id' => 'usage-move-dup-trip',
+            'category' => HafasTravelType::REGIONAL,
+            'number' => 'RB 2',
+            'linename' => 'RB 2',
+            'origin_id' => $source->id,
+            'destination_id' => $target->id,
+            'departure' => '2026-07-17T10:00:00Z',
+            'arrival' => '2026-07-17T11:00:00Z',
+            'source' => TripSource::TRANSITOUS,
+        ]);
+        $sourceStopover = Stopover::factory()->create([
+            'trip_id' => $trip->trip_id,
+            'train_station_id' => $source->id,
+            'arrival_planned' => '2026-07-17T10:00:00Z',
+            'departure_planned' => '2026-07-17T10:00:00Z',
+        ]);
+        $targetStopover = Stopover::factory()->create([
+            'trip_id' => $trip->trip_id,
+            'train_station_id' => $target->id,
+            'arrival_planned' => '2026-07-17T10:00:00Z',
+            'departure_planned' => '2026-07-17T10:00:00Z',
+        ]);
+        $destinationStopover = Stopover::factory()->create([
+            'trip_id' => $trip->trip_id,
+            'train_station_id' => $target->id,
+            'arrival_planned' => '2026-07-17T11:00:00Z',
+            'departure_planned' => '2026-07-17T11:00:00Z',
+        ]);
+        $checkin = Checkin::factory()->create([
+            'trip_id' => $trip->trip_id,
+            'origin_stopover_id' => $sourceStopover->id,
+            'destination_stopover_id' => $destinationStopover->id,
+            'departure' => '2026-07-17T10:00:00Z',
+            'arrival' => '2026-07-17T11:00:00Z',
+        ]);
+
+        $this->putJson("/api/v1/stations/{$source->id}/usages/move", [
+            'target_station_id' => $target->id,
+            'types' => ['stopovers'],
+        ])->assertOk();
+
+        $this->assertDatabaseMissing('train_stopovers', ['id' => $sourceStopover->id]);
+        $this->assertDatabaseHas('train_checkins', ['id' => $checkin->id, 'origin_stopover_id' => $targetStopover->id]);
+    }
+
+    public function test_move_station_references_respects_type_filter(): void
+    {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        Passport::actingAs($admin, ['*']);
+
+        $source = Station::factory()->create();
+        $target = Station::factory()->create();
+        $event = Event::factory()->create(['station_id' => $source->id]);
+        $homeUser = User::factory()->create(['home_id' => $source->id]);
+
+        $response = $this->putJson("/api/v1/stations/{$source->id}/usages/move", [
+            'target_station_id' => $target->id,
+            'types' => ['events'],
+        ]);
+
+        $response->assertOk();
+        $response->assertJson(['data' => ['events' => 1, 'homeUsers' => 0]]);
+        $this->assertDatabaseHas('events', ['id' => $event->id, 'station_id' => $target->id]);
+        $this->assertDatabaseHas('users', ['id' => $homeUser->id, 'home_id' => $source->id]);
+    }
+
+    public function test_user_cannot_move_station_references(): void
+    {
+        Passport::actingAs(User::factory()->create(), ['*']);
+
+        $source = Station::factory()->create();
+        $target = Station::factory()->create();
+
+        $this->putJson("/api/v1/stations/{$source->id}/usages/move", ['target_station_id' => $target->id])
+            ->assertForbidden();
+    }
+
+    public function test_cannot_move_station_references_to_same_station(): void
+    {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        Passport::actingAs($admin, ['*']);
+
+        $source = Station::factory()->create();
+
+        $this->putJson("/api/v1/stations/{$source->id}/usages/move", ['target_station_id' => $source->id])
+            ->assertUnprocessable();
     }
 
     public function test_user_cannot_merge_station(): void

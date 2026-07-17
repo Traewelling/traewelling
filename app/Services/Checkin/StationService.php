@@ -6,6 +6,7 @@ namespace App\Services\Checkin;
 
 use App\DataProviders\DataProviderInterface;
 use App\Dto\IdentifierMoveResult;
+use App\Dto\StationUsageMoveResultDto;
 use App\Enum\StationIdentifierType;
 use App\Models\Station;
 use App\Models\StationIdentifier;
@@ -75,6 +76,28 @@ class StationService
             ->log(
                 "Moved identifier {$identifier->identifier} ({$identifier->type->value}) from station {$sourceStation->name} ({$sourceStation->id}) to {$targetStation->name} ({$targetStation->id}): "
                 . "{$result->movedStopovers} stopovers moved ({$result->skippedStopovers} skipped), {$result->updatedTrips} trips and {$result->updatedRouteSegments} route segments updated"
+            );
+
+        return $result;
+    }
+
+    public function moveStationReferences(Station $source, Station $target, array $types, User $actor): StationUsageMoveResultDto
+    {
+        $result = DB::transaction(fn (): StationUsageMoveResultDto => new StationUsageMoveResultDto(
+            stopovers: in_array('stopovers', $types, true) ? $this->stationRepository->moveStopoversToStation($source, $target) : 0,
+            trips: in_array('trips', $types, true) ? $this->stationRepository->moveTripTerminalsToStation($source, $target) : 0,
+            events: in_array('events', $types, true) ? $this->stationRepository->moveEventsToStation($source, $target) : 0,
+            eventSuggestions: in_array('eventSuggestions', $types, true) ? $this->stationRepository->moveEventSuggestionsToStation($source, $target) : 0,
+            routeSegments: in_array('routeSegments', $types, true) ? $this->stationRepository->moveRouteSegmentsToStation($source, $target, onlyWithoutIdentifier: true) : 0,
+            homeUsers: in_array('homeUsers', $types, true) ? $this->stationRepository->moveHomeUsersToStation($source, $target) : 0,
+        ));
+
+        activity()->causedBy($actor)
+            ->performedOn($source)
+            ->log(
+                "Moved references from station {$source->name} ({$source->id}) to {$target->name} ({$target->id}): "
+                . "{$result->stopovers} stopovers, {$result->trips} trip terminals, {$result->events} events, "
+                . "{$result->eventSuggestions} event suggestions, {$result->routeSegments} route segment sides, {$result->homeUsers} home stations"
             );
 
         return $result;

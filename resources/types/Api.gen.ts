@@ -465,6 +465,34 @@ export interface StationUsageDto {
   homeUsers: number;
 }
 
+/** StationUsageMoveResultDto */
+export interface StationUsageMoveResultDto {
+  /**
+   * Number of moved stopovers, including duplicates that were merged into existing stopovers on the target station
+   * @example 12
+   */
+  stopovers: number;
+  /**
+   * Number of moved trip origin/destination references
+   * @example 3
+   */
+  trips: number;
+  /** @example 0 */
+  events: number;
+  /** @example 0 */
+  eventSuggestions: number;
+  /**
+   * Number of moved route segment sides. Only sides without an identifier binding are moved, identifier-bound sides follow their identifier
+   * @example 4
+   */
+  routeSegments: number;
+  /**
+   * Number of users whose home station was moved
+   * @example 1
+   */
+  homeUsers: number;
+}
+
 /**
  * Station
  * train station model
@@ -6231,6 +6259,47 @@ export class Api<
         path: `/stations/${id}/usages`,
         method: "GET",
         secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Admin only. Moves records referencing this station to another station, so the station can be emptied and deleted. Stopovers already existing identically on the target station are merged into them. Route segment sides bound to a station identifier are not moved here, they follow their identifier via the identifier move endpoint. Station identifiers must also be moved via their own endpoint.
+     *
+     * @tags Stations
+     * @name MoveStationUsages
+     * @summary Move station references to another station
+     * @request PUT:/stations/{id}/usages/move
+     * @secure
+     */
+    moveStationUsages: (
+      id: number,
+      data: {
+        /** @example 42 */
+        target_station_id: number;
+        /** Reference types to move. Defaults to all movable types. */
+        types?: (
+          | "stopovers"
+          | "trips"
+          | "events"
+          | "eventSuggestions"
+          | "routeSegments"
+          | "homeUsers"
+        )[];
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data: StationUsageMoveResultDto;
+        },
+        void
+      >({
+        path: `/stations/${id}/usages/move`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),

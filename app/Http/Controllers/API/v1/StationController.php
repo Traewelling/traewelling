@@ -4,17 +4,12 @@ namespace App\Http\Controllers\API\v1;
 
 use App\DataProviders\Motis;
 use App\Dto\StationUsageDto;
+use App\Dto\StationUsageMoveResultDto;
 use App\Enum\DataProvider;
 use App\Enum\StationIdentifierType;
 use App\Http\Resources\StationResource;
-use App\Models\Checkin;
-use App\Models\Event;
-use App\Models\EventSuggestion;
-use App\Models\RouteSegment;
 use App\Models\Station;
 use App\Models\StationIdentifier;
-use App\Models\Stopover;
-use App\Models\Trip;
 use App\Models\User;
 use App\Repositories\StationRepository;
 use App\Services\Checkin\StationService;
@@ -24,6 +19,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Log;
 use OpenApi\Attributes as OA;
 
@@ -79,6 +75,78 @@ class StationController extends Controller
         $this->authorize('update', $station);
 
         return response()->json(['data' => $this->stationRepository->getUsageCounts($station)]);
+    }
+
+    #[OA\Put(
+        path: '/stations/{id}/usages/move',
+        operationId: 'moveStationUsages',
+        description: 'Admin only. Moves records referencing this station to another station, so the station can be emptied and deleted. '
+                     . 'Stopovers already existing identically on the target station are merged into them. '
+                     . 'Route segment sides bound to a station identifier are not moved here, they follow their identifier via the identifier move endpoint. '
+                     . 'Station identifiers must also be moved via their own endpoint.',
+        summary: 'Move station references to another station',
+        security: [['passport' => ['*']], ['token' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['target_station_id'],
+                properties: [
+                    new OA\Property(property: 'target_station_id', type: 'integer', example: 42),
+                    new OA\Property(
+                        property: 'types',
+                        description: 'Reference types to move. Defaults to all movable types.',
+                        type: 'array',
+                        items: new OA\Items(type: 'string', enum: ['stopovers', 'trips', 'events', 'eventSuggestions', 'routeSegments', 'homeUsers']),
+                    ),
+                ],
+            ),
+        ),
+        tags: ['Stations'],
+        parameters: [
+            new OA\Parameter(name: 'id', description: 'Source station ID', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'References moved',
+                content: new OA\JsonContent(
+                    required: ['data'],
+                    properties: [
+                        new OA\Property(property: 'data', ref: StationUsageMoveResultDto::class),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 403, description: 'Forbidden'),
+            new OA\Response(response: 404, description: 'Station not found'),
+            new OA\Response(response: 422, description: 'Validation error'),
+        ],
+    )]
+    public function moveUsages(Request $request, int $id): JsonResponse
+    {
+        $station = Station::findOrFail($id);
+        $this->authorize('update', $station);
+
+        $validated = $request->validate([
+            'target_station_id' => ['required', 'integer', 'exists:train_stations,id'],
+            'types' => ['sometimes', 'array', 'min:1'],
+            'types.*' => ['string', Rule::in(StationUsageMoveResultDto::MOVABLE_TYPES)],
+        ]);
+
+        if ((int) $validated['target_station_id'] === $id) {
+            return $this->sendError('Target station must be different from the source station', 422);
+        }
+
+        $targetStation = Station::findOrFail($validated['target_station_id']);
+        $this->authorize('update', $targetStation);
+
+        $result = $this->stationService->moveStationReferences(
+            $station,
+            $targetStation,
+            $validated['types'] ?? StationUsageMoveResultDto::MOVABLE_TYPES,
+            $request->user(),
+        );
+
+        return response()->json(['data' => $result]);
     }
 
     #[OA\Delete(
@@ -145,33 +213,13 @@ class StationController extends Controller
         StationIdentifier::where('station_id', $oldStation->id)->update(['station_id' => $newStation->id]);
 
         DB::transaction(function () use ($newStation, $oldStation) {
-            // Before the update: remove duplicates in stopovers
-            $potentialDuplicates = Stopover::where('train_station_id', $oldStation->id)->get();
-
-            foreach ($potentialDuplicates as $oldStopover) {
-                // check if the dates are the same (then it can be safely removed)
-                $duplicate = Stopover::where('train_station_id', $newStation->id)
-                    ->where('trip_id', $oldStopover->trip_id)
-                    ->where('departure_planned', $oldStopover->departure_planned)
-                    ->where('arrival_planned', $oldStopover->arrival_planned)
-                    ->first();
-
-                if ($duplicate) {
-                    // if there is a duplicate: move stopovers and then delete the old one
-                    Checkin::where('origin_stopover_id', $oldStopover->id)->update(['origin_stopover_id' => $duplicate->id]);
-                    Checkin::where('destination_stopover_id', $oldStopover->id)->update(['destination_stopover_id' => $duplicate->id]);
-                    $oldStopover->delete();
-                }
-            }
-
-            Stopover::where('train_station_id', $oldStation->id)->update(['train_station_id' => $newStation->id]);
-            Trip::where('origin_id', $oldStation->id)->update(['origin_id' => $newStation->id]);
-            Trip::where('destination_id', $oldStation->id)->update(['destination_id' => $newStation->id]);
-            Event::where('station_id', $oldStation->id)->update(['station_id' => $newStation->id]);
-            EventSuggestion::where('station_id', $oldStation->id)->update(['station_id' => $newStation->id]);
-            RouteSegment::where('from_station_id', $oldStation->id)->update(['from_station_id' => $newStation->id]);
-            RouteSegment::where('to_station_id', $oldStation->id)->update(['to_station_id' => $newStation->id]);
-            User::where('home_id', $oldStation->id)->update(['home_id' => $newStation->id]);
+            $this->stationRepository->moveStopoversToStation($oldStation, $newStation);
+            $this->stationRepository->moveTripTerminalsToStation($oldStation, $newStation);
+            $this->stationRepository->moveEventsToStation($oldStation, $newStation);
+            $this->stationRepository->moveEventSuggestionsToStation($oldStation, $newStation);
+            // all identifiers were moved above, so identifier-bound segment sides are moved here as well
+            $this->stationRepository->moveRouteSegmentsToStation($oldStation, $newStation);
+            $this->stationRepository->moveHomeUsersToStation($oldStation, $newStation);
 
             $oldStation->delete();
 

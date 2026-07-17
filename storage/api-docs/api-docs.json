@@ -5167,6 +5167,100 @@
                 ]
             }
         },
+        "/stations/{id}/usages/move": {
+            "put": {
+                "tags": [
+                    "Stations"
+                ],
+                "summary": "Move station references to another station",
+                "description": "Admin only. Moves records referencing this station to another station, so the station can be emptied and deleted. Stopovers already existing identically on the target station are merged into them. Route segment sides bound to a station identifier are not moved here, they follow their identifier via the identifier move endpoint. Station identifiers must also be moved via their own endpoint.",
+                "operationId": "moveStationUsages",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Source station ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "target_station_id"
+                                ],
+                                "properties": {
+                                    "target_station_id": {
+                                        "type": "integer",
+                                        "example": 42
+                                    },
+                                    "types": {
+                                        "description": "Reference types to move. Defaults to all movable types.",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "enum": [
+                                                "stopovers",
+                                                "trips",
+                                                "events",
+                                                "eventSuggestions",
+                                                "routeSegments",
+                                                "homeUsers"
+                                            ]
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "References moved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/StationUsageMoveResultDto"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Station not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "*"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/stations/{id}": {
             "get": {
                 "tags": [
@@ -10730,6 +10824,48 @@
                     },
                     "homeUsers": {
                         "description": "Users with this station as home station",
+                        "type": "integer",
+                        "example": 1
+                    }
+                },
+                "type": "object"
+            },
+            "StationUsageMoveResultDto": {
+                "title": "StationUsageMoveResultDto",
+                "required": [
+                    "stopovers",
+                    "trips",
+                    "events",
+                    "eventSuggestions",
+                    "routeSegments",
+                    "homeUsers"
+                ],
+                "properties": {
+                    "stopovers": {
+                        "description": "Number of moved stopovers, including duplicates that were merged into existing stopovers on the target station",
+                        "type": "integer",
+                        "example": 12
+                    },
+                    "trips": {
+                        "description": "Number of moved trip origin/destination references",
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "events": {
+                        "type": "integer",
+                        "example": 0
+                    },
+                    "eventSuggestions": {
+                        "type": "integer",
+                        "example": 0
+                    },
+                    "routeSegments": {
+                        "description": "Number of moved route segment sides. Only sides without an identifier binding are moved, identifier-bound sides follow their identifier",
+                        "type": "integer",
+                        "example": 4
+                    },
+                    "homeUsers": {
+                        "description": "Number of users whose home station was moved",
                         "type": "integer",
                         "example": 1
                     }

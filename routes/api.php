@@ -219,6 +219,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             ->parameters(['identifiers' => 'identifierId']); // admin only
         Route::put('stations/{stationId}/identifiers/{identifierId}/move', [StationIdentifierController::class, 'move']); // admin only
         Route::get('stations/{id}/usages', [StationController::class, 'usages'])->whereNumber('id'); // admin only
+        Route::put('stations/{id}/usages/move', [StationController::class, 'moveUsages'])->whereNumber('id'); // admin only
 
         Route::group(['prefix' => 'user/self'], static function () { // move new endpoints to users/self to comply api guidelines
             Route::group(['middleware' => ['scope:read-settings-followers']], static function () {
