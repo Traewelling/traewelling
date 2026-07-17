@@ -8,6 +8,8 @@ use App\Enum\StationIdentifierType;
 use App\Models\RouteSegment;
 use App\Models\Station;
 use App\Models\StationIdentifier;
+use App\Models\Stopover;
+use App\Models\Trip;
 use App\Models\User;
 use App\Services\Wikidata\WikidataImportService;
 use Illuminate\Support\Collection;
@@ -153,15 +155,73 @@ class StationRepository
             ->first();
     }
 
-    public function moveIdentifierToStation(StationIdentifier $identifier, Station $targetStation): void
+    public function moveIdentifierToStation(StationIdentifier $identifier, Station $targetStation): int
     {
         $identifier->update(['station_id' => $targetStation->id]);
 
-        RouteSegment::where('from_identifier_id', $identifier->id)
-            ->update(['from_station_id' => $targetStation->id]);
+        return RouteSegment::where('from_identifier_id', $identifier->id)
+            ->update(['from_station_id' => $targetStation->id])
+               + RouteSegment::where('to_identifier_id', $identifier->id)
+                   ->update(['to_station_id' => $targetStation->id]);
+    }
 
-        RouteSegment::where('to_identifier_id', $identifier->id)
-            ->update(['to_station_id' => $targetStation->id]);
+    /**
+     * Moves all stopovers created via the given identifier to the target station.
+     * Stopovers that would collide with an already existing stopover on the target station
+     * (leftover duplicates from earlier moves) are skipped and can be cleaned up manually.
+     *
+     * @return array{moved: int, skipped: int, tripIds: array<int, string>}
+     */
+    public function moveStopoversOfIdentifier(StationIdentifier $identifier, Station $targetStation): array
+    {
+        $baseQuery = fn () => Stopover::where('station_identifier_id', $identifier->id)
+            ->where('train_station_id', '!=', $targetStation->id);
+
+        $conflictingIds = $baseQuery()
+            ->whereExists(function ($query) use ($targetStation) {
+                $query->select(DB::raw(1))
+                    ->from('train_stopovers as duplicates')
+                    ->whereColumn('duplicates.trip_id', 'train_stopovers.trip_id')
+                    ->whereColumn('duplicates.arrival_planned', 'train_stopovers.arrival_planned')
+                    ->whereColumn('duplicates.departure_planned', 'train_stopovers.departure_planned')
+                    ->where('duplicates.train_station_id', $targetStation->id);
+            })
+            ->pluck('id');
+
+        $tripIds = $baseQuery()->whereNotIn('id', $conflictingIds)->distinct()->pluck('trip_id');
+        $moved = $baseQuery()->whereNotIn('id', $conflictingIds)->update(['train_station_id' => $targetStation->id]);
+
+        return ['moved' => $moved, 'skipped' => $conflictingIds->count(), 'tripIds' => $tripIds->all()];
+    }
+
+    /**
+     * Updates origin_id/destination_id of the given trips when their first/last stopover
+     * was created via the given identifier and now points to a different station.
+     *
+     * @param  array<int, string>  $tripIds
+     */
+    public function updateTripTerminalStations(array $tripIds, StationIdentifier $identifier): int
+    {
+        $updated = 0;
+
+        foreach (Trip::with('stopovers')->whereIn('trip_id', $tripIds)->cursor() as $trip) {
+            $firstStopover = $trip->stopovers->first();
+            $lastStopover = $trip->stopovers->last();
+
+            if ($firstStopover?->station_identifier_id === $identifier->id) {
+                $trip->origin_id = $firstStopover->train_station_id;
+            }
+            if ($lastStopover?->station_identifier_id === $identifier->id) {
+                $trip->destination_id = $lastStopover->train_station_id;
+            }
+
+            if ($trip->isDirty()) {
+                $trip->save();
+                $updated++;
+            }
+        }
+
+        return $updated;
     }
 
     public function createIdentifier(Station $station, StationIdentifierType $type, string $value): StationIdentifier
