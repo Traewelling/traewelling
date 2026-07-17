@@ -12,6 +12,7 @@ use App\Enum\DataProvider;
 use App\Enum\Queue;
 use App\Exceptions\DataProviderException;
 use App\Models\Checkin;
+use App\Models\Stopover;
 use App\Models\Trip;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -19,6 +20,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use PDOException;
 
@@ -83,6 +85,8 @@ class RefreshTrip implements ShouldBeUnique, ShouldQueue
                 DataProvider::TRANSITOUS
             );
 
+            $this->resetRouteSegmentsIfNewStopoversWereCreated($stopovers);
+
             Log::debug('RefreshTrip Job completed', [
                 'trip_id' => $this->trip->trip_id,
                 'updated_stopovers' => $stopovers->count(),
@@ -102,5 +106,21 @@ class RefreshTrip implements ShouldBeUnique, ShouldQueue
                 'message' => $exception->getMessage(),
             ]);
         }
+    }
+
+    private function resetRouteSegmentsIfNewStopoversWereCreated(Collection $stopovers): void
+    {
+        $newStopovers = $stopovers->filter(fn (Stopover $stopover) => $stopover->wasRecentlyCreated);
+        if ($newStopovers->isEmpty() || !$this->trip->category->onRails()) {
+            return;
+        }
+
+        Stopover::where('trip_id', $this->trip->trip_id)->update(['route_segment_id' => null]);
+        RefreshPolyline::dispatch($this->trip);
+
+        Log::info('RefreshTrip: new stopovers were created, route segments reset and polyline refresh dispatched', [
+            'trip_id' => $this->trip->trip_id,
+            'new_stopovers' => $newStopovers->count(),
+        ]);
     }
 }
