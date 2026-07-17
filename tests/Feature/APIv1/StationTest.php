@@ -4,6 +4,7 @@ namespace Tests\Feature\APIv1;
 
 use App\Models\RouteSegment;
 use App\Models\Station;
+use App\Models\StationIdentifier;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Passport\Passport;
@@ -96,10 +97,66 @@ class StationTest extends ApiTestCase
         Passport::actingAs($user, ['*']);
         $station = Station::factory()->create();
         $response = $this->delete('/api/v1/station/' . $station->id);
-        $response->assertOk();
+        $response->assertNoContent();
         $this->assertDatabaseMissing('train_stations', [
             'id' => $station->id,
         ]);
+    }
+
+    public function test_admin_cannot_delete_station_with_references(): void
+    {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        Passport::actingAs($admin, ['*']);
+
+        $station = Station::factory()->create();
+        StationIdentifier::factory()->create(['station_id' => $station->id]);
+        User::factory()->create(['home_id' => $station->id]);
+
+        $response = $this->deleteJson('/api/v1/stations/' . $station->id);
+
+        $response->assertConflict();
+        $response->assertJsonPath('data.identifiers', 1);
+        $response->assertJsonPath('data.homeUsers', 1);
+        $this->assertDatabaseHas('train_stations', ['id' => $station->id]);
+    }
+
+    public function test_admin_can_view_station_usages(): void
+    {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        Passport::actingAs($admin, ['*']);
+
+        $station = Station::factory()->create();
+        $otherStation = Station::factory()->create();
+        StationIdentifier::factory()->create(['station_id' => $station->id]);
+        RouteSegment::factory()->create([
+            'from_station_id' => $station->id,
+            'to_station_id' => $otherStation->id,
+        ]);
+        User::factory()->create(['home_id' => $station->id]);
+
+        $response = $this->getJson('/api/v1/stations/' . $station->id . '/usages');
+
+        $response->assertOk();
+        $response->assertJson(['data' => [
+            'stopovers' => 0,
+            'trips' => 0,
+            'events' => 0,
+            'eventSuggestions' => 0,
+            'identifiers' => 1,
+            'routeSegments' => 1,
+            'homeUsers' => 1,
+        ]]);
+    }
+
+    public function test_user_cannot_view_station_usages(): void
+    {
+        Passport::actingAs(User::factory()->create(), ['*']);
+
+        $station = Station::factory()->create();
+
+        $this->getJson('/api/v1/stations/' . $station->id . '/usages')->assertForbidden();
     }
 
     public function test_user_cannot_merge_station(): void

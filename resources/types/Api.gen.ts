@@ -438,6 +438,33 @@ export interface MentionDto {
   length: number;
 }
 
+/** StationUsageDto */
+export interface StationUsageDto {
+  /** @example 12 */
+  stopovers: number;
+  /**
+   * Trips with this station as origin or destination
+   * @example 3
+   */
+  trips: number;
+  /** @example 0 */
+  events: number;
+  /** @example 0 */
+  eventSuggestions: number;
+  /** @example 2 */
+  identifiers: number;
+  /**
+   * Route segments starting or ending at this station
+   * @example 4
+   */
+  routeSegments: number;
+  /**
+   * Users with this station as home station
+   * @example 1
+   */
+  homeUsers: number;
+}
+
 /**
  * Station
  * train station model
@@ -6186,6 +6213,29 @@ export class Api<
   };
   stations = {
     /**
+     * @description Admin only. Returns the number of records referencing this station. The station can only be deleted when all counts are zero.
+     *
+     * @tags Stations
+     * @name GetStationUsages
+     * @summary Get station usage counts
+     * @request GET:/stations/{id}/usages
+     * @secure
+     */
+    getStationUsages: (id: number, params: RequestParams = {}) =>
+      this.request<
+        {
+          data: StationUsageDto;
+        },
+        void
+      >({
+        path: `/stations/${id}/usages`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * @description This request returns a single station object
      *
      * @tags Checkin
@@ -6213,6 +6263,30 @@ export class Api<
         query: query,
         secure: true,
         format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Admin only. Deletes a station. Only possible when no other records reference the station, see the usages endpoint.
+     *
+     * @tags Stations
+     * @name DeleteStation
+     * @summary Delete a station
+     * @request DELETE:/stations/{id}
+     * @secure
+     */
+    deleteStation: (id: number, params: RequestParams = {}) =>
+      this.request<
+        void,
+        void | {
+          /** @example "Station is still in use and cannot be deleted" */
+          message: string;
+          data: StationUsageDto;
+        }
+      >({
+        path: `/stations/${id}`,
+        method: "DELETE",
+        secure: true,
         ...params,
       }),
 

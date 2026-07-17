@@ -7,6 +7,7 @@ import BackendLayout from '../../layouts/BackendLayout.vue';
 import StationCoordinatesMap from './partials/StationCoordinatesMap.vue';
 import StationDetailsCard from './partials/StationDetailsCard.vue';
 import StationIdentifiersCard from './partials/StationIdentifiersCard.vue';
+import StationUsageCard from './partials/StationUsageCard.vue';
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 
@@ -108,6 +109,8 @@ watch(stationId, fetchStation);
 
                 <!-- Right column -->
                 <div class="space-y-4">
+                    <StationUsageCard :station="station" />
+
                     <!-- Nearby stations -->
                     <div class="card bg-base-100 shadow">
                         <div class="card-body">

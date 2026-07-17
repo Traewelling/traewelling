@@ -5110,6 +5110,63 @@
                 ]
             }
         },
+        "/stations/{id}/usages": {
+            "get": {
+                "tags": [
+                    "Stations"
+                ],
+                "summary": "Get station usage counts",
+                "description": "Admin only. Returns the number of records referencing this station. The station can only be deleted when all counts are zero.",
+                "operationId": "getStationUsages",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Station ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usage counts",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/StationUsageDto"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Station not found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "*"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/stations/{id}": {
             "get": {
                 "tags": [
@@ -5164,6 +5221,69 @@
                     {
                         "passport": [
                             "create-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Stations"
+                ],
+                "summary": "Delete a station",
+                "description": "Admin only. Deletes a station. Only possible when no other records reference the station, see the usages endpoint.",
+                "operationId": "deleteStation",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Station ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Station deleted"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Station not found"
+                    },
+                    "409": {
+                        "description": "Station is still referenced by other records",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Station is still in use and cannot be deleted"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/StationUsageDto"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "*"
                         ]
                     },
                     {
@@ -10569,6 +10689,52 @@
                 "xml": {
                     "name": "Mention"
                 }
+            },
+            "StationUsageDto": {
+                "title": "StationUsageDto",
+                "required": [
+                    "stopovers",
+                    "trips",
+                    "events",
+                    "eventSuggestions",
+                    "identifiers",
+                    "routeSegments",
+                    "homeUsers"
+                ],
+                "properties": {
+                    "stopovers": {
+                        "type": "integer",
+                        "example": 12
+                    },
+                    "trips": {
+                        "description": "Trips with this station as origin or destination",
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "events": {
+                        "type": "integer",
+                        "example": 0
+                    },
+                    "eventSuggestions": {
+                        "type": "integer",
+                        "example": 0
+                    },
+                    "identifiers": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "routeSegments": {
+                        "description": "Route segments starting or ending at this station",
+                        "type": "integer",
+                        "example": 4
+                    },
+                    "homeUsers": {
+                        "description": "Users with this station as home station",
+                        "type": "integer",
+                        "example": 1
+                    }
+                },
+                "type": "object"
             },
             "Station": {
                 "title": "Station",

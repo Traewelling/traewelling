@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\DataProviders\Motis;
+use App\Dto\StationUsageDto;
 use App\Enum\DataProvider;
 use App\Enum\StationIdentifierType;
 use App\Http\Resources\StationResource;
@@ -21,6 +22,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Log;
 use OpenApi\Attributes as OA;
@@ -46,24 +48,82 @@ class StationController extends Controller
         return new StationResource($station);
     }
 
-    public function destroy(int $id): StationResource|JsonResponse
+    #[OA\Get(
+        path: '/stations/{id}/usages',
+        operationId: 'getStationUsages',
+        description: 'Admin only. Returns the number of records referencing this station. The station can only be deleted when all counts are zero.',
+        summary: 'Get station usage counts',
+        security: [['passport' => ['*']], ['token' => []]],
+        tags: ['Stations'],
+        parameters: [
+            new OA\Parameter(name: 'id', description: 'Station ID', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Usage counts',
+                content: new OA\JsonContent(
+                    required: ['data'],
+                    properties: [
+                        new OA\Property(property: 'data', ref: StationUsageDto::class),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 403, description: 'Forbidden'),
+            new OA\Response(response: 404, description: 'Station not found'),
+        ],
+    )]
+    public function usages(int $id): JsonResponse
+    {
+        $station = Station::findOrFail($id);
+        $this->authorize('update', $station);
+
+        return response()->json(['data' => $this->stationRepository->getUsageCounts($station)]);
+    }
+
+    #[OA\Delete(
+        path: '/stations/{id}',
+        operationId: 'deleteStation',
+        description: 'Admin only. Deletes a station. Only possible when no other records reference the station, see the usages endpoint.',
+        summary: 'Delete a station',
+        security: [['passport' => ['*']], ['token' => []]],
+        tags: ['Stations'],
+        parameters: [
+            new OA\Parameter(name: 'id', description: 'Station ID', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
+        ],
+        responses: [
+            new OA\Response(response: 204, description: 'Station deleted'),
+            new OA\Response(response: 403, description: 'Forbidden'),
+            new OA\Response(response: 404, description: 'Station not found'),
+            new OA\Response(
+                response: 409,
+                description: 'Station is still referenced by other records',
+                content: new OA\JsonContent(
+                    required: ['message', 'data'],
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string', example: 'Station is still in use and cannot be deleted'),
+                        new OA\Property(property: 'data', ref: StationUsageDto::class),
+                    ],
+                ),
+            ),
+        ],
+    )]
+    public function destroy(int $id): Response|JsonResponse
     {
         $station = Station::findOrFail($id);
         $this->authorize('delete', $station);
 
-        if (
-            Stopover::where('train_station_id', $station->id)->exists()
-            || Event::where('station_id', $station->id)->exists()
-            || EventSuggestion::where('station_id', $station->id)->exists()
-            || Stopover::where('train_station_id', $station->id)->exists()
-            || Trip::where('origin_id', $station->id)->orWhere('destination_id', $station->id)->exists()
-        ) {
-            return $this->sendError('Station is still in use and cannot be deleted', 409);
+        $usages = $this->stationRepository->getUsageCounts($station);
+        if ($usages->isInUse()) {
+            return response()->json([
+                'message' => 'Station is still in use and cannot be deleted',
+                'data' => $usages,
+            ], 409);
         }
 
         $station->delete();
 
-        return $this->sendResponse(true);
+        return response()->noContent();
     }
 
     /**

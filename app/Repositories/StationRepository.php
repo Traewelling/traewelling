@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
+use App\Dto\StationUsageDto;
 use App\Enum\StationIdentifierType;
+use App\Models\Event;
+use App\Models\EventSuggestion;
 use App\Models\RouteSegment;
 use App\Models\Station;
 use App\Models\StationIdentifier;
@@ -153,6 +156,19 @@ class StationRepository
         return StationIdentifier::where('id', $identifierId)
             ->where('station_id', $stationId)
             ->first();
+    }
+
+    public function getUsageCounts(Station $station): StationUsageDto
+    {
+        return new StationUsageDto(
+            stopovers: Stopover::where('train_station_id', $station->id)->count(),
+            trips: Trip::where('origin_id', $station->id)->orWhere('destination_id', $station->id)->count(),
+            events: Event::where('station_id', $station->id)->count(),
+            eventSuggestions: EventSuggestion::where('station_id', $station->id)->count(),
+            identifiers: StationIdentifier::where('station_id', $station->id)->count(),
+            routeSegments: RouteSegment::where('from_station_id', $station->id)->orWhere('to_station_id', $station->id)->count(),
+            homeUsers: User::where('home_id', $station->id)->count(),
+        );
     }
 
     public function moveIdentifierToStation(StationIdentifier $identifier, Station $targetStation): int
