@@ -41,6 +41,7 @@ use App\Http\Controllers\API\v1\StationIdentifierController;
 use App\Http\Controllers\API\v1\StatisticsController;
 use App\Http\Controllers\API\v1\StatusController;
 use App\Http\Controllers\API\v1\StatusTagController;
+use App\Http\Controllers\API\v1\StopoverController;
 use App\Http\Controllers\API\v1\TicketController;
 use App\Http\Controllers\API\v1\TokenController;
 use App\Http\Controllers\API\v1\TransportController;
@@ -249,6 +250,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::post('route-segments/{id}/assign-stopovers', [RouteSegmentController::class, 'assignStopovers']);
         Route::post('route-segments/{id}/brouter-preview', [RouteSegmentController::class, 'brouterPreview']);
         Route::post('route-segments/{id}/polyline', [RouteSegmentController::class, 'applyPolyline']);
+
+        Route::delete('stopovers/{id}', [StopoverController::class, 'destroy'])->whereNumber('id');
 
         Route::apiResource('tickets', TicketController::class);
         Route::get('tickets/{id}/statistics', [TicketController::class, 'statistics'])->middleware(['scope:read-statistics']);

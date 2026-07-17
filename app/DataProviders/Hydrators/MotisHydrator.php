@@ -11,8 +11,10 @@ use App\Dto\Internal\Departure;
 use App\Dto\Internal\FilteredDepartures;
 use App\Enum\DataProvider;
 use App\Enum\MotisCategory;
+use App\Enum\StationIdentifierType;
 use App\Models\Operator;
 use App\Models\Station;
+use App\Models\StationIdentifier;
 use App\Models\Stopover;
 use App\Models\Trip;
 use App\Services\LicenseService;
@@ -47,21 +49,16 @@ class MotisHydrator
     public function parseLegToNewStopovers(mixed $leg, DataProvider $source): Collection
     {
         $rawStopovers = $leg['intermediateStops'];
-        $stopoverCacheFromDB = $this->stationRepository->getStationsByIdentifiers(array_column($rawStopovers, 'stopId'), $source);
-
         // add origin and destination to stopovers
         $rawStopovers[] = $leg['from'];
         $rawStopovers[] = $leg['to'];
         $realTime = $leg['realTime'] ?? false;
 
+        $stopoverCacheFromDB = $this->stationRepository->getStationsByIdentifiers(array_column($rawStopovers, 'stopId'), $source);
+
         $stopovers = collect();
         foreach ($rawStopovers as $rawStop) {
-            $station = $stopoverCacheFromDB->where('stationIdentifiers', function ($query) use ($rawStop, $source) {
-                $query->where('identifier', $rawStop['stopId'])
-                    ->where('type', 'motis')
-                    ->where('origin', $source->value);
-            })->first();
-
+            $station = $this->findStationInCache($stopoverCacheFromDB, $rawStop['stopId'], $source);
             $stopover = new Stopover($this->getStopoverData($station, $rawStop, $source, $realTime));
             $stopovers->push($stopover);
         }
@@ -72,37 +69,21 @@ class MotisHydrator
     public function parseLegToUpdateStopovers(mixed $leg, Trip $trip, DataProvider $source): Collection
     {
         $rawStopovers = $leg['intermediateStops'];
-        $stopoverCacheFromDB = $this->stationRepository->getStationsByIdentifiers(array_column($rawStopovers, 'stopId'), $source);
-
         // add origin and destination to stopovers
         $rawStopovers[] = $leg['from'];
         $rawStopovers[] = $leg['to'];
         $realTime = $leg['realTime'] ?? false;
 
+        $stopoverCacheFromDB = $this->stationRepository->getStationsByIdentifiers(array_column($rawStopovers, 'stopId'), $source);
+
         $stopovers = collect();
-        $key = ['trip_id', 'train_station_id', 'departure_planned', 'arrival_planned'];
         foreach ($rawStopovers as $rawStop) {
-            $station = $stopoverCacheFromDB->where('stationIdentifiers', function ($query) use ($rawStop, $source) {
-                $query->where('identifier', $rawStop['stopId'])
-                    ->where('type', 'motis')
-                    ->where('origin', $source->value);
-            })->first();
+            $station = $this->findStationInCache($stopoverCacheFromDB, $rawStop['stopId'], $source);
             $stopoverData = $this->getStopoverData($station, $rawStop, $source, $realTime);
             $stopoverData['trip_id'] = $trip->trip_id;
 
             try {
-                $stopover = Stopover::upsert(
-                    $stopoverData,
-                    $key,
-                    [
-                        'arrival_real',
-                        'departure_real',
-                        'arrival_platform_real',
-                        'departure_platform_real',
-                        'cancelled',
-                    ]
-                );
-                $stopovers->push($stopover);
+                $stopovers->push($this->updateOrCreateStopover($stopoverData));
             } catch (Exception $exception) {
                 Log::error('Failed to upsert stopover', [
                     'stopover' => $rawStop,
@@ -112,6 +93,50 @@ class MotisHydrator
         }
 
         return $stopovers;
+    }
+
+    private function findStationInCache(Collection $stations, string $stopId, DataProvider $source): ?Station
+    {
+        return $stations->first(
+            fn (Station $station) => $station->stationIdentifiers->contains(
+                fn (StationIdentifier $identifier) => $identifier->identifier === $stopId
+                    && $identifier->type === StationIdentifierType::MOTIS
+                    && $identifier->origin === $source->value
+            )
+        );
+    }
+
+    /**
+     * Matches the existing stopover by trip and planned times so that a changed station
+     * assignment (e.g. after merging duplicate stations) updates the existing row instead
+     * of inserting a duplicate stopover for the same stop.
+     *
+     * @param  array<string, mixed>  $stopoverData
+     */
+    private function updateOrCreateStopover(array $stopoverData): Stopover
+    {
+        $query = fn () => Stopover::where('trip_id', $stopoverData['trip_id'])
+            ->where('arrival_planned', $stopoverData['arrival_planned'])
+            ->where('departure_planned', $stopoverData['departure_planned']);
+
+        $stopover = $query()->where('train_station_id', $stopoverData['train_station_id'])->first()
+                    ?? $query()->first();
+
+        if ($stopover === null) {
+            return Stopover::create($stopoverData);
+        }
+
+        $stopover->update([
+            'train_station_id' => $stopoverData['train_station_id'],
+            'station_identifier_id' => $stopoverData['station_identifier_id'],
+            'arrival_real' => $stopoverData['arrival_real'],
+            'departure_real' => $stopoverData['departure_real'],
+            'arrival_platform_real' => $stopoverData['arrival_platform_real'],
+            'departure_platform_real' => $stopoverData['departure_platform_real'],
+            'cancelled' => $stopoverData['cancelled'],
+        ]);
+
+        return $stopover;
     }
 
     private function getStopoverData($station, mixed $rawStop, DataProvider $source, bool $realTime = false): array

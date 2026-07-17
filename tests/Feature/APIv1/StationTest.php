@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\APIv1;
 
+use App\Models\RouteSegment;
 use App\Models\Station;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -129,6 +130,35 @@ class StationTest extends ApiTestCase
         $response->assertOk();
         $this->assertDatabaseMissing('train_stations', [
             'id' => $oldStation->id,
+        ]);
+    }
+
+    public function test_merge_station_updates_route_segments_and_home_stations(): void
+    {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        Passport::actingAs($admin, ['*']);
+
+        $oldStation = Station::factory()->create();
+        $newStation = Station::factory()->create();
+        $otherStation = Station::factory()->create();
+
+        $routeSegment = RouteSegment::factory()->create([
+            'from_station_id' => $oldStation->id,
+            'to_station_id' => $otherStation->id,
+        ]);
+        $homeUser = User::factory()->create(['home_id' => $oldStation->id]);
+
+        $this->put('/api/v1/station/' . $oldStation->id . '/merge/' . $newStation->id)->assertOk();
+
+        $this->assertDatabaseHas('route_segments', [
+            'id' => $routeSegment->id,
+            'from_station_id' => $newStation->id,
+            'to_station_id' => $otherStation->id,
+        ]);
+        $this->assertDatabaseHas('users', [
+            'id' => $homeUser->id,
+            'home_id' => $newStation->id,
         ]);
     }
 

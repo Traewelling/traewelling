@@ -6417,7 +6417,7 @@ export class Api<
       }),
 
     /**
-     * @description Admin only. Move a station identifier to a different station.
+     * @description Admin only. Move a station identifier to a different station. Also moves the stopovers created via this identifier, updates origin/destination of affected trips and re-points route segments. Stopovers that would collide with an already existing stopover on the target station are skipped and reported.
      *
      * @tags Stations
      * @name MoveStationIdentifier
@@ -6434,12 +6434,30 @@ export class Api<
       },
       params: RequestParams = {},
     ) =>
-      this.request<void, void>({
+      this.request<
+        {
+          data: {
+            /** @example 12 */
+            movedStopovers: number;
+            /**
+             * Stopovers not moved because an identical stopover already exists on the target station
+             * @example 1
+             */
+            skippedStopovers: number;
+            /** @example 3 */
+            updatedTrips: number;
+            /** @example 2 */
+            updatedRouteSegments: number;
+          };
+        },
+        void
+      >({
         path: `/stations/${stationId}/identifiers/${identifierId}/move`,
         method: "PUT",
         body: data,
         secure: true,
         type: ContentType.Json,
+        format: "json",
         ...params,
       }),
   };
@@ -7105,6 +7123,23 @@ export class Api<
         method: "GET",
         secure: true,
         format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Admin only. Deletes a stopover, e.g. a duplicate created by a real-time refresh. Stopovers referenced by checkins cannot be deleted.
+     *
+     * @tags Trips
+     * @name DeleteStopover
+     * @summary Delete a stopover
+     * @request DELETE:/stopovers/{id}
+     * @secure
+     */
+    deleteStopover: (id: number, params: RequestParams = {}) =>
+      this.request<void, void>({
+        path: `/stopovers/${id}`,
+        method: "DELETE",
+        secure: true,
         ...params,
       }),
   };

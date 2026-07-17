@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowLeft } from '@lucide/vue';
+import { ArrowLeft, Trash2 } from '@lucide/vue';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import {
@@ -22,6 +22,7 @@ const error = ref<string | null>(null);
 const rerouting = ref(false);
 const rerouteSuccess = ref(false);
 const creatingSegment = ref<number | null>(null);
+const deletingStopover = ref<number | null>(null);
 
 const identifierModalOpen = ref(false);
 const identifierModalStopover = ref<AdminStopoverResource | null>(null);
@@ -122,6 +123,20 @@ async function createSegment(
     } catch (e) {
         error.value = e instanceof Error ? e.message : 'Failed to create segment';
         creatingSegment.value = null;
+    }
+}
+
+async function deleteStopover(stopover: AdminStopoverResource): Promise<void> {
+    if (!confirm(`Delete stopover "${stopover.station?.name}"?`)) return;
+    deletingStopover.value = stopover.id!;
+    error.value = null;
+    try {
+        await api.stopovers.deleteStopover(stopover.id!);
+        await fetchTrip();
+    } catch (e) {
+        error.value = e instanceof Error ? e.message : 'Failed to delete stopover (referenced by checkins?)';
+    } finally {
+        deletingStopover.value = null;
     }
 }
 
@@ -300,6 +315,7 @@ watch(tripId, fetchTrip);
                                     <col class="w-20" />
                                     <col class="w-28" />
                                     <col class="w-28" />
+                                    <col class="w-10" />
                                 </colgroup>
                                 <thead>
                                     <tr>
@@ -307,6 +323,7 @@ watch(tripId, fetchTrip);
                                         <th>ID</th>
                                         <th>Arrival</th>
                                         <th>Departure</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -333,10 +350,24 @@ watch(tripId, fetchTrip);
                                                     / {{ formatTime(stopover.departureReal) }}
                                                 </span>
                                             </td>
+                                            <td class="text-right">
+                                                <button
+                                                    class="btn btn-xs btn-ghost text-error"
+                                                    :disabled="deletingStopover === stopover.id"
+                                                    title="Delete stopover"
+                                                    @click="deleteStopover(stopover)"
+                                                >
+                                                    <span
+                                                        v-if="deletingStopover === stopover.id"
+                                                        class="loading loading-spinner loading-xs"
+                                                    />
+                                                    <Trash2 v-else class="w-3 h-3" />
+                                                </button>
+                                            </td>
                                         </tr>
 
                                         <tr v-if="index < (trip.stopovers?.length ?? 0) - 1" class="bg-base-200">
-                                            <td colspan="4" class="py-1 text-center text-xs text-base-content/50">
+                                            <td colspan="5" class="py-1 text-center text-xs text-base-content/50">
                                                 <template v-if="stopover.routeSegmentId">
                                                     <a
                                                         :href="`/admin/routesegment/${stopover.routeSegmentId}`"

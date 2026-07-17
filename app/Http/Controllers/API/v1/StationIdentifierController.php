@@ -133,7 +133,9 @@ class StationIdentifierController extends Controller
     #[OA\Put(
         path: '/stations/{stationId}/identifiers/{identifierId}/move',
         operationId: 'moveStationIdentifier',
-        description: 'Admin only. Move a station identifier to a different station.',
+        description: 'Admin only. Move a station identifier to a different station. '
+                     . 'Also moves the stopovers created via this identifier, updates origin/destination of affected trips and re-points route segments. '
+                     . 'Stopovers that would collide with an already existing stopover on the target station are skipped and reported.',
         summary: 'Move a station identifier',
         security: [['passport' => ['*']], ['token' => []]],
         requestBody: new OA\RequestBody(
@@ -151,7 +153,26 @@ class StationIdentifierController extends Controller
             new OA\Parameter(name: 'identifierId', description: 'Identifier UUID', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid')),
         ],
         responses: [
-            new OA\Response(response: 204, description: 'Moved'),
+            new OA\Response(
+                response: 200,
+                description: 'Moved',
+                content: new OA\JsonContent(
+                    required: ['data'],
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            required: ['movedStopovers', 'skippedStopovers', 'updatedTrips', 'updatedRouteSegments'],
+                            properties: [
+                                new OA\Property(property: 'movedStopovers', type: 'integer', example: 12),
+                                new OA\Property(property: 'skippedStopovers', description: 'Stopovers not moved because an identical stopover already exists on the target station', type: 'integer', example: 1),
+                                new OA\Property(property: 'updatedTrips', type: 'integer', example: 3),
+                                new OA\Property(property: 'updatedRouteSegments', type: 'integer', example: 2),
+                            ],
+                            type: 'object',
+                        ),
+                    ],
+                ),
+            ),
             new OA\Response(response: 403, description: 'Forbidden'),
             new OA\Response(response: 404, description: 'Station or identifier not found'),
             new OA\Response(response: 422, description: 'Validation error'),
@@ -166,6 +187,10 @@ class StationIdentifierController extends Controller
             'target_station_id' => ['required', 'integer', 'exists:train_stations,id'],
         ]);
 
+        if ((int) $validated['target_station_id'] === $stationId) {
+            return $this->sendError('Target station must be different from the source station', 422);
+        }
+
         $identifier = $this->stationRepository->getIdentifierForStation($identifierId, $stationId);
         if ($identifier === null) {
             return $this->sendError('Identifier not found for this station', 404);
@@ -174,8 +199,13 @@ class StationIdentifierController extends Controller
         $targetStation = Station::findOrFail($validated['target_station_id']);
         $this->authorize('update', $targetStation);
 
-        $this->stationService->moveIdentifier($identifier, $targetStation, $request->user());
+        $result = $this->stationService->moveIdentifier($identifier, $targetStation, $request->user());
 
-        return response()->noContent();
+        return response()->json(['data' => [
+            'movedStopovers' => $result->movedStopovers,
+            'skippedStopovers' => $result->skippedStopovers,
+            'updatedTrips' => $result->updatedTrips,
+            'updatedRouteSegments' => $result->updatedRouteSegments,
+        ]]);
     }
 }

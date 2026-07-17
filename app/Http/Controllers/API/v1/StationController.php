@@ -9,10 +9,12 @@ use App\Http\Resources\StationResource;
 use App\Models\Checkin;
 use App\Models\Event;
 use App\Models\EventSuggestion;
+use App\Models\RouteSegment;
 use App\Models\Station;
 use App\Models\StationIdentifier;
 use App\Models\Stopover;
 use App\Models\Trip;
+use App\Models\User;
 use App\Repositories\StationRepository;
 use App\Services\Checkin\StationService;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -107,6 +109,9 @@ class StationController extends Controller
             Trip::where('destination_id', $oldStation->id)->update(['destination_id' => $newStation->id]);
             Event::where('station_id', $oldStation->id)->update(['station_id' => $newStation->id]);
             EventSuggestion::where('station_id', $oldStation->id)->update(['station_id' => $newStation->id]);
+            RouteSegment::where('from_station_id', $oldStation->id)->update(['from_station_id' => $newStation->id]);
+            RouteSegment::where('to_station_id', $oldStation->id)->update(['to_station_id' => $newStation->id]);
+            User::where('home_id', $oldStation->id)->update(['home_id' => $newStation->id]);
 
             $oldStation->delete();
 

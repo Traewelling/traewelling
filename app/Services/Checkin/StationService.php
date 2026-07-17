@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace App\Services\Checkin;
 
 use App\DataProviders\DataProviderInterface;
+use App\Dto\IdentifierMoveResult;
 use App\Enum\StationIdentifierType;
 use App\Models\Station;
 use App\Models\StationIdentifier;
 use App\Models\User;
 use App\Repositories\StationRepository;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class StationService
 {
@@ -51,15 +53,31 @@ class StationService
         return $stations;
     }
 
-    public function moveIdentifier(StationIdentifier $identifier, Station $targetStation, User $actor): void
+    public function moveIdentifier(StationIdentifier $identifier, Station $targetStation, User $actor): IdentifierMoveResult
     {
         $sourceStation = $identifier->station;
 
-        $this->stationRepository->moveIdentifierToStation($identifier, $targetStation);
+        $result = DB::transaction(function () use ($identifier, $targetStation): IdentifierMoveResult {
+            $updatedRouteSegments = $this->stationRepository->moveIdentifierToStation($identifier, $targetStation);
+            $stopoverResult = $this->stationRepository->moveStopoversOfIdentifier($identifier, $targetStation);
+            $updatedTrips = $this->stationRepository->updateTripTerminalStations($stopoverResult['tripIds'], $identifier);
+
+            return new IdentifierMoveResult(
+                movedStopovers: $stopoverResult['moved'],
+                skippedStopovers: $stopoverResult['skipped'],
+                updatedTrips: $updatedTrips,
+                updatedRouteSegments: $updatedRouteSegments,
+            );
+        });
 
         activity()->causedBy($actor)
             ->performedOn($identifier)
-            ->log("Moved identifier {$identifier->identifier} ({$identifier->type->value}) from station {$sourceStation->name} ({$sourceStation->id}) to {$targetStation->name} ({$targetStation->id})");
+            ->log(
+                "Moved identifier {$identifier->identifier} ({$identifier->type->value}) from station {$sourceStation->name} ({$sourceStation->id}) to {$targetStation->name} ({$targetStation->id}): "
+                . "{$result->movedStopovers} stopovers moved ({$result->skippedStopovers} skipped), {$result->updatedTrips} trips and {$result->updatedRouteSegments} route segments updated"
+            );
+
+        return $result;
     }
 
     public function createIdentifier(Station $station, StationIdentifierType $type, string $value, User $actor): void

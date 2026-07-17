@@ -5564,7 +5564,7 @@
                     "Stations"
                 ],
                 "summary": "Move a station identifier",
-                "description": "Admin only. Move a station identifier to a different station.",
+                "description": "Admin only. Move a station identifier to a different station. Also moves the stopovers created via this identifier, updates origin/destination of affected trips and re-points route segments. Stopovers that would collide with an already existing stopover on the target station are skipped and reported.",
                 "operationId": "moveStationIdentifier",
                 "parameters": [
                     {
@@ -5607,8 +5607,48 @@
                     }
                 },
                 "responses": {
-                    "204": {
-                        "description": "Moved"
+                    "200": {
+                        "description": "Moved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "data": {
+                                            "required": [
+                                                "movedStopovers",
+                                                "skippedStopovers",
+                                                "updatedTrips",
+                                                "updatedRouteSegments"
+                                            ],
+                                            "properties": {
+                                                "movedStopovers": {
+                                                    "type": "integer",
+                                                    "example": 12
+                                                },
+                                                "skippedStopovers": {
+                                                    "description": "Stopovers not moved because an identical stopover already exists on the target station",
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "updatedTrips": {
+                                                    "type": "integer",
+                                                    "example": 3
+                                                },
+                                                "updatedRouteSegments": {
+                                                    "type": "integer",
+                                                    "example": 2
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "403": {
                         "description": "Forbidden"
@@ -7658,6 +7698,49 @@
                         "passport": [
                             "write-statuses"
                         ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/stopovers/{id}": {
+            "delete": {
+                "tags": [
+                    "Trips"
+                ],
+                "summary": "Delete a stopover",
+                "description": "Admin only. Deletes a stopover, e.g. a duplicate created by a real-time refresh. Stopovers referenced by checkins cannot be deleted.",
+                "operationId": "deleteStopover",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Stopover ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Stopover deleted"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "409": {
+                        "description": "Stopover is referenced by checkins"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
                     },
                     {
                         "token": []
