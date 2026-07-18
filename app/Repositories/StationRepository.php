@@ -161,24 +161,27 @@ class StationRepository
 
     public function moveStopoversToStation(Station $source, Station $target): int
     {
-        $merged = 0;
-        $potentialDuplicates = Stopover::where('train_station_id', $source->id)->get();
-        foreach ($potentialDuplicates as $sourceStopover) {
-            $duplicate = Stopover::where('train_station_id', $target->id)
-                ->where('trip_id', $sourceStopover->trip_id)
-                ->where('departure_planned', $sourceStopover->departure_planned)
-                ->where('arrival_planned', $sourceStopover->arrival_planned)
-                ->first();
+        $collisions = DB::table('train_stopovers as s')
+            ->join('train_stopovers as d', function ($join) use ($target) {
+                $join->on('d.trip_id', '=', 's.trip_id')
+                    ->on('d.arrival_planned', '=', 's.arrival_planned')
+                    ->on('d.departure_planned', '=', 's.departure_planned')
+                    ->where('d.train_station_id', '=', $target->id);
+            })
+            ->where('s.train_station_id', $source->id)
+            ->select('s.id as source_id', 'd.id as target_id')
+            ->get();
 
-            if ($duplicate) {
-                Checkin::where('origin_stopover_id', $sourceStopover->id)->update(['origin_stopover_id' => $duplicate->id]);
-                Checkin::where('destination_stopover_id', $sourceStopover->id)->update(['destination_stopover_id' => $duplicate->id]);
-                $sourceStopover->delete();
-                $merged++;
-            }
+        foreach ($collisions as $collision) {
+            Checkin::where('origin_stopover_id', $collision->source_id)->update(['origin_stopover_id' => $collision->target_id]);
+            Checkin::where('destination_stopover_id', $collision->source_id)->update(['destination_stopover_id' => $collision->target_id]);
         }
 
-        return $merged + Stopover::where('train_station_id', $source->id)->update(['train_station_id' => $target->id]);
+        $merged = $collisions->isEmpty() ? 0 : Stopover::whereIn('id', $collisions->pluck('source_id'))->delete();
+
+        $moved = Stopover::where('train_station_id', $source->id)->update(['train_station_id' => $target->id]);
+
+        return $merged + $moved;
     }
 
     public function moveTripTerminalsToStation(Station $source, Station $target): int
@@ -270,30 +273,47 @@ class StationRepository
     }
 
     /**
-     * Updates origin_id/destination_id of the given trips when their first/last stopover
-     * was created via the given identifier and now points to a different station.
+     * Updates origin_id/destination_id of the given trips when their first/last stopover was
+     * created via the given identifier and now points to a different station.
      *
      * @param  array<int, string>  $tripIds
      */
     public function updateTripTerminalStations(array $tripIds, StationIdentifier $identifier): int
     {
+        if ($tripIds === []) {
+            return 0;
+        }
+
+        // matches Trip::stopovers ordering (arrival_planned, departure_planned); id breaks ties
+        $terminal = static fn (string $direction): string => "SELECT s.%s FROM train_stopovers s
+             WHERE s.trip_id = hafas_trips.trip_id
+             ORDER BY s.arrival_planned {$direction}, s.departure_planned {$direction}, s.id {$direction}
+             LIMIT 1";
+
         $updated = 0;
+        foreach (array_chunk($tripIds, 1000) as $chunk) {
+            $placeholders = implode(',', array_fill(0, count($chunk), '?'));
 
-        foreach (Trip::with('stopovers')->whereIn('trip_id', $tripIds)->cursor() as $trip) {
-            $firstStopover = $trip->stopovers->first();
-            $lastStopover = $trip->stopovers->last();
-
-            if ($firstStopover?->station_identifier_id === $identifier->id) {
-                $trip->origin_id = $firstStopover->train_station_id;
-            }
-            if ($lastStopover?->station_identifier_id === $identifier->id) {
-                $trip->destination_id = $lastStopover->train_station_id;
-            }
-
-            if ($trip->isDirty()) {
-                $trip->save();
-                $updated++;
-            }
+            // origin follows the first stopover, destination the last, but only when that terminal
+            // stopover actually belongs to the moved identifier
+            $updated += DB::update(
+                sprintf(
+                    'UPDATE hafas_trips SET origin_id = (%s) WHERE trip_id IN (%s) AND (%s) = ?',
+                    sprintf($terminal('ASC'), 'train_station_id'),
+                    $placeholders,
+                    sprintf($terminal('ASC'), 'station_identifier_id')
+                ),
+                [...$chunk, $identifier->id]
+            );
+            $updated += DB::update(
+                sprintf(
+                    'UPDATE hafas_trips SET destination_id = (%s) WHERE trip_id IN (%s) AND (%s) = ?',
+                    sprintf($terminal('DESC'), 'train_station_id'),
+                    $placeholders,
+                    sprintf($terminal('DESC'), 'station_identifier_id')
+                ),
+                [...$chunk, $identifier->id]
+            );
         }
 
         return $updated;

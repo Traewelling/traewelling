@@ -6,6 +6,7 @@ import { Api, type Station, type StationUsageDto } from '../../../../types/Api.g
 import StationMoveTargetModal from './StationMoveTargetModal.vue';
 
 const props = defineProps<{ station: Station; nearbyStations: Station[] }>();
+const emit = defineEmits<{ changed: [] }>();
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 const router = useRouter();
@@ -35,6 +36,8 @@ const movableCount = computed(() =>
     usages.value === null ? 0 : MOVABLE_TYPES.reduce((sum, type) => sum + (usages.value![type] ?? 0), 0),
 );
 
+const identifiers = computed(() => props.station.identifiers ?? []);
+
 async function fetchUsages(): Promise<void> {
     loading.value = true;
     error.value = null;
@@ -51,29 +54,64 @@ async function fetchUsages(): Promise<void> {
 // move modal
 const moveModalOpen = ref(false);
 const moveTypes = ref<MovableType[]>([]);
+const moveIdentifiersToo = ref(false);
 const moving = ref(false);
 const moveError = ref<string | null>(null);
+const moveProgress = ref<string | null>(null);
 
-function openMoveModal(types: MovableType[]): void {
+const moveSummaryLabel = computed(() => {
+    const parts = moveIdentifiersToo.value ? [usageLabels.identifiers] : [];
+    parts.push(...moveTypes.value.map((t) => usageLabels[t] ?? t));
+    return parts.join(', ');
+});
+
+function openMoveModal(types: MovableType[], includeIdentifiers = false): void {
     moveTypes.value = types;
+    moveIdentifiersToo.value = includeIdentifiers;
     moveError.value = null;
+    moveProgress.value = null;
     moveModalOpen.value = true;
+}
+
+function moveAll(): void {
+    // only move types that actually have references, plus identifiers if present
+    const types = MOVABLE_TYPES.filter((type) => (usages.value?.[type] ?? 0) > 0);
+    openMoveModal(types, identifiers.value.length > 0);
 }
 
 async function confirmMove(targetId: number): Promise<void> {
     moving.value = true;
     moveError.value = null;
+    moveProgress.value = null;
     try {
-        await api.stations.moveStationUsages(props.station.id!, {
-            target_station_id: targetId,
-            types: moveTypes.value,
-        });
+        // move identifiers first, one after another, so their linked stopovers/trips/route
+        // segments are reassigned before the remaining references get swept over by station id
+        if (moveIdentifiersToo.value) {
+            const list = identifiers.value;
+            for (let i = 0; i < list.length; i++) {
+                moveProgress.value = `Moving identifier ${i + 1}/${list.length}...`;
+                await api.stations.moveStationIdentifier(props.station.id!, list[i].id!, {
+                    target_station_id: targetId,
+                });
+            }
+        }
+
+        if (moveTypes.value.length > 0) {
+            moveProgress.value = 'Moving remaining references...';
+            await api.stations.moveStationUsages(props.station.id!, {
+                target_station_id: targetId,
+                types: moveTypes.value,
+            });
+        }
+
         moveModalOpen.value = false;
         await fetchUsages();
+        emit('changed');
     } catch (e) {
         moveError.value = e instanceof Error ? e.message : 'Move failed';
     } finally {
         moving.value = false;
+        moveProgress.value = null;
     }
 }
 
@@ -144,10 +182,10 @@ watch(() => props.station, fetchUsages);
 
                 <div class="flex items-center gap-2 mt-2 flex-wrap">
                     <button
-                        v-if="movableCount > 0"
+                        v-if="movableCount > 0 || identifiers.length > 0"
                         class="btn btn-sm"
                         :disabled="moving"
-                        @click="openMoveModal([...MOVABLE_TYPES])"
+                        @click="moveAll"
                     >
                         <ArrowRightLeft class="w-4 h-4" />
                         Move all to another station
@@ -176,7 +214,9 @@ watch(() => props.station, fetchUsages);
         @close="moveModalOpen = false"
         @confirm="confirmMove"
     >
-        Moving:
-        <span class="font-medium">{{ moveTypes.map((t) => usageLabels[t] ?? t).join(', ') }}</span>
+        <template v-if="moveProgress">{{ moveProgress }}</template>
+        <template v-else>
+            Moving: <span class="font-medium">{{ moveSummaryLabel }}</span>
+        </template>
     </StationMoveTargetModal>
 </template>
