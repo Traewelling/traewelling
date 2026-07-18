@@ -6,6 +6,7 @@ namespace App\DataProviders\Hydrators;
 
 use App\DataProviders\Repositories\MotisLicenseRepository;
 use App\DataProviders\Repositories\StationRepository;
+use App\Dto\Coordinate;
 use App\Dto\Internal\BahnTrip;
 use App\Dto\Internal\Departure;
 use App\Dto\Internal\FilteredDepartures;
@@ -17,6 +18,7 @@ use App\Models\Station;
 use App\Models\StationIdentifier;
 use App\Models\Stopover;
 use App\Models\Trip;
+use App\Services\GeoService;
 use App\Services\LicenseService;
 use App\Services\OperatorService;
 use Carbon\Carbon;
@@ -34,16 +36,20 @@ class MotisHydrator
 
     private LicenseService $licenseService;
 
+    private GeoService $geoService;
+
     public function __construct(
         ?MotisLicenseRepository $motisRepository = null,
         ?StationRepository $stationRepository = null,
         ?OperatorService $operatorService = null,
-        ?LicenseService $licenseService = null
+        ?LicenseService $licenseService = null,
+        ?GeoService $geoService = null
     ) {
         $this->motisRepository = $motisRepository ?? new MotisLicenseRepository();
         $this->stationRepository = $stationRepository ?? new StationRepository();
         $this->operatorService = $operatorService ?? new OperatorService();
         $this->licenseService = $licenseService ?? new LicenseService();
+        $this->geoService = $geoService ?? new GeoService();
     }
 
     public function parseLegToNewStopovers(mixed $leg, DataProvider $source): Collection
@@ -58,7 +64,7 @@ class MotisHydrator
 
         $stopovers = collect();
         foreach ($rawStopovers as $rawStop) {
-            $station = $this->findStationInCache($stopoverCacheFromDB, $rawStop['stopId'], $source);
+            $station = $this->findStationInCache($stopoverCacheFromDB, $rawStop, $source);
             $stopover = new Stopover($this->getStopoverData($station, $rawStop, $source, $realTime));
             $stopovers->push($stopover);
         }
@@ -78,7 +84,7 @@ class MotisHydrator
 
         $stopovers = collect();
         foreach ($rawStopovers as $rawStop) {
-            $station = $this->findStationInCache($stopoverCacheFromDB, $rawStop['stopId'], $source);
+            $station = $this->findStationInCache($stopoverCacheFromDB, $rawStop, $source);
             $stopoverData = $this->getStopoverData($station, $rawStop, $source, $realTime);
             $stopoverData['trip_id'] = $trip->trip_id;
 
@@ -95,15 +101,48 @@ class MotisHydrator
         return $stopovers;
     }
 
-    private function findStationInCache(Collection $stations, string $stopId, DataProvider $source): ?Station
+    /**
+     * @param  array<string, mixed>  $rawStop
+     */
+    private function findStationInCache(Collection $stations, array $rawStop, DataProvider $source): ?Station
     {
-        return $stations->first(
+        $station = $stations->first(
             fn (Station $station) => $station->stationIdentifiers->contains(
-                fn (StationIdentifier $identifier) => $identifier->identifier === $stopId
+                fn (StationIdentifier $identifier) => $identifier->identifier === $rawStop['stopId']
                     && $identifier->type === StationIdentifierType::MOTIS
                     && $identifier->origin === $source->value
             )
         );
+
+        if ($station === null || $this->isCachedStationStale($station, $rawStop)) {
+            return null;
+        }
+
+        return $station;
+    }
+
+    /**
+     * Feeds with non-static stop IDs (e.g. CZ) reassign the same stopId to a different physical
+     * stop on every export, so the cached identifier -> station mapping can be stale and would
+     * otherwise plot the trip at the wrong location. Reject a cache hit whose station is farther
+     * than the configured threshold from the fresh raw coordinates so the stopover is re-resolved
+     * and the identifier mapping gets updated.
+     *
+     * @param  array<string, mixed>  $rawStop
+     */
+    private function isCachedStationStale(Station $station, array $rawStop): bool
+    {
+        if ($station->latitude === null || $station->longitude === null
+            || !isset($rawStop['lat'], $rawStop['lon'])) {
+            return false;
+        }
+
+        $distance = $this->geoService->getDistance(
+            new Coordinate((float) $station->latitude, (float) $station->longitude),
+            new Coordinate((float) $rawStop['lat'], (float) $rawStop['lon']),
+        );
+
+        return $distance > config('trwl.motis.max_cache_distance');
     }
 
     /**
