@@ -22,6 +22,7 @@ use App\Models\Station;
 use App\Models\StationIdentifier;
 use App\Models\Trip;
 use App\Services\GeoService;
+use App\Services\Transport\ExcludedSourceService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Client\Response;
@@ -42,6 +43,8 @@ class Motis extends Controller implements DataProviderInterface
 
     private MotisHydrator $hydrator;
 
+    private ExcludedSourceService $excludedSourceService;
+
     private const string API_URL = 'https://api.transitous.org/api';
 
     public function __construct(
@@ -49,13 +52,15 @@ class Motis extends Controller implements DataProviderInterface
         ?GeoService $geoService = null,
         ?TripRepository $tripRepository = null,
         ?MotisHydrator $hydrator = null,
-        ?StationRepository $stationRepository = null
+        ?StationRepository $stationRepository = null,
+        ?ExcludedSourceService $excludedSourceService = null
     ) {
         $this->source = $source;
         $this->geoService = $geoService ?? new GeoService();
         $this->tripRepository = $tripRepository ?? new TripRepository();
         $this->hydrator = $hydrator ?? new MotisHydrator();
         $this->stationRepository = $stationRepository ?? new StationRepository();
+        $this->excludedSourceService = $excludedSourceService ?? new ExcludedSourceService();
     }
 
     public function getStationByRilIdentifier(string $rilIdentifier): ?Station
@@ -450,6 +455,9 @@ class Motis extends Controller implements DataProviderInterface
         $rawStations = [];
         foreach ($json as $stationEntry) {
             if (isset($stationEntry['type']) && $stationEntry['type'] !== 'STOP') {
+                continue;
+            }
+            if ($this->excludedSourceService->isExcluded($stationEntry[$identifier] ?? null)) {
                 continue;
             }
             $rawStations[] = $stationEntry;

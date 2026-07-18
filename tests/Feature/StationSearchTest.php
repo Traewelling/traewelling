@@ -31,4 +31,33 @@ class StationSearchTest extends FeatureTestCase
                 self::HANNOVER_HBF['location']['longitude']);
         }, DataProviderException::class);
     }
+
+    public function test_stations_of_excluded_sources_are_filtered_from_search(): void
+    {
+        config(['trwl.motis.excluded_sources' => ['de-amarillo-bw']]);
+
+        Http::fake([
+            '*/geocode*' => Http::response([
+                [
+                    'type' => 'STOP',
+                    'id' => 'de-DELFI_de:03241:27',
+                    'name' => 'Hannover Hbf',
+                    'lat' => 52.376761,
+                    'lon' => 9.741021,
+                ],
+                [
+                    'type' => 'STOP',
+                    'id' => 'de-amarillo-bw_de:08221:1160',
+                    'name' => 'Heidelberg, Irgendwo',
+                    'lat' => 49.409445,
+                    'lon' => 8.692046,
+                ],
+            ]),
+        ]);
+
+        $stations = $this->dataProvider->getStations('Hannover');
+
+        $this->assertCount(1, $stations, 'Only the non-excluded station may be returned');
+        $this->assertSame('Hannover Hbf', $stations->first()->name);
+    }
 }

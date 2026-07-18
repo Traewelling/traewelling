@@ -32,6 +32,9 @@ return [
         'nearby_radius' => (int) env('MOTIS_NEARBY_RADIUS', 200),
         'results' => (int) env('MOTIS_RESULTS', 50),
         'filter_licenses' => (bool) env('MOTIS_FILTER_LICENSES', false),
+        'excluded_sources' => [
+            'de-amarillo-bw',
+        ],
         // Feeds with non-static stop IDs (e.g. CZ) reassign the same stopId to a different
         // physical stop on every export. A cached identifier whose station is farther than this
         // (in meters) from the fresh raw coordinates is treated as stale and re-resolved.
