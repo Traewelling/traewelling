@@ -246,6 +246,51 @@ class FriendCheckinTest extends ApiTestCase
         $this->assertDatabaseHas('statuses', ['user_id' => $userC->id, 'created_by_user_id' => $userA->id]);
     }
 
+    public function test_including_self_in_with_does_not_create_self_referencing_created_by(): void
+    {
+        // Regression: a user putting their own id in `with` must not produce a status
+        // where created_by_user_id == user_id. Their own checkin is the primary one (created_by null).
+        $userToCheckin = User::factory(['friend_checkin' => FriendCheckinSetting::FRIENDS->value])->create();
+        $user = User::factory()->create();
+
+        FollowController::createOrRequestFollow($user, $userToCheckin);
+        FollowController::createOrRequestFollow($userToCheckin, $user);
+
+        $trip = Trip::factory()->create();
+
+        $this->actAsApiUserWithAllScopes($user);
+        $response = $this->postJson(
+            uri: '/api/v1/trains/checkin',
+            data: [
+                'tripId' => $trip->trip_id,
+                'lineName' => $trip->linename,
+                'start' => $trip->originStation->id,
+                'departure' => $trip->departure,
+                'destination' => $trip->destinationStation->id,
+                'arrival' => $trip->arrival,
+                'with' => [
+                    $user->id, // the checking-in user includes themselves
+                    $userToCheckin->id,
+                ],
+            ],
+        );
+        $response->assertCreated();
+
+        // Exactly one status/checkin for the checking-in user, with created_by null
+        $ownStatuses = Status::whereUserId($user->id)->get();
+        $this->assertCount(1, $ownStatuses);
+        $this->assertNull($ownStatuses->first()->created_by_user_id);
+
+        // No status may reference itself as its own creator
+        $this->assertSame(0, Status::whereColumn('created_by_user_id', 'user_id')->count());
+
+        // The friend is still attributed to the checking-in user
+        $this->assertDatabaseHas('statuses', [
+            'user_id' => $userToCheckin->id,
+            'created_by_user_id' => $user->id,
+        ]);
+    }
+
     public function test_self_checkin_has_null_created_by_user_id(): void
     {
         $user = User::factory()->create();

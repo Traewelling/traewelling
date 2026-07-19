@@ -37,8 +37,8 @@ async function fetchStatus(): Promise<void> {
         status.value = res.data.data ?? null;
         if (status.value) {
             form.value = {
-                origin: status.value.checkin?.origin.id ?? 0,
-                destination: status.value.checkin?.destination.id ?? 0,
+                origin: status.value.checkin?.origin.stopoverId ?? 0,
+                destination: status.value.checkin?.destination.stopoverId ?? 0,
                 body: status.value.body ?? '',
                 visibility: status.value.visibility ?? 0,
                 business: status.value.business ?? 0,
@@ -256,7 +256,11 @@ onMounted(() => fetchStatus());
                                         required
                                     >
                                         <option :value="0" disabled>Select origin...</option>
-                                        <option v-for="s in status.stopovers ?? []" :key="s.id" :value="s.id">
+                                        <option
+                                            v-for="s in status.stopovers ?? []"
+                                            :key="s.stopoverId"
+                                            :value="s.stopoverId"
+                                        >
                                             {{ s.name }}
                                             (D:
                                             {{
@@ -279,7 +283,11 @@ onMounted(() => fetchStatus());
                                         required
                                     >
                                         <option :value="0" disabled>Select destination...</option>
-                                        <option v-for="s in status.stopovers ?? []" :key="s.id" :value="s.id">
+                                        <option
+                                            v-for="s in status.stopovers ?? []"
+                                            :key="s.stopoverId"
+                                            :value="s.stopoverId"
+                                        >
                                             {{ s.name }}
                                             (A:
                                             {{

@@ -10,13 +10,13 @@ use App\Events\StatusUpdateEvent;
 use App\Http\Controllers\Backend\Support\LocationController;
 use App\Http\Controllers\Backend\Transport\PointsCalculationController;
 use App\Http\Resources\AdminStatusResource;
-use App\Models\Station;
 use App\Models\Status;
 use App\Models\User;
 use App\Services\Checkin\CheckinService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\ValidationException;
 use OpenApi\Attributes as OA;
 
 class AdminStatusController extends Controller
@@ -122,8 +122,8 @@ class AdminStatusController extends Controller
             content: new OA\JsonContent(
                 required: ['origin', 'destination', 'visibility'],
                 properties: [
-                    new OA\Property(property: 'origin', description: 'Origin station ID', type: 'integer'),
-                    new OA\Property(property: 'destination', description: 'Destination station ID', type: 'integer'),
+                    new OA\Property(property: 'origin', description: 'Origin stopover ID (train_stopovers.id) of this trip', type: 'integer'),
+                    new OA\Property(property: 'destination', description: 'Destination stopover ID (train_stopovers.id) of this trip', type: 'integer'),
                     new OA\Property(property: 'body', type: 'string', nullable: true, maxLength: 280),
                     new OA\Property(property: 'visibility', type: 'integer'),
                     new OA\Property(property: 'business', type: 'integer', nullable: true),
@@ -159,8 +159,8 @@ class AdminStatusController extends Controller
         $this->authorize('adminUpdate', $status);
 
         $validated = $request->validate([
-            'origin' => ['required', 'integer', 'exists:train_stations,id'],
-            'destination' => ['required', 'integer', 'exists:train_stations,id'],
+            'origin' => ['required', 'integer'],
+            'destination' => ['required', 'integer'],
             'body' => ['nullable', 'string', 'max:280'],
             'visibility' => ['required', new Enum(StatusVisibility::class)],
             'business' => ['nullable', new Enum(Business::class)],
@@ -171,20 +171,25 @@ class AdminStatusController extends Controller
             'hideBody' => ['nullable', 'boolean'],
         ]);
 
-        $originStation = Station::findOrFail($validated['origin']);
-        $destinationStation = Station::findOrFail($validated['destination']);
+        $stopovers = $status->checkin->trip->stopovers;
+        $newOrigin = $stopovers->firstWhere('id', $validated['origin']);
+        $newDestination = $stopovers->firstWhere('id', $validated['destination']);
 
-        $newOrigin = $status->checkin->trip->stopovers->where('train_station_id', $originStation->id)->first();
-        $newDestination = $status->checkin->trip->stopovers->where('train_station_id', $destinationStation->id)->first();
+        if ($newOrigin === null || $newDestination === null) {
+            throw ValidationException::withMessages([
+                'origin' => $newOrigin === null ? 'The given origin is not a stopover of this trip.' : [],
+                'destination' => $newDestination === null ? 'The given destination is not a stopover of this trip.' : [],
+            ]);
+        }
 
         $newDeparture = $newOrigin->departure_planned ?? $newOrigin->arrival_planned;
         $newArrival = $newDestination->arrival_planned ?? $newDestination->departure_planned;
 
-        $distanceInMeters = (new LocationController(
+        $distanceInMeters = new LocationController(
             trip: $status->checkin->trip,
             origin: $newOrigin,
             destination: $newDestination,
-        ))->calculateDistance();
+        )->calculateDistance();
 
         $pointCalculation = PointsCalculationController::calculatePoints(
             distanceInMeter: $distanceInMeters,

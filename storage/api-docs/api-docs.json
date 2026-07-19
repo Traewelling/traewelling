@@ -815,11 +815,11 @@
                                 ],
                                 "properties": {
                                     "origin": {
-                                        "description": "Origin station ID",
+                                        "description": "Origin stopover ID (train_stopovers.id) of this trip",
                                         "type": "integer"
                                     },
                                     "destination": {
-                                        "description": "Destination station ID",
+                                        "description": "Destination stopover ID (train_stopovers.id) of this trip",
                                         "type": "integer"
                                     },
                                     "body": {
@@ -14348,6 +14348,7 @@
                 "title": "StopoverResource",
                 "required": [
                     "id",
+                    "stopoverId",
                     "name",
                     "rilIdentifier",
                     "evaIdentifier",
@@ -14368,8 +14369,14 @@
                 ],
                 "properties": {
                     "id": {
+                        "description": "Station ID of this stopover. Not unique within a trip; use stopoverId to reference a specific stop.",
                         "type": "integer",
                         "example": 12345
+                    },
+                    "stopoverId": {
+                        "description": "Unique ID of this specific stopover within the trip.",
+                        "type": "integer",
+                        "example": 987654
                     },
                     "name": {
                         "description": "name of the station",

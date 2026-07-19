@@ -7,6 +7,8 @@ namespace Tests\Feature\APIv1;
 use App\Enum\StatusVisibility;
 use App\Models\Checkin;
 use App\Models\Status;
+use App\Models\Stopover;
+use App\Models\Trip;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\ApiTestCase;
@@ -121,13 +123,11 @@ class AdminStatusTest extends ApiTestCase
             ->create();
 
         $checkin = $status->checkin;
-        $originStationId = $checkin->originStopover->train_station_id;
-        $destinationStationId = $checkin->destinationStopover->train_station_id;
 
         $this->actAsApiUserWithAllScopes($this->admin);
         $res = $this->putJson("/api/v1/admin/statuses/{$status->id}", [
-            'origin' => $originStationId,
-            'destination' => $destinationStationId,
+            'origin' => $checkin->origin_stopover_id,
+            'destination' => $checkin->destination_stopover_id,
             'body' => 'Updated body',
             'visibility' => StatusVisibility::PRIVATE->value,
             'business' => 0,
@@ -152,8 +152,8 @@ class AdminStatusTest extends ApiTestCase
 
         $this->actAsApiUserWithAllScopes($this->user);
         $this->putJson("/api/v1/admin/statuses/{$status->id}", [
-            'origin' => $checkin->originStopover->train_station_id,
-            'destination' => $checkin->destinationStopover->train_station_id,
+            'origin' => $checkin->origin_stopover_id,
+            'destination' => $checkin->destination_stopover_id,
             'visibility' => StatusVisibility::PUBLIC->value,
         ])->assertForbidden();
     }

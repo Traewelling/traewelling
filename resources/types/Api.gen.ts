@@ -2147,8 +2147,16 @@ export interface StatusTagSuggestionResource {
 
 /** StopoverResource */
 export interface StopoverResource {
-  /** @example 12345 */
+  /**
+   * Station ID of this stopover. Not unique within a trip; use stopoverId to reference a specific stop.
+   * @example 12345
+   */
   id: number;
+  /**
+   * Unique ID of this specific stopover within the trip.
+   * @example 987654
+   */
+  stopoverId: number;
   /**
    * name of the station
    * @example "Karlsruhe Hbf"
@@ -3510,9 +3518,9 @@ export class Api<
     updateAdminStatus: (
       id: number,
       data: {
-        /** Origin station ID */
+        /** Origin stopover ID (train_stopovers.id) of this trip */
         origin: number;
-        /** Destination station ID */
+        /** Destination stopover ID (train_stopovers.id) of this trip */
         destination: number;
         /** @maxLength 280 */
         body?: string | null;

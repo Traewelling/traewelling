@@ -110,7 +110,12 @@ class CheckinService
     {
         $withUsers = [];
         if (isset($dto->userIds)) {
-            $withUsers = User::whereIn('id', $dto->userIds)->get();
+            // Exclude the checking-in user themselves: their own check-in is handled by the primary
+            // flow (with created_by_user_id = null). Including them here would create a self-referencing
+            // created_by_user_id, which is invalid.
+            $withUsers = User::whereIn('id', $dto->userIds)
+                ->whereKeyNot($dto->user->id)
+                ->get();
             $forbiddenUsers = collect();
             foreach ($withUsers as $user) {
                 if (!Auth::user()?->can('checkin', $user)) {

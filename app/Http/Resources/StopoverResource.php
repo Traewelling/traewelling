@@ -10,6 +10,7 @@ use OpenApi\Attributes as OA;
     title: 'StopoverResource',
     required: [
         'id',
+        'stopoverId',
         'name',
         'rilIdentifier',
         'evaIdentifier',
@@ -29,7 +30,8 @@ use OpenApi\Attributes as OA;
         'cancelled',
     ],
     properties: [
-        new OA\Property(property: 'id', type: 'integer', example: 12345),
+        new OA\Property(property: 'id', description: 'Station ID of this stopover. Not unique within a trip; use stopoverId to reference a specific stop.', type: 'integer', example: 12345),
+        new OA\Property(property: 'stopoverId', description: 'Unique ID of this specific stopover within the trip.', type: 'integer', example: 987654),
         new OA\Property(
             property: 'name',
             description: 'name of the station',
@@ -158,6 +160,7 @@ class StopoverResource extends JsonResource
         /** @var Stopover $this */
         return [
             'id' => (int) $this->train_station_id,
+            'stopoverId' => (int) $this->id,
             'name' => $this->station->name,
             'rilIdentifier' => null, // @deprecated - remove after 2026-09-30
             'evaIdentifier' => null, // @deprecated - remove after 2026-09-30
