@@ -76,6 +76,17 @@ class AssignRouteSegmentToStopovers implements ShouldQueue
             $query->where('train_station_id', $segment->from_station_id);
         }
 
+        $query->whereExists(function ($sub) use ($segment, $useIdentifierMatching, $toIdentifierId): void {
+            $sub->selectRaw('1')
+                ->from('train_stopovers as to_stop')
+                ->whereColumn('to_stop.trip_id', 'train_stopovers.trip_id');
+            if ($useIdentifierMatching) {
+                $sub->where('to_stop.station_identifier_id', $toIdentifierId);
+            } else {
+                $sub->where('to_stop.train_station_id', $segment->to_station_id);
+            }
+        });
+
         $query->chunkById(200, function (Collection $fromStopovers) use (
             $segment, $segmentDuration, $tolerance, $tripRepository,
             $useIdentifierMatching, $toIdentifierId,
