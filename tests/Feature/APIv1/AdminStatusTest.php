@@ -7,8 +7,6 @@ namespace Tests\Feature\APIv1;
 use App\Enum\StatusVisibility;
 use App\Models\Checkin;
 use App\Models\Status;
-use App\Models\Stopover;
-use App\Models\Trip;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\ApiTestCase;
@@ -114,6 +112,11 @@ class AdminStatusTest extends ApiTestCase
         $res->assertOk();
         $this->assertNotNull($res->json('data.stopovers'));
         $this->assertNotEmpty($res->json('data.stopovers'));
+
+        $stopover = $res->json('data.stopovers.0');
+        $this->assertArrayHasKey('stopoverId', $stopover);
+        $this->assertArrayHasKey('station', $stopover);
+        $this->assertSame($stopover['station']['id'], $stopover['id']);
     }
 
     public function test_admin_can_update_status(): void
