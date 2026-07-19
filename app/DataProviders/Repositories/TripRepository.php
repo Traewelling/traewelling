@@ -21,11 +21,11 @@ class TripRepository
                 $trip->stopovers()->updateOrCreate(
                     [
                         'trip_id' => $trip->trip_id,
-                        'train_station_id' => $stopover->station->id,
                         'arrival_planned' => $stopover->arrival_planned,
                         'departure_planned' => $stopover->departure_planned,
                     ],
                     [
+                        'train_station_id' => $stopover->station->id,
                         'arrival_real' => $stopover->arrival_real,
                         'departure_real' => $stopover->departure_real,
                         'arrival_platform_planned' => $stopover->arrival_platform_planned,
