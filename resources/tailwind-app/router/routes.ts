@@ -7,6 +7,9 @@ import Index from '../pages/Contribute/Index.vue';
 import Profile from '../pages/Contribute/Profile.vue';
 import SuggestEvent from '../pages/Contribute/SuggestEvent.vue';
 import Dashboard from '../pages/Dashboard/Dashboard.vue';
+import DebugIndex from '../pages/Debug/DebugIndex.vue';
+import DebugMotisSources from '../pages/Debug/MotisSources.vue';
+import DebugStationMap from '../pages/Debug/StationMap.vue';
 import EventList from '../pages/Events/EventList.vue';
 import EventView from '../pages/Events/EventView.vue';
 import Export from '../pages/Export/Export.vue';
@@ -239,6 +242,24 @@ const routes: Array<RouteRecordRaw> = [
         path: '/settings',
         name: 'settings',
         redirect: '/settings/profile',
+    },
+    {
+        path: '/debug',
+        name: 'debug',
+        component: DebugIndex,
+        meta: { title: 'Debug' },
+    },
+    {
+        path: '/debug/stations',
+        name: 'debug-stations',
+        component: DebugStationMap,
+        meta: { title: 'Station Map Debug' },
+    },
+    {
+        path: '/debug/motis-sources',
+        name: 'debug-motis-sources',
+        component: DebugMotisSources,
+        meta: { title: 'Motis sources' },
     },
     {
         path: '/:pathMatch(.*)*',

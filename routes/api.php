@@ -28,6 +28,7 @@ use App\Http\Controllers\API\v1\ExportController;
 use App\Http\Controllers\API\v1\FollowController;
 use App\Http\Controllers\API\v1\IcsController;
 use App\Http\Controllers\API\v1\LikesController;
+use App\Http\Controllers\API\v1\MotisSourceController;
 use App\Http\Controllers\API\v1\NotificationsController;
 use App\Http\Controllers\API\v1\OperatorController;
 use App\Http\Controllers\API\v1\PrivacyPolicyController;
@@ -66,6 +67,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             ->name('api.v1.getConfigurationInfo');
         Route::get('changelog', [ChangelogController::class, 'getChangelog']);
     });
+
+    Route::get('motis-sources', [MotisSourceController::class, 'index']);
 
     Route::get('static/privacy', [PrivacyPolicyController::class, 'getPrivacyPolicy']); // todo: delete after 2026-09-30
 

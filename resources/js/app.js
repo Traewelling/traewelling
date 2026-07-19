@@ -17,7 +17,6 @@ import StatsDashboard from '../vue/components/Stats/StatsDashboard.vue';
 import TripCreationForm from '../vue/components/TripCreation/TripCreationForm.vue';
 import ActiveJourneys from '../vue/views/ActiveJourneys.vue';
 import Dashboard from '../vue/views/Dashboard.vue';
-import StationMap from '../vue/views/Debug/StationMap.vue';
 import EventPage from '../vue/views/Event.vue';
 import Profile from '../vue/views/Profile/Profile.vue';
 import SingleStatus from '../vue/views/SingleStatus.vue';
@@ -129,7 +128,6 @@ document.addEventListener('DOMContentLoaded', function () {
         contentApp.component('TripCreationForm', TripCreationForm);
         contentApp.component('SingleStatus', SingleStatus);
         contentApp.component('ActiveJourneys', ActiveJourneys);
-        contentApp.component('StationMap', StationMap);
         contentApp.component('Leaderboard', Leaderboard);
         contentApp.component('TicketDetail', TicketDetail);
         contentApp.component('Tickets', Tickets);

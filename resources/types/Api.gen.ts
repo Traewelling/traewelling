@@ -1693,6 +1693,30 @@ export interface Links {
 }
 
 /**
+ * MotisSourceLicense
+ * A transit data source used by this instance, with its license information.
+ */
+export interface MotisSourceLicenseResource {
+  /** @example "de-DELFI" */
+  name: string | null;
+  /** @example "DELFI e.V." */
+  humanName: string | null;
+  /** @example "de" */
+  country: string | null;
+  sourceUrl: string | null;
+  /** @example "CC-BY-4.0" */
+  spdx: string | null;
+  licenseUrl: string | null;
+  attributionText: string | null;
+  active: boolean;
+  forceActive: boolean;
+  manualLicense: {
+    humanName?: string | null;
+    licenseUrl?: string | null;
+  } | null;
+}
+
+/**
  * OAuthClientResource
  * OAuth application owned by the authenticated user
  */
@@ -5309,6 +5333,28 @@ export class Api<
         ...params,
       }),
   };
+  motisSources = {
+    /**
+     * @description Returns the transit data sources used by this instance, with their license information. Public, for transparency/debugging.
+     *
+     * @tags Debug
+     * @name GetMotisSources
+     * @summary List transit data sources
+     * @request GET:/motis-sources
+     */
+    getMotisSources: (params: RequestParams = {}) =>
+      this.request<
+        {
+          data: MotisSourceLicenseResource[];
+        },
+        any
+      >({
+        path: `/motis-sources`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+  };
   notifications = {
     /**
      * @description Returns count of unread notifications of a authenticated user
@@ -6457,9 +6503,9 @@ export class Api<
          */
         max_lon?: number;
         /**
-         * Maximum number of results (capped at 100).
+         * Maximum number of results for the bounding-box query (capped at 1000).
          * @min 1
-         * @max 100
+         * @max 1000
          * @example 50
          */
         limit?: number;

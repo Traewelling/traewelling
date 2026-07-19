@@ -353,9 +353,9 @@ class StationController extends Controller
             ),
             new OA\Parameter(
                 name: 'limit',
-                description: 'Maximum number of results (capped at 100).',
+                description: 'Maximum number of results for the bounding-box query (capped at 1000).',
                 in: 'query',
-                schema: new OA\Schema(type: 'integer', maximum: 100, minimum: 1),
+                schema: new OA\Schema(type: 'integer', maximum: 1000, minimum: 1),
                 example: 50,
             ),
             new OA\Parameter(
@@ -404,7 +404,7 @@ class StationController extends Controller
             'min_lon' => ['sometimes', 'numeric', 'between:-180,180'],
             'max_lon' => ['sometimes', 'numeric', 'between:-180,180'],
 
-            'limit' => ['sometimes', 'integer', 'min:1', 'max:250'],
+            'limit' => ['sometimes', 'integer', 'min:1', 'max:1000'],
         ]);
 
         $withIdentifiers = $request->boolean('withIdentifiers');
@@ -432,7 +432,7 @@ class StationController extends Controller
                 [$minLon, $maxLon] = [$maxLon, $minLon];
             }
 
-            $limit = min(max((int) $request->input('limit', 250), 1), 250);
+            $limit = min(max((int) $request->input('limit', 250), 1), 1000);
 
             // get stations within BBOX from database
             $query = Station::whereBetween('latitude', [$minLat, $maxLat])

@@ -3436,6 +3436,39 @@
                 ]
             }
         },
+        "/motis-sources": {
+            "get": {
+                "tags": [
+                    "Debug"
+                ],
+                "summary": "List transit data sources",
+                "description": "Returns the transit data sources used by this instance, with their license information. Public, for transparency/debugging.",
+                "operationId": "getMotisSources",
+                "responses": {
+                    "200": {
+                        "description": "List of transit data sources",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/MotisSourceLicenseResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/notifications/unread/count": {
             "get": {
                 "tags": [
@@ -5563,10 +5596,10 @@
                     {
                         "name": "limit",
                         "in": "query",
-                        "description": "Maximum number of results (capped at 100).",
+                        "description": "Maximum number of results for the bounding-box query (capped at 1000).",
                         "schema": {
                             "type": "integer",
-                            "maximum": 100,
+                            "maximum": 1000,
                             "minimum": 1
                         },
                         "example": 50
@@ -13365,6 +13398,77 @@
                 },
                 "type": "object"
             },
+            "MotisSourceLicenseResource": {
+                "title": "MotisSourceLicense",
+                "description": "A transit data source used by this instance, with its license information.",
+                "required": [
+                    "name",
+                    "humanName",
+                    "country",
+                    "sourceUrl",
+                    "spdx",
+                    "licenseUrl",
+                    "attributionText",
+                    "active",
+                    "forceActive",
+                    "manualLicense"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "de-DELFI",
+                        "nullable": true
+                    },
+                    "humanName": {
+                        "type": "string",
+                        "example": "DELFI e.V.",
+                        "nullable": true
+                    },
+                    "country": {
+                        "type": "string",
+                        "example": "de",
+                        "nullable": true
+                    },
+                    "sourceUrl": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "spdx": {
+                        "type": "string",
+                        "example": "CC-BY-4.0",
+                        "nullable": true
+                    },
+                    "licenseUrl": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "attributionText": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "active": {
+                        "type": "boolean"
+                    },
+                    "forceActive": {
+                        "type": "boolean"
+                    },
+                    "manualLicense": {
+                        "properties": {
+                            "humanName": {
+                                "type": "string",
+                                "nullable": true
+                            },
+                            "licenseUrl": {
+                                "type": "string",
+                                "nullable": true
+                            }
+                        },
+                        "type": "object",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
             "OAuthClientResource": {
                 "title": "OAuthClientResource",
                 "description": "OAuth application owned by the authenticated user",
@@ -15563,6 +15667,10 @@
         {
             "name": "Export",
             "description": "Export"
+        },
+        {
+            "name": "Debug",
+            "description": "Debug"
         },
         {
             "name": "Privacy Policy",
