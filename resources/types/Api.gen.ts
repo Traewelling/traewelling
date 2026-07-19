@@ -2148,20 +2148,29 @@ export interface StatusTagSuggestionResource {
 /** StopoverResource */
 export interface StopoverResource {
   /**
-   * Station ID of this stopover. Not unique within a trip; use stopoverId to reference a specific stop.
+   * Deprecated as station ID. Currently holds the station ID, which is not unique within a trip. Use station for station details. After 2026-11-30 this field will be repurposed to hold the unique stopover ID.
+   * @deprecated
    * @example 12345
    */
   id: number;
   /**
-   * Unique ID of this specific stopover within the trip.
+   * Deprecated. Temporary field holding the unique ID of this specific stopover within the trip. Only available until id is repurposed to the stopover ID (after 2026-11-30), then removed.
+   * @deprecated
    * @example 987654
    */
   stopoverId: number;
+  station: StationResource;
   /**
-   * name of the station
+   * Deprecated. Name of the station. Use station.name instead.
+   * @deprecated
    * @example "Karlsruhe Hbf"
    */
   name: string;
+  /**
+   * Deprecated. Only present with withIdentifiers=true. Use station.identifiers instead.
+   * @deprecated
+   */
+  identifiers: StationIdentifierResource[];
   /**
    * Deprecated. Always null. Use the station identifiers endpoint instead.
    * @deprecated
@@ -2235,12 +2244,14 @@ export interface StopoverResource {
   /** @example "5 A-F" */
   platform: string | null;
   /**
-   * Is there a delay in the arrival time?
+   * Deprecated. Please check if a stop is delayed by compare planned and real time.
+   * @deprecated
    * @example false
    */
   isArrivalDelayed: boolean;
   /**
-   * Is there a delay in the departure time?
+   * Deprecated. Please check if a stop is delayed by compare planned and real time.
+   * @deprecated
    * @example false
    */
   isDepartureDelayed: boolean;

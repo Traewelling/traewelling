@@ -13,41 +13,70 @@ Fields and endpoints listed here are deprecated and will be removed at the indic
 During the transition period they continue to work but should no longer be relied upon.
 Check back here regularly to stay ahead of removals.
 
-| Announced  | What?                                                                                                                                                                                                             | Safe until | PR                                                            |
-|------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------|---------------------------------------------------------------|
-| 2026-03-07 | `EventDetailsResource.trainDistance` is deprecated → use `totalDistance` instead                                                                                                                                  | 2026-09-30 | [#4554](https://github.com/Traewelling/traewelling/pull/4554) |
-| 2026-03-07 | `EventDetailsResource.trainDuration` is deprecated → use `totalDuration` instead                                                                                                                                  | 2026-09-30 | [#4554](https://github.com/Traewelling/traewelling/pull/4554) |
-| 2026-03-07 | `CheckinSuccessResource.points.additional` is always `null` and deprecated                                                                                                                                        | 2026-09-30 | [#4553](https://github.com/Traewelling/traewelling/pull/4553) |
-| 2026-03-07 | `DepartureResource.destination` is deprecated → use `direction` instead                                                                                                                                           | 2026-09-30 | [#4552](https://github.com/Traewelling/traewelling/pull/4552) |
-| 2026-03-07 | `DepartureResource.delay` is deprecated → use `when`/`plannedWhen` difference instead                                                                                                                             | 2026-09-30 | [#4552](https://github.com/Traewelling/traewelling/pull/4552) |
-| 2026-03-07 | `DepartureResource` HAFAS-compat fields deprecated: `provenance`, `remarks`, `origin`, `currentTripPosition`, `loadFactor`, `stop.products`, `line.public`, `line.adminCode`, `line.productName`, `line.operator` | 2026-09-30 | [#4552](https://github.com/Traewelling/traewelling/pull/4552) |
-| 2026-03-07 | `WebhookResource.clientId` is deprecated → use `client.id` instead                                                                                                                                                | 2026-09-30 | [#4550](https://github.com/Traewelling/traewelling/pull/4550) |
-| 2026-03-07 | `WebhookResource.userId` is deprecated → use `user.id` instead                                                                                                                                                    | 2026-09-30 | [#4550](https://github.com/Traewelling/traewelling/pull/4550) |
-| 2026-03-05 | `StationResource.ibnr` is always `null` → use `identifiers` array with type `de_db_ibnr` instead                                                                                                                  | 2026-09-30 | [#4500](https://github.com/Traewelling/traewelling/pull/4500) |
-| 2026-03-05 | `StationResource.rilIdentifier` is always `null` → use `identifiers` array with type `de_db_ril100` instead                                                                                                       | 2026-09-30 | [#4500](https://github.com/Traewelling/traewelling/pull/4500) |
-| 2026-03-07 | `StopoverResource.arrival` is deprecated → use `arrivalReal` (if not null) or `arrivalPlanned` instead                                                                                                            | 2026-09-30 | [#4551](https://github.com/Traewelling/traewelling/pull/4551) |
-| 2026-03-07 | `StopoverResource.departure` is deprecated → use `departureReal` (if not null) or `departurePlanned` instead                                                                                                      | 2026-09-30 | [#4551](https://github.com/Traewelling/traewelling/pull/4551) |
-| 2026-03-05 | `StopoverResource.rilIdentifier` is always `null` → use the station identifiers endpoint instead                                                                                                                  | 2026-09-30 | [#4502](https://github.com/Traewelling/traewelling/pull/4502) |
-| 2026-03-05 | `StopoverResource.evaIdentifier` is always `null` → use the station identifiers endpoint instead                                                                                                                  | 2026-09-30 | [#4502](https://github.com/Traewelling/traewelling/pull/4502) |
-| 2026-01-20 | `StatusResource.train` is deprecated → use `checkin` instead                                                                                                                                                      | 2026-07-31 | [#4313](https://github.com/Traewelling/traewelling/pull/4313) |
-| 2026-01-20 | `StatusResource.userDetails` is deprecated → use `user` instead                                                                                                                                                   | 2026-07-31 | [#4313](https://github.com/Traewelling/traewelling/pull/4313) |
-| 2026-01-20 | `LightUserResource.mastodonUrl` is always `null` → use `mastodon.server` instead                                                                                                                                  | 2026-07-31 | [#4313](https://github.com/Traewelling/traewelling/pull/4313) |
-| 2026-03-20 | `POST /api/v1/report` is deprecated → use `POST /api/v1/reports` instead                                                                                                                                          | 2026-09-30 | [#4602](https://github.com/Traewelling/traewelling/pull/4602) |
-| 2026-03-30 | `GET /api/v1/static/privacy` is deprecated -> use `GET /api/v1/privacy-policies/current` instead                                                                                                                  | 2026-09-30 | [#4650](https://github.com/Traewelling/traewelling/pull/4650) |
-| 2026-03-30 | `PUT /api/v1/settings/acceptPrivacy` is deprecated -> use `PUT /api/v1/privacy-policies/accept` instead                                                                                                           | 2026-09-30 | [#4650](https://github.com/Traewelling/traewelling/pull/4650) |
-| 2026-04-01 | `DepartureResource.stop.*` is deprecated → use `DepartureResource.station` instead                                                                                                                                | 2026-09-30 | [#4663](https://github.com/Traewelling/traewelling/pull/4663) |
-| 2026-04-07 | `OperatorResource.identifier` is deprecated: legacy HAFAS operator ID, always `null` for new operators                                                                                                            | 2026-09-30 | [#4675](https://github.com/Traewelling/traewelling/pull/4675) |
-| 2026-04-07 | `OperatorResource.id` is deprecated as integer: will become a UUID after 2026-09-30. prefer `uuid` instead while migration-period                                                                                 | 2026-09-30 | [#4676](https://github.com/Traewelling/traewelling/pull/4676) |
-| 2026-05-14 | `POST /api/v1/trains/checkin` 409 response: `message.status_id` and `message.lineName` are deprecated. Use `data.conflicts` (full `StatusResource` array) instead                                                 | 2026-10-31 | [#4677](https://github.com/Traewelling/traewelling/pull/4677) |
+| Announced  | What?                                                                                                                                                                                                                      | Safe until | PR                                                            |
+|------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------|---------------------------------------------------------------|
+| 2026-03-07 | `EventDetailsResource.trainDistance` is deprecated → use `totalDistance` instead                                                                                                                                           | 2026-09-30 | [#4554](https://github.com/Traewelling/traewelling/pull/4554) |
+| 2026-03-07 | `EventDetailsResource.trainDuration` is deprecated → use `totalDuration` instead                                                                                                                                           | 2026-09-30 | [#4554](https://github.com/Traewelling/traewelling/pull/4554) |
+| 2026-03-07 | `CheckinSuccessResource.points.additional` is always `null` and deprecated                                                                                                                                                 | 2026-09-30 | [#4553](https://github.com/Traewelling/traewelling/pull/4553) |
+| 2026-03-07 | `DepartureResource.destination` is deprecated → use `direction` instead                                                                                                                                                    | 2026-09-30 | [#4552](https://github.com/Traewelling/traewelling/pull/4552) |
+| 2026-03-07 | `DepartureResource.delay` is deprecated → use `when`/`plannedWhen` difference instead                                                                                                                                      | 2026-09-30 | [#4552](https://github.com/Traewelling/traewelling/pull/4552) |
+| 2026-03-07 | `DepartureResource` HAFAS-compat fields deprecated: `provenance`, `remarks`, `origin`, `currentTripPosition`, `loadFactor`, `stop.products`, `line.public`, `line.adminCode`, `line.productName`, `line.operator`          | 2026-09-30 | [#4552](https://github.com/Traewelling/traewelling/pull/4552) |
+| 2026-03-07 | `WebhookResource.clientId` is deprecated → use `client.id` instead                                                                                                                                                         | 2026-09-30 | [#4550](https://github.com/Traewelling/traewelling/pull/4550) |
+| 2026-03-07 | `WebhookResource.userId` is deprecated → use `user.id` instead                                                                                                                                                             | 2026-09-30 | [#4550](https://github.com/Traewelling/traewelling/pull/4550) |
+| 2026-03-05 | `StationResource.ibnr` is always `null` → use `identifiers` array with type `de_db_ibnr` instead                                                                                                                           | 2026-09-30 | [#4500](https://github.com/Traewelling/traewelling/pull/4500) |
+| 2026-03-05 | `StationResource.rilIdentifier` is always `null` → use `identifiers` array with type `de_db_ril100` instead                                                                                                                | 2026-09-30 | [#4500](https://github.com/Traewelling/traewelling/pull/4500) |
+| 2026-03-07 | `StopoverResource.arrival` is deprecated → use `arrivalReal` (if not null) or `arrivalPlanned` instead                                                                                                                     | 2026-09-30 | [#4551](https://github.com/Traewelling/traewelling/pull/4551) |
+| 2026-03-07 | `StopoverResource.departure` is deprecated → use `departureReal` (if not null) or `departurePlanned` instead                                                                                                               | 2026-09-30 | [#4551](https://github.com/Traewelling/traewelling/pull/4551) |
+| 2026-03-05 | `StopoverResource.rilIdentifier` is always `null` → use the station identifiers endpoint instead                                                                                                                           | 2026-09-30 | [#4502](https://github.com/Traewelling/traewelling/pull/4502) |
+| 2026-03-05 | `StopoverResource.evaIdentifier` is always `null` → use the station identifiers endpoint instead                                                                                                                           | 2026-09-30 | [#4502](https://github.com/Traewelling/traewelling/pull/4502) |
+| 2026-01-20 | `StatusResource.train` is deprecated → use `checkin` instead                                                                                                                                                               | 2026-07-31 | [#4313](https://github.com/Traewelling/traewelling/pull/4313) |
+| 2026-01-20 | `StatusResource.userDetails` is deprecated → use `user` instead                                                                                                                                                            | 2026-07-31 | [#4313](https://github.com/Traewelling/traewelling/pull/4313) |
+| 2026-01-20 | `LightUserResource.mastodonUrl` is always `null` → use `mastodon.server` instead                                                                                                                                           | 2026-07-31 | [#4313](https://github.com/Traewelling/traewelling/pull/4313) |
+| 2026-03-20 | `POST /api/v1/report` is deprecated → use `POST /api/v1/reports` instead                                                                                                                                                   | 2026-09-30 | [#4602](https://github.com/Traewelling/traewelling/pull/4602) |
+| 2026-03-30 | `GET /api/v1/static/privacy` is deprecated -> use `GET /api/v1/privacy-policies/current` instead                                                                                                                           | 2026-09-30 | [#4650](https://github.com/Traewelling/traewelling/pull/4650) |
+| 2026-03-30 | `PUT /api/v1/settings/acceptPrivacy` is deprecated -> use `PUT /api/v1/privacy-policies/accept` instead                                                                                                                    | 2026-09-30 | [#4650](https://github.com/Traewelling/traewelling/pull/4650) |
+| 2026-04-01 | `DepartureResource.stop.*` is deprecated → use `DepartureResource.station` instead                                                                                                                                         | 2026-09-30 | [#4663](https://github.com/Traewelling/traewelling/pull/4663) |
+| 2026-04-07 | `OperatorResource.identifier` is deprecated: legacy HAFAS operator ID, always `null` for new operators                                                                                                                     | 2026-09-30 | [#4675](https://github.com/Traewelling/traewelling/pull/4675) |
+| 2026-04-07 | `OperatorResource.id` is deprecated as integer: will become a UUID after 2026-09-30. prefer `uuid` instead while migration-period                                                                                          | 2026-09-30 | [#4676](https://github.com/Traewelling/traewelling/pull/4676) |
+| 2026-05-14 | `POST /api/v1/trains/checkin` 409 response: `message.status_id` and `message.lineName` are deprecated. Use `data.conflicts` (full `StatusResource` array) instead                                                          | 2026-10-31 | [#4677](https://github.com/Traewelling/traewelling/pull/4677) |
+| 2026-07-19 | `StopoverResource.id` is deprecated as station ID: it currently holds the station ID (not unique within a trip). Use `station` for station details. After the safe-until date `id` is repurposed to the unique stopover ID | 2026-11-30 | [#4959](https://github.com/Traewelling/traewelling/pull/4959) |
+| 2026-07-19 | `StopoverResource.name` is deprecated → use `station.name` instead                                                                                                                                                         | 2026-11-30 | [#4959](https://github.com/Traewelling/traewelling/pull/4959) |
+| 2026-07-19 | `StopoverResource.identifiers` (only present with `withIdentifiers=true`) is deprecated → use `station.identifiers` instead                                                                                                | 2026-11-30 | [#4959](https://github.com/Traewelling/traewelling/pull/4959) |
+
+---
+
+# 2026-07-19
+
+Upcoming breaking changes in `StopoverResource` to 2026-11-30:
+- `id` deprecated (this was the station id, not the stopover id... will become stopover id after transition period)
+- `name` and `identifiers` deprecated -> use them from station object instead
+- new `station` object
+
+Affected endpoints (all that embed `StopoverResource`):
+- `GET /trains/trip`, `POST /trips` (via `TripResource.stopovers`)
+- `GET /stopovers/{ids}`
+- `GET /dashboard`
+- `GET /dashboard/future`
+- `GET /status`
+- `GET /status/{id}`
+- `GET /statuses`,
+- `GET /user/{username}/statuses`
+- `GET /user/statuses/active`
+- `GET /event/{slug}/statuses`
+- `GET /trips/{id}/statuses`
+- `POST /trains/checkin`
 
 ---
 
 # 2026-06-21
 
 **`GET /api/v1/statistics/overview`: `longest_ride` and `shortest_ride` renamed and two new duration fields added:**
-`longest_ride` is now `longest_checkin_by_distance` and `shortest_ride` is now `shortest_checkin_by_distance` selected by distance as before.
-Two new fields added: `longest_checkin_by_duration` (check-in with most travel time) and `shortest_checkin_by_duration` (check-in with least travel time).
-These fields were introduced in #4799 and have (hopefully) no known external consumers so the rename is immediate with no transition period.
+`longest_ride` is now `longest_checkin_by_distance` and `shortest_ride` is now `shortest_checkin_by_distance` selected
+by distance as before.
+Two new fields added: `longest_checkin_by_duration` (check-in with most travel time) and
+`shortest_checkin_by_duration` (check-in with least travel time).
+These fields were introduced in #4799 and have (hopefully) no known external consumers so the rename is immediate with
+no transition period.
 
 ---
 
@@ -55,8 +84,10 @@ These fields were introduced in #4799 and have (hopefully) no known external con
 
 **`GET /api/v1/trains/trip`: new `continuationTrip` field on `TripResource`:**
 The response now includes an optional `continuationTrip` field (nullable `TripResource`).
-This is set when the trip is part of an interlined through-running service i.e. the physical vehicle continues under a different line name and colour without any transfer required (e.g. S5 becoming S7).
-The nested object contains the full trip data for the immediately following leg, including its own stopovers, line colour, and destination.
+This is set when the trip is part of an interlined through-running service i.e. the physical vehicle continues under a
+different line name and colour without any transfer required (e.g. S5 becoming S7).
+The nested object contains the full trip data for the immediately following leg, including its own stopovers, line
+colour, and destination.
 Users can check into each leg independently.
 
 ---
@@ -64,10 +95,12 @@ Users can check into each leg independently.
 # 2026-05-18
 
 **`GET /api/v1/status`: new `from`/`to` parameters and performance fix:**
-The endpoint now accepts optional `from` and `to` date parameters (ISO 8601 date format, e.g. `2024-01-01`) to control the departure time window.
+The endpoint now accepts optional `from` and `to` date parameters (ISO 8601 date format, e.g. `2024-01-01`) to control
+the departure time window.
 Without parameters, the window defaults to the last 7 days up to now+20 minutes.
-The window between `from` and `to` must not exceed 365 days. 
-Exception: when `user_id` is set to the authenticated user's own ID, no time limit applies and `from`/`to` are fully optional.
+The window between `from` and `to` must not exceed 365 days.
+Exception: when `user_id` is set to the authenticated user's own ID, no time limit applies and `from`/`to` are fully
+optional.
 The previously implicit hard upper bound of `now()+20min` is now the default value of `to` and can be overridden.
 Results are ordered by departure descending (previously: status creation date descending).
 
@@ -79,7 +112,8 @@ Results are ordered by departure descending (previously: status creation date de
 
 **New endpoint `GET /api/v1/tags/suggestions`:**
 Returns tag suggestions for the authenticated user, intended for use in the check-in flow.
-Suggestions are currently derived from two sources: the 3 most recently used key:value pairs, and the 3 most frequently used key:value pairs in the last 3 days (minimum 2 uses).
+Suggestions are currently derived from two sources: the 3 most recently used key:value pairs, and the 3 most frequently
+used key:value pairs in the last 3 days (minimum 2 uses).
 
 **`POST /api/v1/trains/checkin` 409 response now includes all conflicting check-ins as full status objects:**
 The response now contains `data.conflicts`, an array of full `StatusResource` objects for all overlapping check-ins.
@@ -91,44 +125,61 @@ The old `message.status_id` and `message.lineName` fields are still present for 
 
 **Three new endpoints for personal statistics (all require `read-statistics` scope):**
 
-- `GET /api/v1/statistics/overview`: Returns a summary (total checkins, distance, active days) plus full `StatusResource` objects for the longest and shortest ride in the requested date range. Cached 1 hour per user and date range.
-- `GET /api/v1/statistics/history`: Returns all-time checkin counts and distances grouped by year, month (ISO `YYYY-MM`), and week (ISO `YYYY-Wnn`). Cached 6 hours per user.
-- `GET /api/v1/statistics/favorites`: Returns the top 10 most visited stations, most used lines, and most frequent origin-to-destination pairs for the requested date range. Cached 1 hour per user and date range.
+- `GET /api/v1/statistics/overview`: Returns a summary (total checkins, distance, active days) plus full
+  `StatusResource` objects for the longest and shortest ride in the requested date range. Cached 1 hour per user and
+  date range.
+- `GET /api/v1/statistics/history`: Returns all-time checkin counts and distances grouped by year, month (ISO
+  `YYYY-MM`), and week (ISO `YYYY-Wnn`). Cached 6 hours per user.
+- `GET /api/v1/statistics/favorites`: Returns the top 10 most visited stations, most used lines, and most frequent
+  origin-to-destination pairs for the requested date range. Cached 1 hour per user and date range.
 
 ---
 
 # 2026-05-06
 
 **`PUT /api/v1/settings/profile` now supports partial updates:**
-All fields are now optional. Only the fields present in the request body will be updated, omitted fields are left unchanged.
+All fields are now optional. Only the fields present in the request body will be updated, omitted fields are left
+unchanged.
 The `email` field is no longer accepted by this endpoint.
 Use `PUT /api/v1/settings/email` to update the email address.
 `password` is only required when the account already has one set.
 
 # 2026-04-18
+
 Admin-status-endpoints now adhere to our standard API conventions and use camelCase and components.
 No backwards compatibility will be kept for the old endpoints, so please update your code accordingly.
 
 # 2026-04-11
 
 **New endpoints:**
-- `GET /api/v1/applications`: List all OAuth applications owned by the authenticated user. Requires a personal access token.
-- `POST /api/v1/applications`: Create a new OAuth application. Returns `plainSecret` on creation for confidential clients. Requires a personal access token.
-- `PUT /api/v1/applications/{clientId}`: Update an OAuth application owned by the authenticated user. Requires a personal access token.
-- `DELETE /api/v1/applications/{clientId}`: Delete an OAuth application owned by the authenticated user. Requires a personal access token.
+
+- `GET /api/v1/applications`: List all OAuth applications owned by the authenticated user. Requires a personal access
+  token.
+- `POST /api/v1/applications`: Create a new OAuth application. Returns `plainSecret` on creation for confidential
+  clients. Requires a personal access token.
+- `PUT /api/v1/applications/{clientId}`: Update an OAuth application owned by the authenticated user. Requires a
+  personal access token.
+- `DELETE /api/v1/applications/{clientId}`: Delete an OAuth application owned by the authenticated user. Requires a
+  personal access token.
 - `GET /api/v1/users/self/blocks`: List all users blocked by the authenticated user. Requires `write-blocks` scope.
 - `GET /api/v1/users/self/mutes`: List all users muted by the authenticated user. Requires `write-blocks` scope.
 - `PUT /api/v1/settings/password`: Change the authenticated user's password. Requires a personal access token.
 
 **`PrivacyPolicyResource` extended:**
+
 - Added `id` field: UUID of the privacy policy.
-- Added `hasOldAcceptance` field: `true` if the user has accepted a previous version of the policy but not the current one.
+- Added `hasOldAcceptance` field: `true` if the user has accepted a previous version of the policy but not the current
+  one.
 - `acceptedAt` now returns the actual acceptance timestamp for the authenticated user (was always `null` before).
 
 **Other:**
-- Added `GET /api/v1/applications/{clientId}/webhook-stats`: Returns webhook call log statistics (last 7 days) for an OAuth application. Requires open-beta or admin role; only the application owner or admins can access it.
-- Added `disabledAt` field to `WebhookResource`: ISO 8601 timestamp when a webhook was automatically disabled due to repeated failures, or `null` if active.
-- Webhooks are now automatically disabled after 5 consecutive final failures. The webhook owner receives an in-app notification.
+
+- Added `GET /api/v1/applications/{clientId}/webhook-stats`: Returns webhook call log statistics (last 7 days) for an
+  OAuth application. Requires open-beta or admin role; only the application owner or admins can access it.
+- Added `disabledAt` field to `WebhookResource`: ISO 8601 timestamp when a webhook was automatically disabled due to
+  repeated failures, or `null` if active.
+- Webhooks are now automatically disabled after 5 consecutive final failures. The webhook owner receives an in-app
+  notification.
 
 # 2026-04-07
 
@@ -137,15 +188,21 @@ No backwards compatibility will be kept for the old endpoints, so please update 
 Operators have been migrated from integer IDs to UUIDs. The `OperatorResource` was extended:
 
 **New fields:**
+
 - `type`: always `"operator"` (as of friendly public transport format)
 - `uuid`: stable UUID identifier, use this going forward
-- `identifiers`: array of `{ type, identifier, name }` objects covering all known provider IDs (e.g. `motis`, `hafas`, `wikidata`). Returned by `GET /api/v1/operators`.
+- `identifiers`: array of `{ type, identifier, name }` objects covering all known provider IDs (e.g. `motis`, `hafas`,
+  `wikidata`). Returned by `GET /api/v1/operators`.
 
 **Deprecated fields** (see "Upcoming Breaking Changes" table above):
-- `id`: still returns the numeric legacy ID for now, but will become a UUID after 2026-09-30. Use `uuid` instead (will be renamed to `id` later)
-- `identifier`: single legacy HAFAS operator ID string. Always `null` for new operators. Use the `identifiers` array instead.
+
+- `id`: still returns the numeric legacy ID for now, but will become a UUID after 2026-09-30. Use `uuid` instead (will
+  be renamed to `id` later)
+- `identifier`: single legacy HAFAS operator ID string. Always `null` for new operators. Use the `identifiers` array
+  instead.
 
 **Endpoint changes:**
+
 - `GET /api/v1/operators`: returns `identifiers` for each operator.
 - `POST /api/v1/trips` (`operatorId` field): now accepts both UUID and numeric legacy ID. UUID should be preferred.
 

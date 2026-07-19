@@ -11,7 +11,9 @@ use OpenApi\Attributes as OA;
     required: [
         'id',
         'stopoverId',
+        'station',
         'name',
+        'identifiers',
         'rilIdentifier',
         'evaIdentifier',
         'arrival',
@@ -30,13 +32,34 @@ use OpenApi\Attributes as OA;
         'cancelled',
     ],
     properties: [
-        new OA\Property(property: 'id', description: 'Station ID of this stopover. Not unique within a trip; use stopoverId to reference a specific stop.', type: 'integer', example: 12345),
-        new OA\Property(property: 'stopoverId', description: 'Unique ID of this specific stopover within the trip.', type: 'integer', example: 987654),
+        new OA\Property(
+            property: 'id',
+            description: 'Deprecated as station ID. Currently holds the station ID, which is not unique within a trip. Use station for station details. After 2026-11-30 this field will be repurposed to hold the unique stopover ID.',
+            type: 'integer',
+            example: 12345,
+            deprecated: true,
+        ),
+        new OA\Property(
+            property: 'stopoverId',
+            description: 'Deprecated. Temporary field holding the unique ID of this specific stopover within the trip. Only available until id is repurposed to the stopover ID (after 2026-11-30), then removed.',
+            type: 'integer',
+            example: 987654,
+            deprecated: true,
+        ),
+        new OA\Property(property: 'station', ref: StationResource::class),
         new OA\Property(
             property: 'name',
-            description: 'name of the station',
+            description: 'Deprecated. Name of the station. Use station.name instead.',
             type: 'string',
             example: 'Karlsruhe Hbf',
+            deprecated: true,
+        ),
+        new OA\Property(
+            property: 'identifiers',
+            description: 'Deprecated. Only present with withIdentifiers=true. Use station.identifiers instead.',
+            type: 'array',
+            items: new OA\Items(ref: StationIdentifierResource::class),
+            deprecated: true,
         ),
         new OA\Property(
             property: 'rilIdentifier',
@@ -135,15 +158,17 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'platform', type: 'string', example: '5 A-F', nullable: true),
         new OA\Property(
             property: 'isArrivalDelayed',
-            description: 'Is there a delay in the arrival time?',
+            description: 'Deprecated. Please check if a stop is delayed by compare planned and real time.',
             type: 'boolean',
             example: false,
+            deprecated: true,
         ),
         new OA\Property(
             property: 'isDepartureDelayed',
-            description: 'Is there a delay in the departure time?',
+            description: 'Deprecated. Please check if a stop is delayed by compare planned and real time.',
             type: 'boolean',
             example: false,
+            deprecated: true,
         ),
         new OA\Property(
             property: 'cancelled',
@@ -159,12 +184,13 @@ class StopoverResource extends JsonResource
     {
         /** @var Stopover $this */
         return [
-            'id' => (int) $this->train_station_id,
-            'stopoverId' => (int) $this->id,
-            'name' => $this->station->name,
+            'id' => (int) $this->train_station_id, // @deprecated - after 2026-11-30 this becomes $this->id (stopover ID); use station for station details
+            'stopoverId' => (int) $this->id, // @deprecated - temporary bridge until id is repurposed to the stopover ID, then removed
+            'station' => new StationResource($this->whenLoaded('station')),
+            'name' => $this->station->name, // @deprecated - use station.name instead
             'rilIdentifier' => null, // @deprecated - remove after 2026-09-30
             'evaIdentifier' => null, // @deprecated - remove after 2026-09-30
-            'identifiers' => $this->when(
+            'identifiers' => $this->when( // @deprecated - remove after 2026-11-30 -> use station.identifiers instead
                 $this->relationLoaded('station') && $this->station->relationLoaded('stationIdentifiers'),
                 fn () => StationIdentifierResource::collection($this->station->stationIdentifiers),
             ),
@@ -179,8 +205,8 @@ class StopoverResource extends JsonResource
             'departurePlatformPlanned' => $this->departure_platform_planned ?? null,
             'departurePlatformReal' => $this->departure_platform_real ?? null,
             'platform' => $this->platform ?? null,
-            'isArrivalDelayed' => (bool) $this->isArrivalDelayed,
-            'isDepartureDelayed' => (bool) $this->isDepartureDelayed,
+            'isArrivalDelayed' => (bool) $this->isArrivalDelayed, // @deprecated - remove after 2026-11-30
+            'isDepartureDelayed' => (bool) $this->isDepartureDelayed, // @deprecated - remove after 2026-11-30
             'cancelled' => (bool) ($this->cancelled ?? false),
         ];
     }
