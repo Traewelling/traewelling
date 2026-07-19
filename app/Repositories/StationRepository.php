@@ -205,19 +205,32 @@ class StationRepository
         return User::where('home_id', $source->id)->update(['home_id' => $target->id]);
     }
 
-    /**
-     * @param  bool  $onlyWithoutIdentifier  move only segment sides that are not bound to a station
-     *                                       identifier; identifier-bound sides follow their identifier
-     *                                       when that identifier is moved
-     */
-    public function moveRouteSegmentsToStation(Station $source, Station $target, bool $onlyWithoutIdentifier = false): int
+    public function moveRouteSegmentsToStation(Station $source, Station $target): int
     {
-        return RouteSegment::where('from_station_id', $source->id)
-            ->when($onlyWithoutIdentifier, fn ($query) => $query->whereNull('from_identifier_id'))
-            ->update(['from_station_id' => $target->id])
-               + RouteSegment::where('to_station_id', $source->id)
-                   ->when($onlyWithoutIdentifier, fn ($query) => $query->whereNull('to_identifier_id'))
-                   ->update(['to_station_id' => $target->id]);
+        $affected = 0;
+
+        foreach (['from', 'to'] as $side) {
+            $stationColumn = "{$side}_station_id";
+            $identifierColumn = "{$side}_identifier_id";
+
+            // no identifier -> follow the station merge to the target
+            $affected += RouteSegment::where($stationColumn, $source->id)
+                ->whereNull($identifierColumn)
+                ->update([$stationColumn => $target->id]);
+
+            // has an identifier -> sync the endpoint to the identifier's station, but only when it
+            // is actually stale, so consistent endpoints are neither touched nor counted
+            $affected += DB::update(
+                "UPDATE route_segments
+                 SET {$stationColumn} = (SELECT station_id FROM station_identifiers WHERE station_identifiers.id = route_segments.{$identifierColumn})
+                 WHERE {$stationColumn} = ?
+                   AND {$identifierColumn} IS NOT NULL
+                   AND {$stationColumn} <> (SELECT station_id FROM station_identifiers WHERE station_identifiers.id = route_segments.{$identifierColumn})",
+                [$source->id]
+            );
+        }
+
+        return $affected;
     }
 
     public function getUsageCounts(Station $station): StationUsageDto

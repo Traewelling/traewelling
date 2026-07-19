@@ -88,7 +88,7 @@ class StationService
             trips: in_array('trips', $types, true) ? $this->stationRepository->moveTripTerminalsToStation($source, $target) : 0,
             events: in_array('events', $types, true) ? $this->stationRepository->moveEventsToStation($source, $target) : 0,
             eventSuggestions: in_array('eventSuggestions', $types, true) ? $this->stationRepository->moveEventSuggestionsToStation($source, $target) : 0,
-            routeSegments: in_array('routeSegments', $types, true) ? $this->stationRepository->moveRouteSegmentsToStation($source, $target, onlyWithoutIdentifier: true) : 0,
+            routeSegments: in_array('routeSegments', $types, true) ? $this->stationRepository->moveRouteSegmentsToStation($source, $target) : 0,
             homeUsers: in_array('homeUsers', $types, true) ? $this->stationRepository->moveHomeUsersToStation($source, $target) : 0,
         ));
 
