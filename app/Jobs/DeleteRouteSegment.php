@@ -9,6 +9,7 @@ use App\Models\RouteSegment;
 use App\Models\Stopover;
 use App\Repositories\TripRepository;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -17,7 +18,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use romanzipp\QueueMonitor\Traits\IsMonitored;
 
-class DeleteRouteSegment implements ShouldQueue
+class DeleteRouteSegment implements ShouldBeUnique, ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, IsMonitored, Queueable, SerializesModels;
 
@@ -30,6 +31,11 @@ class DeleteRouteSegment implements ShouldQueue
     public function __construct(private readonly RouteSegment $segment)
     {
         $this->onQueue(Queue::LOW->value);
+    }
+
+    public function uniqueId(): string
+    {
+        return $this->segment->id;
     }
 
     public function handle(TripRepository $tripRepository): void

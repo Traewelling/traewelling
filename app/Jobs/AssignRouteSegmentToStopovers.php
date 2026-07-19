@@ -9,6 +9,7 @@ use App\Models\RouteSegment;
 use App\Models\Stopover;
 use App\Repositories\TripRepository;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -17,7 +18,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use romanzipp\QueueMonitor\Traits\IsMonitored;
 
-class AssignRouteSegmentToStopovers implements ShouldQueue
+class AssignRouteSegmentToStopovers implements ShouldBeUnique, ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, IsMonitored, Queueable, SerializesModels;
 
@@ -30,6 +31,11 @@ class AssignRouteSegmentToStopovers implements ShouldQueue
     public function __construct(private readonly string $segmentId)
     {
         $this->onQueue(Queue::BACKGROUND->value);
+    }
+
+    public function uniqueId(): string
+    {
+        return $this->segmentId;
     }
 
     public function handle(TripRepository $tripRepository): void
@@ -75,17 +81,6 @@ class AssignRouteSegmentToStopovers implements ShouldQueue
         } else {
             $query->where('train_station_id', $segment->from_station_id);
         }
-
-        $query->whereExists(function ($sub) use ($segment, $useIdentifierMatching, $toIdentifierId): void {
-            $sub->selectRaw('1')
-                ->from('train_stopovers as to_stop')
-                ->whereColumn('to_stop.trip_id', 'train_stopovers.trip_id');
-            if ($useIdentifierMatching) {
-                $sub->where('to_stop.station_identifier_id', $toIdentifierId);
-            } else {
-                $sub->where('to_stop.train_station_id', $segment->to_station_id);
-            }
-        });
 
         $query->chunkById(200, function (Collection $fromStopovers) use (
             $segment, $segmentDuration, $tolerance, $tripRepository,

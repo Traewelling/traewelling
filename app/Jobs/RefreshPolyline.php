@@ -8,6 +8,7 @@ use App\Models\Trip;
 use App\Services\ReRoutingService;
 use Cache;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Bus\PendingDispatch;
@@ -16,7 +17,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use romanzipp\QueueMonitor\Traits\IsMonitored;
 
-class RefreshPolyline implements ShouldQueue
+class RefreshPolyline implements ShouldBeUnique, ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, IsMonitored, Queueable, SerializesModels;
 
@@ -32,6 +33,11 @@ class RefreshPolyline implements ShouldQueue
     {
         $this->trip = $trip;
         $this->onQueue(Queue::NORMAL->value);
+    }
+
+    public function uniqueId(): string
+    {
+        return (string) $this->trip->id;
     }
 
     public static function dispatch(Trip $trip): PendingDispatch

@@ -9,6 +9,7 @@ use App\Models\RouteSegment;
 use App\Models\Stopover;
 use App\Repositories\TripRepository;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -24,7 +25,7 @@ use romanzipp\QueueMonitor\Traits\IsMonitored;
  *
  * Also covers stopovers that are currently unassigned (complementing AssignRouteSegmentToStopovers).
  */
-class UpgradeRouteSegmentAssignments implements ShouldQueue
+class UpgradeRouteSegmentAssignments implements ShouldBeUnique, ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, IsMonitored, Queueable, SerializesModels;
 
@@ -37,6 +38,11 @@ class UpgradeRouteSegmentAssignments implements ShouldQueue
     public function __construct(private readonly string $segmentId)
     {
         $this->onQueue(Queue::BACKGROUND->value);
+    }
+
+    public function uniqueId(): string
+    {
+        return $this->segmentId;
     }
 
     public function handle(TripRepository $tripRepository): void
