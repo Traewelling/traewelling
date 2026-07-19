@@ -14487,14 +14487,16 @@
                         "nullable": true
                     },
                     "isArrivalDelayed": {
-                        "description": "Is there a delay in the arrival time?",
+                        "description": "Deprecated. Please check if a stop is delayed by compare planned and real time.",
                         "type": "boolean",
-                        "example": false
+                        "example": false,
+                        "deprecated": true
                     },
                     "isDepartureDelayed": {
-                        "description": "Is there a delay in the departure time?",
+                        "description": "Deprecated. Please check if a stop is delayed by compare planned and real time.",
                         "type": "boolean",
-                        "example": false
+                        "example": false,
+                        "deprecated": true
                     },
                     "cancelled": {
                         "description": "is this stopover cancelled?",

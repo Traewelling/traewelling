@@ -158,15 +158,17 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'platform', type: 'string', example: '5 A-F', nullable: true),
         new OA\Property(
             property: 'isArrivalDelayed',
-            description: 'Is there a delay in the arrival time?',
+            description: 'Deprecated. Please check if a stop is delayed by compare planned and real time.',
             type: 'boolean',
             example: false,
+            deprecated: true,
         ),
         new OA\Property(
             property: 'isDepartureDelayed',
-            description: 'Is there a delay in the departure time?',
+            description: 'Deprecated. Please check if a stop is delayed by compare planned and real time.',
             type: 'boolean',
             example: false,
+            deprecated: true,
         ),
         new OA\Property(
             property: 'cancelled',
@@ -203,8 +205,8 @@ class StopoverResource extends JsonResource
             'departurePlatformPlanned' => $this->departure_platform_planned ?? null,
             'departurePlatformReal' => $this->departure_platform_real ?? null,
             'platform' => $this->platform ?? null,
-            'isArrivalDelayed' => (bool) $this->isArrivalDelayed,
-            'isDepartureDelayed' => (bool) $this->isDepartureDelayed,
+            'isArrivalDelayed' => (bool) $this->isArrivalDelayed, // @deprecated - remove after 2026-11-30
+            'isDepartureDelayed' => (bool) $this->isDepartureDelayed, // @deprecated - remove after 2026-11-30
             'cancelled' => (bool) ($this->cancelled ?? false),
         ];
     }

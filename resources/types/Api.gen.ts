@@ -2244,12 +2244,14 @@ export interface StopoverResource {
   /** @example "5 A-F" */
   platform: string | null;
   /**
-   * Is there a delay in the arrival time?
+   * Deprecated. Please check if a stop is delayed by compare planned and real time.
+   * @deprecated
    * @example false
    */
   isArrivalDelayed: boolean;
   /**
-   * Is there a delay in the departure time?
+   * Deprecated. Please check if a stop is delayed by compare planned and real time.
+   * @deprecated
    * @example false
    */
   isDepartureDelayed: boolean;
