@@ -5,9 +5,11 @@ namespace Tests\Feature\APIv1;
 use App\Enum\HafasTravelType;
 use App\Enum\StationIdentifierType;
 use App\Enum\TripSource;
+use App\Models\Checkin;
 use App\Models\RouteSegment;
 use App\Models\Station;
 use App\Models\StationIdentifier;
+use App\Models\Status;
 use App\Models\Stopover;
 use App\Models\Trip;
 use App\Models\User;
@@ -197,7 +199,7 @@ class StationIdentifierTest extends ApiTestCase
         $this->assertDatabaseHas('route_segments', ['id' => $routeSegment->id, 'from_station_id' => $target->id]);
     }
 
-    public function test_move_identifier_skips_stopovers_conflicting_with_existing_duplicates(): void
+    public function test_move_identifier_merges_stopovers_conflicting_with_existing_duplicates(): void
     {
         $admin = User::factory()->create();
         $admin->assignRole('admin');
@@ -206,11 +208,16 @@ class StationIdentifierTest extends ApiTestCase
         [$source, $target, $identifier, $trip, $originStopover] = $this->createTripWithIdentifierStopover();
 
         // duplicate created by the former refresh bug: same trip and planned times, already on the target station
-        Stopover::factory()->create([
+        $targetStopover = Stopover::factory()->create([
             'trip_id' => $trip->trip_id,
             'train_station_id' => $target->id,
             'arrival_planned' => '2026-07-17T10:00:00Z',
             'departure_planned' => '2026-07-17T10:00:00Z',
+        ]);
+        $checkin = Checkin::factory()->create([
+            'trip_id' => $trip->trip_id,
+            'origin_stopover_id' => $originStopover->id,
+            'departure' => '2026-07-17T10:00:00Z',
         ]);
 
         $response = $this->putJson(
@@ -225,8 +232,83 @@ class StationIdentifierTest extends ApiTestCase
             'updatedTrips' => 0,
         ]]);
 
-        $this->assertDatabaseHas('train_stopovers', ['id' => $originStopover->id, 'train_station_id' => $source->id]);
+        $this->assertDatabaseMissing('train_stopovers', ['id' => $originStopover->id]);
+        $this->assertDatabaseHas('train_checkins', [
+            'id' => $checkin->id,
+            'origin_stopover_id' => $targetStopover->id,
+        ]);
         $this->assertDatabaseHas('station_identifiers', ['id' => $identifier->id, 'station_id' => $target->id]);
+    }
+
+    public function test_move_identifier_removes_duplicate_checkin_when_merging_stopovers(): void
+    {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        Passport::actingAs($admin, ['*']);
+
+        [$source, $target, $identifier, $trip, $sourceStopover] = $this->createTripWithIdentifierStopover();
+        $targetStopover = Stopover::factory()->create([
+            'trip_id' => $trip->trip_id,
+            'train_station_id' => $target->id,
+            'arrival_planned' => '2026-07-17T10:00:00Z',
+            'departure_planned' => '2026-07-17T10:00:00Z',
+        ]);
+        $user = User::factory()->create();
+        $keptStatus = Status::factory()->for($user)->create();
+        $removedStatus = Status::factory()->for($user)->create();
+        $keptCheckin = Checkin::create([
+            'status_id' => $keptStatus->id,
+            'user_id' => $user->id,
+            'trip_id' => $trip->trip_id,
+            'origin_stopover_id' => $targetStopover->id,
+            'destination_stopover_id' => $targetStopover->id,
+            'departure' => '2026-07-17T10:00:00Z',
+            'arrival' => '2026-07-17T10:00:00Z',
+        ]);
+        $removedCheckin = Checkin::create([
+            'status_id' => $removedStatus->id,
+            'user_id' => $user->id,
+            'trip_id' => $trip->trip_id,
+            'origin_stopover_id' => $sourceStopover->id,
+            'destination_stopover_id' => $targetStopover->id,
+            'departure' => '2026-07-17T10:00:00Z',
+            'arrival' => '2026-07-17T10:00:00Z',
+        ]);
+
+        $this->putJson(
+            "/api/v1/stations/{$source->id}/identifiers/{$identifier->id}/move",
+            ['target_station_id' => $target->id],
+        )->assertOk();
+
+        $this->assertModelExists($keptCheckin);
+        $this->assertDatabaseMissing('train_checkins', ['id' => $removedCheckin->id]);
+        $this->assertDatabaseMissing('statuses', ['id' => $removedStatus->id]);
+        $this->assertDatabaseMissing('train_stopovers', ['id' => $sourceStopover->id]);
+    }
+
+    public function test_move_identifier_merges_stopovers_conflicting_on_arrival_only(): void
+    {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        Passport::actingAs($admin, ['*']);
+
+        [$source, $target, $identifier, $trip, $sourceStopover] = $this->createTripWithIdentifierStopover();
+        $targetStopover = Stopover::factory()->create([
+            'trip_id' => $trip->trip_id,
+            'train_station_id' => $target->id,
+            'arrival_planned' => '2026-07-17T10:00:00Z',
+            'departure_planned' => '2026-07-17T10:01:00Z',
+        ]);
+
+        $response = $this->putJson(
+            "/api/v1/stations/{$source->id}/identifiers/{$identifier->id}/move",
+            ['target_station_id' => $target->id],
+        );
+
+        $response->assertOk();
+        $response->assertJson(['data' => ['movedStopovers' => 0, 'skippedStopovers' => 1]]);
+        $this->assertDatabaseMissing('train_stopovers', ['id' => $sourceStopover->id]);
+        $this->assertDatabaseHas('train_stopovers', ['id' => $targetStopover->id]);
     }
 
     public function test_user_cannot_move_identifier(): void

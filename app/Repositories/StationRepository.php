@@ -12,6 +12,7 @@ use App\Models\EventSuggestion;
 use App\Models\RouteSegment;
 use App\Models\Station;
 use App\Models\StationIdentifier;
+use App\Models\Status;
 use App\Models\Stopover;
 use App\Models\Trip;
 use App\Models\User;
@@ -161,27 +162,27 @@ class StationRepository
 
     public function moveStopoversToStation(Station $source, Station $target): int
     {
-        $collisions = DB::table('train_stopovers as s')
-            ->join('train_stopovers as d', function ($join) use ($target) {
-                $join->on('d.trip_id', '=', 's.trip_id')
-                    ->on('d.arrival_planned', '=', 's.arrival_planned')
-                    ->on('d.departure_planned', '=', 's.departure_planned')
-                    ->where('d.train_station_id', '=', $target->id);
-            })
-            ->where('s.train_station_id', $source->id)
-            ->select('s.id as source_id', 'd.id as target_id')
+        Station::whereKey($target->id)->lockForUpdate()->firstOrFail();
+
+        $stopovers = Stopover::where('train_station_id', $source->id)
+            ->orderBy('id')
+            ->lockForUpdate()
             ->get();
 
-        foreach ($collisions as $collision) {
-            Checkin::where('origin_stopover_id', $collision->source_id)->update(['origin_stopover_id' => $collision->target_id]);
-            Checkin::where('destination_stopover_id', $collision->source_id)->update(['destination_stopover_id' => $collision->target_id]);
+        foreach ($stopovers as $stopover) {
+            $duplicate = $this->findConflictingStopover($stopover, $target);
+
+            if ($duplicate !== null) {
+                $this->mergeStopoverReferences($stopover, $duplicate);
+                $stopover->delete();
+
+                continue;
+            }
+
+            $stopover->update(['train_station_id' => $target->id]);
         }
 
-        $merged = $collisions->isEmpty() ? 0 : Stopover::whereIn('id', $collisions->pluck('source_id'))->delete();
-
-        $moved = Stopover::where('train_station_id', $source->id)->update(['train_station_id' => $target->id]);
-
-        return $merged + $moved;
+        return $stopovers->count();
     }
 
     public function moveTripTerminalsToStation(Station $source, Station $target): int
@@ -257,32 +258,102 @@ class StationRepository
     }
 
     /**
-     * Moves all stopovers created via the given identifier to the target station.
-     * Stopovers that would collide with an already existing stopover on the target station
-     * (leftover duplicates from earlier moves) are skipped and can be cleaned up manually.
-     *
      * @return array{moved: int, skipped: int, tripIds: array<int, string>}
      */
     public function moveStopoversOfIdentifier(StationIdentifier $identifier, Station $targetStation): array
     {
-        $baseQuery = fn () => Stopover::where('station_identifier_id', $identifier->id)
-            ->where('train_station_id', '!=', $targetStation->id);
+        Station::whereKey($targetStation->id)->lockForUpdate()->firstOrFail();
 
-        $conflictingIds = $baseQuery()
-            ->whereExists(function ($query) use ($targetStation) {
-                $query->select(DB::raw(1))
-                    ->from('train_stopovers as duplicates')
-                    ->whereColumn('duplicates.trip_id', 'train_stopovers.trip_id')
-                    ->whereColumn('duplicates.arrival_planned', 'train_stopovers.arrival_planned')
-                    ->whereColumn('duplicates.departure_planned', 'train_stopovers.departure_planned')
-                    ->where('duplicates.train_station_id', $targetStation->id);
+        $stopovers = Stopover::where('station_identifier_id', $identifier->id)
+            ->where('train_station_id', '!=', $targetStation->id)
+            ->orderBy('id')
+            ->lockForUpdate()
+            ->get();
+
+        $moved = 0;
+        $merged = 0;
+        $tripIds = [];
+
+        foreach ($stopovers as $stopover) {
+            $tripIds[] = $stopover->trip_id;
+            $duplicate = $this->findConflictingStopover($stopover, $targetStation);
+
+            if ($duplicate !== null) {
+                $this->mergeStopoverReferences($stopover, $duplicate);
+                $stopover->delete();
+                $merged++;
+
+                continue;
+            }
+
+            $stopover->update(['train_station_id' => $targetStation->id]);
+            $moved++;
+        }
+
+        return ['moved' => $moved, 'skipped' => $merged, 'tripIds' => array_values(array_unique($tripIds))];
+    }
+
+    private function findConflictingStopover(Stopover $stopover, Station $targetStation): ?Stopover
+    {
+        $arrivalPlanned = $stopover->getRawOriginal('arrival_planned');
+        $departurePlanned = $stopover->getRawOriginal('departure_planned');
+
+        if ($arrivalPlanned === null && $departurePlanned === null) {
+            return null;
+        }
+
+        return Stopover::where('trip_id', $stopover->trip_id)
+            ->where('train_station_id', $targetStation->id)
+            ->where(function ($query) use ($arrivalPlanned, $departurePlanned) {
+                if ($arrivalPlanned !== null) {
+                    $query->where('arrival_planned', $arrivalPlanned);
+                }
+
+                if ($departurePlanned !== null) {
+                    $method = $arrivalPlanned === null ? 'where' : 'orWhere';
+                    $query->{$method}('departure_planned', $departurePlanned);
+                }
             })
-            ->pluck('id');
+            ->orderBy('id')
+            ->lockForUpdate()
+            ->first();
+    }
 
-        $tripIds = $baseQuery()->whereNotIn('id', $conflictingIds)->distinct()->pluck('trip_id');
-        $moved = $baseQuery()->whereNotIn('id', $conflictingIds)->update(['train_station_id' => $targetStation->id]);
+    private function mergeStopoverReferences(Stopover $source, Stopover $target): void
+    {
+        $originCheckins = Checkin::where('origin_stopover_id', $source->id)
+            ->orderBy('id')
+            ->lockForUpdate()
+            ->get();
 
-        return ['moved' => $moved, 'skipped' => $conflictingIds->count(), 'tripIds' => $tripIds->all()];
+        foreach ($originCheckins as $checkin) {
+            $duplicate = $checkin->user_id === null ? null : Checkin::where('user_id', $checkin->user_id)
+                ->where('trip_id', $checkin->trip_id)
+                ->where('origin_stopover_id', $target->id)
+                ->whereKeyNot($checkin->id)
+                ->orderBy('id')
+                ->lockForUpdate()
+                ->first();
+
+            if ($duplicate === null) {
+                $checkin->update(['origin_stopover_id' => $target->id]);
+
+                continue;
+            }
+
+            $keep = $checkin->id < $duplicate->id ? $checkin : $duplicate;
+            $remove = $keep->is($checkin) ? $duplicate : $checkin;
+            $removedStatusId = $remove->status_id;
+            $remove->delete();
+            Status::find($removedStatusId)?->delete();
+
+            if ($keep->is($checkin)) {
+                $checkin->update(['origin_stopover_id' => $target->id]);
+            }
+        }
+
+        Checkin::where('destination_stopover_id', $source->id)
+            ->update(['destination_stopover_id' => $target->id]);
     }
 
     /**

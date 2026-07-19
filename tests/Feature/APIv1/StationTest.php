@@ -10,6 +10,7 @@ use App\Models\EventSuggestion;
 use App\Models\RouteSegment;
 use App\Models\Station;
 use App\Models\StationIdentifier;
+use App\Models\Status;
 use App\Models\Stopover;
 use App\Models\Trip;
 use App\Models\User;
@@ -268,6 +269,16 @@ class StationTest extends ApiTestCase
             'departure' => '2026-07-17T10:00:00Z',
             'arrival' => '2026-07-17T11:00:00Z',
         ]);
+        $duplicateStatus = Status::factory()->for($checkin->user)->create();
+        $duplicateCheckin = Checkin::create([
+            'status_id' => $duplicateStatus->id,
+            'user_id' => $checkin->user_id,
+            'trip_id' => $trip->trip_id,
+            'origin_stopover_id' => $targetStopover->id,
+            'destination_stopover_id' => $destinationStopover->id,
+            'departure' => '2026-07-17T10:00:00Z',
+            'arrival' => '2026-07-17T11:00:00Z',
+        ]);
 
         $this->putJson("/api/v1/stations/{$source->id}/usages/move", [
             'target_station_id' => $target->id,
@@ -276,6 +287,8 @@ class StationTest extends ApiTestCase
 
         $this->assertDatabaseMissing('train_stopovers', ['id' => $sourceStopover->id]);
         $this->assertDatabaseHas('train_checkins', ['id' => $checkin->id, 'origin_stopover_id' => $targetStopover->id]);
+        $this->assertDatabaseMissing('train_checkins', ['id' => $duplicateCheckin->id]);
+        $this->assertDatabaseMissing('statuses', ['id' => $duplicateStatus->id]);
     }
 
     public function test_move_station_references_respects_type_filter(): void
