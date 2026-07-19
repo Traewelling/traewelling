@@ -53,6 +53,13 @@ use OpenApi\Attributes as OA;
             deprecated: true,
         ),
         new OA\Property(
+            property: 'identifiers',
+            description: 'Deprecated. Only present with withIdentifiers=true. Use station.identifiers instead.',
+            type: 'array',
+            items: new OA\Items(ref: StationIdentifierResource::class),
+            deprecated: true,
+        ),
+        new OA\Property(
             property: 'rilIdentifier',
             description: 'Deprecated. Always null. Use the station identifiers endpoint instead.',
             type: 'string',
@@ -179,7 +186,7 @@ class StopoverResource extends JsonResource
             'name' => $this->station->name, // @deprecated - use station.name instead
             'rilIdentifier' => null, // @deprecated - remove after 2026-09-30
             'evaIdentifier' => null, // @deprecated - remove after 2026-09-30
-            'identifiers' => $this->when(
+            'identifiers' => $this->when( // @deprecated - remove after 2026-11-30 -> use station.identifiers instead
                 $this->relationLoaded('station') && $this->station->relationLoaded('stationIdentifiers'),
                 fn () => StationIdentifierResource::collection($this->station->stationIdentifiers),
             ),

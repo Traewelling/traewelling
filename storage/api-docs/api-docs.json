@@ -14389,6 +14389,14 @@
                         "example": "Karlsruhe Hbf",
                         "deprecated": true
                     },
+                    "identifiers": {
+                        "description": "Deprecated. Only present with withIdentifiers=true. Use station.identifiers instead.",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StationIdentifierResource"
+                        },
+                        "deprecated": true
+                    },
                     "rilIdentifier": {
                         "description": "Deprecated. Always null. Use the station identifiers endpoint instead.",
                         "type": "string",

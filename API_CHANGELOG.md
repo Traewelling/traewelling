@@ -41,14 +41,17 @@ Check back here regularly to stay ahead of removals.
 | 2026-05-14 | `POST /api/v1/trains/checkin` 409 response: `message.status_id` and `message.lineName` are deprecated. Use `data.conflicts` (full `StatusResource` array) instead                                                 | 2026-10-31 | [#4677](https://github.com/Traewelling/traewelling/pull/4677) |
 | 2026-07-19 | `StopoverResource.id` is deprecated as station ID: it currently holds the station ID (not unique within a trip). Use `station` for station details. After the safe-until date `id` is repurposed to the unique stopover ID | 2026-11-30 | [#4959](https://github.com/Traewelling/traewelling/pull/4959) |
 | 2026-07-19 | `StopoverResource.name` is deprecated → use `station.name` instead                                                                                                                                                | 2026-11-30 | [#4959](https://github.com/Traewelling/traewelling/pull/4959) |
+| 2026-07-19 | `StopoverResource.identifiers` (only present with `withIdentifiers=true`) is deprecated → use `station.identifiers` instead                                                                                        | 2026-11-30 | [#4959](https://github.com/Traewelling/traewelling/pull/4959) |
 
 ---
 
 # 2026-07-19
 
-**`StopoverResource`: `id` and `name` deprecated, new `station` field:**
-`id` (station ID, not unique within a trip) and `name` are deprecated. Use the new `station`
-field (full `StationResource`). After 2026-11-30 `id` is repurposed to the unique stopover ID.
+**`StopoverResource`: `id`, `name` and `identifiers` deprecated, new `station` field:**
+`id` (station ID, not unique within a trip), `name` and `identifiers` (only present with
+`withIdentifiers=true`) are deprecated. Use the new `station` field (full `StationResource`,
+including `station.name` and `station.identifiers`). After 2026-11-30 `id` is repurposed to the
+unique stopover ID.
 
 Affected endpoints (all that embed `StopoverResource`):
 - `GET /trains/trip`, `POST /trips` (via `TripResource.stopovers`)

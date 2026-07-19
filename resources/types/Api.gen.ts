@@ -2167,6 +2167,11 @@ export interface StopoverResource {
    */
   name: string;
   /**
+   * Deprecated. Only present with withIdentifiers=true. Use station.identifiers instead.
+   * @deprecated
+   */
+  identifiers?: StationIdentifierResource[];
+  /**
    * Deprecated. Always null. Use the station identifiers endpoint instead.
    * @deprecated
    * @example null
