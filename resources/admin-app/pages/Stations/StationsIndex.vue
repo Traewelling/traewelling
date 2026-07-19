@@ -3,6 +3,7 @@ import { ExternalLink } from '@lucide/vue';
 import { ref, watch } from 'vue';
 import { Api, type Station } from '../../../types/Api.gen';
 import BackendLayout from '../../layouts/BackendLayout.vue';
+import StationMergeMap from './partials/StationMergeMap.vue';
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 
@@ -54,6 +55,8 @@ watch(query, () => {
                 class="input input-bordered input-sm w-full"
             />
         </div>
+
+        <StationMergeMap />
 
         <div v-if="error" role="alert" class="alert alert-error mb-4">
             <span>{{ error }}</span>
