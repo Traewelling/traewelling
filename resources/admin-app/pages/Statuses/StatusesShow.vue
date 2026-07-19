@@ -217,10 +217,10 @@ onMounted(() => fetchStatus());
                                         <tr class="hover:bg-base-300">
                                             <td class="text-base-content/60">Created by</td>
                                             <td v-if="status.createdBy">
-                                                <a :href="`/admin/users/${status.user.id}`" class="link">
-                                                    {{ status.user.displayName }}
+                                                <a :href="`/admin/users/${status.createdBy.id}`" class="link">
+                                                    {{ status.createdBy.displayName }}
                                                     <span class="text-base-content/50"
-                                                        >@{{ status.user.username }}</span
+                                                        >@{{ status.createdBy.username }}</span
                                                     >
                                                 </a>
                                             </td>
