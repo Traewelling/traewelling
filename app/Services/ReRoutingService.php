@@ -30,9 +30,9 @@ class ReRoutingService
         private readonly GeodesicService $geodesicService,
     ) {}
 
-    public function rerouteStops(Trip $trip): int
+    public function rerouteStops(Trip $trip, bool $force = false): int
     {
-        Log::info('RerouteStops: Starting rerouting process for trip', ['trip_id' => $trip->id]);
+        Log::info('RerouteStops: Starting rerouting process for trip', ['trip_id' => $trip->id, 'force' => $force]);
         /** @var Collection<int, Stopover> $stops */
         $stops = $trip->stopovers()->get();
         $this->stopovers = $stops->count();
@@ -55,7 +55,11 @@ class ReRoutingService
 
             $pathType = $mode->getSegmentPathType();
             if (!$pathType) {
-                Log::warning('RerouteStops: Unsupported transport mode, skipping', ['mode' => $mode]);
+                Log::warning('RerouteStops: Unsupported transport mode', ['mode' => $mode, 'force' => $force]);
+                // in force mode still guarantee a polyline via a straight great-circle arc
+                if ($force) {
+                    $this->rerouteAsGreatCircle($previousStop, $stop);
+                }
 
                 continue;
             }
@@ -64,7 +68,7 @@ class ReRoutingService
             if ($pathType === SegmentPathType::GREAT_CIRCLE) {
                 $this->rerouteAsGreatCircle($previousStop, $stop);
             } else {
-                $this->rerouteBetween($previousStop, $stop, $pathType);
+                $this->rerouteBetween($previousStop, $stop, $pathType, $force);
             }
         }
 
@@ -166,7 +170,7 @@ class ReRoutingService
         ]);
     }
 
-    private function rerouteBetween(Stopover $start, Stopover $end, SegmentPathType $pathType): void
+    private function rerouteBetween(Stopover $start, Stopover $end, SegmentPathType $pathType, bool $force = false): void
     {
         Log::debug('RerouteStops', [$start, $end, $pathType]);
 
@@ -204,32 +208,42 @@ class ReRoutingService
         $hadInfraError = false;
         $noTrackFound = false;
 
-        $route = $this->tryBrouterRoute($originCoord, $destCoord, $duration, $oldDistance, $pathType, $start->station->name, $end->station->name, false, $hadInfraError, $noTrackFound);
+        $route = $this->tryBrouterRoute($originCoord, $destCoord, $duration, $oldDistance, $pathType, $start->station->name, $end->station->name, false, $hadInfraError, $noTrackFound, $force);
 
         if ($route === null && !$noTrackFound) {
             // Phase 1: jitter origin up to 2x
             for ($i = 0; $i < 2 && $route === null; $i++) {
-                $route = $this->tryBrouterRoute($this->jitterCoordinate($originCoord), $destCoord, $duration, $oldDistance, $pathType, $start->station->name, $end->station->name, true, $hadInfraError, $noTrackFound);
+                $route = $this->tryBrouterRoute($this->jitterCoordinate($originCoord), $destCoord, $duration, $oldDistance, $pathType, $start->station->name, $end->station->name, true, $hadInfraError, $noTrackFound, $force);
             }
         }
 
         if ($route === null && !$noTrackFound) {
             // Phase 2: jitter destination up to 2x
             for ($i = 0; $i < 2 && $route === null; $i++) {
-                $route = $this->tryBrouterRoute($originCoord, $this->jitterCoordinate($destCoord), $duration, $oldDistance, $pathType, $start->station->name, $end->station->name, true, $hadInfraError, $noTrackFound);
+                $route = $this->tryBrouterRoute($originCoord, $this->jitterCoordinate($destCoord), $duration, $oldDistance, $pathType, $start->station->name, $end->station->name, true, $hadInfraError, $noTrackFound, $force);
             }
         }
 
         if ($route === null && !$noTrackFound) {
             // Phase 3: jitter both simultaneously up to 2x
             for ($i = 0; $i < 2 && $route === null; $i++) {
-                $route = $this->tryBrouterRoute($this->jitterCoordinate($originCoord), $this->jitterCoordinate($destCoord), $duration, $oldDistance, $pathType, $start->station->name, $end->station->name, true, $hadInfraError, $noTrackFound);
+                $route = $this->tryBrouterRoute($this->jitterCoordinate($originCoord), $this->jitterCoordinate($destCoord), $duration, $oldDistance, $pathType, $start->station->name, $end->station->name, true, $hadInfraError, $noTrackFound, $force);
             }
         }
 
         if ($route === null) {
             if ($hadInfraError) {
                 $this->queryExceptions++;
+            }
+            // in force mode guarantee a polyline: BRouter gave nothing, so store a straight arc
+            if ($force) {
+                Log::debug('RerouteStops: BRouter failed, falling back to great-circle arc (force)', [
+                    'from' => $start->station->name,
+                    'to' => $end->station->name,
+                ]);
+                $this->rerouteAsGreatCircle($start, $end);
+
+                return;
             }
             Log::debug('RerouteStops: All jitter attempts failed, skipping segment', [
                 'from' => $start->station->name,
@@ -274,9 +288,21 @@ class ReRoutingService
         bool $jittered = false,
         bool &$hadInfraError = false,
         bool &$noTrackFound = false,
+        bool $force = false,
     ): ?array {
         try {
             $route = $this->brouterService->getRoute([$fromCoord, $toCoord], $pathType->getBRouterProfile());
+
+            if ($force) {
+                // backfill: accept whatever BRouter returns, skip speed/distance/deviation checks
+                return [
+                    'polyline' => new PolylineTranscoder()->encodePolyline(
+                        array_map(static fn (Coordinate $c) => [$c->longitude, $c->latitude], $route->coordinates),
+                    ),
+                    'distance' => $route->distanceInMeters,
+                    'jittered' => $jittered,
+                ];
+            }
 
             if ($duration > 0) {
                 $speed = ($route->distanceInMeters / $duration) * 3.6;
