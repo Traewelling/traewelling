@@ -2159,7 +2159,7 @@ export interface StopoverResource {
    * @example 987654
    */
   stopoverId: number;
-  station?: StationResource;
+  station: StationResource;
   /**
    * Deprecated. Name of the station. Use station.name instead.
    * @deprecated
@@ -2170,7 +2170,7 @@ export interface StopoverResource {
    * Deprecated. Only present with withIdentifiers=true. Use station.identifiers instead.
    * @deprecated
    */
-  identifiers?: StationIdentifierResource[];
+  identifiers: StationIdentifierResource[];
   /**
    * Deprecated. Always null. Use the station identifiers endpoint instead.
    * @deprecated

@@ -11,7 +11,9 @@ use OpenApi\Attributes as OA;
     required: [
         'id',
         'stopoverId',
+        'station',
         'name',
+        'identifiers',
         'rilIdentifier',
         'evaIdentifier',
         'arrival',
