@@ -1317,5 +1317,7 @@
     "date-format": "",
     "dateformat.month-and-year": "",
     "dateformat.with-weekday": "",
-    "dashboard.empty.discover3": ""
+    "dashboard.empty.discover3": "",
+    "export.title.arrival_real": "",
+    "export.title.departure_real": ""
 }
