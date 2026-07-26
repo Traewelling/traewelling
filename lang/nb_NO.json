@@ -1333,5 +1333,8 @@
     "menu.oauth_authorize.application_information.privacy_policy": "",
     "year-review.teaser": "",
     "support.go-to-github": "",
-    "tag.title.trwl:locomotive_class": ""
+    "tag.title.trwl:locomotive_class": "",
+    "user.login.mastodon": "",
+    "export.title.arrival_real": "",
+    "export.title.departure_real": ""
 }
