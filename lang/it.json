@@ -1329,5 +1329,13 @@
     "dashboard.empty.teaser": "",
     "data-providers.default": "",
     "error.401": "",
-    "error.403": ""
+    "error.403": "",
+    "export.format": "",
+    "missing-journey": "",
+    "settings.experimental.description": "",
+    "tag.title.trwl:locomotive_class": "",
+    "error.404": "",
+    "error.419": "",
+    "error.429": "",
+    "error.500": ""
 }
