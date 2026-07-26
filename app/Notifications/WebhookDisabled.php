@@ -36,7 +36,7 @@ class WebhookDisabled extends Notification implements BaseNotification
     public static function getNotice(array $data, ?string $locale = null): ?string
     {
         return Lang::trans('notifications.webhookDisabled.notice', [
-            'client' => $data['client_name'],
+            'client' => '<b>' . e($data['client_name']) . '</b>',
         ], $locale);
     }
 

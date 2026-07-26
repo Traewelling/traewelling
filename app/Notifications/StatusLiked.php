@@ -43,7 +43,7 @@ class StatusLiked extends Notification implements BaseNotification
     public static function getLead(array $data, ?string $locale = null): string
     {
         return Lang::trans('notifications.statusLiked.lead', [
-            'likerUsername' => $data['liker']['username'],
+            'likerUsername' => '<b>' . e($data['liker']['username']) . '</b>',
         ], $locale);
     }
 

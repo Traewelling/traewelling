@@ -105,7 +105,14 @@ const selectLanguageUrl = (langCode: string): string => {
             </div>
             <div class="d-flex flex-column flex-sm-row justify-content-between py-4 my-4 border-top">
                 <p class="mb-0">&copy; {{ DateTime.now().toFormat('yyyy') }} Tr&auml;welling</p>
-                <p class="mb-0" v-html="trans('menu.developed')"></p>
+                <p class="mb-0">
+                    {{ trans('footer.developed') }}
+                    <a href="https://github.com/Traewelling/traewelling" target="_blank">
+                        {{ trans('footer.sourcecode') }}
+                    </a>
+                    {{ trans('footer.licensed-under') }}
+                    <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank">AGPLv3</a>.
+                </p>
                 <p class="mb-0 text-muted small">
                     Version
                     <a href="/changelog">

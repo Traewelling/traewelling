@@ -34,7 +34,7 @@ class FollowRequestIssued extends Notification implements BaseNotification
     public static function getLead(array $data, ?string $locale = null): string
     {
         return Lang::trans('notifications.userRequestedFollow.lead', [
-            'followerRequestUsername' => $data['user']['username'],
+            'followerRequestUsername' => '<b>' . e($data['user']['username']) . '</b>',
         ],
 
             $locale);

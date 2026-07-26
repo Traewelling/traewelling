@@ -34,7 +34,7 @@ class UserFollowed extends Notification implements BaseNotification
     public static function getLead(array $data, ?string $locale = null): string
     {
         return Lang::trans('notifications.userFollowed.lead', [
-            'followerUsername' => $data['follower']['username'],
+            'followerUsername' => '<b>' . e($data['follower']['username']) . '</b>',
         ], $locale);
     }
 

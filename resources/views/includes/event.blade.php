@@ -61,7 +61,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                {!! __('modals.deleteEvent-body', ['name' => $event->name]) !!}
+                {{ __('modals.deleteEvent-body', ['name' => $event->name]) }}
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{__('menu.abort')}}</button>

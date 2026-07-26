@@ -45,6 +45,20 @@ Check back here regularly to stay ahead of removals.
 
 ---
 
+# 2026-07-26
+
+**`NotificationResource`: the markup in `leadFormatted` and `noticeFormatted` now comes from the code instead of from
+the translation files.**
+
+The fields keep containing HTML. Two visible details changed:
+
+- the `@` in front of a username is no longer part of the bold tag: `@<b>bob</b>` instead of `<b>@bob</b>`
+- the Mastodon error notices no longer wrap the HTTP status in `<code>`
+
+`lead` and `notice` stay plain text and are unchanged.
+
+---
+
 # 2026-07-19
 
 Upcoming breaking changes in `StopoverResource` to 2026-11-30:

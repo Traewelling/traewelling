@@ -97,7 +97,7 @@
                 </div>
                 <div class="left">
                     <span class="promo">
-                        {!! __('export.guarantee', ['url' => url('/'), 'name' => config('app.name', 'Träwelling')]) !!}
+                        {!! __('export.guarantee', ['name' => '<a href="' . url('/') . '">' . e(config('app.name', 'Träwelling')) . '</a>']) !!}
                     </span>
                 </div>
             </div>

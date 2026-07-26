@@ -47,7 +47,7 @@ class EventSuggestionProcessed extends Notification implements BaseNotification
     public static function getLead(array $data, ?string $locale = null): string
     {
         return Lang::trans('notifications.eventSuggestionProcessed.lead', [
-            'name' => $data['suggestedName'],
+            'name' => '<b>' . e($data['suggestedName']) . '</b>',
         ], $locale);
     }
 
