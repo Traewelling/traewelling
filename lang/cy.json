@@ -1310,5 +1310,11 @@
     "your-access-token-description": "",
     "your-access-token.ask": "",
     "user.blocked.noBlockedUsers": "",
-    "beta.banner.text": ""
+    "beta.banner.text": "",
+    "export.title.arrival_real": "",
+    "export.title.departure_real": "",
+    "user.please-check": "",
+    "controller.transport.social-post": "",
+    "dates.-on-": "",
+    "events.host": ""
 }
