@@ -1292,5 +1292,8 @@
     "email.change": "",
     "email.validation": "",
     "email.verification.btn": "",
-    "email.verification.required": ""
+    "email.verification.required": "",
+    "export.title.arrival_real": "",
+    "export.title.departure_real": "",
+    "user.login.mastodon": ""
 }
