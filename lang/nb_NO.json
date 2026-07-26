@@ -1316,5 +1316,22 @@
     "dashboard.empty": "",
     "dashboard.empty.discover1": "",
     "dashboard.empty.teaser": "",
-    "data-providers.transitous": ""
+    "data-providers.transitous": "",
+    "notifications.eventSuggestionProcessed.duplicate": "",
+    "settings.webhook_event.checkin_create": "",
+    "settings.webhook_event.checkin_delete": "",
+    "error.404": "",
+    "error.419": "",
+    "error.429": "",
+    "error.500": "",
+    "menu.oauth_authorize.request_title": "",
+    "settings.webhook-description": "",
+    "settings.webhook_event.checkin_update": "",
+    "missing-journey": "",
+    "export.format": "",
+    "settings.experimental.description": "",
+    "menu.oauth_authorize.application_information.privacy_policy": "",
+    "year-review.teaser": "",
+    "support.go-to-github": "",
+    "tag.title.trwl:locomotive_class": ""
 }
