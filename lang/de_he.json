@@ -1320,5 +1320,7 @@
     "dashboard-end-seven-days": "",
     "dashboard.empty": "",
     "dashboard.empty.teaser": "",
-    "delete": ""
+    "delete": "",
+    "export.title.arrival_real": "",
+    "export.title.departure_real": ""
 }
