@@ -1336,5 +1336,8 @@
     "error.429": "",
     "error.500": "",
     "tag.title.trwl:locomotive_class": "",
-    "settings.experimental.description": ""
+    "settings.experimental.description": "",
+    "export.title.arrival_real": "",
+    "export.title.departure_real": "",
+    "user.login.mastodon": ""
 }
