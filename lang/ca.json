@@ -1315,5 +1315,6 @@
     "export.title.arrival_real": "",
     "controller.transport.social-post": "",
     "user.login.mastodon": "",
-    "user.please-check": ""
+    "user.please-check": "",
+    "dashboard.empty.discover3": ""
 }
