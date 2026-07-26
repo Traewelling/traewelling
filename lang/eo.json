@@ -1308,5 +1308,12 @@
     "settings.title-profile": "",
     "stats.no-data": "",
     "user.displayname": "",
-    "user.header-reset-pw": ""
+    "user.header-reset-pw": "",
+    "controller.transport.social-post": "",
+    "events.host": "",
+    "export.title.departure_real": "",
+    "user.login.mastodon": "",
+    "export.title.arrival_real": "",
+    "dates.-on-": "",
+    "user.please-check": ""
 }
