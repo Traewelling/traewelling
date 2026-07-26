@@ -1313,5 +1313,9 @@
     "stationboard.new-checkin": "",
     "stats.no-data": "",
     "transport_types.businessPlural": "",
-    "transport_types.private": ""
+    "transport_types.private": "",
+    "export.title.arrival_real": "",
+    "user.login.mastodon": "",
+    "export.title.departure_real": "",
+    "events.host": ""
 }
