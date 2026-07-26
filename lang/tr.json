@@ -1317,5 +1317,6 @@
     "export.title.arrival_real": "",
     "user.login.mastodon": "",
     "export.title.departure_real": "",
-    "events.host": ""
+    "events.host": "",
+    "transport_types.bus": ""
 }
