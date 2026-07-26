@@ -1308,5 +1308,12 @@
     "transport_types.privatePlural": "",
     "user.email.not-set": "",
     "user.forgot-password": "",
-    "year-review.teaser": ""
+    "year-review.teaser": "",
+    "events.host": "",
+    "export.title.departure_real": "",
+    "dates.-on-": "",
+    "export.title.arrival_real": "",
+    "controller.transport.social-post": "",
+    "user.login.mastodon": "",
+    "user.please-check": ""
 }
