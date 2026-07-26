@@ -1316,5 +1316,6 @@
     "controller.transport.social-post": "",
     "user.login.mastodon": "",
     "user.please-check": "",
-    "dashboard.empty.discover3": ""
+    "dashboard.empty.discover3": "",
+    "transport_types.bus": ""
 }
