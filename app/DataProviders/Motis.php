@@ -452,13 +452,32 @@ class Motis extends Controller implements DataProviderInterface
     private function filterStopsFromResults(Response $response, string $identifier = 'id'): Collection
     {
         $json = $response->json();
-        $rawStations = [];
+        $stopEntries = [];
         foreach ($json as $stationEntry) {
             if (isset($stationEntry['type']) && $stationEntry['type'] !== 'STOP') {
                 continue;
             }
-            if ($this->excludedSourceService->isExcluded($stationEntry[$identifier] ?? null)) {
-                continue;
+            $stopEntries[] = $stationEntry;
+        }
+
+        $allowedIds = array_filter(
+            array_column($stopEntries, $identifier),
+            fn (string $id): bool => !$this->excludedSourceService->isExcluded($id)
+        );
+
+        $rawStations = [];
+        $replacedIdentifiers = [];
+        foreach ($stopEntries as $stationEntry) {
+            $stationId = $stationEntry[$identifier] ?? null;
+            if ($this->excludedSourceService->isExcluded($stationId)) {
+                // Keep excluded stops that map onto an allowed source, otherwise a stop whose only
+                // geocoder representative comes from an excluded feed disappears from the results.
+                $replacement = $this->excludedSourceService->resolveReplacement($stationId);
+                if ($replacement === null || in_array($replacement, $allowedIds, true)) {
+                    continue;
+                }
+                $stationEntry[$identifier] = $replacement;
+                $replacedIdentifiers[] = $replacement;
             }
             $rawStations[] = $stationEntry;
         }
@@ -479,6 +498,11 @@ class Motis extends Controller implements DataProviderInterface
                 $stationId = $rawStation[$identifier];
 
                 $station = $this->stationRepository->updateOrCreateByIfopt($stationId, $this->source);
+                if ($station === null && in_array($stationId, $replacedIdentifiers, true)) {
+                    // The replacement is only a guess at the allowed source's identifier, so it
+                    // must never create a station that the allowed source does not actually have.
+                    continue;
+                }
                 $station = $station ?? $this->stationRepository->createMotisStationIdentifier($rawStation, $this->source);
             } else {
                 if (!empty($areas)) {
