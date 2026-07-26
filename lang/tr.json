@@ -1254,5 +1254,10 @@
     "data-providers.transitous": "",
     "dateformat.month-and-year": "",
     "dateformat.with-weekday": "",
-    "menu.leaderboard": ""
+    "menu.leaderboard": "",
+    "export.arrival": "",
+    "maintenance.title": "",
+    "export.kilometers": "",
+    "export.duration": "",
+    "transport_types.regionalExp": ""
 }
