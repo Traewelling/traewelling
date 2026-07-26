@@ -1,7 +1,7 @@
 {
     "about.block1": "Träwelling este un serviciu de check-in gratuit care îți permite să le spui prietenilor unde ești și prin care îți poți menține un jurnal de călătorii cu transportul public. Pe scurt, poți face check in în trenuri și primești puncte pentru asta.",
     "about.express": "InterCity, EuroCity",
-    "about.feature-missing": "Dacă dorești să sugerezi un feature sau dacă ai găsit un bug, raportează direct pe <a href=\"https://github.com/Traewelling/traewelling/issues/new/choose\" target=\"_blank\">repository-ul GitHub</a>.",
+    "about.feature-missing": "Dacă dorești să sugerezi un feature sau dacă ai găsit un bug, raportează direct pe repository-ul GitHub.",
     "about.feature-missing-heading": "Cum raportez erori sau sugerez îmbunătățiri?",
     "about.international": "InterCityExpress, TGV, RailJet",
     "about.regional": "Tren regional sau regional-express",
@@ -936,7 +936,6 @@
     "menu.backend": "",
     "menu.close": "",
     "menu.copy": "",
-    "menu.developed": "",
     "menu.export": "",
     "menu.globaldashboard": "",
     "messages.too-many-likes": "",

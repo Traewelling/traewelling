@@ -65,15 +65,12 @@ async function deleteAccount() {
         <!-- Step 2: Final confirmation with username -->
         <div v-else class="modal-box border-2 border-error">
             <h3 class="text-lg font-bold text-error">{{ trans('settings.delete-account') }}</h3>
-            <!-- eslint-disable-next-line vue/no-v-html -->
-            <p class="mt-2 text-sm" v-html="trans('settings.delete-account-verify', { appname: 'Träwelling' })"></p>
+            <p class="mt-2 text-sm">{{ trans('settings.delete-account-verify', { appname: 'Träwelling' }) }}</p>
             <form @submit.prevent="deleteAccount">
                 <div class="mt-4">
-                    <!-- eslint-disable-next-line vue/no-v-html -->
-                    <label
-                        class="text-sm"
-                        v-html="trans('messages.account.please-confirm', { delete: profile.username })"
-                    ></label>
+                    <label class="text-sm">
+                        {{ trans('messages.account.please-confirm', { delete: profile.username }) }}
+                    </label>
                     <input
                         v-model="confirmation"
                         type="text"

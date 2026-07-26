@@ -38,14 +38,27 @@ class UserNotificationResource extends JsonResource
             'id' => (string) $this->id,
             'type' => (string) str_replace('App\\Notifications\\', '', $this->type),
             'leadFormatted' => $type::getLead($this->resource->data, $this->notifiable()?->first()?->language ?? null),
-            'lead' => strip_tags($type::getLead($this->resource->data, $this->notifiable()?->first()?->language ?? null)),
+            'lead' => self::toPlainText($type::getLead($this->resource->data, $this->notifiable()?->first()?->language ?? null)),
             'noticeFormatted' => $type::getNotice($this->resource->data, $this->notifiable()?->first()?->language ?? null),
-            'notice' => strip_tags($type::getNotice($this->resource->data, $this->notifiable()?->first()?->language ?? null)),
+            'notice' => self::toPlainText($type::getNotice($this->resource->data, $this->notifiable()?->first()?->language ?? null)),
             'link' => $type::getLink($this->resource->data),
             'data' => $this->data,
             'readAt' => $this->read_at?->toIso8601String(),
             'createdAt' => $this->created_at->toIso8601String(),
             'createdAtForHumans' => $this->created_at->diffForHumans(),
         ];
+    }
+
+    /**
+     * The formatted variants are HTML, so their entities need to be decoded
+     * again for the plain text fields.
+     */
+    private static function toPlainText(?string $formatted): ?string
+    {
+        if ($formatted === null) {
+            return null;
+        }
+
+        return html_entity_decode(strip_tags($formatted), ENT_QUOTES | ENT_HTML5);
     }
 }

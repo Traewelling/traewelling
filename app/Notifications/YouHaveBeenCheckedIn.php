@@ -43,7 +43,7 @@ class YouHaveBeenCheckedIn extends Notification implements BaseNotification
     public static function getLead(array $data, ?string $locale = null): string
     {
         return Lang::trans('notifications.youHaveBeenCheckedIn.lead', [
-            'username' => $data['user']['username'],
+            'username' => '<b>' . e($data['user']['username']) . '</b>',
         ], $locale);
     }
 

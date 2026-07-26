@@ -69,17 +69,12 @@ defineExpose({ open });
         <!-- Step 2: Final confirmation with username -->
         <div v-else class="modal-box border-error border-3">
             <h5 class="mb-2 fw-bold text-danger">{{ trans('settings.delete-account') }}</h5>
-            <!-- eslint-disable-next-line vue/no-v-html -->
-            <p class="small" v-html="trans('settings.delete-account-verify', { appname: 'Träwelling' })"></p>
+            <p class="small">{{ trans('settings.delete-account-verify', { appname: 'Träwelling' }) }}</p>
             <form @submit.prevent="deleteAccount">
                 <div class="mt-3">
-                    <!-- eslint-disable vue/no-v-html -->
-                    <label
-                        for="confirmation"
-                        class="form-label small"
-                        v-html="trans('messages.account.please-confirm', { delete: props.username })"
-                    ></label>
-                    <!-- eslint-enable vue/no-v-html -->
+                    <label for="confirmation" class="form-label small">
+                        {{ trans('messages.account.please-confirm', { delete: props.username }) }}
+                    </label>
                     <input
                         id="confirmation"
                         v-model="confirmation"

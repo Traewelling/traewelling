@@ -47,7 +47,7 @@ class UserJoinedConnection extends Notification implements BaseNotification
     public static function getLead(array $data, ?string $locale = null): string
     {
         return Lang::trans('notifications.userJoinedConnection.lead', [
-            'username' => $data['user']['username'],
+            'username' => '<b>' . e($data['user']['username']) . '</b>',
         ], $locale);
     }
 
@@ -57,9 +57,9 @@ class UserJoinedConnection extends Notification implements BaseNotification
             'notifications.userJoinedConnection.notice',
             preg_match('/\s/', $data['checkin']['linename']), [
                 'username' => $data['user']['username'],
-                'linename' => $data['checkin']['linename'],
-                'origin' => $data['checkin']['origin'],
-                'destination' => $data['checkin']['destination'],
+                'linename' => '<b>' . e($data['checkin']['linename']) . '</b>',
+                'origin' => '<b>' . e($data['checkin']['origin']) . '</b>',
+                'destination' => '<b>' . e($data['checkin']['destination']) . '</b>',
             ],
             $locale
         );

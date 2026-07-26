@@ -116,7 +116,13 @@
                 <p>
                     {{ trans('footer.developed') }}
                     <br />
-                    {{ trans('footer.source') }}
+                    <a href="https://github.com/Traewelling/traewelling" target="_blank" class="link link-hover">
+                        {{ trans('footer.sourcecode') }}
+                    </a>
+                    {{ trans('footer.licensed-under') }}
+                    <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank" class="link link-hover"
+                        >AGPLv3</a
+                    >.
                     <br />
 
                     Version

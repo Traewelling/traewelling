@@ -24,7 +24,7 @@
                     </h1>
                     <div class="flex flex-col gap-4">
                         <!-- Introduction -->
-                        <p class="my-4 italic @if($client->user_id !== 0) text-warning @endif">{!!__("menu.oauth_authorize.request", ['application' => e($client->name)])!!}</p>
+                        <p class="my-4 italic @if($client->user_id !== 0) text-warning @endif">{!!__("menu.oauth_authorize.request", ['application' => '<span class="fw-bold">' . e($client->name) . '</span>'])!!}</p>
 
                         <!-- Scope List -->
                         @if (count($scopes) > 0)
@@ -85,8 +85,7 @@
                         <p class="text-center">
                             {!! __("menu.oauth_authorize.application_information.author", [
                             "application" => e($client->name),
-                            "user" => e($author),
-                            "url" => route("profile", $author)
+                            "user" => '<a href="' . route("profile", $author) . '">' . e($author) . '</a>'
                             ])!!}
                         </p>
                     </div>

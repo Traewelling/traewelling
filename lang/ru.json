@@ -1,7 +1,7 @@
 {
     "about.block1": "Träwelling, это бесплатный сервис, который даёт возможность делится с друзьями, где вы находитесь и регистрировать поездки на общественном транспорте. Коротко, ты можешь регистрироватся в поезда и получать за это очки.",
     "about.express": "Междугородные поезда (InterCity/EuroCity)",
-    "about.feature-missing": "Если вы хотите предложить новую функцию или нашли баг, пожалуйста предложите это сразу в наш <a href=\"https://github.com/Traewelling/traewelling/issues/new/choose\" target=\"_blank\">GitHub репозиторий</a>.",
+    "about.feature-missing": "Если вы хотите предложить новую функцию или нашли баг, пожалуйста предложите это сразу в наш GitHub репозиторий.",
     "about.feature-missing-heading": "Как сообщить о ошибках и предложений для улучшения?",
     "about.international": "Высокоскоростные поезда",
     "about.regional": "Региональный поезд/Региональный экспресс",
@@ -813,7 +813,6 @@
     "maintenance.follow.desc": "",
     "maintenance.help-center": "",
     "menu.dashboard": "",
-    "menu.developed": "",
     "menu.readmore": "",
     "notifications.mark-all-read": "",
     "settings.delete-account-completed": "",

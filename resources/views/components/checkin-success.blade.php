@@ -70,9 +70,8 @@
         @endif
         @if($event)
             <p>
-                {!!  __('events.on-your-way', [
-                    "name" => $event['name'],
-                    "url" => route('event', ['slug' => $event['slug']])
+                {!! __('events.on-your-way', [
+                    "name" => '<a href="' . route('event', ['slug' => $event['slug']]) . '">' . e($event['name']) . '</a>'
                 ]) !!}
             </p>
         @endif
