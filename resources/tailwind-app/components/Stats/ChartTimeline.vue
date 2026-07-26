@@ -19,26 +19,24 @@ const apexSeries = computed(() => [
     },
 ]);
 
-const options = computed(
-    (): ApexCharts.ApexOptions => ({
-        chart: {
-            type: 'area',
-            background: 'transparent',
-            animations: { enabled: false },
-            toolbar: { show: false },
-            zoom: { enabled: false },
-        },
-        colors: [chartColors()[0]],
-        stroke: { curve: 'smooth', width: 2 },
-        fill: { type: 'gradient', gradient: { opacityFrom: 0.4, opacityTo: 0.05 } },
-        xaxis: { type: 'datetime' },
-        yaxis: { labels: { formatter: (val: number) => `${Math.round(val)} min` } },
-        theme: { mode: isDark() ? 'dark' : 'light' },
-        legend: { show: false },
-        dataLabels: { enabled: false },
-        tooltip: { x: { format: 'dd.MM.yyyy' } },
-    }),
-);
+const options = computed((): ApexCharts.ApexOptions => ({
+    chart: {
+        type: 'area',
+        background: 'transparent',
+        animations: { enabled: false },
+        toolbar: { show: false },
+        zoom: { enabled: false },
+    },
+    colors: [chartColors()[0]],
+    stroke: { curve: 'smooth', width: 2 },
+    fill: { type: 'gradient', gradient: { opacityFrom: 0.4, opacityTo: 0.05 } },
+    xaxis: { type: 'datetime' },
+    yaxis: { labels: { formatter: (val: number) => `${Math.round(val)} min` } },
+    theme: { mode: isDark() ? 'dark' : 'light' },
+    legend: { show: false },
+    dataLabels: { enabled: false },
+    tooltip: { x: { format: 'dd.MM.yyyy' } },
+}));
 </script>
 
 <template>

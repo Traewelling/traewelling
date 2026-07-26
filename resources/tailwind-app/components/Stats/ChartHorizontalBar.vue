@@ -15,23 +15,21 @@ function isDark(): boolean {
 
 const apexSeries = computed(() => [{ name: props.title, data: props.series }]);
 
-const options = computed(
-    (): ApexCharts.ApexOptions => ({
-        chart: {
-            type: 'bar',
-            background: 'transparent',
-            animations: { enabled: false },
-            toolbar: { show: false },
-        },
-        colors: [chartColors()[0]],
-        plotOptions: { bar: { horizontal: true, borderRadius: 4 } },
-        xaxis: { categories: props.labels },
-        theme: { mode: isDark() ? 'dark' : 'light' },
-        legend: { show: false },
-        dataLabels: { enabled: false },
-        tooltip: { y: { formatter: (val: number) => `${val} min` } },
-    }),
-);
+const options = computed((): ApexCharts.ApexOptions => ({
+    chart: {
+        type: 'bar',
+        background: 'transparent',
+        animations: { enabled: false },
+        toolbar: { show: false },
+    },
+    colors: [chartColors()[0]],
+    plotOptions: { bar: { horizontal: true, borderRadius: 4 } },
+    xaxis: { categories: props.labels },
+    theme: { mode: isDark() ? 'dark' : 'light' },
+    legend: { show: false },
+    dataLabels: { enabled: false },
+    tooltip: { y: { formatter: (val: number) => `${val} min` } },
+}));
 </script>
 
 <template>

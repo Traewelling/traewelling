@@ -14,21 +14,19 @@ function isDark(): boolean {
     return document.documentElement.classList.contains('dark');
 }
 
-const options = computed(
-    (): ApexCharts.ApexOptions => ({
-        chart: {
-            type: props.type ?? 'donut',
-            background: 'transparent',
-            animations: { enabled: false },
-        },
-        colors: chartColors(),
-        labels: props.labels,
-        theme: { mode: isDark() ? 'dark' : 'light' },
-        legend: { position: 'bottom' },
-        dataLabels: { enabled: false },
-        tooltip: { y: { formatter: (val: number) => `${val} min` } },
-    }),
-);
+const options = computed((): ApexCharts.ApexOptions => ({
+    chart: {
+        type: props.type ?? 'donut',
+        background: 'transparent',
+        animations: { enabled: false },
+    },
+    colors: chartColors(),
+    labels: props.labels,
+    theme: { mode: isDark() ? 'dark' : 'light' },
+    legend: { position: 'bottom' },
+    dataLabels: { enabled: false },
+    tooltip: { y: { formatter: (val: number) => `${val} min` } },
+}));
 </script>
 
 <template>

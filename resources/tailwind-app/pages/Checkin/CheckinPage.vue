@@ -64,19 +64,17 @@ const effectiveOriginName = computed<string | undefined>(() => {
     return selectedStart.value?.name ?? originName.value;
 });
 
-const departure = computed(
-    (): DepartureResource => ({
-        tripId: tripId.value,
-        plannedWhen: effectiveDeparture.value,
-        when: null,
-        delay: null,
-        platform: null,
-        plannedPlatform: null,
-        direction: '',
-        stop: { id: Number(effectiveStartId.value) },
-        line: { name: lineName.value },
-    }),
-);
+const departure = computed((): DepartureResource => ({
+    tripId: tripId.value,
+    plannedWhen: effectiveDeparture.value,
+    when: null,
+    delay: null,
+    platform: null,
+    plannedPlatform: null,
+    direction: '',
+    stop: { id: Number(effectiveStartId.value) },
+    line: { name: lineName.value },
+}));
 
 const showStartSelection = computed(() => !hasStartFromUrl.value && !selectedStart.value);
 const showDestinationSelection = computed(() => !showStartSelection.value && !selectedDestination.value);
