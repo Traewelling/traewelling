@@ -1311,5 +1311,19 @@
     "welcome.stats.distance": "",
     "welcome.stats.duration": "",
     "welcome.stats.million": "",
-    "welcome.stats.registered": ""
+    "welcome.stats.registered": "",
+    "settings.experimental.description": "",
+    "menu.oauth_authorize.application_information.privacy_policy": "",
+    "menu.oauth_authorize.request_title": "",
+    "settings.webhook-description": "",
+    "settings.webhook_event.checkin_update": "",
+    "export.format": "",
+    "settings.webhook_event.checkin_create": "",
+    "settings.webhook_event.checkin_delete": "",
+    "error.404": "",
+    "error.419": "",
+    "error.429": "",
+    "error.500": "",
+    "missing-journey": "",
+    "tag.title.trwl:locomotive_class": ""
 }
