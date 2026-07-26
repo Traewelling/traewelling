@@ -6,6 +6,7 @@ namespace Tests\Feature\APIv1;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\ApiTestCase;
 
 class ApplicationCrudTest extends ApiTestCase
@@ -75,18 +76,37 @@ class ApplicationCrudTest extends ApiTestCase
         $response->assertJsonValidationErrors(['name', 'redirect']);
     }
 
-    public function test_create_application_validates_https_redirect_url(): void
+    public static function redirectUrlProvider(): array
+    {
+        return [
+            'https allowed' => ['https://example.com/callback', true],
+            'plain http rejected' => ['http://example.com/callback', false],
+            'localhost' => ['http://localhost:8710/callback', true],
+            'localhost subdomain' => ['http://app.localhost/callback', true],
+            'ipv4 loopback' => ['http://127.0.0.1:8710/callback', true],
+            'ipv4 loopback subnet' => ['http://127.1.2.3/callback', true],
+            'ipv6 loopback' => ['http://[::1]:8710/callback', true],
+        ];
+    }
+
+    #[DataProvider('redirectUrlProvider')]
+    public function test_create_application_validates_redirect_url_scheme(string $redirect, bool $allowed): void
     {
         $user = User::factory()->create();
         $this->actAsApiUserWithAllScopes($user);
 
         $response = $this->postJson('/api/v1/applications', [
             'name' => 'App',
-            'redirect' => 'http://example.com/callback',
+            'redirect' => $redirect,
         ]);
 
-        $response->assertUnprocessable();
-        $response->assertJsonValidationErrors(['redirect']);
+        if ($allowed) {
+            $response->assertCreated();
+            $response->assertJsonPath('data.redirect', $redirect);
+        } else {
+            $response->assertUnprocessable();
+            $response->assertJsonValidationErrors(['redirect']);
+        }
     }
 
     public function test_create_application_returns_plain_secret_for_confidential(): void

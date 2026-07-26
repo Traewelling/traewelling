@@ -69,21 +69,13 @@ async function submit() {
     };
 
     try {
-        let response;
-        if (props.app) {
-            response = await api.applications.updateApplication(props.app.id, payload);
-        } else {
-            response = await api.applications.createApplication(payload);
-        }
+        const response = props.app
+            ? await api.applications.updateApplication(props.app.id, payload)
+            : await api.applications.createApplication(payload);
 
-        if (response.status === 422) {
-            const data = await response.json();
-            errors.value = data.errors ?? {};
-            return;
-        }
-
-        const data = await response.json();
-        emit('saved', data.data, data.data?.plainSecret);
+        emit('saved', response.data.data, response.data.data?.plainSecret);
+    } catch (e) {
+        errors.value = (e as { error?: { errors?: Record<string, string[]> } })?.error?.errors ?? {};
     } finally {
         saving.value = false;
     }
