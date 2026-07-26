@@ -1318,5 +1318,6 @@
     "user.login.mastodon": "",
     "export.title.departure_real": "",
     "events.host": "",
-    "transport_types.bus": ""
+    "transport_types.bus": "",
+    "dashboard.empty.discover3": ""
 }
