@@ -1333,5 +1333,13 @@
     "create-journey": "",
     "dashboard-end-seven-days": "",
     "dashboard.empty": "",
-    "dashboard.empty.discover1": ""
+    "dashboard.empty.discover1": "",
+    "error.500": "",
+    "missing-journey": "",
+    "settings.webhook-description": "",
+    "error.429": "",
+    "year-review.teaser": "",
+    "error.404": "",
+    "error.419": "",
+    "support.go-to-github": ""
 }
