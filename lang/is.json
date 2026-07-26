@@ -1316,5 +1316,6 @@
     "data-providers.transitous": "",
     "date-format": "",
     "dateformat.month-and-year": "",
-    "dateformat.with-weekday": ""
+    "dateformat.with-weekday": "",
+    "dashboard.empty.discover3": ""
 }
