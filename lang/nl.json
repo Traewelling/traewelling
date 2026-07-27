@@ -1186,7 +1186,7 @@
     "webhook-stats.total": "",
     "user.blocked.noBlockedUsers": "",
     "access-token-copied": "",
-    "cancel": "",
+    "cancel": "Annuleren",
     "messages.exception.motis.unknown-error.departures": "",
     "messages.exception.motis.unknown-error.journey": "",
     "messages.exception.motis.unknown-error.nearby-stations": "",
