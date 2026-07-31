@@ -1329,5 +1329,15 @@
     "privacy.not-signed-yet.title": "Ještě jste nepodepsali naše zásady ochrany osobních údajů.",
     "privacy.we-changed.body": "Abyste mohli naši službu nadále používat, musíte souhlasit s nejnovějšími změnami. Pokud si nepřejete souhlasit, můžete svůj účet smazat kliknutím na tlačítko níže.",
     "privacy.we-changed.title": "Změnili jsme naše zásady ochrany osobních údajů.",
-    "stationboard.continues-as": ""
+    "stationboard.continues-as": "",
+    "distance.meters.short": "m",
+    "distance.kilometers.short": "km",
+    "distance.meters": "metrů",
+    "distance.kilometers": "kilometrů",
+    "errors.unsupported-image": "Nahraný soubor není podporovaný obrázek.",
+    "export.requested": "Požadován export",
+    "footer.licensed-under": "licencováno pod",
+    "footer.sourcecode": "Zdrojový kód",
+    "api-usage.abuse": "Porušení těchto pokynů může vést k odebrání tokenů bez předchozího upozornění.",
+    "api-usage.no-token-sharing": "Osobní přístupové tokeny jsou určeny pouze pro vaše použití a nesmíte je sdílet s ostatními."
 }
