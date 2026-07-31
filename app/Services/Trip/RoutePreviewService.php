@@ -32,7 +32,7 @@ readonly class RoutePreviewService
 
         [$coordinates, $routed] = match (true) {
             $pathType === SegmentPathType::GREAT_CIRCLE => [$this->geodesicArc($waypoints), false],
-            $profile !== null => $this->bRouterSegments($waypoints, $profile),
+            $profile !== null && $this->brouter->isEnabled() => $this->bRouterSegments($waypoints, $profile),
             default => [$this->straightLine($waypoints), false],
         };
 

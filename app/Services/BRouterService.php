@@ -30,6 +30,15 @@ class BRouterService
     }
 
     /**
+     * Whether this instance may talk to BRouter at all. Callers should check this before routing
+     * so they can pick a fallback instead of running into an exception per waypoint pair.
+     */
+    public function isEnabled(): bool
+    {
+        return (bool) config('services.brouter.enabled', false);
+    }
+
+    /**
      * Request a routed path from BRouter for the given waypoints.
      *
      * @param  Coordinate[]  $waypoints  At least two waypoints (origin + destination, optional intermediates)
@@ -40,6 +49,10 @@ class BRouterService
      */
     public function getRoute(array $waypoints, BRouterProfile $profile = BRouterProfile::RAIL): RouteDto
     {
+        if (!$this->isEnabled()) {
+            throw new BRouterException('BRouter is disabled on this instance.');
+        }
+
         if (count($waypoints) < 2) {
             throw new BRouterException('BRouter requires at least two waypoints.');
         }

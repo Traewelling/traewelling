@@ -44,6 +44,7 @@ return [
     'user_agent' => env('USER_AGENT', 'traewelling (https://github.com/Traewelling/traewelling)'),
 
     'brouter' => [
+        'enabled' => env('BROUTER_ENABLED', false),
         'url' => env('BROUTER_URL', 'https://brouter.de/brouter'),
         'timeout' => env('BROUTER_TIMEOUT_SECONDS', 30),
         'endpoint_tolerance_meters' => env('BROUTER_ENDPOINT_TOLERANCE_METERS', 200),

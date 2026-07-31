@@ -53,6 +53,7 @@ class ReRoutingServiceTest extends UnitTestCase
 
         $this->repository = Mockery::mock(TripRepository::class);
         $this->brouter = Mockery::mock(BRouterService::class);
+        $this->brouter->shouldReceive('isEnabled')->andReturnTrue()->byDefault();
         $this->geodesic = Mockery::mock(GeodesicService::class);
         $this->service = new ReRoutingService($this->repository, $this->brouter, $this->geodesic);
 
@@ -141,6 +142,52 @@ class ReRoutingServiceTest extends UnitTestCase
 
         $this->assertSame(0, $result);
         Queue::assertPushed(RecalculateStatusesDistanceForTrip::class);
+    }
+
+    public function test_disabled_brouter_leaves_the_pair_untouched_without_routing(): void
+    {
+        $stationA = $this->makeStation(self::LAT_A, self::LON_A, 'Hannover Hbf');
+        $stationB = $this->makeStation(self::LAT_B, self::LON_B, 'Hannover Kröpcke');
+
+        $stopA = $this->makeStopover($stationA, departure: Carbon::parse('2025-01-01 10:00:00'));
+        $stopB = $this->makeStopover($stationB, arrival: Carbon::parse('2025-01-01 10:05:00'));
+
+        $trip = $this->makeTrip([$stopA, $stopB]);
+
+        $this->brouter->shouldReceive('isEnabled')->andReturnFalse();
+        $this->brouter->shouldNotReceive('getRoute');
+        $this->repository->shouldNotReceive('getRouteSegmentBetweenStops');
+        $this->repository->shouldNotReceive('createRouteSegment');
+
+        $result = $this->service->rerouteStops($trip);
+
+        // Skipping is not an error, so no cooldown is triggered.
+        $this->assertSame(0, $result);
+    }
+
+    public function test_disabled_brouter_still_builds_great_circle_arcs(): void
+    {
+        $stationA = $this->makeStation(self::LAT_A, self::LON_A, 'Hamburg');
+        $stationB = $this->makeStation(self::LAT_B, self::LON_B, 'New York');
+
+        $stopA = $this->makeStopover($stationA, departure: Carbon::parse('2025-01-01 10:00:00'));
+        $stopB = $this->makeStopover($stationB, arrival: Carbon::parse('2025-01-01 18:00:00'));
+
+        $trip = $this->makeTrip([$stopA, $stopB], HafasTravelType::PLANE);
+        $newSegment = $this->makeSegment();
+
+        $this->brouter->shouldReceive('isEnabled')->andReturnFalse();
+        $this->brouter->shouldNotReceive('getRoute');
+        $this->geodesic->shouldReceive('interpolate')->once()->andReturn([
+            new Coordinate(self::LAT_A, self::LON_A),
+            new Coordinate(self::LAT_B, self::LON_B),
+        ]);
+        $this->geodesic->shouldReceive('haversineDistance')->once()->andReturn(310);
+        $this->repository->shouldReceive('getRouteSegmentBetweenStops')->once()->andReturn(null);
+        $this->repository->shouldReceive('createRouteSegment')->once()->andReturn($newSegment);
+        $this->repository->shouldReceive('setRouteSegmentForStop')->once();
+
+        $this->assertSame(0, $this->service->rerouteStops($trip));
     }
 
     public function test_first_stop_is_skipped_because_it_has_no_previous(): void

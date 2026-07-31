@@ -166,6 +166,16 @@ class ReRoutingService
     {
         Log::debug('RerouteStops', [$start, $end, $pathType]);
 
+        if (!$this->brouterService->isEnabled()) {
+            Log::debug('RerouteStops: BRouter is disabled, leaving the pair without a segment', [
+                'from' => $start->station?->name,
+                'to' => $end->station?->name,
+                'path_type' => $pathType->value,
+            ]);
+
+            return;
+        }
+
         $startLocation = $start->stationIdentifier?->location ?? $start->station?->location;
         $endLocation = $end->stationIdentifier?->location ?? $end->station?->location;
         if (!$startLocation || !$endLocation) {

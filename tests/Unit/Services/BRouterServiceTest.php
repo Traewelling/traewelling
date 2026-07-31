@@ -28,6 +28,12 @@ class BRouterServiceTest extends UnitTestCase
 
     private const float END_LON = 9.7385;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        config(['services.brouter.enabled' => true]);
+    }
+
     /**
      * Build a BRouterService backed by a Guzzle MockHandler.
      *
@@ -321,5 +327,32 @@ class BRouterServiceTest extends UnitTestCase
 
         $service = $this->makeService([new Response(200, [], $this->makeGeoJson($coords))]);
         $service->getRoute($this->defaultWaypoints());
+    }
+
+    public function test_is_enabled_follows_the_configuration(): void
+    {
+        config(['services.brouter.enabled' => false]);
+        $this->assertFalse($this->makeService([])->isEnabled());
+
+        config(['services.brouter.enabled' => true]);
+        $this->assertTrue($this->makeService([])->isEnabled());
+    }
+
+    public function test_disabled_service_throws_before_sending_a_request(): void
+    {
+        config(['services.brouter.enabled' => false]);
+
+        $history = [];
+        $service = $this->makeService([new Response(200, [], $this->makeGeoJson($this->defaultCoords()))], $history);
+
+        try {
+            $service->getRoute($this->defaultWaypoints());
+            $this->fail('Expected a BRouterException for the disabled service.');
+        } catch (BRouterException $exception) {
+            $this->assertStringContainsString('disabled', $exception->getMessage());
+        }
+
+        // The whole point of the switch: no socket is opened, so no connection error can be logged.
+        $this->assertEmpty($history);
     }
 }
