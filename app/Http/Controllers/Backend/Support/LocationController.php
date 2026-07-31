@@ -476,32 +476,59 @@ class LocationController
 
         $stopovers = $stopovers->slice($originStopoverIndex, $destinationStopoverIndex - $originStopoverIndex + 1);
 
+        Log::debug('DistanceByStopovers: Starting distance calculation', [
+            'trip_id' => $this->trip->id,
+            'linename' => $this->trip->linename,
+            'origin' => $this->origin?->station?->name,
+            'destination' => $this->destination?->station?->name,
+            'stopovers' => $stopovers->count(),
+        ]);
+
         $distance = 0;
+        $fromSegments = 0;
+        $fromStraightLine = 0;
         $lastStopover = null;
         foreach ($stopovers as $key => $stopover) {
             if ($stopover->routeSegment !== null && $stopover->routeSegment->distance > 0 && $key !== $destinationStopoverIndex) {
                 $distance += $stopover->routeSegment->distance;
-                Log::debug(sprintf(
-                    'Adding distance %f meters from station %s to station %s',
-                    $stopover->routeSegment->distance,
-                    $stopover->routeSegment->fromStation->name,
-                    $stopover->routeSegment->toStation->name
-                ));
+                $fromSegments++;
+
+                Log::debug('DistanceByStopovers: Adding route segment distance', [
+                    'from' => $stopover->routeSegment->fromStation->name,
+                    'to' => $stopover->routeSegment->toStation->name,
+                    'distance_m' => $stopover->routeSegment->distance,
+                    'segment_id' => $stopover->routeSegment->id,
+                    'path_type' => $stopover->routeSegment->path_type,
+                    'running_total_m' => $distance,
+                ]);
             }
             if ($lastStopover !== null && empty($lastStopover->routeSegment?->distance)) {
-                Log::debug(sprintf(
-                    'Calculating distance between station %s and station %s',
-                    $lastStopover->station->name,
-                    $stopover->station->name
-                ));
-                $distance += $this->geoService->getDistance(
+                $straightLineDistance = $this->geoService->getDistance(
                     new Coordinate($lastStopover->station->latitude, $lastStopover->station->longitude),
                     new Coordinate($stopover->station->latitude, $stopover->station->longitude)
                 );
+                $distance += $straightLineDistance;
+                $fromStraightLine++;
+
+                Log::debug('DistanceByStopovers: No route segment, adding straight-line distance', [
+                    'from' => $lastStopover->station->name,
+                    'to' => $stopover->station->name,
+                    'from_station_id' => $lastStopover->train_station_id,
+                    'to_station_id' => $stopover->train_station_id,
+                    'distance_m' => $straightLineDistance,
+                    'running_total_m' => $distance,
+                ]);
             }
 
             $lastStopover = $stopover;
         }
+
+        Log::debug('DistanceByStopovers: Finished distance calculation', [
+            'trip_id' => $this->trip->id,
+            'distance_m' => $distance,
+            'pairs_from_segments' => $fromSegments,
+            'pairs_from_straight_line' => $fromStraightLine,
+        ]);
 
         return $distance;
     }

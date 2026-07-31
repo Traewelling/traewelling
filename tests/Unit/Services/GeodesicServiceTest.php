@@ -97,6 +97,59 @@ class GeodesicServiceTest extends TestCase
         );
     }
 
+    public function test_find_nearest_point_index_returns_the_closest_point(): void
+    {
+        $path = [
+            new Coordinate(52.0, 13.0),
+            new Coordinate(52.1, 13.0),
+            new Coordinate(52.2, 13.0),
+        ];
+
+        $this->assertSame(1, $this->service->findNearestPointIndex(new Coordinate(52.11, 13.0), $path));
+    }
+
+    public function test_find_nearest_point_index_never_looks_before_the_given_index(): void
+    {
+        // A line that returns to where it started: without the cursor, the second visit would
+        // snap back onto the first one and any slice taken from it would run backwards.
+        $path = [
+            new Coordinate(52.0, 13.0),
+            new Coordinate(52.5, 13.0),
+            new Coordinate(52.01, 13.0),
+        ];
+
+        $needle = new Coordinate(52.0, 13.0);
+
+        $this->assertSame(0, $this->service->findNearestPointIndex($needle, $path));
+        $this->assertSame(2, $this->service->findNearestPointIndex($needle, $path, 1));
+    }
+
+    public function test_find_nearest_point_index_is_null_when_nothing_is_left_to_search(): void
+    {
+        $path = [new Coordinate(52.0, 13.0)];
+
+        $this->assertNull($this->service->findNearestPointIndex(new Coordinate(52.0, 13.0), $path, 1));
+        $this->assertNull($this->service->findNearestPointIndex(new Coordinate(52.0, 13.0), []));
+    }
+
+    public function test_path_length_sums_up_all_segments(): void
+    {
+        $berlin = new Coordinate(52.5200, 13.4050);
+        $paris = new Coordinate(48.8566, 2.3522);
+        $path = $this->service->interpolate($berlin, $paris, 100);
+
+        $length = $this->service->pathLength($path);
+
+        // Following the great circle in 100 steps must match the direct distance closely.
+        $this->assertEqualsWithDelta($this->service->haversineDistance($berlin, $paris), $length, 1_000);
+    }
+
+    public function test_path_length_of_a_single_point_is_zero(): void
+    {
+        $this->assertSame(0.0, $this->service->pathLength([new Coordinate(52.5200, 13.4050)]));
+        $this->assertSame(0.0, $this->service->pathLength([]));
+    }
+
     public function test_interpolated_points_lie_on_the_great_circle(): void
     {
         // Verify that the midpoint of Berlin-Paris lies at the expected great-circle latitude.

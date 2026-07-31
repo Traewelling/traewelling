@@ -69,6 +69,67 @@ class GeodesicService
      */
     public function haversineDistance(Coordinate $from, Coordinate $to): int
     {
+        return (int) round($this->exactHaversineDistance($from, $to));
+    }
+
+    /**
+     * Find the index of the path point closest to the given coordinate.
+     *
+     * The search starts at $fromIndex, so a caller walking a path in order can pass the previously
+     * matched index and stay on track where a route touches the same place twice.
+     *
+     * @param  Coordinate[]  $path
+     * @return int|null null when the path holds no point at or after $fromIndex
+     */
+    public function findNearestPointIndex(Coordinate $needle, array $path, int $fromIndex = 0): ?int
+    {
+        $path = array_values($path);
+        $bestIndex = null;
+        $bestDistance = PHP_FLOAT_MAX;
+
+        for ($i = max(0, $fromIndex), $count = count($path); $i < $count; $i++) {
+            $distance = $this->approximateSquaredDistance($needle, $path[$i]);
+            if ($distance < $bestDistance) {
+                $bestDistance = $distance;
+                $bestIndex = $i;
+            }
+        }
+
+        return $bestIndex;
+    }
+
+    /**
+     * Total length of a path in meters, summed over its segments.
+     *
+     * @param  Coordinate[]  $coordinates
+     */
+    public function pathLength(array $coordinates): float
+    {
+        $coordinates = array_values($coordinates);
+        $length = 0.0;
+
+        for ($i = 1, $count = count($coordinates); $i < $count; $i++) {
+            $length += $this->exactHaversineDistance($coordinates[$i - 1], $coordinates[$i]);
+        }
+
+        return $length;
+    }
+
+    /**
+     * Cheap equirectangular approximation, squared and without any earth radius applied. Useless as
+     * a distance, but it grows monotonically with the real one, so it ranks candidates correctly
+     * without paying for the trigonometry a full haversine per point would cost.
+     */
+    private function approximateSquaredDistance(Coordinate $from, Coordinate $to): float
+    {
+        $x = ($from->longitude - $to->longitude) * cos(deg2rad(($from->latitude + $to->latitude) / 2));
+        $y = $from->latitude - $to->latitude;
+
+        return $x * $x + $y * $y;
+    }
+
+    private function exactHaversineDistance(Coordinate $from, Coordinate $to): float
+    {
         $lat1 = deg2rad($from->latitude);
         $lat2 = deg2rad($to->latitude);
         $deltaLat = deg2rad($to->latitude - $from->latitude);
@@ -78,6 +139,6 @@ class GeodesicService
             + cos($lat1) * cos($lat2) * sin($deltaLon / 2) ** 2;
         $c = 2.0 * atan2(sqrt($a), sqrt(1.0 - $a));
 
-        return (int) round(self::EARTH_RADIUS_METERS * $c);
+        return self::EARTH_RADIUS_METERS * $c;
     }
 }

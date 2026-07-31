@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Casts\UTCDateTime;
+use App\Dto\Coordinate;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -32,6 +33,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string|null $route_segment_id
  * @property string|null $station_identifier_id
  * @property-read Carbon|null $arrival
+ * @property-read Coordinate|null $coordinate
  * @property-read Carbon|null $departure
  * @property-read bool $is_arrival_cancelled
  * @property-read bool $is_arrival_delayed
@@ -178,5 +180,36 @@ class Stopover extends Model
     public function getIsDepartureCancelledAttribute(): bool
     {
         return $this->cancelled && is_null($this->departure_platform_planned);
+    }
+
+    /**
+     * Position of this stop. The identifier describes the concrete stop a provider routes through,
+     * so it takes precedence over the merged station it belongs to.
+     */
+    public function getCoordinateAttribute(): ?Coordinate
+    {
+        $location = $this->stationIdentifier?->location ?? $this->station?->location;
+
+        if ($location === null) {
+            return null;
+        }
+
+        return new Coordinate($location->latitude, $location->longitude);
+    }
+
+    /**
+     * Planned travel time in seconds from this stop to a later one. Returns -1 when either side
+     * carries no usable timestamp, which is the value a RouteSegment stores for an unknown duration.
+     */
+    public function plannedSecondsUntil(self $destination): int
+    {
+        $startTime = $this->departure_planned ?? $this->arrival_planned;
+        $endTime = $destination->arrival_planned ?? $destination->departure_planned;
+
+        if (!$startTime?->isValid() || !$endTime?->isValid()) {
+            return -1;
+        }
+
+        return (int) round($startTime->diffInSeconds($endTime));
     }
 }

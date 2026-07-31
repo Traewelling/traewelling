@@ -113,12 +113,10 @@ class ReRoutingService
 
     private function rerouteAsGreatCircle(Stopover $start, Stopover $end): void
     {
-        $startTime = $start->departure_planned ?? $start->arrival_planned;
-        $endTime = $end->arrival_planned ?? $end->departure_planned;
-        $startLocation = $start->stationIdentifier?->location ?? $start->station?->location;
-        $endLocation = $end->stationIdentifier?->location ?? $end->station?->location;
+        $startCoord = $start->coordinate;
+        $endCoord = $end->coordinate;
 
-        if (!$startLocation || !$endLocation) {
+        if ($startCoord === null || $endCoord === null) {
             Log::warning('RerouteStops: Missing station location, cannot create great-circle arc', [
                 'from_station_id' => $start->station?->id,
                 'to_station_id' => $end->station?->id,
@@ -127,10 +125,7 @@ class ReRoutingService
             return;
         }
 
-        $duration = -1;
-        if ($startTime?->isValid() && $endTime?->isValid()) {
-            $duration = (int) round($startTime->diffInSeconds($endTime));
-        }
+        $duration = $start->plannedSecondsUntil($end);
 
         $segment = $this->tripRepository->getRouteSegmentBetweenStops($start, $end, $duration, SegmentPathType::GREAT_CIRCLE);
         if ($segment) {
@@ -140,14 +135,11 @@ class ReRoutingService
             return;
         }
 
-        $startCoord = new Coordinate($startLocation->latitude, $startLocation->longitude);
-        $endCoord = new Coordinate($endLocation->latitude, $endLocation->longitude);
-
         $coordinates = $this->geodesicService->interpolate($startCoord, $endCoord);
         $distanceInMeters = $this->geodesicService->haversineDistance($startCoord, $endCoord);
 
         $encodedPolyline = new PolylineTranscoder()->encodePolyline(
-            array_map(static fn (Coordinate $c) => [$c->longitude, $c->latitude], $coordinates),
+            array_map(static fn (Coordinate $coordinate): array => $coordinate->toArray(), $coordinates),
         );
 
         $segment = $this->tripRepository->createRouteSegment(
@@ -174,8 +166,6 @@ class ReRoutingService
     {
         Log::debug('RerouteStops', [$start, $end, $pathType]);
 
-        $startTime = $start->departure_planned ?? $start->arrival_planned;
-        $endTime = $end->arrival_planned ?? $end->departure_planned;
         $startLocation = $start->stationIdentifier?->location ?? $start->station?->location;
         $endLocation = $end->stationIdentifier?->location ?? $end->station?->location;
         if (!$startLocation || !$endLocation) {
@@ -189,11 +179,8 @@ class ReRoutingService
 
         $oldDistance = (new DistanceCalculator([$startLocation, $endLocation]))->getRealDistance();
 
-        $duration = -1;
-        if ($startTime?->isValid() && $endTime?->isValid()) {
-            $duration = (int) round($startTime->diffInSeconds($endTime));
-            Log::debug('RerouteStops', [$duration, $pathType]);
-        }
+        $duration = $start->plannedSecondsUntil($end);
+        Log::debug('RerouteStops', [$duration, $pathType]);
 
         $segment = $this->tripRepository->getRouteSegmentBetweenStops($start, $end, $duration, $pathType);
         if ($segment) {

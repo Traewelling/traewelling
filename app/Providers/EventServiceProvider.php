@@ -13,6 +13,7 @@ use App\Listeners\NotificationSentWebhookListener;
 use App\Listeners\RemoveAbsentWebhooksListener;
 use App\Listeners\ResetWebhookFailureCountListener;
 use App\Listeners\StatusCreateCheckPolylineListener;
+use App\Listeners\StatusCreateImportProviderPolylineListener;
 use App\Listeners\StatusCreateWebhookListener;
 use App\Listeners\StatusDeleteCleanupListener;
 use App\Listeners\StatusUpdateWebhookListener;
@@ -58,6 +59,7 @@ class EventServiceProvider extends ServiceProvider
         UserCheckedIn::class => [
             StatusCreateWebhookListener::class,
             StatusCreateCheckPolylineListener::class,
+            StatusCreateImportProviderPolylineListener::class,
         ],
         StatusUpdateEvent::class => [
             StatusUpdateWebhookListener::class,
