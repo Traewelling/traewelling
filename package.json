@@ -48,7 +48,7 @@
         "@indoorequal/vue-maplibre-gl": "^8.4.2",
         "@lucide/vue": "^1.17.0",
         "@vuepic/vue-datepicker": "^14.0.0",
-        "apexcharts": "^5.0.0",
+        "apexcharts": "^6.0.0",
         "autoprefixer": "^10.4.20",
         "axios": "^1.8.2",
         "bootstrap-cookie-alert": "^1.2.1",
