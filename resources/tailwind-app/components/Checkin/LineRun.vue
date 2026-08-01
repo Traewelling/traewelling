@@ -36,10 +36,25 @@ function getDisplayTime(item: StopoverResource): string | null {
     return item.departureReal ?? item.departurePlanned ?? null;
 }
 
+function getDeviationInMinutes(item: StopoverResource): number | null {
+    const planned = item.arrivalPlanned ? item.arrivalPlanned : item.departurePlanned;
+    const real = item.arrivalPlanned ? item.arrivalReal : item.departureReal;
+    if (!planned || !real) return null;
+    return DateTime.fromISO(real).diff(DateTime.fromISO(planned), 'minutes').minutes;
+}
+
 function getPlannedTime(item: StopoverResource): string | null {
-    if (item.isArrivalDelayed) return item.arrivalPlanned ?? null;
-    if (item.isDepartureDelayed) return item.departurePlanned ?? null;
-    return null;
+    const deviation = getDeviationInMinutes(item);
+    if (deviation === null || Math.abs(deviation) < 1) return null;
+    return item.arrivalPlanned ?? item.departurePlanned ?? null;
+}
+
+function deviationClass(item: StopoverResource): string {
+    const deviation = getDeviationInMinutes(item);
+    if (deviation === null) return '';
+    if (deviation <= -1) return 'text-info';
+    if (deviation >= 1) return 'text-warning';
+    return '';
 }
 
 async function fetchLineRun(): Promise<void> {
@@ -113,7 +128,7 @@ watch(() => props.tripId, fetchLineRun);
                         <span v-if="getPlannedTime(item)" class="text-base-content/40 line-through text-xs block">
                             {{ formatTime(getPlannedTime(item)) }}
                         </span>
-                        <span :class="{ 'text-warning': item.isArrivalDelayed || item.isDepartureDelayed }">
+                        <span :class="deviationClass(item)">
                             {{ formatTime(getDisplayTime(item)) }}
                         </span>
                     </template>

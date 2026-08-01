@@ -87,7 +87,8 @@ function delayClass(stopoverTime: { time: Dtm | null; originalTime: Dtm | null; 
     const minutes = stopoverTime.originalTime
         ? ((stopoverTime.time?.dateTime.toMillis() ?? 0) - stopoverTime.originalTime.dateTime.toMillis()) / 60000
         : 0;
-    if (minutes <= 0) return 'text-success';
+    if (minutes < 0) return 'text-info font-medium';
+    if (minutes === 0) return 'text-success';
     if (minutes < 6) return 'text-warning font-medium';
     return 'text-error font-medium';
 }

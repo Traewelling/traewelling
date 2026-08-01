@@ -26,6 +26,7 @@ const cancelled = computed((): boolean => props.item.cancelled ?? false);
 
 const delayClass = computed((): string => {
     if (!props.item.delay) return '';
+    if (props.item.delay < 0) return 'text-info';
     if (props.item.delay > 5) return 'text-error';
     if (props.item.delay >= 1) return 'text-warning';
     return 'text-success';
