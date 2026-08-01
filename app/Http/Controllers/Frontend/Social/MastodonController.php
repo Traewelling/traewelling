@@ -49,7 +49,7 @@ class MastodonController extends Controller
 
         try {
             return Socialite::driver('mastodon')
-                ->setScopes(explode(' ', config('services.mastodon.scopes')))
+                ->setScopes($server->getOauthScopes())
                 ->redirect();
         } catch (Exception $exception) {
             report($exception);
