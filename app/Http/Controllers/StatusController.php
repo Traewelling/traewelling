@@ -24,6 +24,7 @@ use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
@@ -285,15 +286,29 @@ class StatusController extends Controller
 
     public static function getFutureCheckins(): Paginator
     {
+        // priority: manual > realtime > planned
+        $departure = DB::raw('COALESCE(
+            train_checkins.manual_departure,
+            origin_stopover.departure_real,
+            origin_stopover.departure_planned,
+            train_checkins.departure
+        )');
+
         return auth()->user()->statuses()
+            ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
+            ->leftJoin(
+                'train_stopovers as origin_stopover',
+                'train_checkins.origin_stopover_id',
+                '=',
+                'origin_stopover.id'
+            )
             ->with([
                 'user', 'createdByUser', 'checkin.originStopover.station', 'checkin.destinationStopover.station',
                 'checkin.trip', 'event', 'tags',
             ])
-            ->orderByDesc('created_at')
-            ->whereHas('checkin', function ($query) {
-                $query->where('departure', '>=', date('Y-m-d H:i:s', strtotime('+20min')));
-            })
+            ->select('statuses.*')
+            ->where($departure, '>=', now()->addMinutes(20))
+            ->orderByDesc($departure)
             ->simplePaginate(15);
     }
 

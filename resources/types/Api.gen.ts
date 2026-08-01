@@ -7117,7 +7117,7 @@ export class Api<
       }),
 
     /**
-     * @description Returns paginated statuses of the authenticated user, that are more than 20 minutes in the future
+     * @description Returns paginated statuses of the authenticated user, that depart more than 20 minutes in the future
      *
      * @tags Dashboard
      * @name GetFutureDashboard

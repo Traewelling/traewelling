@@ -131,7 +131,7 @@ class StatusController extends Controller
     #[OA\Get(
         path: '/dashboard/future',
         operationId: 'getFutureDashboard',
-        description: 'Returns paginated statuses of the authenticated user, that are more than 20 minutes in the future',
+        description: 'Returns paginated statuses of the authenticated user, that depart more than 20 minutes in the future',
         summary: 'Get paginated future statuses of current user',
         security: [['passport' => ['read-statuses']], ['token' => []]],
         tags: ['Dashboard'],
