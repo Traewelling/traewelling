@@ -4,12 +4,10 @@ import { trans } from 'laravel-vue-i18n';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { Api, WebhookStatsResource } from '../../../../types/Api.gen';
-import { useUserStore } from '../../../../vue/stores/user';
 import SettingsLayout from '../../../layouts/SettingsLayout.vue';
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 const route = useRoute();
-const userStore = useUserStore();
 
 const stats = ref<WebhookStatsResource | null>(null);
 const loading = ref(true);
@@ -38,22 +36,14 @@ function responseCodeClass(code: number | null | undefined): string {
 }
 
 onMounted(async () => {
-    if (!userStore.hasBeta) {
-        loading.value = false;
-        return;
-    }
-
-    const response = await api.applications.getApplicationWebhookStats(clientId);
-
-    if (response.status === 404) {
+    try {
+        const response = await api.applications.getApplicationWebhookStats(clientId);
+        stats.value = response.data.data;
+    } catch {
         notFound.value = true;
+    } finally {
         loading.value = false;
-        return;
     }
-
-    const data = await response.json();
-    stats.value = data.data;
-    loading.value = false;
 });
 </script>
 
@@ -72,12 +62,7 @@ onMounted(async () => {
             </ul>
         </div>
 
-        <div v-if="!userStore.hasBeta" role="alert" class="alert alert-error">
-            <TriangleAlert class="size-5" />
-            <span>{{ trans('error.403') }}</span>
-        </div>
-
-        <div v-else-if="notFound" role="alert" class="alert alert-warning">
+        <div v-if="notFound" role="alert" class="alert alert-warning">
             <TriangleAlert class="size-5" />
             <span>{{ trans('webhook-stats.not-found') }}</span>
         </div>
