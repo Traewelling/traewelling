@@ -1,5 +1,17 @@
 <script setup lang="ts">
-import { ArrowLeft, Hash, Layers, MapPin, Plus, Route, Save, Tag } from '@lucide/vue';
+import {
+    ArrowLeft,
+    ChevronsLeft,
+    ChevronsRight,
+    Clock,
+    Hash,
+    Layers,
+    MapPin,
+    Plus,
+    Route,
+    Save,
+    Tag,
+} from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
 import { DateTime } from 'luxon';
 import { Notyf } from 'notyf';
@@ -27,6 +39,13 @@ const category = ref<string>(TRANSPORT_CATEGORIES[0].value);
 const lineName = ref('');
 const journeyNumber = ref('');
 const operator = ref<{ uuid: string; name: string } | null>(null);
+
+const SHIFT_UNIT_FACTORS = { minutes: 1, hours: 60, days: 1440 } as const;
+type ShiftUnit = keyof typeof SHIFT_UNIT_FACTORS;
+
+const shiftAmount = ref<number | null>(1);
+const shiftUnit = ref<ShiftUnit>('hours');
+const shifting = ref(false);
 
 const newStation = ref<StationResource | null>(null);
 const newArrival = ref('');
@@ -82,6 +101,33 @@ async function saveTrip(): Promise<void> {
         notyf?.error(trans('generic.error'));
     } finally {
         savingTrip.value = false;
+    }
+}
+
+/**
+ * Moves the whole trip in time. The backend shifts every stopover by the same offset, so the
+ * relative timing of the trip stays intact and no stopover needs to be touched individually.
+ */
+async function shiftStopovers(direction: 1 | -1): Promise<void> {
+    // The direction comes from the button, so a typed sign is irrelevant
+    const amount = Math.abs(Number(shiftAmount.value));
+    if (!Number.isFinite(amount) || amount === 0) {
+        notyf?.error(trans('trip.edit.shift-amount-required'));
+        return;
+    }
+
+    shifting.value = true;
+    try {
+        await api.trips.shiftTripStopovers(tripUuid.value, {
+            minutes: Math.round(amount * SHIFT_UNIT_FACTORS[shiftUnit.value]) * direction,
+        });
+        notyf?.success(trans('trip.edit.stopovers-shifted'));
+        await fetchTrip();
+    } catch (error) {
+        const message = (error as { error?: { message?: string } })?.error?.message;
+        notyf?.error(message ?? trans('generic.error'));
+    } finally {
+        shifting.value = false;
     }
 }
 
@@ -249,23 +295,77 @@ fetchTrip(true);
                 </div>
             </div>
 
-            <!-- Stopovers -->
-            <div class="card bg-base-100 shadow-sm lg:flex-1 lg:min-w-0">
-                <div class="card-body p-4 space-y-3">
-                    <h2 class="card-title text-base">
-                        <MapPin class="size-4" />
-                        {{ trans('trip_creation.form.stations') }}
-                    </h2>
+            <div class="flex flex-col gap-4 lg:flex-1 lg:min-w-0">
+                <!-- Stopovers -->
+                <div class="card bg-base-100 shadow-sm">
+                    <div class="card-body p-4 space-y-3">
+                        <h2 class="card-title text-base">
+                            <MapPin class="size-4" />
+                            {{ trans('trip_creation.form.stations') }}
+                        </h2>
 
-                    <p class="text-xs text-base-content/60">{{ trans('trip.edit.stopover-hint') }}</p>
+                        <p class="text-xs text-base-content/60">{{ trans('trip.edit.stopover-hint') }}</p>
 
-                    <StopoverEditor
-                        v-for="stopover in trip.stopovers"
-                        :key="stopover.uuid ?? stopover.stopoverId"
-                        :trip-uuid="tripUuid"
-                        :stopover="stopover"
-                        @changed="fetchTrip()"
-                    />
+                        <StopoverEditor
+                            v-for="stopover in trip.stopovers"
+                            :key="stopover.uuid ?? stopover.stopoverId"
+                            :trip-uuid="tripUuid"
+                            :stopover="stopover"
+                            @changed="fetchTrip()"
+                        />
+                    </div>
+                </div>
+
+                <!-- Shift all stopovers in time -->
+                <div class="card bg-base-100 shadow-sm">
+                    <div class="card-body p-4 space-y-3">
+                        <h2 class="card-title text-base">
+                            <Clock class="size-4" />
+                            {{ trans('trip.edit.shift-title') }}
+                        </h2>
+
+                        <p class="text-xs text-base-content/60">{{ trans('trip.edit.shift-hint') }}</p>
+
+                        <div class="join join-vertical sm:join-horizontal w-full sm:w-auto">
+                            <button
+                                type="button"
+                                class="btn btn-sm join-item gap-1.5"
+                                :disabled="shifting"
+                                @click="shiftStopovers(-1)"
+                            >
+                                <span v-if="shifting" class="loading loading-spinner loading-xs" />
+                                <ChevronsLeft v-else class="size-4" />
+                                {{ trans('time.earlier') }}
+                            </button>
+                            <input
+                                v-model.number="shiftAmount"
+                                type="number"
+                                min="1"
+                                step="1"
+                                class="input input-bordered input-sm join-item w-full sm:w-20 text-center"
+                                :aria-label="trans('time.amount')"
+                            />
+                            <select
+                                v-model="shiftUnit"
+                                class="select select-bordered select-sm join-item w-full sm:w-28"
+                                :aria-label="trans('time.unit')"
+                            >
+                                <option value="minutes">{{ trans('time.minutes') }}</option>
+                                <option value="hours">{{ trans('time.hours') }}</option>
+                                <option value="days">{{ trans('time.days') }}</option>
+                            </select>
+                            <button
+                                type="button"
+                                class="btn btn-sm join-item gap-1.5"
+                                :disabled="shifting"
+                                @click="shiftStopovers(1)"
+                            >
+                                {{ trans('time.later') }}
+                                <span v-if="shifting" class="loading loading-spinner loading-xs" />
+                                <ChevronsRight v-else class="size-4" />
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

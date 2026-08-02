@@ -9904,6 +9904,74 @@
                 ]
             }
         },
+        "/trips/{tripUuid}/stopovers/shift": {
+            "post": {
+                "tags": [
+                    "Trips"
+                ],
+                "summary": "Shift all stopovers of a trip in time",
+                "description": "Moves all stopovers of a trip in time by the given amount of minutes. Positive values move the trip to a later time, negative values to an earlier one. Planned and real times are shifted alike, so the relative timing of the trip stays the same. You can only edit manual trips (`source = user`) that you created yourself; admins can edit any trip. Departure and arrival of the trip as well as duration and points of all checkins on this trip are recalculated afterwards.",
+                "operationId": "shiftTripStopovers",
+                "parameters": [
+                    {
+                        "name": "tripUuid",
+                        "in": "path",
+                        "description": "Trip UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "minutes"
+                                ],
+                                "properties": {
+                                    "minutes": {
+                                        "description": "Offset in minutes, may be negative",
+                                        "type": "integer",
+                                        "example": -1440,
+                                        "maximum": 525600,
+                                        "minimum": -525600
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/user/{user}/trusted": {
             "get": {
                 "tags": [

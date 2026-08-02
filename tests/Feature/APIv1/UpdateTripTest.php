@@ -384,6 +384,87 @@ class UpdateTripTest extends ApiTestCase
         $this->assertSame($oldDuration + 30, $checkin->duration);
     }
 
+    public function test_user_can_shift_all_stopovers_in_time(): void
+    {
+        $trip = $this->createManualTrip($this->user);
+        $stopovers = $trip->stopovers()->get();
+        $originalDeparture = $trip->departure->clone();
+        $originalArrival = $trip->arrival->clone();
+
+        $this->actAsApiUserWithAllScopes($this->user);
+        $this->postJson("/api/v1/trips/{$trip->uuid}/stopovers/shift", ['minutes' => -1440])->assertNoContent();
+
+        foreach ($stopovers as $stopover) {
+            $expectedArrival = $stopover->arrival_planned->clone()->subDay();
+            $expectedDeparture = $stopover->departure_planned->clone()->subDay();
+
+            $stopover->refresh();
+            $this->assertTrue($expectedArrival->equalTo($stopover->arrival_planned));
+            $this->assertTrue($expectedDeparture->equalTo($stopover->departure_planned));
+        }
+
+        $trip->refresh();
+        $this->assertTrue($originalDeparture->subDay()->equalTo($trip->departure));
+        $this->assertTrue($originalArrival->subDay()->equalTo($trip->arrival));
+    }
+
+    public function test_shifting_stopovers_also_moves_the_real_times(): void
+    {
+        $trip = $this->createManualTrip($this->user);
+        $stopover = $this->firstStopover($trip);
+        $stopover->update([
+            'arrival_real' => $stopover->arrival_planned->clone()->addMinutes(3),
+            'departure_real' => $stopover->departure_planned->clone()->addMinutes(4),
+        ]);
+        $expectedArrivalReal = $stopover->arrival_real->clone()->addMinutes(90);
+        $expectedDepartureReal = $stopover->departure_real->clone()->addMinutes(90);
+
+        $this->actAsApiUserWithAllScopes($this->user);
+        $this->postJson("/api/v1/trips/{$trip->uuid}/stopovers/shift", ['minutes' => 90])->assertNoContent();
+
+        $stopover->refresh();
+        $this->assertTrue($expectedArrivalReal->equalTo($stopover->arrival_real));
+        $this->assertTrue($expectedDepartureReal->equalTo($stopover->departure_real));
+    }
+
+    public function test_shifting_stopovers_moves_checkins_without_changing_their_duration(): void
+    {
+        $trip = $this->createManualTrip($this->user);
+        $checkin = $this->createCheckinOnTrip($trip);
+        $oldDuration = $checkin->fresh()->duration;
+        $expectedDeparture = $checkin->departure->clone()->addMinutes(120);
+        $expectedArrival = $checkin->arrival->clone()->addMinutes(120);
+
+        $this->actAsApiUserWithAllScopes($this->user);
+        $this->postJson("/api/v1/trips/{$trip->uuid}/stopovers/shift", ['minutes' => 120])->assertNoContent();
+
+        $checkin->refresh();
+        $this->assertTrue($expectedDeparture->equalTo($checkin->departure));
+        $this->assertTrue($expectedArrival->equalTo($checkin->arrival));
+        $this->assertSame($oldDuration, $checkin->duration);
+    }
+
+    public function test_shifting_stopovers_requires_a_valid_offset(): void
+    {
+        $trip = $this->createManualTrip($this->user);
+
+        $this->actAsApiUserWithAllScopes($this->user);
+        $this->postJson("/api/v1/trips/{$trip->uuid}/stopovers/shift", [])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['minutes']);
+        $this->postJson("/api/v1/trips/{$trip->uuid}/stopovers/shift", ['minutes' => 999999999])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['minutes']);
+    }
+
+    public function test_user_cannot_shift_stopovers_of_a_foreign_trip(): void
+    {
+        $trip = $this->createManualTrip(User::factory()->create());
+
+        $this->actAsApiUserWithAllScopes($this->user);
+        $this->postJson("/api/v1/trips/{$trip->uuid}/stopovers/shift", ['minutes' => 60])->assertForbidden();
+    }
+
     private function createCheckinOnTrip(Trip $trip): Checkin
     {
         $checkin = Checkin::factory()->create([

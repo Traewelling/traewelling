@@ -163,6 +163,38 @@ class TripEditService
     }
 
     /**
+     * Moves all stopovers of a trip by the given amount of minutes, keeping the relative timing
+     * (and therefore the order) of the whole trip intact.
+     *
+     * @throws ManualTripValidationException
+     */
+    public function shiftStopovers(Trip $trip, int $minutes): void
+    {
+        if ($minutes === 0) {
+            return;
+        }
+
+        DB::transaction(function () use ($trip, $minutes) {
+            $columns = ['arrival_planned', 'departure_planned', 'arrival_real', 'departure_real'];
+
+            foreach (Stopover::where('trip_id', $trip->trip_id)->get() as $stopover) {
+                $attributes = [];
+                foreach ($columns as $column) {
+                    if ($stopover->{$column} !== null) {
+                        $attributes[$column] = $stopover->{$column}->clone()->addMinutes($minutes);
+                    }
+                }
+
+                if ($attributes !== []) {
+                    $stopover->update($attributes);
+                }
+            }
+
+            $this->syncTrip($trip, resetRouting: false);
+        });
+    }
+
+    /**
      * @throws ManualTripValidationException
      * @throws StopoverInUseException
      */
