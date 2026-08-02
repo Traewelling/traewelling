@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Str;
 
 /**
  * @todo rename table to "Stopover" (without Train - we have more than just trains)
@@ -17,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  *       to think about this.
  *
  * @property int $id
+ * @property string|null $uuid
  * @property string $trip_id
  * @property int $train_station_id
  * @property $arrival_planned
@@ -66,6 +68,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereTrainStationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereTripId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereUuid($value)
  *
  * @mixin \Eloquent
  */
@@ -74,6 +77,18 @@ class Stopover extends Model
     use HasFactory;
 
     protected $table = 'train_stopovers';
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        // UUID is not yet the primary key, so we can't use the HasUuids trait here.
+        static::creating(function (self $stopover): void {
+            if (empty($stopover->uuid)) {
+                $stopover->uuid = Str::uuid()->toString();
+            }
+        });
+    }
 
     protected $fillable = [
         'trip_id', 'train_station_id',
@@ -91,6 +106,7 @@ class Stopover extends Model
 
     protected $casts = [
         'id' => 'integer',
+        'uuid' => 'string',
         'trip_id' => 'string',
         'train_station_id' => 'integer',
         'arrival_planned' => UTCDateTime::class,
