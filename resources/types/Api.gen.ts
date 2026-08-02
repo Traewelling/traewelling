@@ -2556,6 +2556,7 @@ export interface TripResource {
   origin: Station;
   /** train station model */
   destination: Station;
+  operator: OperatorResource | null;
   stopovers: StopoverResource[];
   /**
    * Total number of checkins on this trip, including those you cannot see. A trip can only be deleted while this is 0.

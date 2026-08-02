@@ -9,7 +9,7 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(
     title: 'TripResource',
-    required: ['id', 'uuid', 'tripId', 'category', 'mode', 'number', 'lineName', 'journeyNumber', 'origin', 'destination', 'stopovers', 'checkinCount', 'dataSource', 'continuationTrip'],
+    required: ['id', 'uuid', 'tripId', 'category', 'mode', 'number', 'lineName', 'journeyNumber', 'origin', 'destination', 'operator', 'stopovers', 'checkinCount', 'dataSource', 'continuationTrip'],
     properties: [
         new OA\Property(property: 'id', type: 'int', example: 1),
         new OA\Property(property: 'uuid', description: 'Stable identifier of this trip. Will become the primary key later.', type: 'string', format: 'uuid', example: '00000000-0000-0000-0000-000000000000', nullable: true),
@@ -21,6 +21,7 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'journeyNumber', type: 'int', example: '34427'),
         new OA\Property(property: 'origin', ref: '#/components/schemas/Station'),
         new OA\Property(property: 'destination', ref: '#/components/schemas/Station'),
+        new OA\Property(property: 'operator', ref: OperatorResource::class, nullable: true),
         new OA\Property(
             property: 'stopovers',
             type: 'array',
@@ -73,6 +74,7 @@ class TripResource extends JsonResource
             'journeyNumber' => $this->journey_number,
             'origin' => new StationResource($this->originStation),
             'destination' => new StationResource($this->destinationStation),
+            'operator' => $this->operator ? new OperatorResource($this->operator) : null,
             'stopovers' => StopoverResource::collection($this->stopovers),
             'checkinCount' => (int) ($this->checkins_count ?? $this->checkins()->count()),
             'dataSource' => $this->motisSourceLicense ? new DataSourceResource($this->motisSourceLicense) : null,

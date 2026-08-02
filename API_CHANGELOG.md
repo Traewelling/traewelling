@@ -64,6 +64,7 @@ New fields:
 
 - `TripResource.uuid`
 - `TripResource.checkinCount`: total number of checkins on the trip, including those you cannot see
+- `TripResource.operator`: the operator of the trip, `null` if unknown
 - `StopoverResource.uuid`
 - `StationResource.uuid`
 

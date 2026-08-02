@@ -15469,6 +15469,7 @@
                     "journeyNumber",
                     "origin",
                     "destination",
+                    "operator",
                     "stopovers",
                     "checkinCount",
                     "dataSource",
@@ -15519,6 +15520,14 @@
                     },
                     "destination": {
                         "$ref": "#/components/schemas/Station"
+                    },
+                    "operator": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/OperatorResource"
+                            }
+                        ],
+                        "nullable": true
                     },
                     "stopovers": {
                         "type": "array",
