@@ -8,9 +8,10 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(
     title: 'Station',
-    required: ['id', 'name', 'latitude', 'longitude', 'ibnr', 'rilIdentifier', 'areas', 'identifiers', 'time_offset', 'created_at'],
+    required: ['id', 'uuid', 'name', 'latitude', 'longitude', 'ibnr', 'rilIdentifier', 'areas', 'identifiers', 'time_offset', 'created_at'],
     properties: [
         new OA\Property(property: 'id', type: 'integer', example: '1'),
+        new OA\Property(property: 'uuid', description: 'Stable identifier of this station. Will become the primary key later.', type: 'string', format: 'uuid', example: '00000000-0000-0000-0000-000000000000', nullable: true),
         new OA\Property(property: 'name', type: 'string', example: 'Karlsruhe Hbf'),
         new OA\Property(property: 'latitude', type: 'number', example: '48.993207'),
         new OA\Property(property: 'longitude', type: 'number', example: '8.400977'),
@@ -51,6 +52,7 @@ class StationResource extends JsonResource
         /** @var Station $this */
         return [
             'id' => $this->id,
+            'uuid' => $this->uuid,
             'name' => $this->name,
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,

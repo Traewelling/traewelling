@@ -45,6 +45,27 @@ Check back here regularly to stay ahead of removals.
 
 ---
 
+# 2026-08-02
+
+**Users can now edit the manual trips they created themselves.**
+
+New endpoints:
+
+- `GET /trips`: cursor-paginated list of your own manual trips
+- `GET /trips/{tripUuid}`: get a trip including all stopovers
+- `PUT /trips/{tripUuid}`: change `category`, `lineName`, `journeyNumber` and `operatorId`
+- `POST /trips/{tripUuid}/stopovers`: add a stopover
+- `PUT /trips/{tripUuid}/stopovers/{stopoverUuid}`: change station, planned/real times, platforms and `cancelled`
+- `DELETE /trips/{tripUuid}/stopovers/{stopoverUuid}`: remove a stopover
+
+New fields:
+
+- `TripResource.uuid`
+- `StopoverResource.uuid`
+- `StationResource.uuid`
+
+---
+
 # 2026-07-26
 
 **`NotificationResource`: the markup in `leadFormatted` and `noticeFormatted` now comes from the code instead of from

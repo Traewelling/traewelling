@@ -9,6 +9,7 @@ use App\Models\Stopover;
 use App\Models\Trip;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
 use Tests\ApiTestCase;
 
 class StopoverTest extends ApiTestCase
@@ -32,12 +33,17 @@ class StopoverTest extends ApiTestCase
         return Trip::factory()->create()->stopovers->firstOrFail();
     }
 
+    private function url(Stopover $stopover): string
+    {
+        return "/api/v1/trips/{$stopover->trip->uuid}/stopovers/{$stopover->uuid}";
+    }
+
     public function test_admin_can_delete_stopover(): void
     {
         $stopover = $this->createStopover();
 
         $this->actAsApiUserWithAllScopes($this->admin);
-        $this->deleteJson("/api/v1/stopovers/{$stopover->id}")->assertNoContent();
+        $this->deleteJson($this->url($stopover))->assertNoContent();
 
         $this->assertDatabaseMissing('train_stopovers', ['id' => $stopover->id]);
     }
@@ -47,7 +53,7 @@ class StopoverTest extends ApiTestCase
         $stopover = $this->createStopover();
 
         $this->actAsApiUserWithAllScopes($this->user);
-        $this->deleteJson("/api/v1/stopovers/{$stopover->id}")->assertForbidden();
+        $this->deleteJson($this->url($stopover))->assertForbidden();
 
         $this->assertDatabaseHas('train_stopovers', ['id' => $stopover->id]);
     }
@@ -56,13 +62,15 @@ class StopoverTest extends ApiTestCase
     {
         $stopover = $this->createStopover();
 
-        $this->deleteJson("/api/v1/stopovers/{$stopover->id}")->assertUnauthorized();
+        $this->deleteJson($this->url($stopover))->assertUnauthorized();
     }
 
     public function test_delete_returns_not_found_for_unknown_stopover(): void
     {
+        $trip = Trip::factory()->create();
+
         $this->actAsApiUserWithAllScopes($this->admin);
-        $this->deleteJson('/api/v1/stopovers/999999')->assertNotFound();
+        $this->deleteJson("/api/v1/trips/{$trip->uuid}/stopovers/" . Str::uuid())->assertNotFound();
     }
 
     public function test_stopover_referenced_by_checkin_cannot_be_deleted(): void
@@ -71,7 +79,7 @@ class StopoverTest extends ApiTestCase
         $stopover = $checkin->originStopover;
 
         $this->actAsApiUserWithAllScopes($this->admin);
-        $this->deleteJson("/api/v1/stopovers/{$stopover->id}")->assertConflict();
+        $this->deleteJson($this->url($stopover))->assertConflict();
 
         $this->assertDatabaseHas('train_stopovers', ['id' => $stopover->id]);
     }

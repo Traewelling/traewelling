@@ -10,6 +10,7 @@ use OpenApi\Attributes as OA;
     title: 'StopoverResource',
     required: [
         'id',
+        'uuid',
         'stopoverId',
         'station',
         'name',
@@ -38,6 +39,14 @@ use OpenApi\Attributes as OA;
             type: 'integer',
             example: 12345,
             deprecated: true,
+        ),
+        new OA\Property(
+            property: 'uuid',
+            description: 'Stable identifier of this stopover. Will become the primary key later.',
+            type: 'string',
+            format: 'uuid',
+            example: '00000000-0000-0000-0000-000000000000',
+            nullable: true,
         ),
         new OA\Property(
             property: 'stopoverId',
@@ -185,6 +194,7 @@ class StopoverResource extends JsonResource
         /** @var Stopover $this */
         return [
             'id' => (int) $this->train_station_id, // @deprecated - after 2026-11-30 this becomes $this->id (stopover ID); use station for station details
+            'uuid' => $this->uuid,
             'stopoverId' => (int) $this->id, // @deprecated - temporary bridge until id is repurposed to the stopover ID, then removed
             'station' => new StationResource($this->whenLoaded('station')),
             'name' => $this->station->name, // @deprecated - use station.name instead

@@ -42,11 +42,11 @@ use App\Http\Controllers\API\v1\StationIdentifierController;
 use App\Http\Controllers\API\v1\StatisticsController;
 use App\Http\Controllers\API\v1\StatusController;
 use App\Http\Controllers\API\v1\StatusTagController;
-use App\Http\Controllers\API\v1\StopoverController;
 use App\Http\Controllers\API\v1\TicketController;
 use App\Http\Controllers\API\v1\TokenController;
 use App\Http\Controllers\API\v1\TransportController;
 use App\Http\Controllers\API\v1\TripController;
+use App\Http\Controllers\API\v1\TripStopoverController;
 use App\Http\Controllers\API\v1\TrustedUserController;
 use App\Http\Controllers\API\v1\UserController;
 use App\Http\Controllers\API\v1\WebhookController;
@@ -256,8 +256,6 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::post('route-segments/{id}/brouter-preview', [RouteSegmentController::class, 'brouterPreview']);
         Route::post('route-segments/{id}/polyline', [RouteSegmentController::class, 'applyPolyline']);
 
-        Route::delete('stopovers/{id}', [StopoverController::class, 'destroy'])->whereNumber('id');
-
         Route::apiResource('tickets', TicketController::class);
         Route::get('tickets/{id}/statistics', [TicketController::class, 'statistics'])->middleware(['scope:read-statistics']);
 
@@ -304,6 +302,17 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::post('trips', [TripController::class, 'createTrip'])->middleware('scope:write-statuses');
             Route::post('trips/route-preview', [TripController::class, 'routePreview'])->middleware('scope:write-statuses');
             Route::get('trips/{id}/statuses', [TripController::class, 'statuses'])->whereNumber('id');
+            Route::get('trips', [TripController::class, 'index'])->middleware('scope:read-statuses');
+            Route::get('trips/{tripUuid}', [TripController::class, 'show'])
+                ->whereUuid('tripUuid')->middleware('scope:write-statuses');
+            Route::put('trips/{tripUuid}', [TripController::class, 'update'])
+                ->whereUuid('tripUuid')->middleware('scope:write-statuses');
+            Route::post('trips/{tripUuid}/stopovers', [TripStopoverController::class, 'store'])
+                ->whereUuid('tripUuid')->middleware('scope:write-statuses');
+            Route::put('trips/{tripUuid}/stopovers/{stopoverUuid}', [TripStopoverController::class, 'update'])
+                ->whereUuid(['tripUuid', 'stopoverUuid'])->middleware('scope:write-statuses');
+            Route::delete('trips/{tripUuid}/stopovers/{stopoverUuid}', [TripStopoverController::class, 'destroy'])
+                ->whereUuid(['tripUuid', 'stopoverUuid'])->middleware('scope:write-statuses');
             Route::get('status/{statusId}/tags', [StatusTagController::class, 'index']);
             Route::get('statuses/{statusIds}/tags', [StatusTagController::class, 'indexForMultiple']);
             Route::get('stopovers/{parameters}', [StatusController::class, 'getStopovers']);

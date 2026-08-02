@@ -961,6 +961,8 @@ export interface AdminStatusResource {
 /** AdminStopover */
 export interface AdminStopoverResource {
   id: number;
+  /** @format uuid */
+  uuid: string | null;
   station: {
     id?: number;
     name?: string;
@@ -983,6 +985,8 @@ export interface AdminStopoverResource {
 /** AdminTrip */
 export interface AdminTripResource {
   id: number;
+  /** @format uuid */
+  uuid: string | null;
   tripId: string;
   checkinsCount: number | null;
   category: string;
@@ -2028,6 +2032,12 @@ export interface StationIdentifierResource {
 export interface StationResource {
   /** @example "1" */
   id: number;
+  /**
+   * Stable identifier of this station. Will become the primary key later.
+   * @format uuid
+   * @example "00000000-0000-0000-0000-000000000000"
+   */
+  uuid: string | null;
   /** @example "Karlsruhe Hbf" */
   name: string;
   /** @example "48.993207" */
@@ -2153,6 +2163,12 @@ export interface StopoverResource {
    * @example 12345
    */
   id: number;
+  /**
+   * Stable identifier of this stopover. Will become the primary key later.
+   * @format uuid
+   * @example "00000000-0000-0000-0000-000000000000"
+   */
+  uuid: string | null;
   /**
    * Deprecated. Temporary field holding the unique ID of this specific stopover within the trip. Only available until id is repurposed to the stopover ID (after 2026-11-30), then removed.
    * @deprecated
@@ -2516,6 +2532,12 @@ export interface TransportResource {
 export interface TripResource {
   /** @example 1 */
   id: number;
+  /**
+   * Stable identifier of this trip. Will become the primary key later.
+   * @format uuid
+   * @example "00000000-0000-0000-0000-000000000000"
+   */
+  uuid: string | null;
   /**
    * Internal trip identifier (use this for the checkin flow)
    * @example "00000000-0000-0000-0000-000000000000"
@@ -7333,23 +7355,6 @@ export class Api<
         format: "json",
         ...params,
       }),
-
-    /**
-     * @description Admin only. Deletes a stopover, e.g. a duplicate created by a real-time refresh. Stopovers referenced by checkins cannot be deleted.
-     *
-     * @tags Trips
-     * @name DeleteStopover
-     * @summary Delete a stopover
-     * @request DELETE:/stopovers/{id}
-     * @secure
-     */
-    deleteStopover: (id: number, params: RequestParams = {}) =>
-      this.request<void, void>({
-        path: `/stopovers/${id}`,
-        method: "DELETE",
-        secure: true,
-        ...params,
-      }),
   };
   tags = {
     /**
@@ -7893,11 +7898,40 @@ export class Api<
       }),
 
     /**
-     * No description
+     * @description Returns a list of the manual trips the authenticated user created.
+     *
+     * @tags Trips
+     * @name GetOwnTrips
+     * @summary List your own trips
+     * @request GET:/trips
+     * @secure
+     */
+    getOwnTrips: (
+      query?: {
+        cursor?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data: TripResource[];
+        },
+        void
+      >({
+        path: `/trips`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Creates a trip from the given data, to check into journeys no data provider knows about. The trip is created with `source = user` and belongs to you, so you can change it afterwards through the trip and stopover endpoints.
      *
      * @tags Trips
      * @name CreateTrip
-     * @summary Create a manual trip.
+     * @summary Create a trip
      * @request POST:/trips
      * @secure
      */
@@ -7959,6 +7993,191 @@ export class Api<
         secure: true,
         type: ContentType.Json,
         format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Returns a trip including all stopovers. You can only access manual trips (`source = user`) that you created yourself; admins can access any trip.
+     *
+     * @tags Trips
+     * @name GetTrip
+     * @summary Get a trip
+     * @request GET:/trips/{tripUuid}
+     * @secure
+     */
+    getTrip: (tripUuid: string, params: RequestParams = {}) =>
+      this.request<
+        {
+          data: TripResource;
+        },
+        void
+      >({
+        path: `/trips/${tripUuid}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Updates the metadata of a trip. You can only edit manual trips (`source = user`) that you created yourself; admins can edit any trip. All fields are optional, only the given ones are changed. Changing the category recalculates distance and points of all checkins on this trip.
+     *
+     * @tags Trips
+     * @name UpdateTrip
+     * @summary Update a trip
+     * @request PUT:/trips/{tripUuid}
+     * @secure
+     */
+    updateTrip: (
+      tripUuid: string,
+      data: {
+        /** Category of transport. */
+        category?: HafasTravelType;
+        /** @example "RE 1" */
+        lineName?: string;
+        /** @example 12345 */
+        journeyNumber?: number | null;
+        /**
+         * Operator UUID. Null removes the operator.
+         * @format uuid
+         * @example "00000000-0000-0000-0000-000000000000"
+         */
+        operatorUuid?: string | null;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, void>({
+        path: `/trips/${tripUuid}`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description Adds a stopover to a trip. You can only edit manual trips (`source = user`) that you created yourself; admins can edit any trip. The position within the trip is derived from the planned times. Origin, destination, departure and arrival of the trip as well as distance, points and duration of all checkins on this trip are recalculated afterwards.
+     *
+     * @tags Trips
+     * @name CreateTripStopover
+     * @summary Add a stopover to a trip
+     * @request POST:/trips/{tripUuid}/stopovers
+     * @secure
+     */
+    createTripStopover: (
+      tripUuid: string,
+      data: {
+        /**
+         * Station UUID
+         * @format uuid
+         * @example "00000000-0000-0000-0000-000000000000"
+         */
+        stationUuid: string;
+        /**
+         * @format date-time
+         * @example "2025-01-01T11:00:00Z"
+         */
+        arrivalPlanned?: string | null;
+        /**
+         * @format date-time
+         * @example "2025-01-01T11:02:00Z"
+         */
+        departurePlanned?: string | null;
+        /** @format date-time */
+        arrivalReal?: string | null;
+        /** @format date-time */
+        departureReal?: string | null;
+        /** @example "3" */
+        arrivalPlatformPlanned?: string | null;
+        /** @example "3" */
+        departurePlatformPlanned?: string | null;
+        arrivalPlatformReal?: string | null;
+        departurePlatformReal?: string | null;
+        /** @example false */
+        cancelled?: boolean;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, void>({
+        path: `/trips/${tripUuid}/stopovers`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description Updates a stopover of a trip. You can only edit manual trips (`source = user`) that you created yourself; admins can edit any trip. All fields are optional, only the given ones are changed. Origin, destination, departure and arrival of the trip as well as distance, points and duration of all checkins on this trip are recalculated afterwards.
+     *
+     * @tags Trips
+     * @name UpdateTripStopover
+     * @summary Update a stopover of a trip
+     * @request PUT:/trips/{tripUuid}/stopovers/{stopoverUuid}
+     * @secure
+     */
+    updateTripStopover: (
+      tripUuid: string,
+      stopoverUuid: string,
+      data: {
+        /**
+         * Station UUID
+         * @format uuid
+         * @example "00000000-0000-0000-0000-000000000000"
+         */
+        stationUuid?: string;
+        /**
+         * @format date-time
+         * @example "2025-01-01T11:00:00Z"
+         */
+        arrivalPlanned?: string | null;
+        /**
+         * @format date-time
+         * @example "2025-01-01T11:02:00Z"
+         */
+        departurePlanned?: string | null;
+        /** @format date-time */
+        arrivalReal?: string | null;
+        /** @format date-time */
+        departureReal?: string | null;
+        /** @example "3" */
+        arrivalPlatformPlanned?: string | null;
+        /** @example "3" */
+        departurePlatformPlanned?: string | null;
+        arrivalPlatformReal?: string | null;
+        departurePlatformReal?: string | null;
+        /** @example false */
+        cancelled?: boolean;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, void>({
+        path: `/trips/${tripUuid}/stopovers/${stopoverUuid}`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description Removes a stopover from a trip. You can only edit manual trips (`source = user`) that you created yourself; admins can edit any trip. Stopovers referenced by a checkin as origin or destination cannot be removed, and a trip must keep at least two stopovers.
+     *
+     * @tags Trips
+     * @name DeleteTripStopover
+     * @summary Delete a stopover of a trip
+     * @request DELETE:/trips/{tripUuid}/stopovers/{stopoverUuid}
+     * @secure
+     */
+    deleteTripStopover: (
+      tripUuid: string,
+      stopoverUuid: string,
+      params: RequestParams = {},
+    ) =>
+      this.request<void, void>({
+        path: `/trips/${tripUuid}/stopovers/${stopoverUuid}`,
+        method: "DELETE",
+        secure: true,
         ...params,
       }),
   };
