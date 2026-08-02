@@ -9,10 +9,16 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Gate;
 use OpenApi\Attributes as OA;
 
+/**
+ * TODO: This resource is deprecated. It mixes a checkin with the data of its trip and therefore
+ *       represents no model at all. Future API versions should return proper model resources
+ *       (CheckinResource, TripResource, ...) instead of this wild mix.
+ */
 #[OA\Schema(
     title: 'TransportResource',
     required: [
         'trip',
+        'tripUuid',
         'hafasId',
         'category',
         'number',
@@ -34,6 +40,14 @@ use OpenApi\Attributes as OA;
     ],
     properties: [
         new OA\Property(property: 'trip', type: 'integer', example: '4711'),
+        new OA\Property(
+            property: 'tripUuid',
+            description: 'Stable identifier of the trip this checkin belongs to. Use this for all trip endpoints.',
+            type: 'string',
+            format: 'uuid',
+            example: '00000000-0000-0000-0000-000000000000',
+            nullable: true,
+        ),
         new OA\Property(property: 'hafasId', type: 'string', example: '1|1234|567'),
         new OA\Property(property: 'category', ref: '#/components/schemas/HafasTravelType'),
         new OA\Property(property: 'mode', ref: '#/components/schemas/MotisCategory', nullable: true),
@@ -122,6 +136,7 @@ class TransportResource extends JsonResource
 
         return [
             'trip' => (int) $this->trip->id,
+            'tripUuid' => $this->trip->uuid,
             'hafasId' => (string) $this->trip->trip_id,
             'category' => (string) $this->trip->category->value,
             'mode' => $this->trip->mode ? (string) $this->trip->mode->value : null,

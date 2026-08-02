@@ -15336,6 +15336,7 @@
                 "title": "TransportResource",
                 "required": [
                     "trip",
+                    "tripUuid",
                     "hafasId",
                     "category",
                     "number",
@@ -15357,8 +15358,16 @@
                 ],
                 "properties": {
                     "trip": {
+                        "description": "TODO: This resource is deprecated. It mixes a checkin with the data of its trip and therefore\n      represents no model at all. Future API versions should return proper model resources\n      (CheckinResource, TripResource, ...) instead of this wild mix.",
                         "type": "integer",
                         "example": "4711"
+                    },
+                    "tripUuid": {
+                        "description": "Stable identifier of the trip this checkin belongs to. Use this for all trip endpoints.",
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "00000000-0000-0000-0000-000000000000",
+                        "nullable": true
                     },
                     "hafasId": {
                         "type": "string",

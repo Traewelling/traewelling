@@ -2469,8 +2469,19 @@ export interface TokenResource {
 
 /** TransportResource */
 export interface TransportResource {
-  /** @example "4711" */
+  /**
+   * TODO: This resource is deprecated. It mixes a checkin with the data of its trip and therefore
+   *       represents no model at all. Future API versions should return proper model resources
+   *       (CheckinResource, TripResource, ...) instead of this wild mix.
+   * @example "4711"
+   */
   trip: number;
+  /**
+   * Stable identifier of the trip this checkin belongs to. Use this for all trip endpoints.
+   * @format uuid
+   * @example "00000000-0000-0000-0000-000000000000"
+   */
+  tripUuid: string | null;
   /** @example "1|1234|567" */
   hafasId: string;
   /** Category of transport. */

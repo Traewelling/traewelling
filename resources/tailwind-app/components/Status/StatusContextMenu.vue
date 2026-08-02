@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {
+    CopyPlus,
     Eye,
     MoreVertical,
     PlaneLanding,
@@ -15,8 +16,10 @@ import { trans } from 'laravel-vue-i18n';
 import { DateTime as LuxonDateTime } from 'luxon';
 import { Notyf } from 'notyf';
 import { computed, inject, ref } from 'vue';
-import { Api, StatusResource } from '../../../types/Api.gen';
+import { useRouter } from 'vue-router';
+import { Api, StatusResource, TripResource } from '../../../types/Api.gen';
 import { useUserStore } from '../../../vue/stores/user';
+import TripCopyModal from '../Trip/TripCopyModal.vue';
 
 const props = defineProps<{
     status: StatusResource;
@@ -31,13 +34,17 @@ const emit = defineEmits<{
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 const notyf = inject('notyf') as Notyf;
 const userStore = useUserStore();
+const router = useRouter();
 
 const busyDepartureNow = ref(false);
 const busyArrivalNow = ref(false);
 const busyMute = ref(false);
 const busyBlock = ref(false);
+const copyTripModalOpen = ref(false);
 
 const isOwn = computed(() => !!userStore.user && userStore.user.id === props.status.user.id);
+
+const canCopyTrip = computed(() => isOwn.value && !!props.status.checkin.tripUuid);
 
 const showDepartureNowBtn = computed(() => {
     if (!isOwn.value) return false;
@@ -119,6 +126,12 @@ async function arrivalNow() {
     }
 }
 
+async function onTripCopied(copy: TripResource) {
+    copyTripModalOpen.value = false;
+    notyf?.success(trans('trip.copy.success'));
+    await router.push({ name: 'trip-edit', params: { uuid: copy.uuid } });
+}
+
 async function handleMute() {
     busyMute.value = true;
     try {
@@ -180,6 +193,12 @@ async function handleBlock() {
                             {{ trans('edit') }}
                         </button>
                     </li>
+                    <li v-if="canCopyTrip">
+                        <button @click="copyTripModalOpen = true">
+                            <CopyPlus class="inline-block size-4" />
+                            {{ trans('trip.copy.title') }}
+                        </button>
+                    </li>
                     <li>
                         <button class="text-error" @click="emit('delete')">
                             <Trash2 class="inline-block size-4" />
@@ -218,5 +237,14 @@ async function handleBlock() {
                 </template>
             </template>
         </ul>
+
+        <TripCopyModal
+            v-if="canCopyTrip"
+            :open="copyTripModalOpen"
+            :trip-uuid="status.checkin.tripUuid!"
+            :points="status.checkin.points"
+            @close="copyTripModalOpen = false"
+            @copied="onTripCopied"
+        />
     </div>
 </template>
