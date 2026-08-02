@@ -2557,6 +2557,11 @@ export interface TripResource {
   /** train station model */
   destination: Station;
   stopovers: StopoverResource[];
+  /**
+   * Total number of checkins on this trip, including those you cannot see. A trip can only be deleted while this is 0.
+   * @example 3
+   */
+  checkinCount: number;
   dataSource: DataSourceResource | null;
   /** If this trip is an interlined through-running service, this contains the immediately following trip (different line name/color, no transfer required). */
   continuationTrip: TripResource | null;
@@ -8075,6 +8080,23 @@ export class Api<
         body: data,
         secure: true,
         type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description Deletes a trip including all its stopovers. You can only delete manual trips (`source = user`) that you created yourself; admins can delete any trip. A trip can only be deleted while no checkin references it, which includes checkins of other users you cannot see. Check `checkinCount` beforehand to know whether deleting is possible.
+     *
+     * @tags Trips
+     * @name DeleteTrip
+     * @summary Delete a trip
+     * @request DELETE:/trips/{tripUuid}
+     * @secure
+     */
+    deleteTrip: (tripUuid: string, params: RequestParams = {}) =>
+      this.request<void, void>({
+        path: `/trips/${tripUuid}`,
+        method: "DELETE",
+        secure: true,
         ...params,
       }),
 

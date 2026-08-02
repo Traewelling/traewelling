@@ -7,7 +7,6 @@ namespace Tests\Feature\APIv1;
 use App\Enum\StatusVisibility;
 use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\UserController as UserBackend;
-use App\Models\Checkin;
 use App\Models\Trip;
 use App\Models\TrustedUser;
 use App\Models\User;
@@ -22,25 +21,6 @@ class TripStatusesTest extends ApiTestCase
     private function url(int $tripId): string
     {
         return "/api/v1/trips/{$tripId}/statuses";
-    }
-
-    private function checkinOnTrip(Trip $trip, User $user, StatusVisibility $visibility = StatusVisibility::PUBLIC): Checkin
-    {
-        $checkin = Checkin::factory([
-            'user_id' => $user->id,
-            'trip_id' => $trip->trip_id,
-            'departure' => $trip->departure,
-            'arrival' => $trip->arrival,
-            'origin_stopover_id' => $trip->stopovers->where('train_station_id', $trip->originStation->id)->first()->id,
-            'destination_stopover_id' => $trip->stopovers->where('train_station_id', $trip->destinationStation->id)->first()->id,
-        ])->create();
-
-        $checkin->status->update([
-            'user_id' => $user->id,
-            'visibility' => $visibility->value,
-        ]);
-
-        return $checkin->fresh();
     }
 
     public function test_returns_404_for_unknown_trip(): void

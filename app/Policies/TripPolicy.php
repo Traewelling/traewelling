@@ -35,6 +35,11 @@ class TripPolicy
         return $this->update($user, $trip);
     }
 
+    public function delete(User $user, Trip $trip): bool
+    {
+        return $this->update($user, $trip);
+    }
+
     /**
      * Any trip may be copied, except manual trips of other users.
      */

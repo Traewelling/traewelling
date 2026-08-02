@@ -307,6 +307,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
                 ->whereUuid('tripUuid')->middleware('scope:write-statuses');
             Route::put('trips/{tripUuid}', [TripController::class, 'update'])
                 ->whereUuid('tripUuid')->middleware('scope:write-statuses');
+            Route::delete('trips/{tripUuid}', [TripController::class, 'destroy'])
+                ->whereUuid('tripUuid')->middleware('scope:write-statuses');
             Route::post('trips/{tripUuid}/copy', [TripController::class, 'copy'])
                 ->whereUuid('tripUuid')->middleware('scope:write-statuses');
             Route::post('trips/{tripUuid}/stopovers', [TripStopoverController::class, 'store'])
