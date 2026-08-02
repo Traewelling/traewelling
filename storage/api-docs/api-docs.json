@@ -9383,6 +9383,64 @@
                 ]
             }
         },
+        "/trips/{tripUuid}/copy": {
+            "post": {
+                "tags": [
+                    "Trips"
+                ],
+                "summary": "Copy a trip",
+                "description": "Copies a trip including all its stopovers into a new trip with `source = user` that belongs to you, so you can correct data a provider got wrong. Manual trips of other users cannot be copied. Your own checkin on the original trip is moved to the copy, which drops its points to 0 because manual trips do not score. Checkins of other users stay on the original trip.",
+                "operationId": "copyTrip",
+                "parameters": [
+                    {
+                        "name": "tripUuid",
+                        "in": "path",
+                        "description": "Trip UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Trip copied successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TripResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/trips/{tripUuid}": {
             "get": {
                 "tags": [

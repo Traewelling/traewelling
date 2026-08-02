@@ -34,4 +34,16 @@ class TripPolicy
     {
         return $this->update($user, $trip);
     }
+
+    /**
+     * Any trip may be copied, except manual trips of other users.
+     */
+    public function copy(User $user, Trip $trip): bool
+    {
+        if ($user->can('disallow-manual-trips')) {
+            return false;
+        }
+
+        return $trip->source !== TripSource::USER || $trip->user_id === $user->id;
+    }
 }

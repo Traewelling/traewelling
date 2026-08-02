@@ -17,6 +17,7 @@ use App\Models\Operator;
 use App\Models\Station;
 use App\Models\Trip;
 use App\Services\Trip\RoutePreviewService;
+use App\Services\Trip\TripCopyService;
 use App\Services\Trip\TripEditService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -285,6 +286,40 @@ class TripController extends Controller
             ->cursorPaginate(25);
 
         return TripResource::collection($trips);
+    }
+
+    #[OA\Post(
+        path: '/trips/{tripUuid}/copy',
+        operationId: 'copyTrip',
+        description: 'Copies a trip including all its stopovers into a new trip with `source = user` that belongs to you, so you can correct data a provider got wrong. Manual trips of other users cannot be copied. Your own checkin on the original trip is moved to the copy, which drops its points to 0 because manual trips do not score. Checkins of other users stay on the original trip.',
+        summary: 'Copy a trip',
+        security: [['passport' => ['write-statuses']], ['token' => []]],
+        tags: ['Trips'],
+        parameters: [
+            new OA\Parameter(name: 'tripUuid', description: 'Trip UUID', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid')),
+        ],
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: 'Trip copied successfully',
+                content: new OA\JsonContent(
+                    required: ['data'],
+                    properties: [new OA\Property(property: 'data', ref: TripResource::class)],
+                ),
+            ),
+            new OA\Response(response: 403, description: self::OA_DESC_FORBIDDEN),
+            new OA\Response(response: 404, description: self::OA_DESC_NOT_FOUND),
+        ],
+    )]
+    public function copy(string $tripUuid, TripCopyService $tripCopyService): JsonResponse
+    {
+        $trip = Trip::with('stopovers')->where('uuid', $tripUuid)->firstOrFail();
+        $this->authorize('copy', $trip);
+
+        $copy = $tripCopyService->copy($trip, auth()->user());
+        $copy->load(['originStation', 'destinationStation', 'operator', 'stopovers.station']);
+
+        return new TripResource($copy)->response()->setStatusCode(201);
     }
 
     #[OA\Get(

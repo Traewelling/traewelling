@@ -53,6 +53,7 @@ New endpoints:
 
 - `GET /trips`: cursor-paginated list of your own manual trips
 - `GET /trips/{tripUuid}`: get a trip including all stopovers
+- `POST /trips/{tripUuid}/copy`: copy a trip into an own manual trip, moving your own checkin along
 - `PUT /trips/{tripUuid}`: change `category`, `lineName`, `journeyNumber` and `operatorId`
 - `POST /trips/{tripUuid}/stopovers`: add a stopover
 - `PUT /trips/{tripUuid}/stopovers/{stopoverUuid}`: change station, planned/real times, platforms and `cancelled`

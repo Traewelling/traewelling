@@ -7997,6 +7997,29 @@ export class Api<
       }),
 
     /**
+     * @description Copies a trip including all its stopovers into a new trip with `source = user` that belongs to you, so you can correct data a provider got wrong. Manual trips of other users cannot be copied. Your own checkin on the original trip is moved to the copy, which drops its points to 0 because manual trips do not score. Checkins of other users stay on the original trip.
+     *
+     * @tags Trips
+     * @name CopyTrip
+     * @summary Copy a trip
+     * @request POST:/trips/{tripUuid}/copy
+     * @secure
+     */
+    copyTrip: (tripUuid: string, params: RequestParams = {}) =>
+      this.request<
+        {
+          data: TripResource;
+        },
+        void
+      >({
+        path: `/trips/${tripUuid}/copy`,
+        method: "POST",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * @description Returns a trip including all stopovers. You can only access manual trips (`source = user`) that you created yourself; admins can access any trip.
      *
      * @tags Trips
