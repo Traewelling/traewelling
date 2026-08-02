@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use phpGPX\Models\Point;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
@@ -18,6 +19,7 @@ use Spatie\Activitylog\Support\LogOptions;
  * @todo rename table to "Station" (without Train - we have more than just trains)
  *
  * @property int $id
+ * @property string|null $uuid
  * @property string $name
  * @property float $latitude
  * @property float $longitude
@@ -52,6 +54,7 @@ use Spatie\Activitylog\Support\LogOptions;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereSource($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereTimeOffset($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereUuid($value)
  *
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Activity> $activitiesAsSubject
  * @property-read int|null $activities_as_subject_count
@@ -64,6 +67,18 @@ class Station extends Model
 
     protected $table = 'train_stations';
 
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        // UUID is not yet the primary key, so we can't use the HasUuids trait here.
+        static::creating(function (self $station): void {
+            if (empty($station->uuid)) {
+                $station->uuid = Str::uuid()->toString();
+            }
+        });
+    }
+
     protected $fillable = [
         'relevance',
         'name', 'latitude', 'longitude', 'source', 'time_offset', 'shift_time',
@@ -73,6 +88,7 @@ class Station extends Model
 
     protected $casts = [
         'id' => 'integer',
+        'uuid' => 'string',
         'name' => 'string',
         'latitude' => 'float',
         'longitude' => 'float',
