@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 
 return new class() extends Migration
 {
-    private const CHUNK_SIZE = 10_000;
+    private const CHUNK_SIZE = 30_000;
 
     public function up(): void
     {
