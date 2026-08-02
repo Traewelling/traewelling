@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 /**
  * @todo rename table only to "Trip" (without Hafas)
@@ -20,6 +21,7 @@ use Illuminate\Support\Carbon;
  * @todo drop origin and destination, when origin_id and destination_id are added
  *
  * @property int $id
+ * @property string|null $uuid
  * @property string $trip_id
  * @property HafasTravelType $category
  * @property string $number
@@ -80,6 +82,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereTripId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereUuid($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereContinuationTripId($value)
  *
  * @mixin \Eloquent
@@ -89,6 +92,18 @@ class Trip extends Model
     use HasFactory;
 
     protected $table = 'hafas_trips';
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        // UUID is not yet the primary key, so we can't use the HasUuids trait here.
+        static::creating(function (self $trip): void {
+            if (empty($trip->uuid)) {
+                $trip->uuid = Str::uuid()->toString();
+            }
+        });
+    }
 
     protected $fillable = [
         'trip_id', 'category', 'number', 'linename', 'route_color', 'route_text_color', 'journey_number', 'operator_id', 'origin_id',
@@ -100,6 +115,7 @@ class Trip extends Model
 
     protected $casts = [
         'id' => 'integer',
+        'uuid' => 'string',
         'trip_id' => 'string',
         'category' => HafasTravelType::class,
         'number' => 'string',
