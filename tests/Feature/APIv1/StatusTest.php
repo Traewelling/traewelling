@@ -78,6 +78,20 @@ class StatusTest extends ApiTestCase
         $this->assertEquals($checkin->destinationStopover->station->id, $response->json('data.train.destination.id'));
     }
 
+    public function test_status_contains_the_uuid_of_its_trip(): void
+    {
+        $user = User::factory()->create();
+        Passport::actingAs($user, ['*']);
+
+        $checkin = Checkin::factory(['user_id' => $user->id])->create();
+
+        $response = $this->get('/api/v1/status/' . $checkin->status_id);
+        $response->assertOk();
+
+        $this->assertNotNull($checkin->trip->uuid);
+        $this->assertEquals($checkin->trip->uuid, $response->json('data.checkin.tripUuid'));
+    }
+
     public function test_active_statuses_dont_show_statuses_from_the_future(): void
     {
         $user = User::factory()->create();

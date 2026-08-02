@@ -67,6 +67,7 @@ New fields:
 - `TripResource.operator`: the operator of the trip, `null` if unknown
 - `StopoverResource.uuid`
 - `StationResource.uuid`
+- `TransportResource.tripUuid`: UUID of the trip a checkin belongs to, so the trip endpoints can be called for a status
 
 ---
 

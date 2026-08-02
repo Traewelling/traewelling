@@ -2471,6 +2471,12 @@ export interface TokenResource {
 export interface TransportResource {
   /** @example "4711" */
   trip: number;
+  /**
+   * Stable identifier of the trip this checkin belongs to. Use this for all trip endpoints.
+   * @format uuid
+   * @example "00000000-0000-0000-0000-000000000000"
+   */
+  tripUuid: string | null;
   /** @example "1|1234|567" */
   hafasId: string;
   /** Category of transport. */
