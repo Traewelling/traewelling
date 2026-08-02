@@ -109,6 +109,11 @@ Route::middleware(['auth', 'privacy'])->group(function () {
     Route::view('/trip/create', 'beta.trip-creation')
         ->name('trip.create');
 
+    Route::prefix('trips')->group(function () {
+        // trip list and trip editor, served by the Vue SPA
+        Route::get('/{any?}', fn () => view('vue.spa'))->where('any', '.*');
+    });
+
     Route::prefix('stats')->group(static function () {
         Route::permanentRedirect('/', '/statistics');
         Route::permanentRedirect('/daily/{dateString}', '/statistics/daily/{dateString}');

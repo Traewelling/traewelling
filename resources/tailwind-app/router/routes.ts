@@ -38,6 +38,8 @@ import SingleStatus from '../pages/Status/SingleStatus.vue';
 import TicketDetail from '../pages/Tickets/TicketDetail.vue';
 import Tickets from '../pages/Tickets/Tickets.vue';
 import TripCreation from '../pages/Trip/TripCreation.vue';
+import TripEdit from '../pages/Trip/TripEdit.vue';
+import TripList from '../pages/Trip/TripList.vue';
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -204,6 +206,18 @@ const routes: Array<RouteRecordRaw> = [
         path: '/trip/create',
         name: 'trip-create',
         component: TripCreation,
+    },
+    {
+        path: '/trips',
+        name: 'trip-list',
+        component: TripList,
+        meta: { title: 'trip.list.title' },
+    },
+    {
+        path: '/trips/:uuid/edit',
+        name: 'trip-edit',
+        component: TripEdit,
+        meta: { title: 'trip.edit.title' },
     },
     {
         path: '/export',

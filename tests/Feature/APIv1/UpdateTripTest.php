@@ -177,9 +177,11 @@ class UpdateTripTest extends ApiTestCase
 
         $this->putJson("/api/v1/trips/{$trip->uuid}", ['operatorUuid' => $operator->id])->assertNoContent();
         $this->assertDatabaseHas('hafas_trips', ['id' => $trip->id, 'operator_id' => $operator->id]);
+        $this->getJson("/api/v1/trips/{$trip->uuid}")->assertJsonPath('data.operator.uuid', $operator->id);
 
         $this->putJson("/api/v1/trips/{$trip->uuid}", ['operatorUuid' => null])->assertNoContent();
         $this->assertDatabaseHas('hafas_trips', ['id' => $trip->id, 'operator_id' => null]);
+        $this->getJson("/api/v1/trips/{$trip->uuid}")->assertJsonPath('data.operator', null);
     }
 
     public function test_operator_legacy_id_is_not_accepted(): void

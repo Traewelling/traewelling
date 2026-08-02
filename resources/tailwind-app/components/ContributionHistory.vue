@@ -41,7 +41,7 @@
             <div v-if="hasMore" class="flex justify-center mt-4">
                 <button class="btn btn-ghost btn-sm" :disabled="loading" @click="loadMore">
                     <span v-if="loading" class="loading loading-spinner loading-sm"></span>
-                    {{ trans('contribute.history.load_more') }}
+                    {{ trans('load-more') }}
                 </button>
             </div>
         </div>
