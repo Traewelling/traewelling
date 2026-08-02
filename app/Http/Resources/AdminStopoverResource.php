@@ -10,9 +10,10 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(
     title: 'AdminStopover',
-    required: ['id', 'station', 'arrivalPlanned', 'arrivalReal', 'departurePlanned', 'departureReal', 'routeSegmentId', 'routeSegmentType', 'stationIdentifierId'],
+    required: ['id', 'uuid', 'station', 'arrivalPlanned', 'arrivalReal', 'departurePlanned', 'departureReal', 'routeSegmentId', 'routeSegmentType', 'stationIdentifierId'],
     properties: [
         new OA\Property(property: 'id', type: 'integer'),
+        new OA\Property(property: 'uuid', type: 'string', format: 'uuid', nullable: true),
         new OA\Property(
             property: 'station',
             properties: [
@@ -37,6 +38,7 @@ class AdminStopoverResource extends JsonResource
         /** @var Stopover $this */
         return [
             'id' => $this->id,
+            'uuid' => $this->uuid,
             'station' => [
                 'id' => $this->station->id,
                 'name' => $this->station->name,

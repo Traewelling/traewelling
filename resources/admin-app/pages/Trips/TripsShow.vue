@@ -127,11 +127,12 @@ async function createSegment(
 }
 
 async function deleteStopover(stopover: AdminStopoverResource): Promise<void> {
+    if (!trip.value?.uuid || !stopover.uuid) return;
     if (!confirm(`Delete stopover "${stopover.station?.name}"?`)) return;
     deletingStopover.value = stopover.id!;
     error.value = null;
     try {
-        await api.stopovers.deleteStopover(stopover.id!);
+        await api.trips.deleteTripStopover(trip.value.uuid, stopover.uuid);
         await fetchTrip();
     } catch (e) {
         error.value = e instanceof Error ? e.message : 'Failed to delete stopover (referenced by checkins?)';
@@ -178,6 +179,9 @@ watch(tripId, fetchTrip);
                                 <dt class="text-base-content/50 font-medium">ID</dt>
                                 <dd class="font-mono">{{ trip.id }}</dd>
 
+                                <dt class="text-base-content/50 font-medium">UUID</dt>
+                                <dd class="font-mono text-xs break-all">{{ trip.uuid }}</dd>
+
                                 <dt class="text-base-content/50 font-medium">Trip ID</dt>
                                 <dd class="font-mono text-xs break-all">
                                     <a
@@ -195,23 +199,23 @@ watch(tripId, fetchTrip);
                                 <dd class="font-mono text-xs">{{ trip.category }}</dd>
 
                                 <dt class="text-base-content/50 font-medium">Mode</dt>
-                                <dd class="font-mono text-xs">{{ trip.mode ?? '—' }}</dd>
+                                <dd class="font-mono text-xs">{{ trip.mode }}</dd>
 
                                 <dt class="text-base-content/50 font-medium">Number</dt>
-                                <dd class="font-mono text-xs">{{ trip.number ?? '—' }}</dd>
+                                <dd class="font-mono text-xs">{{ trip.number }}</dd>
 
                                 <dt class="text-base-content/50 font-medium">Line</dt>
-                                <dd>{{ trip.lineName ?? '—' }}</dd>
+                                <dd>{{ trip.lineName }}</dd>
 
                                 <dt class="text-base-content/50 font-medium">Journey Nr.</dt>
-                                <dd class="font-mono">{{ trip.journeyNumber ?? '—' }}</dd>
+                                <dd class="font-mono">{{ trip.journeyNumber }}</dd>
 
                                 <dt class="text-base-content/50 font-medium">Operator</dt>
-                                <dd>{{ trip.operator ?? '—' }}</dd>
+                                <dd>{{ trip.operator }}</dd>
 
                                 <dt class="text-base-content/50 font-medium">Source</dt>
                                 <dd class="flex items-center gap-2">
-                                    <span>{{ trip.source ?? '—' }}</span>
+                                    <span>{{ trip.source }}</span>
                                     <a
                                         v-if="trip.user"
                                         :href="`/admin/users/${trip.user.id}`"
@@ -223,7 +227,7 @@ watch(tripId, fetchTrip);
 
                                 <dt class="text-base-content/50 font-medium">Last refreshed</dt>
                                 <dd class="text-xs text-base-content/70">
-                                    {{ trip.lastRefreshed ? new Date(trip.lastRefreshed).toLocaleString() : '—' }}
+                                    {{ trip.lastRefreshed ? new Date(trip.lastRefreshed).toLocaleString() : '' }}
                                 </dd>
                             </dl>
 

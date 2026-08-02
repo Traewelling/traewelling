@@ -7952,49 +7952,6 @@
                 ]
             }
         },
-        "/stopovers/{id}": {
-            "delete": {
-                "tags": [
-                    "Trips"
-                ],
-                "summary": "Delete a stopover",
-                "description": "Admin only. Deletes a stopover, e.g. a duplicate created by a real-time refresh. Stopovers referenced by checkins cannot be deleted.",
-                "operationId": "deleteStopover",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Stopover ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "Stopover deleted"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "404": {
-                        "description": "Not found"
-                    },
-                    "409": {
-                        "description": "Stopover is referenced by checkins"
-                    }
-                },
-                "security": [
-                    {
-                        "passport": []
-                    },
-                    {
-                        "token": []
-                    }
-                ]
-            }
-        },
         "/tickets": {
             "get": {
                 "tags": [
@@ -9250,11 +9207,66 @@
             }
         },
         "/trips": {
+            "get": {
+                "tags": [
+                    "Trips"
+                ],
+                "summary": "List your own trips",
+                "description": "Returns a list of the manual trips the authenticated user created.",
+                "operationId": "getOwnTrips",
+                "parameters": [
+                    {
+                        "name": "cursor",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/TripResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "read-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            },
             "post": {
                 "tags": [
                     "Trips"
                 ],
-                "summary": "Create a manual trip.",
+                "summary": "Create a trip",
+                "description": "Creates a trip from the given data, to check into journeys no data provider knows about. The trip is created with `source = user` and belongs to you, so you can change it afterwards through the trip and stopover endpoints.",
                 "operationId": "createTrip",
                 "requestBody": {
                     "required": true,
@@ -9367,6 +9379,425 @@
                 "security": [
                     {
                         "passport": []
+                    }
+                ]
+            }
+        },
+        "/trips/{tripUuid}": {
+            "get": {
+                "tags": [
+                    "Trips"
+                ],
+                "summary": "Get a trip",
+                "description": "Returns a trip including all stopovers. You can only access manual trips (`source = user`) that you created yourself; admins can access any trip.",
+                "operationId": "getTrip",
+                "parameters": [
+                    {
+                        "name": "tripUuid",
+                        "in": "path",
+                        "description": "Trip UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TripResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Trips"
+                ],
+                "summary": "Update a trip",
+                "description": "Updates the metadata of a trip. You can only edit manual trips (`source = user`) that you created yourself; admins can edit any trip. All fields are optional, only the given ones are changed. Changing the category recalculates distance and points of all checkins on this trip.",
+                "operationId": "updateTrip",
+                "parameters": [
+                    {
+                        "name": "tripUuid",
+                        "in": "path",
+                        "description": "Trip UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "category": {
+                                        "$ref": "#/components/schemas/HafasTravelType"
+                                    },
+                                    "lineName": {
+                                        "type": "string",
+                                        "example": "RE 1"
+                                    },
+                                    "journeyNumber": {
+                                        "type": "integer",
+                                        "example": 12345,
+                                        "nullable": true
+                                    },
+                                    "operatorUuid": {
+                                        "description": "Operator UUID. Null removes the operator.",
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "00000000-0000-0000-0000-000000000000",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/trips/{tripUuid}/stopovers": {
+            "post": {
+                "tags": [
+                    "Trips"
+                ],
+                "summary": "Add a stopover to a trip",
+                "description": "Adds a stopover to a trip. You can only edit manual trips (`source = user`) that you created yourself; admins can edit any trip. The position within the trip is derived from the planned times. Origin, destination, departure and arrival of the trip as well as distance, points and duration of all checkins on this trip are recalculated afterwards.",
+                "operationId": "createTripStopover",
+                "parameters": [
+                    {
+                        "name": "tripUuid",
+                        "in": "path",
+                        "description": "Trip UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "stationUuid"
+                                ],
+                                "properties": {
+                                    "stationUuid": {
+                                        "description": "Station UUID",
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "00000000-0000-0000-0000-000000000000"
+                                    },
+                                    "arrivalPlanned": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2025-01-01T11:00:00Z",
+                                        "nullable": true
+                                    },
+                                    "departurePlanned": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2025-01-01T11:02:00Z",
+                                        "nullable": true
+                                    },
+                                    "arrivalReal": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "nullable": true
+                                    },
+                                    "departureReal": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "nullable": true
+                                    },
+                                    "arrivalPlatformPlanned": {
+                                        "type": "string",
+                                        "example": "3",
+                                        "nullable": true
+                                    },
+                                    "departurePlatformPlanned": {
+                                        "type": "string",
+                                        "example": "3",
+                                        "nullable": true
+                                    },
+                                    "arrivalPlatformReal": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "departurePlatformReal": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "cancelled": {
+                                        "type": "boolean",
+                                        "example": false
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/trips/{tripUuid}/stopovers/{stopoverUuid}": {
+            "put": {
+                "tags": [
+                    "Trips"
+                ],
+                "summary": "Update a stopover of a trip",
+                "description": "Updates a stopover of a trip. You can only edit manual trips (`source = user`) that you created yourself; admins can edit any trip. All fields are optional, only the given ones are changed. Origin, destination, departure and arrival of the trip as well as distance, points and duration of all checkins on this trip are recalculated afterwards.",
+                "operationId": "updateTripStopover",
+                "parameters": [
+                    {
+                        "name": "tripUuid",
+                        "in": "path",
+                        "description": "Trip UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "stopoverUuid",
+                        "in": "path",
+                        "description": "Stopover UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "stationUuid": {
+                                        "description": "Station UUID",
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "00000000-0000-0000-0000-000000000000"
+                                    },
+                                    "arrivalPlanned": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2025-01-01T11:00:00Z",
+                                        "nullable": true
+                                    },
+                                    "departurePlanned": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2025-01-01T11:02:00Z",
+                                        "nullable": true
+                                    },
+                                    "arrivalReal": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "nullable": true
+                                    },
+                                    "departureReal": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "nullable": true
+                                    },
+                                    "arrivalPlatformPlanned": {
+                                        "type": "string",
+                                        "example": "3",
+                                        "nullable": true
+                                    },
+                                    "departurePlatformPlanned": {
+                                        "type": "string",
+                                        "example": "3",
+                                        "nullable": true
+                                    },
+                                    "arrivalPlatformReal": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "departurePlatformReal": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "cancelled": {
+                                        "type": "boolean",
+                                        "example": false
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Trips"
+                ],
+                "summary": "Delete a stopover of a trip",
+                "description": "Removes a stopover from a trip. You can only edit manual trips (`source = user`) that you created yourself; admins can edit any trip. Stopovers referenced by a checkin as origin or destination cannot be removed, and a trip must keep at least two stopovers.",
+                "operationId": "deleteTripStopover",
+                "parameters": [
+                    {
+                        "name": "tripUuid",
+                        "in": "path",
+                        "description": "Trip UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "stopoverUuid",
+                        "in": "path",
+                        "description": "Stopover UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "409": {
+                        "description": "Stopover is referenced by checkins"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
                     }
                 ]
             }
@@ -11967,6 +12398,7 @@
                 "title": "AdminStopover",
                 "required": [
                     "id",
+                    "uuid",
                     "station",
                     "arrivalPlanned",
                     "arrivalReal",
@@ -11979,6 +12411,11 @@
                 "properties": {
                     "id": {
                         "type": "integer"
+                    },
+                    "uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "nullable": true
                     },
                     "station": {
                         "properties": {
@@ -12036,6 +12473,7 @@
                 "title": "AdminTrip",
                 "required": [
                     "id",
+                    "uuid",
                     "tripId",
                     "checkinsCount",
                     "category",
@@ -12056,6 +12494,11 @@
                 "properties": {
                     "id": {
                         "type": "integer"
+                    },
+                    "uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "nullable": true
                     },
                     "tripId": {
                         "type": "string"
@@ -14056,6 +14499,7 @@
                 "title": "Station",
                 "required": [
                     "id",
+                    "uuid",
                     "name",
                     "latitude",
                     "longitude",
@@ -14070,6 +14514,13 @@
                     "id": {
                         "type": "integer",
                         "example": "1"
+                    },
+                    "uuid": {
+                        "description": "Stable identifier of this station. Will become the primary key later.",
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "00000000-0000-0000-0000-000000000000",
+                        "nullable": true
                     },
                     "name": {
                         "type": "string",
@@ -14348,6 +14799,7 @@
                 "title": "StopoverResource",
                 "required": [
                     "id",
+                    "uuid",
                     "stopoverId",
                     "station",
                     "name",
@@ -14375,6 +14827,13 @@
                         "type": "integer",
                         "example": 12345,
                         "deprecated": true
+                    },
+                    "uuid": {
+                        "description": "Stable identifier of this stopover. Will become the primary key later.",
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "00000000-0000-0000-0000-000000000000",
+                        "nullable": true
                     },
                     "stopoverId": {
                         "description": "Deprecated. Temporary field holding the unique ID of this specific stopover within the trip. Only available until id is repurposed to the stopover ID (after 2026-11-30), then removed.",
@@ -14899,6 +15358,7 @@
                 "title": "TripResource",
                 "required": [
                     "id",
+                    "uuid",
                     "tripId",
                     "category",
                     "mode",
@@ -14915,6 +15375,13 @@
                     "id": {
                         "type": "integer",
                         "example": 1
+                    },
+                    "uuid": {
+                        "description": "Stable identifier of this trip. Will become the primary key later.",
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "00000000-0000-0000-0000-000000000000",
+                        "nullable": true
                     },
                     "tripId": {
                         "description": "Internal trip identifier (use this for the checkin flow)",

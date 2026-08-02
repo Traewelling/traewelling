@@ -9,9 +9,10 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(
     title: 'TripResource',
-    required: ['id', 'tripId', 'category', 'mode', 'number', 'lineName', 'journeyNumber', 'origin', 'destination', 'stopovers', 'dataSource', 'continuationTrip'],
+    required: ['id', 'uuid', 'tripId', 'category', 'mode', 'number', 'lineName', 'journeyNumber', 'origin', 'destination', 'stopovers', 'dataSource', 'continuationTrip'],
     properties: [
         new OA\Property(property: 'id', type: 'int', example: 1),
+        new OA\Property(property: 'uuid', description: 'Stable identifier of this trip. Will become the primary key later.', type: 'string', format: 'uuid', example: '00000000-0000-0000-0000-000000000000', nullable: true),
         new OA\Property(property: 'tripId', description: 'Internal trip identifier (use this for the checkin flow)', type: 'string', example: '00000000-0000-0000-0000-000000000000'),
         new OA\Property(property: 'category', ref: '#/components/schemas/HafasTravelType'),
         new OA\Property(property: 'mode', ref: '#/components/schemas/MotisCategory', nullable: true),
@@ -55,6 +56,7 @@ class TripResource extends JsonResource
         /** @var Trip $this */
         return [
             'id' => $this->id,
+            'uuid' => $this->uuid,
             'tripId' => $this->trip_id,
             'category' => $this->category->value,
             'mode' => $this->mode ? $this->mode->value : null,

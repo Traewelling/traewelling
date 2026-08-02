@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers\API\v1;
 
 use App\Enum\HafasTravelType;
+use App\Enum\TripSource;
 use App\Exceptions\ManualTripValidationException;
 use App\Http\Controllers\Backend\Transport\ManualTripCreator;
 use App\Http\Requests\ManualTripCreationRequest;
+use App\Http\Requests\UpdateTripRequest;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\TripResource;
 use App\Models\Checkin;
@@ -15,10 +17,12 @@ use App\Models\Operator;
 use App\Models\Station;
 use App\Models\Trip;
 use App\Services\Trip\RoutePreviewService;
+use App\Services\Trip\TripEditService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
@@ -141,7 +145,8 @@ class TripController extends Controller
     #[OA\Post(
         path: '/trips',
         operationId: 'createTrip',
-        summary: 'Create a manual trip.',
+        description: 'Creates a trip from the given data, to check into journeys no data provider knows about. The trip is created with `source = user` and belongs to you, so you can change it afterwards through the trip and stopover endpoints.',
+        summary: 'Create a trip',
         security: [['passport' => []]],
         requestBody: new OA\RequestBody(
             required: true,
@@ -244,5 +249,123 @@ class TripController extends Controller
         }
 
         return new TripResource($trip);
+    }
+
+    #[OA\Get(
+        path: '/trips',
+        operationId: 'getOwnTrips',
+        description: 'Returns a list of the manual trips the authenticated user created.',
+        summary: 'List your own trips',
+        security: [['passport' => ['read-statuses']], ['token' => []]],
+        tags: ['Trips'],
+        parameters: [
+            new OA\Parameter(name: 'cursor', in: 'query', required: false, schema: new OA\Schema(type: 'string')),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: self::OA_DESC_SUCCESS,
+                content: new OA\JsonContent(
+                    required: ['data'],
+                    properties: [
+                        new OA\Property(property: 'data', type: 'array', items: new OA\Items(ref: TripResource::class)),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 401, description: self::OA_DESC_UNAUTHENTICATED),
+        ],
+    )]
+    public function index(): AnonymousResourceCollection
+    {
+        $trips = Trip::with(['originStation', 'destinationStation', 'operator', 'stopovers.station'])
+            ->where('user_id', auth()->id())
+            ->where('source', TripSource::USER)
+            ->orderByDesc('departure')
+            ->orderByDesc('id')
+            ->cursorPaginate(25);
+
+        return TripResource::collection($trips);
+    }
+
+    #[OA\Get(
+        path: '/trips/{tripUuid}',
+        operationId: 'getTrip',
+        description: 'Returns a trip including all stopovers. You can only access manual trips (`source = user`) that you created yourself; admins can access any trip.',
+        summary: 'Get a trip',
+        security: [['passport' => ['write-statuses']], ['token' => []]],
+        tags: ['Trips'],
+        parameters: [
+            new OA\Parameter(name: 'tripUuid', description: 'Trip UUID', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid')),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: self::OA_DESC_SUCCESS,
+                content: new OA\JsonContent(
+                    required: ['data'],
+                    properties: [new OA\Property(property: 'data', ref: TripResource::class)],
+                ),
+            ),
+            new OA\Response(response: 403, description: self::OA_DESC_FORBIDDEN),
+            new OA\Response(response: 404, description: self::OA_DESC_NOT_FOUND),
+        ],
+    )]
+    public function show(string $tripUuid): TripResource
+    {
+        $trip = Trip::where('uuid', $tripUuid)->firstOrFail();
+        $this->authorize('view', $trip);
+
+        $trip->load(['originStation', 'destinationStation', 'operator', 'stopovers.station']);
+
+        return new TripResource($trip);
+    }
+
+    #[OA\Put(
+        path: '/trips/{tripUuid}',
+        operationId: 'updateTrip',
+        description: 'Updates the metadata of a trip. You can only edit manual trips (`source = user`) that you created yourself; admins can edit any trip. All fields are optional, only the given ones are changed. Changing the category recalculates distance and points of all checkins on this trip.',
+        summary: 'Update a trip',
+        security: [['passport' => ['write-statuses']], ['token' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'category', ref: HafasTravelType::class),
+                    new OA\Property(property: 'lineName', type: 'string', example: 'RE 1'),
+                    new OA\Property(property: 'journeyNumber', type: 'integer', example: 12345, nullable: true),
+                    new OA\Property(
+                        property: 'operatorUuid',
+                        description: 'Operator UUID. Null removes the operator.',
+                        type: 'string',
+                        format: 'uuid',
+                        example: '00000000-0000-0000-0000-000000000000',
+                        nullable: true,
+                    ),
+                ],
+            ),
+        ),
+        tags: ['Trips'],
+        parameters: [
+            new OA\Parameter(name: 'tripUuid', description: 'Trip UUID', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid')),
+        ],
+        responses: [
+            new OA\Response(response: 204, description: self::OA_DESC_NO_CONTENT),
+            new OA\Response(response: 403, description: self::OA_DESC_FORBIDDEN),
+            new OA\Response(response: 404, description: self::OA_DESC_NOT_FOUND),
+            new OA\Response(response: 422, description: self::OA_DESC_UNPROCESSABLE),
+        ],
+    )]
+    public function update(UpdateTripRequest $request, string $tripUuid, TripEditService $tripEditService): Response|JsonResponse
+    {
+        $trip = Trip::where('uuid', $tripUuid)->firstOrFail();
+        $this->authorize('update', $trip);
+
+        try {
+            $tripEditService->updateTrip($trip, $request->validated());
+        } catch (ManualTripValidationException $exception) {
+            return response()->json(['message' => $exception->getMessage()], 422);
+        }
+
+        return response()->noContent();
     }
 }
