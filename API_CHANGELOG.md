@@ -59,6 +59,7 @@ New endpoints:
 - `POST /trips/{tripUuid}/stopovers`: add a stopover
 - `PUT /trips/{tripUuid}/stopovers/{stopoverUuid}`: change station, planned/real times, platforms and `cancelled`
 - `DELETE /trips/{tripUuid}/stopovers/{stopoverUuid}`: remove a stopover
+- `POST /trips/{tripUuid}/stopovers/shift`: move all stopovers of a trip in time by `minutes` (may be negative)
 
 New fields:
 

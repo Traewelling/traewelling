@@ -8237,6 +8237,37 @@ export class Api<
         secure: true,
         ...params,
       }),
+
+    /**
+     * @description Moves all stopovers of a trip in time by the given amount of minutes. Positive values move the trip to a later time, negative values to an earlier one. Planned and real times are shifted alike, so the relative timing of the trip stays the same. You can only edit manual trips (`source = user`) that you created yourself; admins can edit any trip. Departure and arrival of the trip as well as duration and points of all checkins on this trip are recalculated afterwards.
+     *
+     * @tags Trips
+     * @name ShiftTripStopovers
+     * @summary Shift all stopovers of a trip in time
+     * @request POST:/trips/{tripUuid}/stopovers/shift
+     * @secure
+     */
+    shiftTripStopovers: (
+      tripUuid: string,
+      data: {
+        /**
+         * Offset in minutes, may be negative
+         * @min -525600
+         * @max 525600
+         * @example -1440
+         */
+        minutes: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, void>({
+        path: `/trips/${tripUuid}/stopovers/shift`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
   };
   users = {
     /**

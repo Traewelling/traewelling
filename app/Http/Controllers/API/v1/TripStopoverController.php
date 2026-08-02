@@ -6,6 +6,7 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Exceptions\ManualTripValidationException;
 use App\Exceptions\StopoverInUseException;
+use App\Http\Requests\ShiftTripStopoversRequest;
 use App\Http\Requests\StoreTripStopoverRequest;
 use App\Http\Requests\UpdateTripStopoverRequest;
 use App\Models\Stopover;
@@ -110,6 +111,46 @@ class TripStopoverController extends Controller
 
         try {
             $this->tripEditService->updateStopover($stopover, $request->validated());
+        } catch (ManualTripValidationException $exception) {
+            return response()->json(['message' => $exception->getMessage()], 422);
+        }
+
+        return response()->noContent();
+    }
+
+    #[OA\Post(
+        path: '/trips/{tripUuid}/stopovers/shift',
+        operationId: 'shiftTripStopovers',
+        description: 'Moves all stopovers of a trip in time by the given amount of minutes. Positive values move the trip to a later time, negative values to an earlier one. Planned and real times are shifted alike, so the relative timing of the trip stays the same. You can only edit manual trips (`source = user`) that you created yourself; admins can edit any trip. Departure and arrival of the trip as well as duration and points of all checkins on this trip are recalculated afterwards.',
+        summary: 'Shift all stopovers of a trip in time',
+        security: [['passport' => ['write-statuses']], ['token' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['minutes'],
+                properties: [
+                    new OA\Property(property: 'minutes', description: 'Offset in minutes, may be negative', type: 'integer', example: -1440, maximum: 525600, minimum: -525600),
+                ],
+            ),
+        ),
+        tags: ['Trips'],
+        parameters: [
+            new OA\Parameter(name: 'tripUuid', description: 'Trip UUID', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid')),
+        ],
+        responses: [
+            new OA\Response(response: 204, description: self::OA_DESC_NO_CONTENT),
+            new OA\Response(response: 403, description: self::OA_DESC_FORBIDDEN),
+            new OA\Response(response: 404, description: self::OA_DESC_NOT_FOUND),
+            new OA\Response(response: 422, description: self::OA_DESC_UNPROCESSABLE),
+        ],
+    )]
+    public function shift(ShiftTripStopoversRequest $request, string $tripUuid): Response|JsonResponse
+    {
+        $trip = Trip::where('uuid', $tripUuid)->firstOrFail();
+        $this->authorize('update', $trip);
+
+        try {
+            $this->tripEditService->shiftStopovers($trip, (int) $request->validated('minutes'));
         } catch (ManualTripValidationException $exception) {
             return response()->json(['message' => $exception->getMessage()], 422);
         }
