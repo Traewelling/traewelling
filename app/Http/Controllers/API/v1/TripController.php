@@ -7,6 +7,7 @@ namespace App\Http\Controllers\API\v1;
 use App\Enum\HafasTravelType;
 use App\Enum\TripSource;
 use App\Exceptions\ManualTripValidationException;
+use App\Exceptions\TripInUseException;
 use App\Http\Controllers\Backend\Transport\ManualTripCreator;
 use App\Http\Requests\ManualTripCreationRequest;
 use App\Http\Requests\UpdateTripRequest;
@@ -279,6 +280,7 @@ class TripController extends Controller
     public function index(): AnonymousResourceCollection
     {
         $trips = Trip::with(['originStation', 'destinationStation', 'operator', 'stopovers.station'])
+            ->withCount('checkins')
             ->where('user_id', auth()->id())
             ->where('source', TripSource::USER)
             ->orderByDesc('departure')
@@ -351,6 +353,7 @@ class TripController extends Controller
         $this->authorize('view', $trip);
 
         $trip->load(['originStation', 'destinationStation', 'operator', 'stopovers.station']);
+        $trip->loadCount('checkins');
 
         return new TripResource($trip);
     }
@@ -399,6 +402,37 @@ class TripController extends Controller
             $tripEditService->updateTrip($trip, $request->validated());
         } catch (ManualTripValidationException $exception) {
             return response()->json(['message' => $exception->getMessage()], 422);
+        }
+
+        return response()->noContent();
+    }
+
+    #[OA\Delete(
+        path: '/trips/{tripUuid}',
+        operationId: 'deleteTrip',
+        description: 'Deletes a trip including all its stopovers. You can only delete manual trips (`source = user`) that you created yourself; admins can delete any trip. A trip can only be deleted while no checkin references it, which includes checkins of other users you cannot see. Check `checkinCount` beforehand to know whether deleting is possible.',
+        summary: 'Delete a trip',
+        security: [['passport' => ['write-statuses']], ['token' => []]],
+        tags: ['Trips'],
+        parameters: [
+            new OA\Parameter(name: 'tripUuid', description: 'Trip UUID', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid')),
+        ],
+        responses: [
+            new OA\Response(response: 204, description: self::OA_DESC_NO_CONTENT),
+            new OA\Response(response: 403, description: self::OA_DESC_FORBIDDEN),
+            new OA\Response(response: 404, description: self::OA_DESC_NOT_FOUND),
+            new OA\Response(response: 409, description: 'Trip is referenced by checkins'),
+        ],
+    )]
+    public function destroy(string $tripUuid, TripEditService $tripEditService): Response|JsonResponse
+    {
+        $trip = Trip::where('uuid', $tripUuid)->firstOrFail();
+        $this->authorize('delete', $trip);
+
+        try {
+            $tripEditService->deleteTrip($trip);
+        } catch (TripInUseException $exception) {
+            return response()->json(['message' => $exception->getMessage()], 409);
         }
 
         return response()->noContent();

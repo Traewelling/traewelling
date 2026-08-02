@@ -55,6 +55,7 @@ New endpoints:
 - `GET /trips/{tripUuid}`: get a trip including all stopovers
 - `POST /trips/{tripUuid}/copy`: copy a trip into an own manual trip, moving your own checkin along
 - `PUT /trips/{tripUuid}`: change `category`, `lineName`, `journeyNumber` and `operatorId`
+- `DELETE /trips/{tripUuid}`: delete a trip, as long as no checkin references it
 - `POST /trips/{tripUuid}/stopovers`: add a stopover
 - `PUT /trips/{tripUuid}/stopovers/{stopoverUuid}`: change station, planned/real times, platforms and `cancelled`
 - `DELETE /trips/{tripUuid}/stopovers/{stopoverUuid}`: remove a stopover
@@ -62,6 +63,7 @@ New endpoints:
 New fields:
 
 - `TripResource.uuid`
+- `TripResource.checkinCount`: total number of checkins on the trip, including those you cannot see
 - `StopoverResource.uuid`
 - `StationResource.uuid`
 

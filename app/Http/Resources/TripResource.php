@@ -9,7 +9,7 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(
     title: 'TripResource',
-    required: ['id', 'uuid', 'tripId', 'category', 'mode', 'number', 'lineName', 'journeyNumber', 'origin', 'destination', 'stopovers', 'dataSource', 'continuationTrip'],
+    required: ['id', 'uuid', 'tripId', 'category', 'mode', 'number', 'lineName', 'journeyNumber', 'origin', 'destination', 'stopovers', 'checkinCount', 'dataSource', 'continuationTrip'],
     properties: [
         new OA\Property(property: 'id', type: 'int', example: 1),
         new OA\Property(property: 'uuid', description: 'Stable identifier of this trip. Will become the primary key later.', type: 'string', format: 'uuid', example: '00000000-0000-0000-0000-000000000000', nullable: true),
@@ -25,6 +25,12 @@ use OpenApi\Attributes as OA;
             property: 'stopovers',
             type: 'array',
             items: new OA\Items(ref: '#/components/schemas/StopoverResource'),
+        ),
+        new OA\Property(
+            property: 'checkinCount',
+            description: 'Total number of checkins on this trip, including those you cannot see. A trip can only be deleted while this is 0.',
+            type: 'integer',
+            example: 3,
         ),
         new OA\Property(
             property: 'dataSource',
@@ -68,6 +74,7 @@ class TripResource extends JsonResource
             'origin' => new StationResource($this->originStation),
             'destination' => new StationResource($this->destinationStation),
             'stopovers' => StopoverResource::collection($this->stopovers),
+            'checkinCount' => (int) ($this->checkins_count ?? $this->checkins()->count()),
             'dataSource' => $this->motisSourceLicense ? new DataSourceResource($this->motisSourceLicense) : null,
             'continuationTrip' => $this->when(
                 $this->includeContinuation && $this->continuation_trip_id !== null,

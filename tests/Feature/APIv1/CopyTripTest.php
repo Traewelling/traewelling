@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Feature\APIv1;
 
 use App\Enum\TripSource;
-use App\Models\Checkin;
 use App\Models\Stopover;
 use App\Models\Trip;
 use App\Models\User;
@@ -23,23 +22,6 @@ class CopyTripTest extends ApiTestCase
     {
         parent::setUp();
         $this->user = User::factory()->create();
-    }
-
-    private function createProviderTrip(): Trip
-    {
-        return Trip::factory()->create(['source' => TripSource::TRANSITOUS]);
-    }
-
-    private function checkinOnTrip(Trip $trip, User $user): Checkin
-    {
-        return Checkin::factory()->create([
-            'user_id' => $user->id,
-            'trip_id' => $trip->trip_id,
-            'origin_stopover_id' => $trip->stopovers->first()->id,
-            'destination_stopover_id' => $trip->stopovers->last()->id,
-            'departure' => $trip->departure,
-            'arrival' => $trip->arrival,
-        ]);
     }
 
     public function test_unauthenticated_request_is_rejected(): void

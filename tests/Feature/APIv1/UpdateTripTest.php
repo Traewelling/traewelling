@@ -27,14 +27,6 @@ class UpdateTripTest extends ApiTestCase
         $this->user = User::factory()->create();
     }
 
-    private function createManualTrip(?User $owner = null): Trip
-    {
-        return Trip::factory()->create([
-            'source' => TripSource::USER,
-            'user_id' => ($owner ?? $this->user)->id,
-        ]);
-    }
-
     private function firstStopover(Trip $trip): Stopover
     {
         return $trip->stopovers()->first();
@@ -47,7 +39,7 @@ class UpdateTripTest extends ApiTestCase
 
     public function test_unauthenticated_request_is_rejected(): void
     {
-        $trip = $this->createManualTrip();
+        $trip = $this->createManualTrip($this->user);
 
         $this->putJson("/api/v1/trips/{$trip->uuid}", ['lineName' => 'RE 2'])->assertUnauthorized();
     }
@@ -70,7 +62,7 @@ class UpdateTripTest extends ApiTestCase
 
     public function test_user_with_disallow_manual_trips_permission_is_forbidden(): void
     {
-        $trip = $this->createManualTrip();
+        $trip = $this->createManualTrip($this->user);
         $this->user->givePermissionTo('disallow-manual-trips');
 
         Passport::actingAs($this->user->fresh(), ['*']);
@@ -111,7 +103,7 @@ class UpdateTripTest extends ApiTestCase
 
     public function test_index_returns_only_own_manual_trips(): void
     {
-        $ownTrip = $this->createManualTrip();
+        $ownTrip = $this->createManualTrip($this->user);
         $foreignTrip = $this->createManualTrip(User::factory()->create());
         $providerTrip = Trip::factory()->create([
             'source' => TripSource::TRANSITOUS,
@@ -130,9 +122,9 @@ class UpdateTripTest extends ApiTestCase
 
     public function test_index_is_cursor_paginated_and_sorted_by_departure_desc(): void
     {
-        $older = $this->createManualTrip();
+        $older = $this->createManualTrip($this->user);
         $older->update(['departure' => $older->departure->clone()->subDays(2)]);
-        $newer = $this->createManualTrip();
+        $newer = $this->createManualTrip($this->user);
 
         $this->actAsApiUserWithAllScopes($this->user);
         $response = $this->getJson('/api/v1/trips');
@@ -145,7 +137,7 @@ class UpdateTripTest extends ApiTestCase
 
     public function test_user_can_show_own_trip_with_uuids(): void
     {
-        $trip = $this->createManualTrip();
+        $trip = $this->createManualTrip($this->user);
 
         $this->actAsApiUserWithAllScopes($this->user);
         $response = $this->getJson("/api/v1/trips/{$trip->uuid}");
@@ -157,7 +149,7 @@ class UpdateTripTest extends ApiTestCase
 
     public function test_user_can_update_trip_metadata(): void
     {
-        $trip = $this->createManualTrip();
+        $trip = $this->createManualTrip($this->user);
 
         $this->actAsApiUserWithAllScopes($this->user);
         $response = $this->putJson("/api/v1/trips/{$trip->uuid}", [
@@ -178,7 +170,7 @@ class UpdateTripTest extends ApiTestCase
 
     public function test_user_can_change_and_remove_the_operator(): void
     {
-        $trip = $this->createManualTrip();
+        $trip = $this->createManualTrip($this->user);
         $operator = Operator::factory()->create();
 
         $this->actAsApiUserWithAllScopes($this->user);
@@ -192,7 +184,7 @@ class UpdateTripTest extends ApiTestCase
 
     public function test_operator_legacy_id_is_not_accepted(): void
     {
-        $trip = $this->createManualTrip();
+        $trip = $this->createManualTrip($this->user);
         $operator = Operator::factory()->create(['legacy_id' => 42]);
 
         $this->actAsApiUserWithAllScopes($this->user);
@@ -204,7 +196,7 @@ class UpdateTripTest extends ApiTestCase
 
     public function test_unknown_operator_uuid_is_rejected(): void
     {
-        $trip = $this->createManualTrip();
+        $trip = $this->createManualTrip($this->user);
 
         $this->actAsApiUserWithAllScopes($this->user);
         $response = $this->putJson("/api/v1/trips/{$trip->uuid}", [
@@ -217,7 +209,7 @@ class UpdateTripTest extends ApiTestCase
 
     public function test_adding_a_stopover_after_the_destination_moves_the_trip_destination(): void
     {
-        $trip = $this->createManualTrip();
+        $trip = $this->createManualTrip($this->user);
         $newStation = Station::factory()->create();
         $newArrival = $trip->arrival->clone()->addMinutes(20);
 
@@ -240,7 +232,7 @@ class UpdateTripTest extends ApiTestCase
 
     public function test_adding_a_stopover_requires_a_planned_time(): void
     {
-        $trip = $this->createManualTrip();
+        $trip = $this->createManualTrip($this->user);
 
         $this->actAsApiUserWithAllScopes($this->user);
         $response = $this->postJson("/api/v1/trips/{$trip->uuid}/stopovers", [
@@ -253,7 +245,7 @@ class UpdateTripTest extends ApiTestCase
 
     public function test_user_can_update_a_stopover_and_the_trip_departure_follows(): void
     {
-        $trip = $this->createManualTrip();
+        $trip = $this->createManualTrip($this->user);
         $stopover = $this->firstStopover($trip);
         $newTime = $trip->departure->clone()->subMinutes(10);
 
@@ -276,7 +268,7 @@ class UpdateTripTest extends ApiTestCase
 
     public function test_changing_the_station_of_a_stopover_resets_the_routing(): void
     {
-        $trip = $this->createManualTrip();
+        $trip = $this->createManualTrip($this->user);
         $stopover = $this->firstStopover($trip);
         $newStation = Station::factory()->create();
 
@@ -294,7 +286,7 @@ class UpdateTripTest extends ApiTestCase
 
     public function test_departure_before_arrival_is_rejected_and_rolled_back(): void
     {
-        $trip = $this->createManualTrip();
+        $trip = $this->createManualTrip($this->user);
         $stopover = $this->lastStopover($trip);
         $originalArrival = $stopover->arrival_planned;
 
@@ -310,7 +302,7 @@ class UpdateTripTest extends ApiTestCase
 
     public function test_moving_a_stopover_past_a_checkin_destination_is_rejected(): void
     {
-        $trip = $this->createManualTrip();
+        $trip = $this->createManualTrip($this->user);
         $checkin = $this->createCheckinOnTrip($trip);
         $originStopover = $checkin->originStopover;
 
@@ -327,7 +319,7 @@ class UpdateTripTest extends ApiTestCase
 
     public function test_user_can_delete_a_stopover(): void
     {
-        $trip = $this->createManualTrip();
+        $trip = $this->createManualTrip($this->user);
         $stopover = $trip->stopovers[1];
 
         $this->actAsApiUserWithAllScopes($this->user);
@@ -338,7 +330,7 @@ class UpdateTripTest extends ApiTestCase
 
     public function test_deleting_a_stopover_referenced_by_a_checkin_is_rejected(): void
     {
-        $trip = $this->createManualTrip();
+        $trip = $this->createManualTrip($this->user);
         $checkin = $this->createCheckinOnTrip($trip);
 
         $this->actAsApiUserWithAllScopes($this->user);
@@ -350,7 +342,7 @@ class UpdateTripTest extends ApiTestCase
 
     public function test_a_trip_cannot_be_reduced_below_two_stopovers(): void
     {
-        $trip = $this->createManualTrip();
+        $trip = $this->createManualTrip($this->user);
         $this->actAsApiUserWithAllScopes($this->user);
 
         // The factory creates four stopovers, so two of them may go
@@ -365,8 +357,8 @@ class UpdateTripTest extends ApiTestCase
 
     public function test_stopover_of_another_trip_is_not_found(): void
     {
-        $trip = $this->createManualTrip();
-        $otherStopover = $this->firstStopover($this->createManualTrip());
+        $trip = $this->createManualTrip($this->user);
+        $otherStopover = $this->firstStopover($this->createManualTrip($this->user));
 
         $this->actAsApiUserWithAllScopes($this->user);
         $this->deleteJson("/api/v1/trips/{$trip->uuid}/stopovers/{$otherStopover->uuid}")->assertNotFound();
@@ -374,7 +366,7 @@ class UpdateTripTest extends ApiTestCase
 
     public function test_checkins_are_recalculated_when_a_stopover_time_changes(): void
     {
-        $trip = $this->createManualTrip();
+        $trip = $this->createManualTrip($this->user);
         $checkin = $this->createCheckinOnTrip($trip);
         $newArrival = $checkin->destinationStopover->arrival_planned->clone()->addMinutes(30);
         $oldDuration = $checkin->fresh()->duration;

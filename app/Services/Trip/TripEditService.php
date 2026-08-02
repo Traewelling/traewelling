@@ -8,6 +8,8 @@ use App\Enum\HafasTravelType;
 use App\Events\StatusUpdateEvent;
 use App\Exceptions\ManualTripValidationException;
 use App\Exceptions\StopoverInUseException;
+use App\Exceptions\TripInUseException;
+use App\Jobs\CleanupUnusedTrip;
 use App\Jobs\RefreshPolyline;
 use App\Models\Checkin;
 use App\Models\Operator;
@@ -180,6 +182,15 @@ class TripEditService
 
             $this->syncTrip($trip, resetRouting: true);
         });
+    }
+
+    public function deleteTrip(Trip $trip): void
+    {
+        if ($trip->checkins()->exists()) {
+            throw new TripInUseException('This trip is referenced by checkins and cannot be deleted.');
+        }
+
+        CleanupUnusedTrip::dispatchSync($trip->trip_id);
     }
 
     /**
