@@ -17,6 +17,7 @@ class HomeExporter extends AbstractExporter
 
     protected array $columns = [
         'id',
+        'uuid',
         'name',
         'latitude',
         'longitude',
