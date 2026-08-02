@@ -15358,6 +15358,7 @@
                 ],
                 "properties": {
                     "trip": {
+                        "description": "TODO: This resource is deprecated. It mixes a checkin with the data of its trip and therefore\n      represents no model at all. Future API versions should return proper model resources\n      (CheckinResource, TripResource, ...) instead of this wild mix.",
                         "type": "integer",
                         "example": "4711"
                     },
