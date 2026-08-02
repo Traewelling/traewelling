@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
@@ -22,6 +23,7 @@ use Spatie\Activitylog\Support\LogOptions;
  *       User, and future sources) should be handled in the Trip model.
  *
  * @property int $id
+ * @property string|null $uuid
  * @property string|null $body
  * @property int $user_id
  * @property Business|null $business
@@ -70,6 +72,7 @@ use Spatie\Activitylog\Support\LogOptions;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereModerationNotes($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereUuid($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereVisibility($value)
  *
  * @property int|null $created_by_user_id
@@ -86,6 +89,18 @@ class Status extends Model
 {
     use HasFactory, LogsActivity;
 
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        // UUID is not yet the primary key, so we can't use the HasUuids trait here.
+        static::creating(function (self $status): void {
+            if (empty($status->uuid)) {
+                $status->uuid = Str::uuid()->toString();
+            }
+        });
+    }
+
     protected $fillable = [
         'user_id', 'created_by_user_id', 'body', 'business', 'visibility', 'event_id', 'ticket_id', 'mastodon_post_id', 'client_id',
         'moderation_notes', 'lock_visibility', 'hide_body',
@@ -97,6 +112,7 @@ class Status extends Model
 
     protected $casts = [
         'id' => 'integer',
+        'uuid' => 'string',
         'body' => 'string',
         'user_id' => 'integer',
         'created_by_user_id' => 'integer',
