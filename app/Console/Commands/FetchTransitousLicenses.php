@@ -68,11 +68,15 @@ class FetchTransitousLicenses extends Command
 
             $spdx = $license['spdx_license_identifier'] ?? $license['rt_spdx_license_identifier'] ?? '';
             $licenseUrl = $license['license_url'] ?? '';
-            $name = $license['filename'];
+            $name = $license['filename'] ?? null;
             $humanName = $license['publisher']['name'] ?? $license['human_name'] ?? null;
             $source = $license['publisher']['url'] ?? $license['source_url'] ?? $license['source'] ?? null;
             $attributionText = $license['attribution_text'] ?? null;
             $active = array_key_exists($spdx, MotisSourceLicense::SPDX) || !empty($attributionText);
+
+            if (empty($name)) {
+                continue;
+            }
 
             $this->info(
                 sprintf('[%s] Found license: %s (%s) %s', $country, $name, $spdx, $active ? 'active' : 'inactive')
