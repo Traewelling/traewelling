@@ -21,10 +21,6 @@ return [
     'polyline_storage_driver' => env('POLYLINE_STORAGE_DRIVER', 'local'),
     'polyline_clear_after_copy' => env('POLYLINE_CLEAR_AFTER_COPY', false),
 
-    // DB_REST
-    'db_rest' => env('DB_REST', 'https://v5.db.transport.rest/'),
-    'db_rest_timeout' => env('DB_REST_TIMEOUT', 3),
-
     'data_provider' => env('DATA_PROVIDER', 'transitous'),
 
     'motis' => [
