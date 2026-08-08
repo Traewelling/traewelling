@@ -15,9 +15,6 @@ To set up a Träwelling instance you'll need:
 * [Composer](https://getcomposer.org/download/)
 * PHP and the dependencies mentioned in composer.json
 
-A local instance of [db-rest v5](https://github.com/derhuerst/db-rest/tree/5) is recommended for the connection to
-HAFAS. Alternatively you can use a public instance (see .env.example).
-
 After setting up these, you can clone the repository and install the project's dependencies:
 
 ```sh
