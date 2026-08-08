@@ -73,11 +73,13 @@ abstract class MastodonController extends Controller
      */
     private static function createMastodonServer(string $domain): MastodonServer
     {
+        $scopes = config('services.mastodon.scopes');
+
         try {
             $info = Mastodon::domain($domain)->createApp(
-                client_name: config('services.mastodon.client_name'), // TODO: why is client name required here?
+                client_name: config('services.mastodon.client_name'),
                 redirect_uris: config('services.mastodon.redirect'),
-                scopes: 'write read',
+                scopes: $scopes,
                 website: config('app.url')
             );
 
@@ -86,6 +88,7 @@ abstract class MastodonController extends Controller
             ], [
                 'client_id' => $info['client_id'],
                 'client_secret' => $info['client_secret'],
+                'scopes' => $scopes,
             ]);
         } catch (GuzzleException $exception) {
             report($exception);

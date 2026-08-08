@@ -16,11 +16,12 @@ return [
 
     'mastodon' => [
         'domain' => env('MASTODON_DOMAIN'),
-        'client_name' => env('MASTODON_APPNAME'), // TODO: check if this is a required value...? I don't think, we need this. ~@kris
+        'client_name' => env('MASTODON_APPNAME', 'Träwelling'),
         'client_id' => env('MASTODON_ID'),
         'client_secret' => env('MASTODON_SECRET'),
         'redirect' => env('MASTODON_REDIRECT', 'http://localhost:8000/callback/mastodon'),
         'timeout' => env('MASTODON_TIMEOUT_SECONDS', 2),
+        'scopes' => env('MASTODON_SCOPES', 'read:statuses write:statuses read:accounts'),
     ],
 
     'telegram' => [
