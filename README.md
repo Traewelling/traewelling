@@ -48,6 +48,8 @@ We also encourage you to help us out by fixing bugs and implementing new feature
 You can also join our community on [Matrix (#space:traewelling.org)](https://matrix.to/#/#space:traewelling.org) to chat with other contributors and users.
 
 Please see the [contributing guidelines](docs/contributing) for more information.
+For the bigger picture, how the system is structured and why, see
+the [architecture documentation](docs/architecture/README.md).
 
 ## Related Repositories
 

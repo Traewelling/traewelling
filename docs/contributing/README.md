@@ -12,6 +12,11 @@ When submitting a pull request, please keep it small and focused, and open multi
 the review process smoother and faster.
 Thank you for your support as we work together to make Träwelling the best it can be!
 
+Before you start on something larger, the [architecture documentation](../architecture/README.md)
+explains how the system is structured and which decisions are already settled. If your
+change is one of those hard to reverse decisions, it needs an
+[architecture decision record](../architecture/09-architecture-decisions.md).
+
 If you are adding code:
 
 * If you are editing the language files, please check that your change will work in at least English.
