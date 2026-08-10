@@ -24,6 +24,7 @@ graph LR
 		Mastodon[Mastodon instances]
 		Mail[Mail server]
 		AdminChannels[Telegram and Matrix admin channels]
+		Monitoring[Prometheus / Grafana monitoring]
 	end
 
 	User <-->|" check-ins, statuses, profile and privacy settings "| Traewelling
@@ -38,6 +39,7 @@ graph LR
 	Traewelling -->|" posted statuses "| Mastodon
 	Traewelling -->|" verification, password reset, export links "| Mail
 	Traewelling -->|" new events and abuse reports "| AdminChannels
+	Traewelling -->|" monitoring metrics "| Monitoring
 	style Traewelling fill: #c72730, stroke: #811a0e, stroke-width: 2px, color: #fff
 ```
 
@@ -70,6 +72,7 @@ graph LR
 | Calendar export | ICS over HTTPS              | Read only feed at `/ics`, authenticated by a per-user token that can be revoked individually                                               |
 | Metrics         | Prometheus text format      | Scraped from `/prometheus`                                                                                                                 |
 | Mail            | SMTP                        | Transactional mail only                                                                                                                    |
+| Monitoring      | Prometheus / Grafana        | Relevant metrics for monitoring the application and debugging production issues                                                            |
 
 ## 3.3 Out of Scope
 
