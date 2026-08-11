@@ -57,6 +57,7 @@ class AdminStatusController extends Controller
         $query = Status::with([
             'checkin.originStopover.station',
             'checkin.destinationStopover.station',
+            'checkin.trip.stopovers.station',
             'user',
         ])->orderBy('created_at', 'desc');
 

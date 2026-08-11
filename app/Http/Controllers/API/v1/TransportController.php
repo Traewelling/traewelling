@@ -270,7 +270,7 @@ class TransportController extends Controller
                     tripID: $validated['hafasTripId'],
                     lineName: $validated['lineName']
                 )
-                ->loadMissing(['stopovers', 'originStation', 'destinationStation']);
+                ->loadMissing(['stopovers.station', 'originStation', 'destinationStation']);
 
             return $this->sendResponse(data: new TripResource($trip));
         } catch (DataProviderException $exception) {

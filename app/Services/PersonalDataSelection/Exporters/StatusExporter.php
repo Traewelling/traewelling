@@ -13,7 +13,12 @@ class StatusExporter extends AbstractExporter
 
     protected function exportData(): array
     {
-        $statuses = $this->user->statuses()->with(['tags', 'ticket']);
+        $statuses = $this->user->statuses()->with([
+            'tags',
+            'ticket',
+            'checkin.originStopover.station',
+            'checkin.destinationStopover.station',
+        ]);
 
         return StatusResource::collection($statuses->get())->toArray(request());
     }

@@ -388,7 +388,9 @@ class StatusController extends Controller
             }
         }
 
-        $query = Status::query()->orderByDesc('train_checkins.departure');
+        $query = Status::query()
+            ->with(['checkin.originStopover.station', 'checkin.destinationStopover.station'])
+            ->orderByDesc('train_checkins.departure');
 
         if (isset($validated['body'])) {
             $query->where('body', 'like', '%' . $validated['body'] . '%');
@@ -676,7 +678,7 @@ class StatusController extends Controller
             }
 
             DB::commit();
-            $status = $status->fresh();
+            $status = $status->fresh(['checkin.originStopover.station', 'checkin.destinationStopover.station']);
             StatusUpdateEvent::dispatch($status);
 
             return $this->sendResponse(new StatusResource($status));
@@ -754,7 +756,9 @@ class StatusController extends Controller
 
         $status->save();
 
-        return $this->sendResponse(new StatusResource($status->fresh()));
+        return $this->sendResponse(new StatusResource(
+            $status->fresh(['checkin.originStopover.station', 'checkin.destinationStopover.station'])
+        ));
     }
 
     /**

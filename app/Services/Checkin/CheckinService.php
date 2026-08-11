@@ -247,6 +247,9 @@ class CheckinService
                 }
             }
 
+            $status->load(['checkin.originStopover.station', 'checkin.destinationStopover.station']);
+            $alsoOnThisConnection->load(['checkin.originStopover.station', 'checkin.destinationStopover.station']);
+
             return new CheckinSuccessDto($status, $pointCalculation, $alsoOnThisConnection);
         } catch (PDOException $exception) {
             if ($exception->getCode() === 23000) { // Integrity constraint violation: Duplicate entry
