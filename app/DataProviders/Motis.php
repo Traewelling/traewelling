@@ -279,7 +279,7 @@ class Motis extends Controller implements DataProviderInterface
             'n' => 0,
         ];
         $response = Http::withUserAgent(VersionController::getUserAgent())
-            ->get(self::API_URL . '/v5/stoptimes', $params);
+            ->get(self::API_URL . '/v6/stoptimes', $params);
 
         if (!$response->ok()) {
             CacheKey::increment(HCK::STATIONS_NOT_OK);
@@ -324,7 +324,7 @@ class Motis extends Controller implements DataProviderInterface
             }
 
             $response = Http::withUserAgent(VersionController::getUserAgent())
-                ->get(self::API_URL . '/v5/stoptimes', $params);
+                ->get(self::API_URL . '/v6/stoptimes', $params);
 
             if (!$response->ok()) {
                 CacheKey::increment(HCK::DEPARTURES_NOT_OK);
@@ -362,7 +362,7 @@ class Motis extends Controller implements DataProviderInterface
     private function fetchJourney(string $tripId): ?array
     {
         try {
-            $response = Http::withUserAgent(VersionController::getUserAgent())->get(self::API_URL . '/v5/trip', [
+            $response = Http::withUserAgent(VersionController::getUserAgent())->get(self::API_URL . '/v6/trip', [
                 'tripId' => $tripId,
                 'joinInterlinedLegs' => 'false',
             ]);
