@@ -36,6 +36,7 @@ class AdminStatusTest extends ApiTestCase
 
         $res->assertOk();
         $res->assertJsonStructure(['data' => [['id', 'user', 'checkin', 'visibility', 'business']]]);
+        $res->assertJsonStructure(['data' => [['stopovers' => [['station' => ['id', 'name']]]]]]);
     }
 
     public function test_non_admin_cannot_list_statuses(): void

@@ -64,7 +64,11 @@ class DailyStatsController extends Controller
         $start = $date->clone()->startOfDay()->tz('UTC');
         $end = $date->clone()->endOfDay()->tz('UTC');
 
-        return Status::with(['checkin', 'tags'])
+        return Status::with([
+            'checkin.originStopover.station',
+            'checkin.destinationStopover.station',
+            'tags',
+        ])
             ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
             ->where('statuses.user_id', $user->id)
             ->where('train_checkins.departure', '>=', $start)

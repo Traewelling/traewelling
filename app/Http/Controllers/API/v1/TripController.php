@@ -75,7 +75,11 @@ class TripController extends Controller
             return response()->json(['message' => 'Trip not found'], 404);
         }
 
-        $statuses = Checkin::with(['status.user'])
+        $statuses = Checkin::with([
+            'status.user',
+            'status.checkin.originStopover.station',
+            'status.checkin.destinationStopover.station',
+        ])
             ->where('trip_id', $trip->trip_id)
             ->get()
             ->map(fn (Checkin $checkin) => $checkin->status)
@@ -249,6 +253,8 @@ class TripController extends Controller
         } catch (ManualTripValidationException $e) {
             return response()->json(['message' => $e->getMessage()], 400);
         }
+
+        $trip->load('stopovers.station');
 
         return new TripResource($trip);
     }
