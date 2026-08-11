@@ -65,7 +65,7 @@ const redirect = () => {
                 <Timer class="inline-block size-4 me-1">
                     <title>{{ $t('leaderboard.duration') }}</title>
                 </Timer>
-                <DurationSpan :duration="60 * entry.totalDuration" />
+                <DurationSpan :duration="entry.totalDuration" />
             </div>
         </div>
 

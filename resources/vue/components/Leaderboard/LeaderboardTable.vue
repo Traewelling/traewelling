@@ -47,7 +47,7 @@ const calculateAverageSpeed = (distance: number, duration: number): number => {
                     </a>
                 </td>
                 <td>
-                    <DurationSpan :duration="60 * row.totalDuration" />
+                    <DurationSpan :duration="row.totalDuration" />
                 </td>
                 <td>{{ Math.round(row.totalDistance / 1000) }} <small class="text-muted">km</small></td>
                 <td>
