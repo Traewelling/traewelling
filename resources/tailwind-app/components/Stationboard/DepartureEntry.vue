@@ -24,11 +24,18 @@ const isPast = computed((): boolean => {
 
 const cancelled = computed((): boolean => props.item.cancelled ?? false);
 
+const delayMinutes = computed((): number | null => {
+    if (!props.item.when) return null;
+    const diff = DateTime.fromISO(props.item.when).diff(DateTime.fromISO(props.item.plannedWhen), 'minutes').minutes;
+    return Math.round(diff);
+});
+
 const delayClass = computed((): string => {
-    if (!props.item.delay) return '';
-    if (props.item.delay < 0) return 'text-info';
-    if (props.item.delay > 5) return 'text-error';
-    if (props.item.delay >= 1) return 'text-warning';
+    const delay = delayMinutes.value;
+    if (delay === null) return '';
+    if (delay < 0) return 'text-info';
+    if (delay > 5) return 'text-error';
+    if (delay >= 1) return 'text-warning';
     return 'text-success';
 });
 
@@ -86,8 +93,8 @@ const platform = computed((): string | null => props.item.platform ?? props.item
                 <template v-if="cancelled">
                     <span class="text-error line-through block">{{ formatTime(item.plannedWhen) }}</span>
                 </template>
-                <template v-else-if="item.delay">
-                    <span class="text-base-content/40 line-through text-xs block">{{
+                <template v-else-if="delayMinutes !== null">
+                    <span v-if="delayMinutes !== 0" class="text-base-content/40 line-through text-xs block">{{
                         formatTime(item.plannedWhen)
                     }}</span>
                     <span :class="delayClass">{{ formatTime(item.when) }}</span>
