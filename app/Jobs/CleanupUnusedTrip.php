@@ -48,8 +48,7 @@ class CleanupUnusedTrip implements ShouldQueue
         $polylineId = $trip->polyline_id;
 
         try {
-            // stopovers and carriage sequences are deleted via cascade,
-            // continuation_trip_id references are set to null via FK
+            // stopovers and carriage sequences are deleted via cascade
             $trip->delete();
         } catch (QueryException) {
             // a new checkin referenced the trip in the meantime, the restrict FK protects it
