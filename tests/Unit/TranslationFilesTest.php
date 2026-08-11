@@ -26,4 +26,25 @@ class TranslationFilesTest extends UnitTestCase
 
         $this->assertSame([], $offenders, 'Translations must not contain HTML.');
     }
+
+    public function test_translation_files_do_not_contain_empty_values(): void
+    {
+        $offenders = [];
+
+        foreach (glob(base_path('lang/*.json')) as $file) {
+            $translations = json_decode(file_get_contents($file), true, 512, JSON_THROW_ON_ERROR);
+
+            foreach ($translations as $key => $value) {
+                if ($value === '') {
+                    $offenders[] = basename($file) . ': ' . $key;
+                }
+            }
+        }
+
+        $this->assertSame(
+            [],
+            $offenders,
+            'Untranslated strings must be removed from the language file, not kept as an empty value.'
+        );
+    }
 }
