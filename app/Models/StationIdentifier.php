@@ -87,6 +87,6 @@ class StationIdentifier extends Model
             'n' => config('trwl.motis.results'),
         ];
 
-        return 'https://api.transitous.org/api/v1/stoptimes?' . http_build_query($params);
+        return 'https://api.transitous.org/api/v6/stoptimes?' . http_build_query($params);
     }
 }

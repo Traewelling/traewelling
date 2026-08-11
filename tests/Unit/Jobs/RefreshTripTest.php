@@ -50,7 +50,7 @@ class RefreshTripTest extends UnitTestCase
         $trip = $this->mockTrip('trip-A', 'ICE 1');
 
         Http::fake([
-            'https://api.transitous.org/api/v5/trip*' => Http::response([
+            'https://api.transitous.org/api/*/trip*' => Http::response([
                 'legs' => [$this->makeLeg('trip-A', true)],
             ], 200),
         ]);
@@ -69,7 +69,7 @@ class RefreshTripTest extends UnitTestCase
         $trip = $this->mockTrip('trip-B', 'ECE 7');
 
         Http::fake([
-            'https://api.transitous.org/api/v5/trip*' => Http::response([
+            'https://api.transitous.org/api/*/trip*' => Http::response([
                 'legs' => [
                     $this->makeLeg('trip-A', true),  // first leg belongs to a different trip
                     $this->makeLeg('trip-B', true),  // second leg is the one we want
@@ -91,7 +91,7 @@ class RefreshTripTest extends UnitTestCase
         $trip = $this->mockTrip('trip-B', 'ECE 7');
 
         Http::fake([
-            'https://api.transitous.org/api/v5/trip*' => Http::response([
+            'https://api.transitous.org/api/*/trip*' => Http::response([
                 'legs' => [
                     $this->makeLeg('trip-A', true),
                     $this->makeLeg('trip-B', false),
@@ -110,7 +110,7 @@ class RefreshTripTest extends UnitTestCase
         $trip = $this->mockTrip('trip-unknown', 'ECE 7');
 
         Http::fake([
-            'https://api.transitous.org/api/v5/trip*' => Http::response([
+            'https://api.transitous.org/api/*/trip*' => Http::response([
                 'legs' => [
                     $this->makeLeg('trip-A', true),
                     $this->makeLeg('trip-B', true),
@@ -149,7 +149,7 @@ class RefreshTripTest extends UnitTestCase
         ]);
 
         Http::fake([
-            'https://api.transitous.org/api/v5/trip*' => Http::response([
+            'https://api.transitous.org/api/*/trip*' => Http::response([
                 'legs' => [$this->makeLeg('trip-reset', true)],
             ], 200),
         ]);

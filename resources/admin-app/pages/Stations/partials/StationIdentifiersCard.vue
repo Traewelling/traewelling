@@ -106,7 +106,7 @@ function identifierLink(type: string | undefined, value: string | undefined): st
     switch (type) {
         case 'motis': {
             const params = new URLSearchParams({ stopId: value, n: '50', time: new Date().toISOString() });
-            return `https://api.transitous.org/api/v1/stoptimes?${params}`;
+            return `https://api.transitous.org/api/v6/stoptimes?${params}`;
         }
         case 'wikidata_id':
             return `https://www.wikidata.org/wiki/${value}`;

@@ -379,7 +379,7 @@ class WebhookStatusTest extends ApiTestCase
         ]);
 
         Http::fake([
-            'api.transitous.org/api/v5/trip*' => Http::response(self::MOTIS_TRIP_RESPONSE),
+            'api.transitous.org/api/*/trip*' => Http::response(self::MOTIS_TRIP_RESPONSE),
             '/locations*' => Http::response([self::FRANKFURT_HBF]),
             '/trips/' . urlencode(self::TRIP_ID) . '*' => Http::response(self::TRIP_INFO),
         ]);

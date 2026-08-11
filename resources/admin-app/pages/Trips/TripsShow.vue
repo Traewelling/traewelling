@@ -186,7 +186,7 @@ watch(tripId, fetchTrip);
                                 <dd class="font-mono text-xs break-all">
                                     <a
                                         v-if="trip.source === 'TRANSITOUS'"
-                                        :href="`https://api.transitous.org/api/v5/trip?tripId=${encodeURIComponent(trip.tripId!)}`"
+                                        :href="`https://api.transitous.org/api/v6/trip?tripId=${encodeURIComponent(trip.tripId!)}`"
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         class="link link-hover"
