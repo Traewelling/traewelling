@@ -101,7 +101,7 @@ class Motis extends Controller implements DataProviderInterface
         $center = new Coordinate($latitude, $longitude);
         $bbox = $this->geoService->getBoundingBox($center, config('trwl.motis.nearby_radius'));
 
-        $response = Http::withUserAgent(VersionController::getUserAgent())->get(self::API_URL . '/v1/map/stops', [
+        $response = Http::withUserAgent(VersionController::getUserAgent())->get(self::API_URL . '/v6/map/stops', [
             'min' => (string) $bbox->lowerRight,
             'max' => (string) $bbox->upperLeft,
         ]);
