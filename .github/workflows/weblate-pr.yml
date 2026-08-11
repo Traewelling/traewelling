@@ -1,0 +1,33 @@
+name: Weblate Pull Request
+
+on:
+  push:
+    branches:
+      - develop-translate
+
+jobs:
+  create-pull-request:
+    name: Open Pull Request for Translations
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Open Pull Request if none is open
+        env:
+          GH_TOKEN: ${{ secrets.WEBLATE_PR_TOKEN }}
+          PR_TITLE: ":globe_with_meridians: update translations"
+          PR_BODY: |
+            Translation updates from [Codeberg Translate](https://translate.codeberg.org/projects/trawelling/).
+
+            This pull request is opened automatically and collects further translation pushes until it is merged.
+
+            Please do **not** squash merge: Weblate rebases its own commits onto `develop`, and a squash merge replaces them with a new commit. The next rebase in Weblate would then conflict.
+        run: |
+          if [ -n "$(gh pr list --head develop-translate --base develop --state open --json number --jq '.[].number')" ]; then
+            echo "A pull request for develop-translate is already open, nothing to do."
+            exit 0
+          fi
+
+          gh pr create --base develop --head develop-translate --title "$PR_TITLE" --body "$PR_BODY"
