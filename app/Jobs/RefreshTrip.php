@@ -65,22 +65,16 @@ class RefreshTrip implements ShouldBeUnique, ShouldQueue
                 return;
             }
 
-            $matchingLeg = null;
-            foreach ($rawJourney['legs'] as $leg) {
-                if (($leg['tripId'] ?? null) === $this->trip->trip_id) {
-                    $matchingLeg = $leg;
-                    break;
-                }
-            }
+            $leg = $rawJourney['legs'][0] ?? null;
 
-            if ($matchingLeg === null || !($matchingLeg['realTime'] ?? false)) {
+            if ($leg === null || !($leg['realTime'] ?? false)) {
                 Log::debug('RefreshTrip Job skipped: no real-time data available', ['trip_id' => $this->trip->trip_id]);
 
                 return;
             }
 
             $stopovers = $motisHydrator->parseLegToUpdateStopovers(
-                $matchingLeg,
+                $leg,
                 $this->trip,
                 DataProvider::TRANSITOUS
             );

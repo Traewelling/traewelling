@@ -9,7 +9,7 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(
     title: 'TripResource',
-    required: ['id', 'uuid', 'tripId', 'category', 'mode', 'number', 'lineName', 'journeyNumber', 'origin', 'destination', 'operator', 'stopovers', 'checkinCount', 'dataSource', 'continuationTrip'],
+    required: ['id', 'uuid', 'tripId', 'category', 'mode', 'number', 'lineName', 'journeyNumber', 'origin', 'destination', 'operator', 'stopovers', 'checkinCount', 'dataSource'],
     properties: [
         new OA\Property(property: 'id', type: 'int', example: 1),
         new OA\Property(property: 'uuid', description: 'Stable identifier of this trip. Will become the primary key later.', type: 'string', format: 'uuid', example: '00000000-0000-0000-0000-000000000000', nullable: true),
@@ -38,21 +38,10 @@ use OpenApi\Attributes as OA;
             ref: '#/components/schemas/DataSourceResource',
             nullable: true,
         ),
-        new OA\Property(
-            property: 'continuationTrip',
-            ref: TripResource::class,
-            description: 'If this trip is an interlined through-running service, this contains the immediately following trip (different line name/color, no transfer required).',
-            nullable: true,
-        ),
     ],
 )]
 class TripResource extends JsonResource
 {
-    public function __construct($resource, private readonly bool $includeContinuation = true)
-    {
-        parent::__construct($resource);
-    }
-
     /**
      * Transform the resource into an array.
      *
@@ -78,10 +67,6 @@ class TripResource extends JsonResource
             'stopovers' => StopoverResource::collection($this->stopovers),
             'checkinCount' => (int) ($this->checkins_count ?? $this->checkins()->count()),
             'dataSource' => $this->motisSourceLicense ? new DataSourceResource($this->motisSourceLicense) : null,
-            'continuationTrip' => $this->when(
-                $this->includeContinuation && $this->continuation_trip_id !== null,
-                fn () => new TripResource($this->continuationTrip, includeContinuation: false),
-            ),
         ];
     }
 }

@@ -45,57 +45,13 @@ class RefreshTripTest extends UnitTestCase
         return $trip;
     }
 
-    public function test_uses_first_leg_when_it_matches_trip_id(): void
+    public function test_skips_when_leg_has_no_realtime(): void
     {
-        $trip = $this->mockTrip('trip-A', 'ICE 1');
+        $trip = $this->mockTrip('trip-A', 'ECE 7');
 
         Http::fake([
             'https://api.transitous.org/api/*/trip*' => Http::response([
-                'legs' => [$this->makeLeg('trip-A', true)],
-            ], 200),
-        ]);
-
-        $hydrator = Mockery::mock(MotisHydrator::class);
-        $hydrator->shouldReceive('parseLegToUpdateStopovers')
-            ->once()
-            ->withArgs(fn (array $leg) => $leg['tripId'] === 'trip-A')
-            ->andReturn(new Collection());
-
-        new RefreshTrip($trip)->handle($hydrator);
-    }
-
-    public function test_finds_matching_leg_when_not_the_first_leg(): void
-    {
-        $trip = $this->mockTrip('trip-B', 'ECE 7');
-
-        Http::fake([
-            'https://api.transitous.org/api/*/trip*' => Http::response([
-                'legs' => [
-                    $this->makeLeg('trip-A', true),  // first leg belongs to a different trip
-                    $this->makeLeg('trip-B', true),  // second leg is the one we want
-                ],
-            ], 200),
-        ]);
-
-        $hydrator = Mockery::mock(MotisHydrator::class);
-        $hydrator->shouldReceive('parseLegToUpdateStopovers')
-            ->once()
-            ->withArgs(fn (array $leg) => $leg['tripId'] === 'trip-B')
-            ->andReturn(new Collection());
-
-        new RefreshTrip($trip)->handle($hydrator);
-    }
-
-    public function test_skips_when_matching_leg_has_no_realtime(): void
-    {
-        $trip = $this->mockTrip('trip-B', 'ECE 7');
-
-        Http::fake([
-            'https://api.transitous.org/api/*/trip*' => Http::response([
-                'legs' => [
-                    $this->makeLeg('trip-A', true),
-                    $this->makeLeg('trip-B', false),
-                ],
+                'legs' => [$this->makeLeg('trip-A', false)],
             ], 200),
         ]);
 
@@ -105,17 +61,12 @@ class RefreshTripTest extends UnitTestCase
         new RefreshTrip($trip)->handle($hydrator);
     }
 
-    public function test_skips_when_no_matching_leg_found(): void
+    public function test_skips_when_journey_has_no_legs(): void
     {
-        $trip = $this->mockTrip('trip-unknown', 'ECE 7');
+        $trip = $this->mockTrip('trip-A', 'ECE 7');
 
         Http::fake([
-            'https://api.transitous.org/api/*/trip*' => Http::response([
-                'legs' => [
-                    $this->makeLeg('trip-A', true),
-                    $this->makeLeg('trip-B', true),
-                ],
-            ], 200),
+            'https://api.transitous.org/api/*/trip*' => Http::response(['legs' => []], 200),
         ]);
 
         $hydrator = Mockery::mock(MotisHydrator::class);

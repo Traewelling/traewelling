@@ -364,7 +364,6 @@ class Motis extends Controller implements DataProviderInterface
         try {
             $response = Http::withUserAgent(VersionController::getUserAgent())->get(self::API_URL . '/v6/trip', [
                 'tripId' => $tripId,
-                'joinInterlinedLegs' => 'false',
             ]);
 
             if ($response->ok()) {
@@ -409,39 +408,13 @@ class Motis extends Controller implements DataProviderInterface
             throw new DataProviderException(__('messages.exception.motis.trip-not-found'));
         }
 
-        $legs = $rawJourney['legs'];
-
-        $matchingIndex = 0;
-        foreach ($legs as $index => $leg) {
-            if ($leg['tripId'] === $tripID) {
-                $matchingIndex = $index;
-                break;
-            }
+        $leg = $rawJourney['legs'][0] ?? null;
+        if ($leg === null) {
+            throw new DataProviderException(__('messages.exception.motis.trip-not-found'));
         }
 
-        $primaryLeg = $legs[$matchingIndex];
-        $journey = Trip::updateOrCreate(['trip_id' => $tripID], $this->hydrator->getTripData($primaryLeg, $lineName, $this->source));
-        $this->tripRepository->tryToSaveStopovers($journey, $this->hydrator->parseLegToNewStopovers($primaryLeg, $this->source));
-
-        $seenTripIds = [$tripID];
-        $previousTrip = $journey;
-        foreach (array_slice($legs, $matchingIndex + 1) as $interlinedLeg) {
-            if (!($interlinedLeg['interlineWithPreviousLeg'] ?? false)) {
-                break;
-            }
-            if (in_array($interlinedLeg['tripId'], $seenTripIds, true)) {
-                break;
-            }
-            $interlinedTrip = Trip::updateOrCreate(
-                ['trip_id' => $interlinedLeg['tripId']],
-                $this->hydrator->getTripData($interlinedLeg, $interlinedLeg['displayName'] ?? $lineName, $this->source)
-            );
-            $this->tripRepository->tryToSaveStopovers($interlinedTrip, $this->hydrator->parseLegToNewStopovers($interlinedLeg, $this->source));
-
-            $seenTripIds[] = $interlinedLeg['tripId'];
-            $previousTrip->update(['continuation_trip_id' => $interlinedTrip->id]);
-            $previousTrip = $interlinedTrip;
-        }
+        $journey = Trip::updateOrCreate(['trip_id' => $tripID], $this->hydrator->getTripData($leg, $lineName, $this->source));
+        $this->tripRepository->tryToSaveStopovers($journey, $this->hydrator->parseLegToNewStopovers($leg, $this->source));
 
         return $journey;
     }
