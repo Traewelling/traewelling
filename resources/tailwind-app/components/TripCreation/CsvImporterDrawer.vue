@@ -167,7 +167,8 @@ defineExpose({ open });
                 <pre class="bg-base-200 p-2 rounded text-xs overflow-x-auto">
 12345,1970-01-01 08:05,1970-01-01 08:10
 23456,1970-01-01 09:15,
-34567,,1970-01-01 09:20</pre>
+34567,,1970-01-01 09:20
+</pre>
                 <div>{{ trans('trip_creation.csv_import.help.limit', { max: maxItems }) }}</div>
                 <a href="/debug/stations" target="_blank" rel="noopener" class="link link-hover">
                     {{ trans('trip_creation.csv_import.help.station_list_link') }}

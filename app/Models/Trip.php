@@ -83,6 +83,8 @@ use Illuminate\Support\Str;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereUuid($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereContinuationTripId($value)
  *
+ * @property int|null $continuation_trip_id
+ *
  * @mixin \Eloquent
  */
 class Trip extends Model
