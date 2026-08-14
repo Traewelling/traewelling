@@ -206,7 +206,8 @@ export default {
                 <pre class="bg-light p-2 rounded border mb-2" style="white-space: pre-wrap">
 12345,1970-01-01 08:05,1970-01-01 08:10
 23456,1970-01-01 09:15,
-34567,,1970-01-01 09:20</pre>
+34567,,1970-01-01 09:20
+</pre>
                 <div>
                     {{ trans('trip_creation.csv_import.help.limit', { max: maxItems }) }}
                 </div>
