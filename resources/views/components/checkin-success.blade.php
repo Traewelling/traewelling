@@ -18,7 +18,7 @@
                 <span style="display: block;" class="text-danger mt-2">
                     <i class="fa-solid fa-circle-info"></i>
                     {{__('checkin.points.could-have')}}
-                    <a href="https://help.traewelling.de/faq/" target="_blank">
+                    <a href="https://help.traewelling.de/features/points/" target="_blank">
                         ({{__('messages.cookie-notice-learn')}})
                     </a>
                 </span>

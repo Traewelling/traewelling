@@ -58,7 +58,7 @@
                             </router-link>
                         </li>
                         <li>
-                            <a href="https://help.traewelling.de/faq/" target="_blank">
+                            <a href="https://help.traewelling.de/features/" target="_blank">
                                 <LifeBuoy class="inline-block w-6 h-6 mr-2" />
                                 {{ trans('menu.about') }}
                             </a>
@@ -134,12 +134,15 @@
             <nav>
                 <h6 class="footer-title">{{ trans('footer.services') }}</h6>
                 <router-link :to="{ name: 'event-list' }" class="link link-hover">{{ trans('events') }}</router-link>
-                <a href="https://help.traewelling.de/faq" target="_blank" class="link link-hover">About</a>
+                <a href="https://help.traewelling.de/features/" target="_blank" class="link link-hover">
+                    {{ trans('menu.about') }}
+                </a>
             </nav>
             <nav>
                 <h6 class="footer-title">{{ trans('footer.elsewhere') }}</h6>
                 <a href="https://blog.traewelling.de" target="_blank" class="link link-hover">Blog</a>
                 <a href="https://chaos.social/@traewelling" target="_blank" class="link link-hover">Mastodon</a>
+                <a href="https://matrix.to/#/#space:traewelling.org" target="_blank" class="link link-hover">Matrix</a>
                 <a href="https://github.com/traewelling/traewelling" target="_blank" class="link link-hover">GitHub</a>
             </nav>
             <nav>
@@ -175,7 +178,7 @@
                         </router-link>
                     </li>
                     <li>
-                        <a href="https://help.traewelling.de/faq/" target="_blank">
+                        <a href="https://help.traewelling.de/features/" target="_blank">
                             <LifeBuoy class="inline-block w-6 h-6 mr-2" />
                             {{ trans('menu.about') }}
                         </a>

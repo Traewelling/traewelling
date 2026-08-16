@@ -231,7 +231,7 @@
                                     <nav>
                                         <h6 class="footer-title">{{ __('welcome.footer.links') }}</h6>
                                         <div class="grid grid-flow-row gap-4">
-                                            <a href="https://help.traewelling.de/faq/" target="_blank">
+                                            <a href="https://help.traewelling.de/features/" target="_blank">
                                                 {{ __('menu.about') }}
                                             </a>
                                             <a href="https://blog.traewelling.de" target="blog">

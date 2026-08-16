@@ -44,7 +44,7 @@
         <!-- Footer -->
         <footer class="footer footer-horizontal footer-center bg-info text-info-content rounded p-10">
             <nav class="grid grid-flow-col gap-4">
-                <a href="https://help.traewelling.de/faq/" target="_blank" class="link link-hover">
+                <a href="https://help.traewelling.de/features/" target="_blank" class="link link-hover">
                     {{ trans('menu.about') }}
                 </a>
                 <a href="/legal/privacy-policy" class="link link-hover">

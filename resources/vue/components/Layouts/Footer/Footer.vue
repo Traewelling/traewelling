@@ -27,7 +27,7 @@ const selectLanguageUrl = (langCode: string): string => {
                         </li>
                         <li class="nav-item mb-2">
                             <a
-                                href="https://help.traewelling.de/faq/"
+                                href="https://help.traewelling.de/features/"
                                 target="_blank"
                                 class="nav-link p-0 text-body-secondary"
                             >

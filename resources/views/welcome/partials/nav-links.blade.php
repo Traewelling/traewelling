@@ -1,5 +1,5 @@
 <li class="mr-2">
-    <a href="https://help.traewelling.de/faq/">
+    <a href="https://help.traewelling.de/features/">
         {{ __('menu.about') }}
     </a>
 </li>

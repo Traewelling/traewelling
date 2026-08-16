@@ -36,8 +36,6 @@ Route::get('/@{username}/picture', [ProfilePictureController::class, 'generatePr
 Route::get('/', [LandingPageController::class, 'renderLandingPage'])
     ->name('static.welcome');
 
-Route::permanentRedirect('/about', 'https://help.traewelling.de/faq/');
-
 Route::prefix('legal')->group(function () {
     Route::view('/', 'legal.notice')
         ->name('legal.notice');
