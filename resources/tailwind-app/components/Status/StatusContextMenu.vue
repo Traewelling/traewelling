@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {
+    ArrowBigRightDash,
     CopyPlus,
     Eye,
     MoreVertical,
@@ -11,7 +12,6 @@ import {
     UserPlus,
     UserX,
     VolumeX,
-    ArrowBigRightDash,
 } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
 import { DateTime as LuxonDateTime } from 'luxon';
