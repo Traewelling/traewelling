@@ -1,6 +1,6 @@
 <form action="{{ route('login') }}" method="POST" class="flex flex-col gap-4">
     @csrf
-    <h1 class="text-3xl font-bold self-center">{{ __('user.login') }}</h1>
+    <h2 class="text-3xl font-bold self-center">{{ __('user.login') }}</h2>
 
     @if(config('app.registration.enabled'))
         <span class="self-center">
@@ -10,18 +10,18 @@
     @endif
 
     <button class="btn btn-neutral" onclick="mastodon_modal.showModal()" type="button">
-        <figure class="w-4 fill-white">
+        <span class="w-4 fill-current" aria-hidden="true">
         @include('welcome.partials.mastodon-icon')
-        </figure>
+        </span>
         {{ __('user.login.mastodon') }}
     </button>
 
     <div class="divider">{{ __('user.login.or') }}</div>
 
     <fieldset class="fieldset">
-        <div class="label">
+        <label class="label" for="login">
             <span class="label-text">{{ __('user.login-credentials') }}</span>
-        </div>
+        </label>
 
         <input type="text" class="input w-full input-bordered" id="login" name="login"
                required autocomplete="username" autocapitalize="none" autofocus
@@ -29,9 +29,9 @@
     </fieldset>
 
     <fieldset class="fieldset">
-        <div class="label">
+        <label class="label" for="password">
             <span class="label-text">{{ __('user.password') }}</span>
-        </div>
+        </label>
 
         <input type="password" id="password" name="password" class="input w-full input-bordered"
                required autocomplete="current-password"
@@ -43,7 +43,7 @@
     </fieldset>
 
     <div class="fieldset">
-        <label class="cursor-pointer label self-start gap-2">
+        <label class="cursor-pointer label self-start gap-2" for="remember">
             <input type="checkbox" class="checkbox" id="remember" name="remember"/>
             <span class="label-text">{{ __('user.remember-me') }}</span>
         </label>

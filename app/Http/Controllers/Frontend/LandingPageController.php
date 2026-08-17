@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Dto\Internal\GlobalCheckinStats;
+use App\Enum\StatusTagKey;
+use App\Enum\StatusVisibility;
 use App\Http\Controllers\Backend\StatisticController;
+use App\Http\Controllers\Backend\VersionController;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -43,12 +46,44 @@ class LandingPageController
         return $stats ?? new GlobalCheckinStats(0, 0, 0);
     }
 
+    private function getVisibilityLevels(): array
+    {
+        return array_map(static fn (StatusVisibility $visibility): array => [
+            'value' => $visibility->value,
+            'label' => __('status.visibility.' . $visibility->value),
+            'detail' => __('status.visibility.' . $visibility->value . '.detail'),
+        ], StatusVisibility::cases());
+    }
+
+    private function getShowcaseTags(): array
+    {
+        $tags = [
+            [StatusTagKey::TICKET, 'Deutschlandticket', StatusVisibility::PUBLIC],
+            [StatusTagKey::WAGON, '12', StatusVisibility::PUBLIC],
+            [StatusTagKey::SEAT, '42', StatusVisibility::FOLLOWERS],
+            [StatusTagKey::TRAVEL_CLASS, '2', StatusVisibility::PUBLIC],
+            [StatusTagKey::VEHICLE_NUMBER, 'Tz 9481', StatusVisibility::PUBLIC],
+            [StatusTagKey::PRICE, '0,00 €', StatusVisibility::PRIVATE],
+        ];
+
+        return array_map(static fn (array $tag): array => [
+            'label' => __('tag.title.' . $tag[0]->value),
+            'value' => $tag[1],
+            'visibility' => $tag[2]->value,
+        ], $tags);
+    }
+
     public function renderLandingPage(): View|RedirectResponse
     {
         if (Auth::check()) {
             return redirect()->route('dashboard');
         }
 
-        return view('welcome/welcome', ['stats' => $this->getStats()]);
+        return view('welcome/welcome', [
+            'stats' => $this->getStats(),
+            'version' => VersionController::getVersion(),
+            'visibilityLevels' => $this->getVisibilityLevels(),
+            'showcaseTags' => $this->getShowcaseTags(),
+        ]);
     }
 }
