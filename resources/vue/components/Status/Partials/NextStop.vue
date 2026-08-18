@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
 import { DateTime } from 'luxon';
-import { PropType, ref, watch } from 'vue';
+import { computed, PropType, ref, watch } from 'vue';
 import { StopoverResource } from '../../../../types/Api.gen';
 import { getArrivalForStopover, getDepartureForStopover } from '../../../helpers/DateTimeHelper';
 
@@ -71,6 +71,16 @@ getNextStop();
 if (props.inProgress) {
     setInterval(getNextStop, 10000);
 }
+
+const nextStopWhen = computed(() => {
+    if (!nextStop.value) {
+        return '';
+    }
+
+    const time = getArrivalForStopover(nextStop.value).dateTime;
+
+    return time.toISO() ?? '';
+});
 </script>
 
 <template>
@@ -78,7 +88,10 @@ if (props.inProgress) {
         <p class="text-muted font-italic mt-2">
             {{ isAtStop ? trans('stationboard.current-stop') : trans('stationboard.next-stop') }}
 
-            <a :href="`/stationboard?stationId=${nextStop.id}&stationName=${nextStop.name}`" class="text-trwl clearfix">
+            <a
+                :href="`/stationboard?stationId=${nextStop.id}&stationName=${nextStop.name}&when=${encodeURIComponent(nextStopWhen)}`"
+                class="text-trwl clearfix"
+            >
                 {{ nextStop.name }}
                 ({{ getArrivalForStopover(nextStop).toLocaleString(DateTime.TIME_SIMPLE) }})
             </a>

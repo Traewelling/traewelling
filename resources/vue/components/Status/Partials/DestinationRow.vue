@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
 import { DateTime } from 'luxon';
-import { PropType, ref, watch } from 'vue';
+import { computed, PropType, ref, watch } from 'vue';
 import { StatusResource } from '../../../../types/Api.gen';
 import { getArrivalAttribute, timeTypeTooltip } from '../../../helpers/DateTimeHelper';
 
@@ -23,6 +23,20 @@ watch(
         immediate: true,
     },
 );
+
+const stationboardWhen = computed(() => {
+    const time = arrival.value.time;
+    if (!time) {
+        return '';
+    }
+
+    const hoursSinceArrival = DateTime.now().diff(time.dateTime, 'hours').hours;
+    if (hoursSinceArrival >= 24) {
+        return '';
+    }
+
+    return time.toISO() ?? '';
+});
 </script>
 
 <template>
@@ -37,7 +51,7 @@ watch(
             </span>
         </span>
         <a
-            :href="`/stationboard?stationId=${status.train.destination.id}&stationName=${status.train.destination.name}`"
+            :href="`/stationboard?stationId=${status.train.destination.id}&stationName=${status.train.destination.name}&when=${encodeURIComponent(stationboardWhen)}`"
             class="text-trwl clearfix"
             :class="{ 'cancelled-name': status.train.destination.cancelled }"
         >
