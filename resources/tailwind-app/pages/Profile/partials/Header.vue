@@ -6,6 +6,7 @@ import { inject, PropType, ref } from 'vue';
 import { Api, UserResource, ViewUserForbiddenReason } from '../../../../types/Api.gen';
 import { useUserStore } from '../../../../vue/stores/user';
 import FollowButton from '../../../components/FollowButton.vue';
+import ReportModal from '../../../components/ReportModal.vue';
 
 const props = defineProps({
     userData: {
@@ -28,33 +29,8 @@ const notyf = inject('notyf') as Notyf;
 const showReportModal = ref(false);
 const authUser = useUserStore();
 
-const reportReason = ref<'inappropriate' | 'implausible' | 'spam' | 'illegal' | 'other' | ''>('');
-const reportDescription = ref('');
-const reportLoading = ref(false);
-
 const busyMute = ref(false);
 const busyBlock = ref(false);
-
-async function submitReport() {
-    if (!props.userData || !reportReason.value) return;
-    reportLoading.value = true;
-    try {
-        await api.reports.createReport({
-            subjectType: 'User',
-            subjectId: props.userData.id,
-            reason: reportReason.value,
-            description: reportDescription.value,
-        });
-        notyf?.success(trans('report.success'));
-        showReportModal.value = false;
-        reportReason.value = '';
-        reportDescription.value = '';
-    } catch {
-        notyf?.error(trans('report.error'));
-    } finally {
-        reportLoading.value = false;
-    }
-}
 
 async function toggleMute() {
     if (!props.userData) return;
@@ -175,53 +151,10 @@ async function toggleBlock() {
         </div>
     </div>
 
-    <!-- Report modal -->
-    <dialog class="modal" :class="{ 'modal-open': showReportModal }">
-        <div class="modal-box">
-            <h3 class="font-bold text-lg mb-4">{{ trans('user.report') }}</h3>
-            <div class="form-control mb-3">
-                <label class="label">
-                    <span class="label-text">{{ trans('report.reason') }}</span>
-                </label>
-                <select v-model="reportReason" class="select select-bordered w-full" required>
-                    <option value="" disabled>—</option>
-                    <option
-                        v-for="r in ['inappropriate', 'implausible', 'spam', 'illegal', 'other']"
-                        :key="r"
-                        :value="r"
-                    >
-                        {{ trans(`report-reason.${r}`) }}
-                    </option>
-                </select>
-            </div>
-            <div class="form-control mb-4">
-                <label class="label">
-                    <span class="label-text">{{ trans('report.description') }}</span>
-                </label>
-                <textarea
-                    v-model="reportDescription"
-                    class="textarea textarea-bordered w-full"
-                    rows="3"
-                    minlength="10"
-                />
-                <label class="label">
-                    <span class="label-text-alt text-base-content/50">{{ trans('report.min-length') }}</span>
-                </label>
-            </div>
-            <div class="modal-action">
-                <button class="btn btn-ghost" @click="showReportModal = false">{{ trans('cancel') }}</button>
-                <button
-                    class="btn btn-primary"
-                    :disabled="!reportReason || reportDescription.length < 10 || reportLoading"
-                    @click="submitReport"
-                >
-                    <span v-if="reportLoading" class="loading loading-spinner loading-xs" />
-                    {{ trans('report.submit') }}
-                </button>
-            </div>
-        </div>
-        <form method="dialog" class="modal-backdrop" @submit.prevent="showReportModal = false">
-            <button>close</button>
-        </form>
-    </dialog>
+    <ReportModal
+        :open="showReportModal"
+        subject-type="User"
+        :subject-id="userData.id"
+        @close="showReportModal = false"
+    />
 </template>

@@ -2,6 +2,7 @@
 import {
     CopyPlus,
     Eye,
+    Flag,
     MoreVertical,
     PlaneLanding,
     PlaneTakeoff,
@@ -19,6 +20,7 @@ import { computed, inject, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { Api, StatusResource, TripResource } from '../../../types/Api.gen';
 import { useUserStore } from '../../../vue/stores/user';
+import ReportModal from '../ReportModal.vue';
 import TripCopyModal from '../Trip/TripCopyModal.vue';
 
 const props = defineProps<{
@@ -41,6 +43,7 @@ const busyArrivalNow = ref(false);
 const busyMute = ref(false);
 const busyBlock = ref(false);
 const copyTripModalOpen = ref(false);
+const reportModalOpen = ref(false);
 
 const isOwn = computed(() => !!userStore.user && userStore.user.id === props.status.user.id);
 
@@ -214,6 +217,12 @@ async function handleBlock() {
                         </router-link>
                     </li>
                     <li>
+                        <button @click="reportModalOpen = true">
+                            <Flag class="inline-block size-4" />
+                            {{ trans('status.report') }}
+                        </button>
+                    </li>
+                    <li>
                         <button :disabled="busyMute" @click="handleMute">
                             <VolumeX class="inline-block size-4" />
                             {{ trans('user.mute-tooltip') }}
@@ -237,6 +246,13 @@ async function handleBlock() {
                 </template>
             </template>
         </ul>
+
+        <ReportModal
+            :open="reportModalOpen"
+            subject-type="Status"
+            :subject-id="status.id"
+            @close="reportModalOpen = false"
+        />
 
         <TripCopyModal
             v-if="canCopyTrip"
