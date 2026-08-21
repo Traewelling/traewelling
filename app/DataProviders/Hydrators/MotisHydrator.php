@@ -6,6 +6,7 @@ namespace App\DataProviders\Hydrators;
 
 use App\DataProviders\Repositories\MotisLicenseRepository;
 use App\DataProviders\Repositories\StationRepository;
+use App\DataProviders\Repositories\TripRepository;
 use App\Dto\Coordinate;
 use App\Dto\Internal\BahnTrip;
 use App\Dto\Internal\Departure;
@@ -38,18 +39,22 @@ class MotisHydrator
 
     private GeoService $geoService;
 
+    private TripRepository $tripRepository;
+
     public function __construct(
         ?MotisLicenseRepository $motisRepository = null,
         ?StationRepository $stationRepository = null,
         ?OperatorService $operatorService = null,
         ?LicenseService $licenseService = null,
-        ?GeoService $geoService = null
+        ?GeoService $geoService = null,
+        ?TripRepository $tripRepository = null
     ) {
         $this->motisRepository = $motisRepository ?? new MotisLicenseRepository();
         $this->stationRepository = $stationRepository ?? new StationRepository();
         $this->operatorService = $operatorService ?? new OperatorService();
         $this->licenseService = $licenseService ?? new LicenseService();
         $this->geoService = $geoService ?? new GeoService();
+        $this->tripRepository = $tripRepository ?? new TripRepository();
     }
 
     public function parseLegToNewStopovers(mixed $leg, DataProvider $source): Collection
@@ -82,23 +87,13 @@ class MotisHydrator
 
         $stopoverCacheFromDB = $this->stationRepository->getStationsByIdentifiers(array_column($rawStopovers, 'stopId'), $source);
 
-        $stopovers = collect();
+        $stopoverData = [];
         foreach ($rawStopovers as $rawStop) {
             $station = $this->findStationInCache($stopoverCacheFromDB, $rawStop, $source);
-            $stopoverData = $this->getStopoverData($station, $rawStop, $source, $realTime);
-            $stopoverData['trip_id'] = $trip->trip_id;
-
-            try {
-                $stopovers->push($this->updateOrCreateStopover($stopoverData));
-            } catch (Exception $exception) {
-                Log::error('Failed to upsert stopover', [
-                    'stopover' => $rawStop,
-                    'error' => $exception->getMessage(),
-                ]);
-            }
+            $stopoverData[] = $this->getStopoverData($station, $rawStop, $source, $realTime);
         }
 
-        return $stopovers;
+        return $this->tripRepository->updateOrCreateStopovers($trip, $stopoverData);
     }
 
     /**
@@ -143,39 +138,6 @@ class MotisHydrator
         );
 
         return $distance > config('trwl.motis.max_cache_distance');
-    }
-
-    /**
-     * Matches the existing stopover by trip and planned times so that a changed station
-     * assignment (e.g. after merging duplicate stations) updates the existing row instead
-     * of inserting a duplicate stopover for the same stop.
-     *
-     * @param  array<string, mixed>  $stopoverData
-     */
-    private function updateOrCreateStopover(array $stopoverData): Stopover
-    {
-        $query = fn () => Stopover::where('trip_id', $stopoverData['trip_id'])
-            ->where('arrival_planned', $stopoverData['arrival_planned'])
-            ->where('departure_planned', $stopoverData['departure_planned']);
-
-        $stopover = $query()->where('train_station_id', $stopoverData['train_station_id'])->first()
-                    ?? $query()->first();
-
-        if ($stopover === null) {
-            return Stopover::create($stopoverData);
-        }
-
-        $stopover->update([
-            'train_station_id' => $stopoverData['train_station_id'],
-            'station_identifier_id' => $stopoverData['station_identifier_id'],
-            'arrival_real' => $stopoverData['arrival_real'],
-            'departure_real' => $stopoverData['departure_real'],
-            'arrival_platform_real' => $stopoverData['arrival_platform_real'],
-            'departure_platform_real' => $stopoverData['departure_platform_real'],
-            'cancelled' => $stopoverData['cancelled'],
-        ]);
-
-        return $stopover;
     }
 
     private function getStopoverData($station, mixed $rawStop, DataProvider $source, bool $realTime = false): array

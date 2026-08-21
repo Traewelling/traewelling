@@ -5,6 +5,7 @@ namespace App\DataProviders\Repositories;
 use App\Enum\TripSource;
 use App\Models\Stopover;
 use App\Models\Trip;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Throwable;
@@ -12,46 +13,117 @@ use Throwable;
 class TripRepository
 {
     /**
-     * @param  Collection<Stopover>  $stopovers
+     * @param  Collection<Stopover>  $stopovers  unsaved stopovers as parsed from the data provider
      */
     public function tryToSaveStopovers(Trip $trip, Collection $stopovers): void
     {
-        foreach ($stopovers as $stopover) {
+        $this->updateOrCreateStopovers($trip, $stopovers->map(fn (Stopover $stopover) => [
+            'train_station_id' => $stopover->train_station_id,
+            'arrival_planned' => $stopover->arrival_planned,
+            'arrival_real' => $stopover->arrival_real,
+            'arrival_platform_planned' => $stopover->arrival_platform_planned,
+            'arrival_platform_real' => $stopover->arrival_platform_real,
+            'departure_planned' => $stopover->departure_planned,
+            'departure_real' => $stopover->departure_real,
+            'departure_platform_planned' => $stopover->departure_platform_planned,
+            'departure_platform_real' => $stopover->departure_platform_real,
+            'cancelled' => $stopover->cancelled,
+            'station_identifier_id' => $stopover->station_identifier_id,
+        ])->all());
+    }
+
+    public function updateOrCreateStopovers(Trip $trip, array $stopoverData): Collection
+    {
+        $stopovers = collect();
+        $claimedIds = [];
+        $unmatched = [];
+
+        foreach ($stopoverData as $index => $data) {
             try {
-                $trip->stopovers()->updateOrCreate(
-                    [
-                        'trip_id' => $trip->trip_id,
-                        'arrival_planned' => $stopover->arrival_planned,
-                        'departure_planned' => $stopover->departure_planned,
-                    ],
-                    [
-                        'train_station_id' => $stopover->station->id,
-                        'arrival_real' => $stopover->arrival_real,
-                        'departure_real' => $stopover->departure_real,
-                        'arrival_platform_planned' => $stopover->arrival_platform_planned,
-                        'departure_platform_planned' => $stopover->departure_platform_planned,
-                        'arrival_platform_real' => $stopover->arrival_platform_real,
-                        'departure_platform_real' => $stopover->departure_platform_real,
-                        'cancelled' => $stopover->cancelled,
-                        'station_identifier_id' => $stopover->station_identifier_id,
-                    ]
-                );
-            } catch (Throwable $e) {
-                Log::critical(
-                    'Failed creating Stopover: ' . $e->getMessage(),
-                    [
-                        'trip' => $trip->id,
-                        'stopover' => $stopover->id,
-                        'station' => $stopover->station->id,
-                        'departure' => $stopover->departure_planned,
-                        'departure_utc' => (clone $stopover->departure_planned)->tz('UTC'),
-                        'arrival' => $stopover->arrival_planned,
-                        'arrival_utc' => (clone $stopover->arrival_planned)->tz('UTC'),
-                    ]
-                );
-                report($e);
+                $existing = $this->queryStopoversByPlannedTimes($trip, $data, $claimedIds)
+                    ->where('train_station_id', $data['train_station_id'])
+                    ->first();
+
+                if ($existing === null) {
+                    $unmatched[$index] = $data;
+
+                    continue;
+                }
+
+                $claimedIds[] = $existing->id;
+                $stopovers[$index] = $this->applyStopoverData($existing, $data);
+            } catch (Throwable $exception) {
+                $this->logStopoverFailure($trip, $data, $exception);
             }
         }
+
+        foreach ($unmatched as $index => $data) {
+            try {
+                $existing = $this->queryStopoversByPlannedTimes($trip, $data, $claimedIds)->first();
+
+                if ($existing === null) {
+                    $created = Stopover::create($data + ['trip_id' => $trip->trip_id]);
+                    $claimedIds[] = $created->id;
+                    $stopovers[$index] = $created;
+
+                    continue;
+                }
+
+                $claimedIds[] = $existing->id;
+                $stopovers[$index] = $this->applyStopoverData($existing, $data);
+            } catch (Throwable $exception) {
+                $this->logStopoverFailure($trip, $data, $exception);
+            }
+        }
+
+        return $stopovers->sortKeys()->values();
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    private function logStopoverFailure(Trip $trip, array $data, Throwable $exception): void
+    {
+        Log::critical('Failed creating Stopover: ' . $exception->getMessage(), [
+            'trip' => $trip->trip_id,
+            'station' => $data['train_station_id'],
+            'departure' => $data['departure_planned'],
+            'arrival' => $data['arrival_planned'],
+        ]);
+        report($exception);
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @param  array<int, int>  $claimedIds  stopovers already assigned to another stop of this trip
+     */
+    private function queryStopoversByPlannedTimes(Trip $trip, array $data, array $claimedIds): Builder
+    {
+        return Stopover::where('trip_id', $trip->trip_id)
+            ->where('arrival_planned', $data['arrival_planned'])
+            ->where('departure_planned', $data['departure_planned'])
+            ->whereNotIn('id', $claimedIds)
+            ->orderBy('id');
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    private function applyStopoverData(Stopover $stopover, array $data): Stopover
+    {
+        $stopover->update([
+            'train_station_id' => $data['train_station_id'],
+            'station_identifier_id' => $data['station_identifier_id'],
+            'arrival_real' => $data['arrival_real'],
+            'departure_real' => $data['departure_real'],
+            'arrival_platform_planned' => $data['arrival_platform_planned'],
+            'departure_platform_planned' => $data['departure_platform_planned'],
+            'arrival_platform_real' => $data['arrival_platform_real'],
+            'departure_platform_real' => $data['departure_platform_real'],
+            'cancelled' => $data['cancelled'],
+        ]);
+
+        return $stopover;
     }
 
     public function getCurrentActiveTrips(TripSource $source): Collection
