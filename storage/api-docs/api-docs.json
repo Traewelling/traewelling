@@ -3101,6 +3101,96 @@
                 ]
             }
         },
+        "/station/{id}/home": {
+            "put": {
+                "tags": [
+                    "Checkin"
+                ],
+                "summary": "Set a station as home station",
+                "operationId": "setHomeStation",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "UUID of the station. The legacy Träwelling-ID is still accepted.",
+                        "required": true,
+                        "example": "00000000-0000-0000-0000-000000000000"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/StationResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Unknown error"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "create-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/station/home": {
+            "delete": {
+                "tags": [
+                    "Checkin"
+                ],
+                "summary": "Remove the home station of the authenticated user",
+                "operationId": "deleteHomeStation",
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "500": {
+                        "description": "Unknown error"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "create-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/ics-tokens": {
             "get": {
                 "tags": [
@@ -8913,66 +9003,6 @@
                 ]
             }
         },
-        "/station/{id}/home": {
-            "put": {
-                "tags": [
-                    "Checkin"
-                ],
-                "summary": "Set a station as home station",
-                "operationId": "setHomeStation",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Träwelling-ID of the station",
-                        "required": true,
-                        "example": 1234
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "required": [
-                                        "data"
-                                    ],
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "App\\Models\\Station"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "404": {
-                        "description": "Station not found"
-                    },
-                    "500": {
-                        "description": "Unknown error"
-                    }
-                },
-                "security": [
-                    {
-                        "passport": [
-                            "create-statuses"
-                        ]
-                    },
-                    {
-                        "token": []
-                    }
-                ]
-            }
-        },
         "/trains/station/autocomplete/{query}": {
             "get": {
                 "tags": [
@@ -11511,6 +11541,7 @@
                 "description": "train station model",
                 "required": [
                     "id",
+                    "uuid",
                     "name",
                     "latitude",
                     "longitude",
@@ -11524,6 +11555,14 @@
                         "description": "id",
                         "type": "integer",
                         "example": "4711"
+                    },
+                    "uuid": {
+                        "title": "uuid",
+                        "description": "Stable identifier of this station. Will become the primary key later.",
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "00000000-0000-0000-0000-000000000000",
+                        "nullable": true
                     },
                     "name": {
                         "title": "name",
@@ -15730,7 +15769,13 @@
                         "example": "default"
                     },
                     "home": {
-                        "$ref": "#/components/schemas/StationResource"
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/StationResource"
+                            }
+                        ],
+                        "nullable": true,
+                        "type": "object"
                     },
                     "language": {
                         "type": "string",

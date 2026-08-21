@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { Search } from '@lucide/vue';
+import { House, Search } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { Api, StationResource } from '../../types/Api.gen';
+import { useUserStore } from '../../vue/stores/user';
 
 const props = withDefaults(
     defineProps<{
@@ -27,6 +28,9 @@ const emit = defineEmits<{
 }>();
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const userStore = useUserStore();
+
+const homeStation = computed<StationResource | null>(() => userStore.getHome);
 
 const query = ref(props.modelValue?.name ?? '');
 const suggestions = ref<StationResource[]>([]);
@@ -111,8 +115,26 @@ function pick(station: StationResource): void {
     emit('update:modelValue', station);
 }
 
-const displayed = (): StationResource[] =>
-    query.value.trim() ? suggestions.value : props.showHistory ? recentStations.value : [];
+/**
+ * While nothing is typed the home station leads the list, followed by the recently visited ones.
+ */
+const displayed = (): StationResource[] => {
+    if (query.value.trim()) {
+        return suggestions.value;
+    }
+    if (!props.showHistory) {
+        return [];
+    }
+    const home = homeStation.value;
+    if (!home) {
+        return recentStations.value;
+    }
+    return [home, ...recentStations.value.filter((station) => station.id !== home.id)];
+};
+
+function isHome(station: StationResource): boolean {
+    return !query.value.trim() && homeStation.value?.id === station.id;
+}
 
 function pickFirst(): void {
     const first = displayed()[0];
@@ -158,7 +180,12 @@ function pickFirst(): void {
             class="absolute z-50 mt-1 w-full bg-base-100 border border-base-300 rounded-box shadow-lg max-h-64 overflow-y-auto"
         >
             <li v-for="station in displayed()" :key="station.id">
-                <button class="w-full text-left px-3 py-2 hover:bg-base-200 text-sm" @mousedown.prevent="pick(station)">
+                <button
+                    class="w-full text-left px-3 py-2 hover:bg-base-200 text-sm"
+                    :class="{ 'bg-primary/10 font-medium': isHome(station) }"
+                    @mousedown.prevent="pick(station)"
+                >
+                    <House v-if="isHome(station)" class="size-4 inline-block me-1 -mt-0.5 text-primary" />
                     {{ station.name }}
                     <span v-if="ril100(station)" class="badge badge-soft badge-accent badge-sm ml-1">
                         {{ ril100(station) }}

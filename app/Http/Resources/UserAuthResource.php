@@ -58,8 +58,9 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'mapProvider', type: 'string', example: 'default'),
         new OA\Property(
             property: 'home',
-            ref: '#/components/schemas/StationResource',
+            ref: StationResource::class,
             type: 'object',
+            nullable: true,
         ),
         new OA\Property(property: 'language', type: 'string', example: 'de'),
         new OA\Property(property: 'defaultStatusVisibility', type: 'integer', example: 0),

@@ -7,11 +7,20 @@ namespace App\Dto\Transport;
 use App\Http\Resources\StationIdentifierResource;
 use OpenApi\Attributes as OA;
 
-#[OA\Schema(title: 'Station', description: 'train station model', required: ['id', 'name', 'latitude', 'longitude', 'ibnr', 'rilIdentifier', 'identifiers'], xml: new OA\Xml(name: 'Station'))]
+#[OA\Schema(title: 'Station', description: 'train station model', required: ['id', 'uuid', 'name', 'latitude', 'longitude', 'ibnr', 'rilIdentifier', 'identifiers'], xml: new OA\Xml(name: 'Station'))]
 class Station
 {
     #[OA\Property(title: 'id', description: 'id', example: '4711')]
     public readonly int $id;
+
+    #[OA\Property(
+        title: 'uuid',
+        description: 'Stable identifier of this station. Will become the primary key later.',
+        format: 'uuid',
+        example: '00000000-0000-0000-0000-000000000000',
+        nullable: true,
+    )]
+    public readonly ?string $uuid;
 
     #[OA\Property(title: 'name', description: 'name of the station', example: 'Karlsruhe Hbf')]
     public readonly string $name;
@@ -45,6 +54,13 @@ class Station
     public function setId(int $id): self
     {
         $this->id = $id;
+
+        return $this;
+    }
+
+    public function setUuid(?string $uuid): self
+    {
+        $this->uuid = $uuid;
 
         return $this;
     }
@@ -99,6 +115,7 @@ class Station
 
         $dto = new self();
         $dto->setId($station->id)
+            ->setUuid($station->uuid)
             ->setName($station->name)
             ->setIbnr(null) // TODO: Kann das hier mittelfristig raus? Wo wird das noch über dieses DTO genutzt?
             ->setLatitude($station->latitude)

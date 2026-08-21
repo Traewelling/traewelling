@@ -32,11 +32,12 @@ export const useUserStore = defineStore(
         const isClosedBeta = computed<boolean>(() => user.value?.roles?.includes('closed-beta') ?? false);
         const isAuthenticated = computed<boolean>(() => authenticated.value === true);
 
-        async function setHome(home: StationResource): Promise<void> {
+        /** Accepts the station UUID; the numeric id still works while the API supports both. */
+        async function setHome(stationId: string | number): Promise<void> {
             const curStation = user.value?.home ?? null;
 
-            api.station
-                .setHomeStation(home.id)
+            return api.station
+                .setHomeStation(stationId)
                 .then((response) => {
                     if (user.value && response.data.data) {
                         const newStation = response.data.data as StationResource;
@@ -46,10 +47,28 @@ export const useUserStore = defineStore(
                     }
                 })
                 .catch((err: unknown) => {
-                    if (curStation && user.value) {
+                    if (user.value) {
                         user.value.home = curStation;
                     }
-                    return err;
+                    throw err;
+                });
+        }
+
+        async function deleteHome(): Promise<void> {
+            const curStation = user.value?.home ?? null;
+
+            if (user.value) {
+                user.value.home = null;
+            }
+
+            return api.station
+                .deleteHomeStation()
+                .then(() => undefined)
+                .catch((err: unknown) => {
+                    if (user.value) {
+                        user.value.home = curStation;
+                    }
+                    throw err;
                 });
         }
 
@@ -114,6 +133,7 @@ export const useUserStore = defineStore(
             isClosedBeta,
             isAuthenticated,
             setHome,
+            deleteHome,
             invalidateUser,
             fetchSettings,
         };
