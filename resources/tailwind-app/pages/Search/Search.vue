@@ -30,10 +30,10 @@
                     class="card card-side bg-base-100 shadow-sm my-2 cursor-pointer"
                     @click="router.push({ name: 'user-profile', params: { username: entry.username } })"
                 >
-                    <figure>
-                        <div class="avatar">
-                            <div class="min-w-24 max-w-24 rounded">
-                                <img :src="entry.profilePicture" :alt="entry.username" />
+                    <figure class="shrink-0">
+                        <div class="avatar items-center">
+                            <div class="size-24 rounded">
+                                <img :src="entry.profilePicture" :alt="entry.username" loading="lazy" />
                             </div>
                         </div>
                     </figure>
