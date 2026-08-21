@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
 import { DateTime } from 'luxon';
-import { PropType, ref, watch } from 'vue';
+import { computed, PropType, ref, watch } from 'vue';
 import { Business, StatusResource } from '../../../../types/Api.gen';
 import {
     getArrivalForStatus,
@@ -39,6 +39,20 @@ watch(
         immediate: true,
     },
 );
+
+const stationboardWhen = computed(() => {
+    const time = arrival.value.time;
+    if (!time) {
+        return '';
+    }
+
+    const hoursSinceDeparture = DateTime.now().diff(time.dateTime, 'hours').hours;
+    if (hoursSinceDeparture >= 24) {
+        return '';
+    }
+
+    return time.toISO() ?? '';
+});
 </script>
 
 <template>
@@ -54,7 +68,7 @@ watch(
         </span>
 
         <a
-            :href="`/stationboard?stationId=${status.train.origin.id}&${status.train.origin.name}`"
+            :href="`/stationboard?stationId=${status.train.origin.id}&stationName=${status.train.origin.name}&when=${encodeURIComponent(stationboardWhen)}`"
             class="text-trwl clearfix"
             :class="{ 'cancelled-name': status.train.origin.cancelled }"
         >
