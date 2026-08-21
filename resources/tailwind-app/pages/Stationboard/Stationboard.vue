@@ -64,7 +64,7 @@ async function fetchDepartures(time?: string): Promise<void> {
 
     loading.value = true;
     try {
-        const when = fetchTime.value.minus({ minutes: 5 }).toISO() ?? undefined;
+        const when = fetchTime.value.toISO() ?? undefined;
         const res = await api.station.getDepartures(stationId.value, {
             when,
             travelType: travelType.value ? (travelType.value as TravelType) : undefined,

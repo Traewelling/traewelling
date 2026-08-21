@@ -151,7 +151,7 @@ export default {
             if (time !== null) {
                 this.fetchTime = DateTime.fromISO(time).setZone('UTC');
             } else {
-                time = this.fetchTime.minus({ minutes: 5 }).toString();
+                time = this.fetchTime.toString();
             }
             if (this.trwlStationId === null) {
                 return;
@@ -284,7 +284,7 @@ export default {
             const params = new URLSearchParams({
                 stationId: this.trwlStationId,
                 stationName: this.stationName,
-                when: this.fetchTime.minus({ minutes: 5 }).toString(),
+                when: this.fetchTime.toString(),
                 travelType: this.travelType || '',
             });
             window.history.replaceState({}, '', `?${params.toString()}`);
