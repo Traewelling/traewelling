@@ -1,10 +1,15 @@
 <script setup lang="ts">
+import { House } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
 import { DateTime } from 'luxon';
-import { onMounted, ref, watch } from 'vue';
-import { Api, StopoverResource, TripResource } from '../../../types/Api.gen';
+import { computed, onMounted, ref, watch } from 'vue';
+import { Api, StationResource, StopoverResource, TripResource } from '../../../types/Api.gen';
+import { useUserStore } from '../../../vue/stores/user';
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const userStore = useUserStore();
+
+const homeStation = computed<StationResource | null>(() => userStore.getHome);
 
 const props = defineProps<{
     tripId: string;
@@ -44,6 +49,13 @@ function getPlannedTime(item: StopoverResource): string | null {
     const deviation = getDeviationInMinutes(item);
     if (deviation === null || deviation === 0) return null;
     return item.arrivalPlanned ?? item.departurePlanned ?? null;
+}
+
+function isHome(item: StopoverResource): boolean {
+    const home = homeStation.value;
+    if (!home) return false;
+    if (home.uuid && item.station?.uuid) return home.uuid === item.station.uuid;
+    return home.id === item.station?.id;
 }
 
 function getPlatformPair(item: StopoverResource): { planned: string | null; real: string | null } {
@@ -126,11 +138,12 @@ watch(() => props.tripId, fetchLineRun);
         <li v-for="item in stopovers" :key="item.id">
             <button
                 class="w-full flex justify-between items-center px-4 py-3 hover:bg-base-200 text-left transition-colors"
-                :class="{ 'opacity-60': item.cancelled }"
+                :class="{ 'opacity-60': item.cancelled, 'bg-primary/10 font-medium': isHome(item) }"
                 @click="emit('select', item)"
             >
                 <span class="flex-1 text-sm" :class="{ 'line-through text-error': item.cancelled }">
                     {{ item.name }}
+                    <House v-if="isHome(item)" class="size-4 inline-block ms-1 -mt-0.5 text-primary" />
                     <span v-if="item.cancelled" class="badge badge-error badge-xs align-middle ml-1">
                         {{ trans('stationboard.stop-cancelled') }}
                     </span>
