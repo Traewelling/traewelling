@@ -13,6 +13,7 @@ import {
     Route,
 } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
+import { DateTime } from 'luxon';
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { Api, Business, MentionDto, StatusResource, StopoverResource, UserResource } from '../../../types/Api.gen';
 import LineIndicator from '../../../vue/components/LineIndicator.vue';
@@ -26,6 +27,7 @@ import {
     getDepartureAttribute,
     getDepartureForStatus,
     getDepartureForStopover,
+    StopoverTime,
     StopoverTimeType,
     timeTypeTooltip,
 } from '../../../vue/helpers/DateTimeHelper';
@@ -76,6 +78,23 @@ watch(
 
 const departure = computed(() => getDepartureAttribute(statusObject.value));
 const arrival = computed(() => getArrivalAttribute(statusObject.value));
+
+/**
+ * Timestamp for the stationboard link, so the user directly sees connections at that time.
+ * The stationboard cannot load data older than 24 hours, so it is omitted for older stops.
+ */
+function stationboardWhen(stopoverTime: StopoverTime): string | undefined {
+    const time = stopoverTime.time;
+    if (!time) {
+        return undefined;
+    }
+
+    if (DateTime.now().diff(time.dateTime, 'hours').hours >= 24) {
+        return undefined;
+    }
+
+    return time.toISO() ?? undefined;
+}
 
 function fmtTime(dtm: Dtm | null): string {
     if (!dtm) return '?';
@@ -245,6 +264,7 @@ const inProgress = computed(() => progress.value > 0 && progress.value < 100);
                                         query: {
                                             stationId: statusObject.checkin.origin.id,
                                             stationName: statusObject.checkin.origin.name,
+                                            when: stationboardWhen(departure),
                                         },
                                     }"
                                     class="font-medium link link-hover leading-tight"
@@ -388,6 +408,7 @@ const inProgress = computed(() => progress.value > 0 && progress.value < 100);
                                         query: {
                                             stationId: statusObject.checkin.destination.id,
                                             stationName: statusObject.checkin.destination.name,
+                                            when: stationboardWhen(arrival),
                                         },
                                     }"
                                     class="font-medium link link-hover leading-tight"
