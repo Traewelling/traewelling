@@ -505,6 +505,13 @@ export interface Station {
    */
   id: number;
   /**
+   * uuid
+   * Stable identifier of this station. Will become the primary key later.
+   * @format uuid
+   * @example "00000000-0000-0000-0000-000000000000"
+   */
+  uuid: string | null;
+  /**
    * name
    * name of the station
    * @example "Karlsruhe Hbf"
@@ -2622,7 +2629,7 @@ export interface UserAuthResource {
   pointsEnabled: boolean;
   /** @example "default" */
   mapProvider: string;
-  home: StationResource;
+  home: StationResource | null;
   /** @example "de" */
   language: string;
   /** @example 0 */
@@ -4970,6 +4977,112 @@ export class Api<
         void
       >({
         path: `/user/search`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+  };
+  station = {
+    /**
+     * No description
+     *
+     * @tags Checkin
+     * @name SetHomeStation
+     * @summary Set a station as home station
+     * @request PUT:/station/{id}/home
+     * @secure
+     */
+    setHomeStation: (id: any, params: RequestParams = {}) =>
+      this.request<
+        {
+          data: StationResource;
+        },
+        void
+      >({
+        path: `/station/${id}/home`,
+        method: "PUT",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Checkin
+     * @name DeleteHomeStation
+     * @summary Remove the home station of the authenticated user
+     * @request DELETE:/station/home
+     * @secure
+     */
+    deleteHomeStation: (params: RequestParams = {}) =>
+      this.request<void, void>({
+        path: `/station/home`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Get departures from a station.
+     *
+     * @tags Checkin
+     * @name GetDepartures
+     * @summary Get departures from a station
+     * @request GET:/station/{id}/departures
+     * @secure
+     */
+    getDepartures: (
+      id: any,
+      query?: {
+        /**
+         * When to get the departures (default: now). If you omit the timezone, the datetime is interpreted as localtime. This is especially helpful when träwelling abroad.
+         * @format date-time
+         * @example "2020-01-01T12:00:00.000Z"
+         */
+        when?: string;
+        /** Means of transport (default: all) */
+        travelType?: TravelType;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data: DepartureResource[];
+          meta: {
+            /** train station model */
+            station: Station;
+            times: {
+              /**
+               * @format date-time
+               * @example "2020-01-01T12:00:00.000Z"
+               */
+              now: string;
+              /**
+               * @format date-time
+               * @example "2020-01-01T11:45:00.000Z"
+               */
+              prev: string;
+              /**
+               * @format date-time
+               * @example "2020-01-01T12:15:00.000Z"
+               */
+              next: string;
+            };
+            /** List of licenses that were filtered out */
+            removedLicenses: (string | LicenseDto)[];
+            /**
+             * Number of removed entries due to license filtering
+             * @example 2
+             */
+            removedCount: number;
+          };
+        },
+        void
+      >({
+        path: `/station/${id}/departures`,
         method: "GET",
         query: query,
         secure: true,
@@ -7589,95 +7702,6 @@ export class Api<
       >({
         path: `/tickets/${id}/statistics`,
         method: "GET",
-        secure: true,
-        format: "json",
-        ...params,
-      }),
-  };
-  station = {
-    /**
-     * @description Get departures from a station.
-     *
-     * @tags Checkin
-     * @name GetDepartures
-     * @summary Get departures from a station
-     * @request GET:/station/{id}/departures
-     * @secure
-     */
-    getDepartures: (
-      id: any,
-      query?: {
-        /**
-         * When to get the departures (default: now). If you omit the timezone, the datetime is interpreted as localtime. This is especially helpful when träwelling abroad.
-         * @format date-time
-         * @example "2020-01-01T12:00:00.000Z"
-         */
-        when?: string;
-        /** Means of transport (default: all) */
-        travelType?: TravelType;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<
-        {
-          data: DepartureResource[];
-          meta: {
-            /** train station model */
-            station: Station;
-            times: {
-              /**
-               * @format date-time
-               * @example "2020-01-01T12:00:00.000Z"
-               */
-              now: string;
-              /**
-               * @format date-time
-               * @example "2020-01-01T11:45:00.000Z"
-               */
-              prev: string;
-              /**
-               * @format date-time
-               * @example "2020-01-01T12:15:00.000Z"
-               */
-              next: string;
-            };
-            /** List of licenses that were filtered out */
-            removedLicenses: (string | LicenseDto)[];
-            /**
-             * Number of removed entries due to license filtering
-             * @example 2
-             */
-            removedCount: number;
-          };
-        },
-        void
-      >({
-        path: `/station/${id}/departures`,
-        method: "GET",
-        query: query,
-        secure: true,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags Checkin
-     * @name SetHomeStation
-     * @summary Set a station as home station
-     * @request PUT:/station/{id}/home
-     * @secure
-     */
-    setHomeStation: (id: any, params: RequestParams = {}) =>
-      this.request<
-        {
-          data: any;
-        },
-        void
-      >({
-        path: `/station/${id}/home`,
-        method: "PUT",
         secure: true,
         format: "json",
         ...params,

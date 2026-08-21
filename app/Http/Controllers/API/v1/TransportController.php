@@ -476,58 +476,6 @@ class TransportController extends Controller
         }
     }
 
-    #[OA\Put(
-        path: '/station/{id}/home',
-        operationId: 'setHomeStation',
-        summary: 'Set a station as home station',
-        security: [['passport' => ['create-statuses']], ['token' => []]],
-        tags: ['Checkin'],
-        parameters: [
-            new OA\Parameter(
-                name: 'id',
-                description: 'Träwelling-ID of the station',
-                in: 'path',
-                required: true,
-                example: 1234,
-            ),
-        ],
-        responses: [
-            new OA\Response(
-                response: 200,
-                description: 'successful operation',
-                content: new OA\JsonContent(
-                    required: ['data'],
-                    properties: [new OA\Property(property: 'data', ref: Station::class)],
-                    type: 'object',
-                ),
-            ),
-            new OA\Response(response: 400, description: 'Bad request'),
-            new OA\Response(response: 401, description: 'Unauthorized'),
-            new OA\Response(response: 404, description: 'Station not found'),
-            new OA\Response(response: 500, description: 'Unknown error'),
-        ],
-    )]
-    public function setHome(int $stationId): JsonResponse
-    {
-        try {
-            $station = Station::findOrFail($stationId);
-
-            auth()->user()?->update([
-                'home_id' => $station->id,
-            ]);
-
-            return $this->sendResponse(
-                data: new StationResource($station),
-            );
-        } catch (ModelNotFoundException) {
-            return $this->sendError('The station could not be found');
-        } catch (Exception $exception) {
-            report($exception);
-
-            return $this->sendError('Unknown error', 500);
-        }
-    }
-
     #[OA\Get(
         path: '/trains/station/autocomplete/{query}',
         operationId: 'trainStationAutocomplete',

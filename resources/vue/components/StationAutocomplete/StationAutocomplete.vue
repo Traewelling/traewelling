@@ -110,7 +110,7 @@ export default {
         },
         setHome() {
             if (!this.isHome) {
-                this.userStore.setHome(this.station).catch(() => {
+                this.userStore.setHome(this.station.id).catch(() => {
                     window.notyf.error(trans('action.error') + ' (' + trans('action.set-home') + ')');
                 });
             }

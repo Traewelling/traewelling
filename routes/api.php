@@ -26,6 +26,7 @@ use App\Http\Controllers\API\v1\ConfigurationInfoController;
 use App\Http\Controllers\API\v1\EventController;
 use App\Http\Controllers\API\v1\ExportController;
 use App\Http\Controllers\API\v1\FollowController;
+use App\Http\Controllers\API\v1\HomeStationController;
 use App\Http\Controllers\API\v1\IcsController;
 use App\Http\Controllers\API\v1\LikesController;
 use App\Http\Controllers\API\v1\MotisSourceController;
@@ -125,7 +126,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         });
 
         Route::prefix('station')->middleware(['scope:write-statuses'])->group(static function () {
-            Route::put('/{id}/home', [TransportController::class, 'setHome'])->whereNumber('id');
+            Route::delete('/home', [HomeStationController::class, 'deleteHome']);
+            Route::put('/{id}/home', [HomeStationController::class, 'setHome']);
             Route::get('/{id}/departures', [TransportController::class, 'getDepartures'])->whereNumber('id');
         });
 

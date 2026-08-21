@@ -8,6 +8,7 @@ import SettingsLayout from '../../../layouts/SettingsLayout.vue';
 import DeleteAccount from './partials/DeleteAccount.vue';
 import Email from './partials/Email.vue';
 import ExperimentalFeatures from './partials/ExperimentalFeatures.vue';
+import HomeStation from './partials/HomeStation.vue';
 import MapProvider from './partials/MapProvider.vue';
 import Password from './partials/Password.vue';
 import Timezone from './partials/Timezone.vue';
@@ -61,6 +62,7 @@ getUserProfile();
         <ul v-if="!loading && profile" class="list bg-base-100 rounded-box shadow-md mt-2">
             <Email :profile="profile" @profile-updated="updateProfile" @error="error" />
             <Password :profile="profile" @profile-updated="updateProfile" />
+            <HomeStation />
             <MapProvider :profile="profile" @profile-updated="updateProfile" />
             <ExperimentalFeatures :profile="profile" @profile-updated="updateProfile" />
             <Timezone :profile @profile-updated="updateProfile" />

@@ -45,6 +45,14 @@ Check back here regularly to stay ahead of removals.
 
 ---
 
+# 2026-08-21
+
+New endpoint:
+
+- `DELETE /station/home`: removes the home station of the authenticated user
+
+---
+
 # 2026-08-02
 
 **Users can now edit the manual trips they created themselves.**

@@ -11,6 +11,7 @@ import { useUserStore } from '../../../vue/stores/user';
 import CheckinForm from '../../components/Checkin/CheckinForm.vue';
 import LineRun from '../../components/Checkin/LineRun.vue';
 import DepartureEntry from '../../components/Stationboard/DepartureEntry.vue';
+import HomeStationToggle from '../../components/Stationboard/HomeStationToggle.vue';
 import StationTechnicalDetails from '../../components/Stationboard/StationTechnicalDetails.vue';
 import StationSearch from '../../components/StationSearch.vue';
 import TransportIcon from '../../components/TransportIcon.vue';
@@ -198,6 +199,12 @@ watch(router.currentRoute, (to) => {
                     {{ stationName ?? '…' }}
                 </h2>
                 <StationTechnicalDetails v-if="meta.station" :station="meta.station" />
+                <HomeStationToggle
+                    v-if="userStore.user && meta.station?.uuid"
+                    class="ms-auto"
+                    :station-uuid="meta.station.uuid"
+                    :station-name="meta.station.name"
+                />
             </div>
             <StationSearch :small="true" />
             <div class="card bg-base-100 mb-2 md:mb-4">

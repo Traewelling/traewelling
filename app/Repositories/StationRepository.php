@@ -21,6 +21,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 
 class StationRepository
 {
@@ -151,6 +152,24 @@ class StationRepository
     public function getById(int $id): ?Station
     {
         return Station::whereId($id)->first();
+    }
+
+    public function getByUuid(string $uuid): ?Station
+    {
+        return Station::whereUuid($uuid)->first();
+    }
+
+    public function getByIdOrUuid(int|string $identifier): ?Station
+    {
+        if (Str::isUuid((string) $identifier)) {
+            return $this->getByUuid((string) $identifier);
+        }
+
+        if (is_numeric($identifier)) {
+            return $this->getById((int) $identifier);
+        }
+
+        return null;
     }
 
     public function getIdentifierForStation(string $identifierId, int $stationId): ?StationIdentifier
