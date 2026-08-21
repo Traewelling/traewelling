@@ -462,6 +462,7 @@
   "next": "Next",
   "time.earlier": "Earlier",
   "time.later": "Later",
+  "time.now": "Now",
   "no": "No",
   "no-journeys-day": "You didn't check into any journeys that day.",
   "no-map-data": "No map data available",

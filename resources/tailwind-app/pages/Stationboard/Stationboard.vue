@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowLeft, ChevronDown, ChevronUp, Plus, TriangleAlert } from '@lucide/vue';
+import { ArrowLeft, ChevronDown, ChevronUp, Plus, RotateCcw, TriangleAlert } from '@lucide/vue';
 import { getActiveLanguage, trans, transChoice } from 'laravel-vue-i18n';
 import { DateTime } from 'luxon';
 import { Notyf } from 'notyf';
@@ -134,8 +134,18 @@ function onFetchTimeInput(): void {
     }, 500);
 }
 
+const now = ref<DateTime>(DateTime.now().setZone('UTC'));
+let nowTimer: ReturnType<typeof setInterval> | null = null;
+
+const isTimeOffNow = computed(() => Math.abs(fetchTime.value.diff(now.value, 'minutes').minutes) > 10);
+
+function resetToNow(): void {
+    fetchDepartures(DateTime.now().toISO() ?? undefined);
+}
+
 onBeforeUnmount(() => {
     if (fetchTimeDebounce) clearTimeout(fetchTimeDebounce);
+    if (nowTimer) clearInterval(nowTimer);
 });
 
 const minDateTimeLocal = computed(() =>
@@ -192,6 +202,11 @@ onMounted(() => {
     }
 
     fetchDepartures();
+
+    // Keeps the reference for isTimeOffNow current while the page stays open
+    nowTimer = setInterval(() => {
+        now.value = DateTime.now().setZone('UTC');
+    }, 30_000);
 });
 
 watch(router.currentRoute, (to) => {
@@ -227,13 +242,19 @@ watch(router.currentRoute, (to) => {
                 <div class="card-body py-3 px-4 gap-2">
                     <div class="flex items-center justify-between gap-2">
                         <!-- Time navigation -->
-                        <input
-                            v-model="fetchTimeLocal"
-                            type="datetime-local"
-                            class="input input-bordered input-xs text-sm w-auto"
-                            :min="minDateTimeLocal"
-                            @input="onFetchTimeInput"
-                        />
+                        <div class="flex items-center gap-1">
+                            <input
+                                v-model="fetchTimeLocal"
+                                type="datetime-local"
+                                class="input input-bordered input-xs text-sm w-auto"
+                                :min="minDateTimeLocal"
+                                @input="onFetchTimeInput"
+                            />
+                            <button v-if="isTimeOffNow" class="btn btn-ghost btn-xs text-primary" @click="resetToNow">
+                                <RotateCcw class="w-3 h-3" />
+                                {{ trans('time.now') }}
+                            </button>
+                        </div>
                         <!-- Travel type filter -->
                         <select
                             v-model="travelType"
