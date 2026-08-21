@@ -21,35 +21,17 @@ export const useMapConsentStore = defineStore(
             mapConsentSession.value = false;
         }
 
-        // Vector tiles via OpenFreeMap requires separate explicit consent
-        // because OpenFreeMap is not yet covered by the privacy policy (ToDo for later)
-        const vectorTilesConsented = ref(false);
-        const useVectorTiles = ref(false);
-
-        function acceptVectorTiles() {
-            vectorTilesConsented.value = true;
-            useVectorTiles.value = true;
-        }
-
-        function toggleVectorTiles() {
-            useVectorTiles.value = !useVectorTiles.value;
-        }
-
         return {
             mapConsentPersisted,
             mapConsentSession,
             mapConsentGiven,
             giveMapConsent,
             revokeMapConsent,
-            vectorTilesConsented,
-            useVectorTiles,
-            acceptVectorTiles,
-            toggleVectorTiles,
         };
     },
     {
         persist: {
-            pick: ['mapConsentPersisted', 'vectorTilesConsented', 'useVectorTiles'],
+            pick: ['mapConsentPersisted'],
         },
     },
 );

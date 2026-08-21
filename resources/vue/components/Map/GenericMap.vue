@@ -10,8 +10,8 @@ import {
     MglRasterSource,
 } from '@indoorequal/vue-maplibre-gl';
 import { trans } from 'laravel-vue-i18n';
-import { GeoJSONFeature, LngLat, LngLatBounds, StyleSpecification } from 'maplibre-gl';
-import { computed, onMounted, PropType, ref, watch } from 'vue';
+import { GeoJSONFeature, LngLat, LngLatBounds } from 'maplibre-gl';
+import { computed, onMounted, PropType, ref } from 'vue';
 import { LivePointDto, MapProvider } from '../../../types/Api.gen';
 import { useMapConsentStore } from '../../stores/mapConsent';
 import { useUserStore } from '../../stores/user';
@@ -90,56 +90,10 @@ function activateMap() {
     mapConsentStore.giveMapConsent(rememberConsent.value);
 }
 
-// Vector tiles (OpenFreeMap) with separate consent because OFM is not yet in the privacy policy
-const showVectorConsentDialog = ref(false);
-
-const effectiveUseVectorTiles = computed(() => mapConsentStore.vectorTilesConsented && mapConsentStore.useVectorTiles);
-
-function handleLayerSwitch() {
-    if (!mapConsentStore.vectorTilesConsented) {
-        showVectorConsentDialog.value = true;
-    } else {
-        mapConsentStore.toggleVectorTiles();
-    }
-}
-
-function acceptVectorTiles() {
-    mapConsentStore.acceptVectorTiles();
-    showVectorConsentDialog.value = false;
-}
-
 const isDarkMode = document.documentElement.dataset.bsTheme === 'dark';
 
-const cartoAttribution =
-    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | &copy; <a href="https://carto.com/attribution">CARTO</a>';
 const ormAttribution = '&copy; <a href="https://openrailwaymap.org" target="_blank">OpenRailwayMap</a>';
 const brouterAttribution = '&copy; <a href="https://brouter.de" target="_blank">BRouter</a>';
-
-const cartoVoyagerTiles = [
-    'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
-    'https://b.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
-    'https://c.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
-    'https://d.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
-];
-const cartoVoyagerNoLabelsTiles = [
-    'https://a.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png',
-    'https://b.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png',
-    'https://c.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png',
-    'https://d.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png',
-];
-
-const cartoDarkAllTiles = [
-    'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
-    'https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
-    'https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
-    'https://d.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
-];
-const cartoDarkNoLabelsTiles = [
-    'https://a.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png',
-    'https://b.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png',
-    'https://c.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png',
-    'https://d.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png',
-];
 
 const ormTiles = [
     'https://a.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png',
@@ -147,36 +101,15 @@ const ormTiles = [
     'https://c.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png',
 ];
 
-const useNoLabels = props.mapProvider === MapProvider.OpenRailwayMap;
-const baseTiles: string[] = isDarkMode
-    ? useNoLabels
-        ? cartoDarkNoLabelsTiles
-        : cartoDarkAllTiles
-    : useNoLabels
-      ? cartoVoyagerNoLabelsTiles
-      : cartoVoyagerTiles;
-
 const showOrmLayer = computed(() => props.mapProvider === MapProvider.OpenRailwayMap);
 
 const effectiveBounds = computed(
     () => (props.polyLines.length ? boundsFromPolylines(props.polyLines) : undefined) ?? props.bounds ?? DEFAULT_BOUNDS,
 );
 
-const rasterBaseStyle: StyleSpecification = {
-    version: 8,
-    projection: { type: 'globe' },
-    sources: {},
-    layers: [],
-};
-
-const ofmStyleUrl = isDarkMode
+const mapStyle = isDarkMode
     ? 'https://tiles.openfreemap.org/styles/dark'
     : 'https://tiles.openfreemap.org/styles/positron';
-
-// Use the OFM style URL when vector tiles are active; otherwise the empty raster base
-const mapStyle = computed<StyleSpecification | string>(() =>
-    effectiveUseVectorTiles.value ? ofmStyleUrl : rasterBaseStyle,
-);
 
 const ensureGlobeProjection = () => {
     if (mapRef.value?.map) {
@@ -189,12 +122,6 @@ const ensureGlobeProjection = () => {
 };
 
 onMounted(() => {
-    setTimeout(() => {
-        ensureGlobeProjection();
-    }, 100);
-});
-
-watch(effectiveUseVectorTiles, () => {
     setTimeout(() => {
         ensureGlobeProjection();
     }, 100);
@@ -230,13 +157,6 @@ watch(effectiveUseVectorTiles, () => {
         >
             <mgl-navigation-control position="top-right" :show-zoom="false" :show-compass="true" />
             <mgl-geolocate-control />
-
-            <!-- Raster base tiles only when NOT using vector tiles -->
-            <template v-if="!effectiveUseVectorTiles">
-                <mgl-raster-source source-id="base-source" :tiles="baseTiles" :attribution="cartoAttribution">
-                    <mgl-raster-layer layer-id="base-layer" />
-                </mgl-raster-source>
-            </template>
 
             <mgl-raster-source
                 v-if="showOrmLayer"
@@ -326,30 +246,6 @@ watch(effectiveUseVectorTiles, () => {
             <slot />
             <LiveMapPoint v-for="point in livePositions" :key="point.statusId" :point="point" />
         </mgl-map>
-
-        <!-- Layer switcher: shown on the map when it's active -->
-        <div v-if="showMap" class="map-layer-switcher">
-            <button class="map-layer-btn" :title="trans('map.layer-switcher.title')" @click="handleLayerSwitch">
-                <span v-if="effectiveUseVectorTiles">⊞</span>
-                <span v-else>⬡</span>
-            </button>
-        </div>
-
-        <!-- Vector tiles consent dialog -->
-        <div v-if="showVectorConsentDialog" class="map-vector-consent-overlay">
-            <div class="map-vector-consent-box">
-                <strong>{{ trans('map.vector-tiles.consent.title') }}</strong>
-                <p>{{ trans('map.vector-tiles.consent.description') }}</p>
-                <div class="map-vector-consent-actions">
-                    <button class="map-consent-btn map-consent-btn--secondary" @click="showVectorConsentDialog = false">
-                        {{ trans('map.vector-tiles.consent.decline') }}
-                    </button>
-                    <button class="map-consent-btn" @click="acceptVectorTiles">
-                        {{ trans('map.vector-tiles.consent.accept') }}
-                    </button>
-                </div>
-            </div>
-        </div>
     </div>
 </template>
 
@@ -412,74 +308,5 @@ watch(effectiveUseVectorTiles, () => {
 
 .map-consent-btn:hover {
     background-color: #a31f27;
-}
-
-.map-consent-btn--secondary {
-    background-color: transparent;
-    color: inherit;
-    border: 1px solid currentColor;
-}
-
-.map-consent-btn--secondary:hover {
-    background-color: rgba(0, 0, 0, 0.08);
-}
-
-/* Layer switcher button */
-.map-layer-switcher {
-    position: absolute;
-    top: 0.5rem;
-    left: 0.5rem;
-    z-index: 10;
-}
-
-.map-layer-btn {
-    width: 1.75rem;
-    height: 1.75rem;
-    padding: 0;
-    border: none;
-    border-radius: 4px;
-    background-color: rgba(255, 255, 255, 0.92);
-    color: #333;
-    font-size: 1rem;
-    line-height: 1;
-    cursor: pointer;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
-}
-
-.map-layer-btn:hover {
-    background-color: #fff;
-}
-
-/* Vector tiles consent overlay */
-.map-vector-consent-overlay {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba(0, 0, 0, 0.45);
-    z-index: 20;
-}
-
-.map-vector-consent-box {
-    background: #fff;
-    color: #111;
-    border-radius: 6px;
-    padding: 1.25rem 1.5rem;
-    max-width: 360px;
-    text-align: center;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-}
-
-.map-vector-consent-box p {
-    margin: 0.5rem 0 1rem;
-    font-size: 0.875rem;
-    line-height: 1.5;
-}
-
-.map-vector-consent-actions {
-    display: flex;
-    gap: 0.5rem;
-    justify-content: center;
 }
 </style>
