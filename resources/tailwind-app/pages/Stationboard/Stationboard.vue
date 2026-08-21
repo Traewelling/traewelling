@@ -3,7 +3,7 @@ import { ArrowLeft, ChevronDown, ChevronUp, Plus, TriangleAlert } from '@lucide/
 import { getActiveLanguage, trans, transChoice } from 'laravel-vue-i18n';
 import { DateTime } from 'luxon';
 import { Notyf } from 'notyf';
-import { computed, inject, onMounted, ref, watch } from 'vue';
+import { computed, inject, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { Api, DepartureResource, Station, StopoverResource, TravelType } from '../../../types/Api.gen';
 import LineIndicator from '../../../vue/components/LineIndicator.vue';
@@ -114,12 +114,28 @@ function selectDestination(stopover: StopoverResource): void {
     selectedDestination.value = stopover;
 }
 
-const fetchTimeLocal = computed({
-    get: () => fetchTime.value.setZone('local').toFormat("yyyy-MM-dd'T'HH:mm"),
-    set: (value: string) => {
-        const parsed = DateTime.fromISO(value, { zone: 'local' }).toUTC();
+function toLocalInput(value: DateTime): string {
+    return value.setZone('local').toFormat("yyyy-MM-dd'T'HH:mm");
+}
+
+const fetchTimeLocal = ref<string>(toLocalInput(fetchTime.value));
+let fetchTimeDebounce: ReturnType<typeof setTimeout> | null = null;
+
+watch(fetchTime, (value) => {
+    const formatted = toLocalInput(value);
+    if (formatted !== fetchTimeLocal.value) fetchTimeLocal.value = formatted;
+});
+
+function onFetchTimeInput(): void {
+    if (fetchTimeDebounce) clearTimeout(fetchTimeDebounce);
+    fetchTimeDebounce = setTimeout(() => {
+        const parsed = DateTime.fromISO(fetchTimeLocal.value, { zone: 'local' }).toUTC();
         if (parsed.isValid) fetchDepartures(parsed.toISO() ?? undefined);
-    },
+    }, 500);
+}
+
+onBeforeUnmount(() => {
+    if (fetchTimeDebounce) clearTimeout(fetchTimeDebounce);
 });
 
 const minDateTimeLocal = computed(() =>
@@ -216,6 +232,7 @@ watch(router.currentRoute, (to) => {
                             type="datetime-local"
                             class="input input-bordered input-xs text-sm w-auto"
                             :min="minDateTimeLocal"
+                            @input="onFetchTimeInput"
                         />
                         <!-- Travel type filter -->
                         <select
