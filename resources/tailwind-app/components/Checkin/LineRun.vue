@@ -37,21 +37,22 @@ function getDeviationInMinutes(item: StopoverResource): number | null {
     const planned = item.arrivalPlanned ? item.arrivalPlanned : item.departurePlanned;
     const real = item.arrivalPlanned ? item.arrivalReal : item.departureReal;
     if (!planned || !real) return null;
-    return DateTime.fromISO(real).diff(DateTime.fromISO(planned), 'minutes').minutes;
+    return Math.round(DateTime.fromISO(real).diff(DateTime.fromISO(planned), 'minutes').minutes);
 }
 
 function getPlannedTime(item: StopoverResource): string | null {
     const deviation = getDeviationInMinutes(item);
-    if (deviation === null || Math.abs(deviation) < 1) return null;
+    if (deviation === null || deviation === 0) return null;
     return item.arrivalPlanned ?? item.departurePlanned ?? null;
 }
 
 function deviationClass(item: StopoverResource): string {
     const deviation = getDeviationInMinutes(item);
     if (deviation === null) return '';
-    if (deviation <= -1) return 'text-info';
+    if (deviation < 0) return 'text-info';
+    if (deviation > 5) return 'text-error';
     if (deviation >= 1) return 'text-warning';
-    return '';
+    return 'text-success';
 }
 
 async function fetchLineRun(): Promise<void> {
