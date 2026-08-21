@@ -46,6 +46,24 @@ function getPlannedTime(item: StopoverResource): string | null {
     return item.arrivalPlanned ?? item.departurePlanned ?? null;
 }
 
+function getPlatformPair(item: StopoverResource): { planned: string | null; real: string | null } {
+    if (item.arrivalPlanned) {
+        return { planned: item.arrivalPlatformPlanned, real: item.arrivalPlatformReal };
+    }
+    return { planned: item.departurePlatformPlanned, real: item.departurePlatformReal };
+}
+
+function getPlatform(item: StopoverResource): string | null {
+    const { planned, real } = getPlatformPair(item);
+    return real ?? planned;
+}
+
+function getReplacedPlatform(item: StopoverResource): string | null {
+    const { planned, real } = getPlatformPair(item);
+    if (!planned || !real || planned === real) return null;
+    return planned;
+}
+
 function deviationClass(item: StopoverResource): string {
     const deviation = getDeviationInMinutes(item);
     if (deviation === null) return '';
@@ -115,6 +133,18 @@ watch(() => props.tripId, fetchLineRun);
                     {{ item.name }}
                     <span v-if="item.cancelled" class="badge badge-error badge-xs align-middle ml-1">
                         {{ trans('stationboard.stop-cancelled') }}
+                    </span>
+                </span>
+                <span v-if="getPlatform(item)" class="flex-shrink-0 ml-3 flex items-center gap-1 text-xs">
+                    <span v-if="getReplacedPlatform(item)" class="text-base-content/40 line-through">
+                        {{ getReplacedPlatform(item) }}
+                    </span>
+                    <span
+                        class="badge badge-soft badge-sm text-xs whitespace-nowrap"
+                        :class="getReplacedPlatform(item) ? 'badge-warning' : 'badge-info'"
+                        :title="trans('platform')"
+                    >
+                        {{ getPlatform(item) }}
                     </span>
                 </span>
                 <span class="text-right text-sm flex-shrink-0 ml-3">
