@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Moon, Plane, Ship, Train } from '@lucide/vue';
+import { CarTaxiFront, Container, Moon, Plane, Ship, Train } from '@lucide/vue';
 import { computed } from 'vue';
 
 const props = defineProps<{
@@ -26,13 +26,15 @@ const svgMap: Record<string, string> = {
     suburban: '/img/suburban.svg',
 };
 
-type LucideComponent = typeof Train | typeof Ship | typeof Plane | typeof Moon;
+type LucideComponent = typeof Train | typeof Ship | typeof Plane | typeof Moon | typeof CarTaxiFront | typeof Container;
 const lucideMap: Record<string, LucideComponent> = {
     FERRY: Ship,
     ferry: Ship,
     AIRPLANE: Plane,
     plane: Plane,
     NIGHT_RAIL: Moon,
+    taxi: CarTaxiFront,
+    freightTrain: Container,
 };
 
 const svgSrc = computed((): string | null => {

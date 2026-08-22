@@ -18,7 +18,6 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { Api, Business, MentionDto, StatusResource, StopoverResource, UserResource } from '../../../types/Api.gen';
 import LineIndicator from '../../../vue/components/LineIndicator.vue';
 import TrwMap from '../../../vue/components/Map/Map.vue';
-import ProductIcon from '../../../vue/components/ProductIcon.vue';
 import { Dtm } from '../../../vue/helpers/DateTime';
 import {
     getArrivalAttribute,
@@ -35,6 +34,7 @@ import { useUserStore } from '../../../vue/stores/user';
 import { VISIBILITY_ICONS } from '../../helpers/visibility';
 import DistanceSpan from '../Stats/DistanceSpan.vue';
 import DurationSpan from '../Stats/DurationSpan.vue';
+import TransportIcon from '../TransportIcon.vue';
 import StatusContextMenu from './StatusContextMenu.vue';
 import StatusDeleteModal from './StatusDeleteModal.vue';
 import StatusEditModal from './StatusEditModal.vue';
@@ -294,12 +294,11 @@ const inProgress = computed(() => progress.value > 0 && progress.value < 100);
 
                             <!-- Line info row -->
                             <div class="flex flex-wrap items-center gap-1.5 mt-1 text-sm text-base-content/60">
-                                <span class="inline-flex items-center w-4 h-4 [&_img]:w-4 [&_img]:h-4 [&_i]:text-base">
-                                    <ProductIcon
-                                        :mode="statusObject.checkin.mode"
-                                        :product="statusObject.checkin.category"
-                                    />
-                                </span>
+                                <TransportIcon
+                                    :mode="statusObject.checkin.mode"
+                                    :product="statusObject.checkin.category"
+                                    class="shrink-0"
+                                />
                                 <LineIndicator
                                     class-name="line-indicator line-badge align-middle"
                                     :product-name="statusObject.checkin.category"
