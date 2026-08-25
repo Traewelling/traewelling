@@ -13,6 +13,7 @@ use App\Services\ProfilePictureService;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -265,16 +266,30 @@ class SettingsController extends Controller
         }
     }
 
+    /**
+     * @todo The profile picture of a user does not belong below /settings. Move this to
+     *       DELETE /users/{userUuid}/profile-picture with the next API migration and keep the
+     *       old path around for the transition period.
+     */
     #[OA\Delete(
-        path: '/settings/profile-picture',
+        path: '/settings/profile-picture/{userUuid}',
         operationId: 'deleteProfilePicture',
-        description: 'Delete the current user\'s profile picture',
-        summary: 'Delete the current user\'s profile picture',
+        description: 'Delete a profile picture. The userUuid may be omitted to delete the own picture, which answers with a message. Deleting the picture of another user requires the admin role, is meant for moderation and answers with 204.',
+        summary: 'Delete a profile picture',
         security: [new OA\SecurityScheme(
             securityScheme: 'passport',
             type: 'oauth2',
         )],
         tags: ['Settings'],
+        parameters: [
+            new OA\Parameter(
+                name: 'userUuid',
+                description: 'UUID of the user whose profile picture should be deleted. May be omitted to delete the own picture.',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(type: 'string', format: 'uuid'),
+            ),
+        ],
         responses: [
             new OA\Response(
                 response: 200,
@@ -290,17 +305,32 @@ class SettingsController extends Controller
                     ]
                 )
             ),
+            new OA\Response(response: 204, description: 'Picture of another user deleted'),
             new OA\Response(response: 400, description: 'Bad Request'),
             new OA\Response(response: 401, description: 'Unauthorized'),
+            new OA\Response(response: 403, description: 'Forbidden'),
+            new OA\Response(response: 404, description: 'Not Found'),
         ]
     )]
-    public function deleteProfilePicture(): JsonResponse
+    public function deleteProfilePicture(?string $userUuid = null): JsonResponse|Response
     {
-        if ($this->profilePictureService->delete(user: auth()->user())) {
-            return $this->sendResponse(['message' => __('settings.profilePicture.deleted')]);
+        $user = $userUuid === null ? auth()->user() : $this->resolveUserByIdOrUuid($userUuid);
+
+        $this->authorize('deleteProfilePicture', $user);
+
+        if (!$this->profilePictureService->delete(user: $user)) {
+            return $this->sendError(__('messages.exception.general'), 400);
         }
 
-        return $this->sendError(__('messages.exception.general'), 400);
+        if (!auth()->user()->is($user)) {
+            activity()->causedBy(auth()->user())
+                ->performedOn($user)
+                ->log('Deleted profile picture');
+
+            return response()->noContent();
+        }
+
+        return $this->sendResponse(['message' => __('settings.profilePicture.deleted')]);
     }
 
     #[OA\Post(

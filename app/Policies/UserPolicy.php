@@ -78,6 +78,11 @@ class UserPolicy
         return $user->id === $model->id;
     }
 
+    public function deleteProfilePicture(User $user, User $model): bool
+    {
+        return $user->is($model) || $user->hasRole('admin');
+    }
+
     /**
      * Check if user can check in another user
      */

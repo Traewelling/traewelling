@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Resources;
 
 use App\Models\User;
+use App\Services\ProfilePictureService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Attributes as OA;
 use Spatie\Permission\Models\Role;
@@ -12,7 +13,8 @@ use Spatie\Permission\Models\Role;
 #[OA\Schema(
     title: 'AdminUserResource',
     required: [
-        'id', 'username', 'displayName', 'email', 'emailVerifiedAt', 'hasPassword', 'mastodonUrl',
+        'id', 'uuid', 'username', 'displayName', 'email', 'emailVerifiedAt', 'hasPassword', 'mastodonUrl',
+        'profilePictureUrl',
         'lastLogin', 'createdAt', 'trainDistance', 'trainDuration', 'points',
         'roles', 'allRoles', 'mailChanges',
         'privacyPolicyCurrent', 'privacyPolicyFuture', 'privacyPolicyFutureExists',
@@ -20,12 +22,19 @@ use Spatie\Permission\Models\Role;
     ],
     properties: [
         new OA\Property(property: 'id', type: 'integer'),
+        new OA\Property(property: 'uuid', type: 'string', format: 'uuid'),
         new OA\Property(property: 'username', type: 'string'),
         new OA\Property(property: 'displayName', type: 'string'),
         new OA\Property(property: 'email', type: 'string', nullable: true),
         new OA\Property(property: 'emailVerifiedAt', type: 'string', format: 'date-time', nullable: true),
         new OA\Property(property: 'hasPassword', type: 'boolean'),
         new OA\Property(property: 'mastodonUrl', type: 'string', nullable: true),
+        new OA\Property(
+            property: 'profilePictureUrl',
+            description: 'URL of the uploaded profile picture. Null if the user has no uploaded picture.',
+            type: 'string',
+            nullable: true,
+        ),
         new OA\Property(property: 'lastLogin', type: 'string', format: 'date-time', nullable: true),
         new OA\Property(property: 'createdAt', type: 'string', format: 'date-time'),
         new OA\Property(property: 'trainDistance', type: 'number', description: 'Total distance in metres'),
@@ -75,12 +84,14 @@ class AdminUserResource extends JsonResource
         /** @var User $this */
         return [
             'id' => (int) $this->id,
+            'uuid' => $this->uuid,
             'username' => $this->username,
             'displayName' => $this->name,
             'email' => $this->email,
             'emailVerifiedAt' => $this->email_verified_at?->toIso8601String(),
             'hasPassword' => $this->password !== null,
             'mastodonUrl' => $this->mastodonUrl,
+            'profilePictureUrl' => resolve(ProfilePictureService::class)->getUploadedUrl($this->resource),
             'lastLogin' => $this->last_login?->toIso8601String(),
             'createdAt' => $this->created_at->toIso8601String(),
             'trainDistance' => (float) $this->train_distance,

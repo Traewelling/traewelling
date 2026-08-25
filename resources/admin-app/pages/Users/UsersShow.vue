@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowLeft } from '@lucide/vue';
+import { ArrowLeft, ExternalLink, Trash2 } from '@lucide/vue';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { type AdminUserResource, Api } from '../../../types/Api.gen';
@@ -17,6 +17,9 @@ const emailInput = ref('');
 const emailSaving = ref(false);
 const emailError = ref<string | null>(null);
 const emailSuccess = ref(false);
+
+const avatarDeleting = ref(false);
+const avatarError = ref<string | null>(null);
 
 const rolesSaving = ref(false);
 const rolesError = ref<string | null>(null);
@@ -74,6 +77,23 @@ async function saveRoles(): Promise<void> {
     }
 }
 
+async function deleteProfilePicture(): Promise<void> {
+    if (!user.value?.uuid) return;
+    if (!confirm(`Delete the profile picture of @${user.value.username}?`)) return;
+    avatarDeleting.value = true;
+    avatarError.value = null;
+    try {
+        await api.settings.deleteProfilePicture(user.value.uuid);
+        await fetchUser();
+    } catch (e: unknown) {
+        const err = e as { error?: { message?: string } };
+        avatarError.value =
+            err?.error?.message ?? (e instanceof Error ? e.message : 'Failed to delete profile picture');
+    } finally {
+        avatarDeleting.value = false;
+    }
+}
+
 function toggleRole(roleName: string): void {
     if (roleName === 'admin') return;
     const idx = selectedRoles.value.indexOf(roleName);
@@ -127,12 +147,43 @@ watch(userId, fetchUser);
                 </router-link>
                 <h1 class="text-2xl font-bold">@{{ user.username }}</h1>
                 <span class="text-base-content/50">{{ user.displayName }}</span>
-                <a :href="`/@${user.username}`" target="_blank" class="btn btn-ghost btn-sm ml-auto"> Frontend ↗ </a>
+                <a :href="`/@${user.username}`" target="_blank" class="btn btn-ghost btn-sm ml-auto gap-1">
+                    Frontend
+                    <ExternalLink class="w-4 h-4" />
+                </a>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-[5fr_7fr] gap-6">
                 <!-- Left column -->
                 <div class="space-y-4">
+                    <!-- Profile picture card -->
+                    <div class="card bg-base-100 shadow">
+                        <div class="card-body gap-3">
+                            <h2 class="card-title text-base">Profile Picture</h2>
+                            <div class="flex items-center gap-4">
+                                <img
+                                    :src="user.profilePictureUrl ?? `/@${user.username}/picture`"
+                                    alt=""
+                                    class="w-20 h-20 rounded-full object-cover bg-base-200"
+                                />
+                                <p v-if="!user.profilePictureUrl" class="flex-1 text-sm text-base-content/50">
+                                    No uploaded picture, showing the generated default.
+                                </p>
+                                <button
+                                    v-else
+                                    class="btn btn-sm btn-error ml-auto"
+                                    :disabled="avatarDeleting"
+                                    @click="deleteProfilePicture"
+                                >
+                                    <span v-if="avatarDeleting" class="loading loading-spinner loading-xs" />
+                                    <Trash2 v-else class="w-4 h-4" />
+                                    Delete
+                                </button>
+                            </div>
+                            <p v-if="avatarError" class="text-xs text-error">{{ avatarError }}</p>
+                        </div>
+                    </div>
+
                     <!-- User info card -->
                     <div class="card bg-base-100 shadow">
                         <div class="card-body gap-3">
@@ -140,6 +191,9 @@ watch(userId, fetchUser);
                             <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
                                 <dt class="text-base-content/50 font-medium">ID</dt>
                                 <dd class="font-mono">{{ user.id }}</dd>
+
+                                <dt class="text-base-content/50 font-medium">UUID</dt>
+                                <dd class="font-mono text-xs break-all">{{ user.uuid }}</dd>
 
                                 <dt class="text-base-content/50 font-medium">Username</dt>
                                 <dd>@{{ user.username }}</dd>

@@ -166,7 +166,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
                 ->middleware(['scope:read-settings']);
             Route::put('profile', [SettingsController::class, 'updateSettings'])
                 ->middleware(['scope:write-settings-profile']);
-            Route::delete('profile-picture', [SettingsController::class, 'deleteProfilePicture'])
+            Route::delete('profile-picture/{userUuid?}', [SettingsController::class, 'deleteProfilePicture'])
+                ->whereUuid('userUuid')
                 ->middleware(['scope:write-settings-profile-picture']);
             Route::post('profile-picture', [SettingsController::class, 'uploadProfilePicture'])
                 ->middleware(['scope:write-settings-profile-picture']);
