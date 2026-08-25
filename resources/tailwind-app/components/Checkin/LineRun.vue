@@ -21,6 +21,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     (e: 'select', stopover: StopoverResource): void;
+    (e: 'trip', trip: TripResource): void;
 }>();
 
 const stopovers = ref<StopoverResource[]>([]);
@@ -94,6 +95,7 @@ async function fetchLineRun(): Promise<void> {
             lineName: props.lineName ?? '',
         });
         const trip: TripResource = res.data?.data as TripResource;
+        emit('trip', trip);
 
         const givenDeparture = DateTime.fromISO(props.plannedWhen);
         const allStopovers = trip.stopovers ?? [];

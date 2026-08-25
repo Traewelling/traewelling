@@ -31,6 +31,7 @@ const fastCheckinUsed = ref(false);
 
 const allStopovers = ref<StopoverResource[]>([]);
 const loadingStops = ref(false);
+const tripUuid = ref<string | null>(null);
 
 async function loadAllStops(): Promise<void> {
     loadingStops.value = true;
@@ -40,6 +41,7 @@ async function loadAllStops(): Promise<void> {
             lineName: lineName.value ?? '',
         });
         const trip = res.data?.data as TripResource;
+        tripUuid.value = trip.uuid ?? null;
         allStopovers.value = (trip.stopovers ?? []).slice(0, -1);
     } catch {
         // ignore
@@ -158,6 +160,7 @@ onMounted(() => {
                 :planned-when="effectiveDeparture"
                 :fast-checkin-id="!fastCheckinUsed && destinationId ? Number(destinationId) : null"
                 @select="selectedDestination = $event"
+                @trip="tripUuid = $event.uuid ?? null"
             />
 
             <!-- Step 3: Checkin form -->
@@ -166,6 +169,7 @@ onMounted(() => {
                 :key="selectedDestination?.id"
                 :departure="departure"
                 :destination="selectedDestination!"
+                :trip-uuid="tripUuid"
             />
         </div>
     </AppLayout>

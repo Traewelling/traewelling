@@ -37,6 +37,7 @@ const travelType = ref('');
 
 // Modal state
 const selectedTrain = ref<DepartureResource | null>(null);
+const tripUuid = ref<string | null>(null);
 const selectedDestination = ref<StopoverResource | null>(null);
 const modalRef = ref<HTMLDialogElement | null>(null);
 
@@ -416,12 +417,14 @@ watch(router.currentRoute, (to) => {
                         :start-id="selectedTrain.stop?.id ?? 0"
                         :planned-when="selectedTrain.plannedWhen"
                         @select="selectDestination"
+                        @trip="tripUuid = $event.uuid ?? null"
                     />
                     <CheckinForm
                         v-else-if="selectedTrain && selectedDestination"
                         :key="selectedDestination.id"
                         :departure="selectedTrain"
                         :destination="selectedDestination"
+                        :trip-uuid="tripUuid"
                     />
                 </div>
             </div>
