@@ -380,8 +380,6 @@
     "map.consent.load": "Karte laden",
     "map.consent.notice": "Diese Karte lädt Kartendaten von externen Servern (OpenFreeMap / OpenStreetMap). Deine IP-Adresse wird dabei an diese Anbieter übermittelt.",
     "map.consent.remember": "Auswahl merken",
-    "map-providers.cargo": "OpenFreeMap",
-    "map-providers.open-railway-map": "Open Railway Map",
     "menu.abort": "Abbrechen",
     "menu.about": "Über Träwelling",
     "menu.active": "Unterwegs",

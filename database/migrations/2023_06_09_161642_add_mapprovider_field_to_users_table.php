@@ -10,8 +10,8 @@ return new class() extends Migration
     public function up(): void
     {
         Schema::table('users', static function (Blueprint $table) {
-            $table->enum('mapprovider', [MapProvider::CARGO->value, MapProvider::OPEN_RAILWAY_MAP->value])
-                ->default(MapProvider::CARGO->value)
+            $table->enum('mapprovider', ['cargo', MapProvider::OPEN_RAILWAY_MAP->value])
+                ->default('cargo')
                 ->after('likes_enabled');
         });
     }

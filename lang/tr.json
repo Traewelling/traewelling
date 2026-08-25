@@ -216,7 +216,6 @@
     "events.show-all-for-event": "Bu etkinlik için tüm check-in'leri göster",
     "events.suggest.card_button": "Etkinlik önerin",
     "export.departure": "Kalkış",
-    "map-providers.cargo": "Carto",
     "menu.oauth_authorize.application_information.user_count": ":count Kullanıcı|:count Kullanıcılar",
     "menu.oauth_authorize.third_party": "Bu uygulama resmi bir Träwelling uygulaması değildir!",
     "menu.share": "Paylaş",

@@ -26,7 +26,7 @@ window.setTilingLayer = (mapprovider, map, opacity = 1) => {
 
             //add additional copyright notice to map
             break;
-        case 'cargo':
+        case 'open-free-map':
         default:
             // Default voyager map
             // eslint-disable-next-line no-undef

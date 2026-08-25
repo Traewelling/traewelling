@@ -22,7 +22,7 @@ const lineColor = ref<string>('#c72730');
 const polylines = ref<GeoJSONFeature[]>([]);
 const livePositions = ref<LivePointDto[]>([]);
 const events = ref<EventResource[]>([]);
-const mapProvider = computed<MapProvider>(() => userStore.user?.mapProvider ?? MapProvider.Cargo);
+const mapProvider = computed<MapProvider>(() => userStore.user?.mapProvider ?? MapProvider.OpenFreeMap);
 
 if (props.statuses.length === 1) {
     lineColor.value = props.statuses[0].checkin.routeColor ? '#' + props.statuses[0].checkin.routeColor : '#c72730';

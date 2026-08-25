@@ -124,7 +124,7 @@ onMounted(() => {
                                 :map-provider="
                                     user.user?.mapProvider
                                         ? MapProvider[user.user!.mapProvider as keyof typeof MapProvider]
-                                        : MapProvider.Cargo
+                                        : MapProvider.OpenFreeMap
                                 "
                                 :bounds="bounds"
                             >

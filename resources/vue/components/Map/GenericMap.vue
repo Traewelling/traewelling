@@ -65,7 +65,7 @@ const props = defineProps({
     },
     mapProvider: {
         type: String as PropType<MapProvider>,
-        default: MapProvider.Cargo,
+        default: MapProvider.OpenFreeMap,
     },
     previewPolyline: {
         type: Object as PropType<GeoJSONFeature | null>,

@@ -93,7 +93,7 @@ setInterval(() => {
                 v-if="user.hasBeta"
                 :live-positions="livePositions"
                 :bounds="bounds"
-                :map-provider="user.user?.mapProvider ?? MapProvider.Cargo"
+                :map-provider="user.user?.mapProvider ?? MapProvider.OpenFreeMap"
             >
                 <EventMarker v-for="trwlEvent in events" :key="trwlEvent.id" :event="trwlEvent" />
             </GenericMap>

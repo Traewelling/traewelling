@@ -11741,7 +11741,7 @@
                 "title": "DataProvider",
                 "description": "What type of data provider did the user specify? (users need to be in closed-beta for this to take effect)",
                 "type": "string",
-                "example": "cargo",
+                "example": "default",
                 "enum": [
                     "default",
                     "transitous"
@@ -11806,11 +11806,11 @@
             },
             "MapProvider": {
                 "title": "MapProvider",
-                "description": "What type of map provider (cargo, open-railway-map) did the user specify?",
+                "description": "What type of map provider (open-free-map, open-railway-map) did the user specify?",
                 "type": "string",
-                "example": "cargo",
+                "example": "open-free-map",
                 "enum": [
-                    "cargo",
+                    "open-free-map",
                     "open-railway-map"
                 ]
             },

@@ -96,7 +96,7 @@ onUnmounted(() => {
                             :map-provider="
                                 user.user?.mapProvider
                                     ? MapProvider[user.user!.mapProvider as keyof typeof MapProvider]
-                                    : MapProvider.Cargo
+                                    : MapProvider.OpenFreeMap
                             "
                         >
                             <EventMarker v-for="event in events" :key="event.id" :event="event" />
