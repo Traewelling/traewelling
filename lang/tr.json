@@ -42,7 +42,7 @@
     "controller.transport.checkin-ok": ":lineName hattına başarıyla check-in yaptınız!|:lineName hattına başarıyla check-in yaptınız!",
     "controller.transport.no-name-given": "Bir istasyon ismi vermelisiniz!",
     "controller.transport.no-station-found": "Bu arama için bir istasyon bulunamadı.",
-    "controller.transport.social-post": ":Destination durağına doğru :lineName hattındayım! #NowTräwelling |:Destination durağına doğru :lineName hattındayım! #NowTräwelling ",
+    "controller.transport.social-post": ":Destination durağına doğru :lineName hattındayım! #NowTräwelling |:Destination durağına doğru :lineName hattındayım! #NowTräwelling",
     "controller.user.follow-404": "Böyle bir takip bulunmamakta.",
     "controller.user.follow-delete-not-permitted": "Bu eyleme izin verilmemekte.",
     "controller.user.follow-destroyed": "Kullanıcıyı takipten çıktınız.",
@@ -239,5 +239,6 @@
     "distance.meters.short": "m",
     "distance.kilometers.short": "km",
     "distance.meters": "metre",
-    "distance.kilometers": "kilometre"
+    "distance.kilometers": "kilometre",
+    "contribute.title": "Merhaba :username!"
 }

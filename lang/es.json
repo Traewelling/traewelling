@@ -280,7 +280,7 @@
     "maintenance.subtitle": "No te preocupes, estamos trabajando en mejorar el sitio.",
     "maintenance.title": "Estamos realizando actualizaciones.",
     "maintenance.try-later": "Prueba otra vez más tarde.",
-    "map-providers.cargo": "CARTO (anteriormente CartoDB)",
+    "map-providers.cargo": "OpenFreeMap",
     "map-providers.open-railway-map": "OpenRailwayMap",
     "menu.abort": "Abortar",
     "menu.about": "Sobre Träwelling",
@@ -893,7 +893,7 @@
     "dashboard-end-seven-days": "El panel de control solo muestra los registros de la última semana.",
     "dates.Today": "Hoy",
     "map.consent.load": "Cargar mapa",
-    "map.consent.notice": "Este mapa carga imágenes de mosaicos desde servidores externos (Carto / OpenStreetMap). Su dirección IP se compartirá con estos proveedores.",
+    "map.consent.notice": "Este mapa carga datos cartográficos desde servidores externos (OpenFreeMap / OpenStreetMap). Su dirección IP se compartirá con estos proveedores.",
     "map.consent.remember": "Recuerda mi elección",
     "checkin.conflict.force": "Viajes registrados manualmente (sin puntos)",
     "footer.elsewhere": "En otros lugares",
@@ -1049,5 +1049,12 @@
     "stats.year": "Año",
     "stats.yearly-breakdown": "Desglose anual",
     "status.visibility.5": "Usuarios de confianza",
-    "status.visibility.5.detail": "Solo visible para tus usuarios de confianza"
+    "status.visibility.5.detail": "Solo visible para tus usuarios de confianza",
+    "tag.save": "Guardar etiqueta",
+    "tag.custom_key": "Tipo personalizado",
+    "tag.custom_key.placeholder": "p. ej. ocupación",
+    "tickets.delete-confirm-title": "¿Eliminar billete? Todas las asignaciones de este billete a viajes se eliminarán de forma irreversible.",
+    "tickets.edit": "Editar billete",
+    "tickets.first-used": "Primer viaje",
+    "tickets.info-text": "Guarda tus billetes en Träwelling y asígnalos a tus viajes. De esta forma, siempre sabrás qué billete usaste y podrás ver en tus estadísticas cuánto te costó cada viaje. Tus billetes solo son visibles para ti."
 }
