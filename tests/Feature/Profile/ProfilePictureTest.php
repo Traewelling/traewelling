@@ -7,6 +7,7 @@ namespace Tests\Feature\Profile;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 use Laravel\Passport\Passport;
 use Tests\ApiTestCase;
 
@@ -179,5 +180,53 @@ class ProfilePictureTest extends ApiTestCase
         $response = $this->deleteJson('/api/v1/settings/profile-picture');
 
         $response->assertStatus(400);
+    }
+
+    public function test_admin_can_delete_avatar_of_another_user(): void
+    {
+        $uploadDir = public_path('/uploads/avatars');
+        File::ensureDirectoryExists($uploadDir);
+
+        $avatarFile = 'test_admin_delete_' . time() . '.png';
+        File::put($uploadDir . '/' . $avatarFile, 'dummy');
+
+        $user = User::factory(['avatar' => $avatarFile])->create();
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        Passport::actingAs($admin, ['*']);
+
+        $response = $this->deleteJson('/api/v1/settings/profile-picture/' . $user->uuid);
+
+        $response->assertNoContent();
+        $this->assertNull($user->fresh()->avatar);
+        $this->assertFalse(File::exists($uploadDir . '/' . $avatarFile));
+        $this->assertDatabaseHas('activity_log', [
+            'causer_id' => $admin->id,
+            'subject_id' => $user->id,
+            'subject_type' => User::class,
+            'description' => 'Deleted profile picture',
+        ]);
+    }
+
+    public function test_user_cannot_delete_avatar_of_another_user(): void
+    {
+        $user = User::factory(['avatar' => 'someones_avatar.png'])->create();
+        Passport::actingAs(User::factory()->create(), ['*']);
+
+        $response = $this->deleteJson('/api/v1/settings/profile-picture/' . $user->uuid);
+
+        $response->assertForbidden();
+        $this->assertNotNull($user->fresh()->avatar);
+    }
+
+    public function test_delete_by_uuid_of_unknown_user_returns_404(): void
+    {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        Passport::actingAs($admin, ['*']);
+
+        $response = $this->deleteJson('/api/v1/settings/profile-picture/' . Str::uuid()->toString());
+
+        $response->assertNotFound();
     }
 }

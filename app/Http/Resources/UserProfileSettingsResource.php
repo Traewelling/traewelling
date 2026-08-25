@@ -10,6 +10,7 @@ use OpenApi\Attributes as OA;
 #[OA\Schema(
     title: 'UserProfileSettings',
     required: [
+        'uuid',
         'username',
         'displayName',
         'profilePicture',
@@ -33,6 +34,7 @@ use OpenApi\Attributes as OA;
         'bio',
     ],
     properties: [
+        new OA\Property(property: 'uuid', type: 'string', format: 'uuid'),
         new OA\Property(property: 'username', type: 'string', example: 'Gertrud123'),
         new OA\Property(property: 'displayName', type: 'string', example: 'Gertrud'),
         new OA\Property(
@@ -96,6 +98,7 @@ class UserProfileSettingsResource extends JsonResource
     {
         /** @var User $this */
         return [
+            'uuid' => $this->uuid,
             'username' => $this->username,
             'displayName' => $this->name,
             'profilePicture' => resolve(ProfilePictureService::class)->getUrlForUserId($this->id),

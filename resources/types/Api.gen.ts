@@ -1048,6 +1048,8 @@ export interface AdminUserListResource {
 /** AdminUserResource */
 export interface AdminUserResource {
   id: number;
+  /** @format uuid */
+  uuid: string;
   username: string;
   displayName: string;
   email: string | null;
@@ -1055,6 +1057,8 @@ export interface AdminUserResource {
   emailVerifiedAt: string | null;
   hasPassword: boolean;
   mastodonUrl: string | null;
+  /** URL of the uploaded profile picture. Null if the user has no uploaded picture. */
+  profilePictureUrl: string | null;
   /** @format date-time */
   lastLogin: string | null;
   /** @format date-time */
@@ -2686,6 +2690,8 @@ export interface Notification {
 
 /** UserProfileSettings */
 export interface UserProfileSettingsResource {
+  /** @format uuid */
+  uuid: string;
   /** @example "Gertrud123" */
   username: string;
   /** @example "Gertrud" */
@@ -6363,6 +6369,30 @@ export class Api<
       }),
 
     /**
+     * @description Delete a profile picture. The userUuid may be omitted to delete the own picture, which answers with a message. Deleting the picture of another user requires the admin role, is meant for moderation and answers with 204.
+     *
+     * @tags Settings
+     * @name DeleteProfilePicture
+     * @summary Delete a profile picture
+     * @request DELETE:/settings/profile-picture/{userUuid}
+     * @secure
+     */
+    deleteProfilePicture: (userUuid: string, params: RequestParams = {}) =>
+      this.request<
+        {
+          /** @example "Profile picture deleted successfully." */
+          message: string;
+        },
+        void
+      >({
+        path: `/settings/profile-picture/${userUuid}`,
+        method: "DELETE",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * @description Upload a new profile picture for the current user
      *
      * @tags Settings
@@ -6393,30 +6423,6 @@ export class Api<
         body: data,
         secure: true,
         type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Delete the current user's profile picture
-     *
-     * @tags Settings
-     * @name DeleteProfilePicture
-     * @summary Delete the current user's profile picture
-     * @request DELETE:/settings/profile-picture
-     * @secure
-     */
-    deleteProfilePicture: (params: RequestParams = {}) =>
-      this.request<
-        {
-          /** @example "Profile picture deleted successfully." */
-          message: string;
-        },
-        void
-      >({
-        path: `/settings/profile-picture`,
-        method: "DELETE",
-        secure: true,
         format: "json",
         ...params,
       }),

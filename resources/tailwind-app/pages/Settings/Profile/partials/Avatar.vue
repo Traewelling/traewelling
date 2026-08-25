@@ -45,7 +45,7 @@ function updateProfileImage() {
 }
 
 function deleteProfileImage() {
-    api.settings.deleteProfilePicture().then((response) => {
+    api.settings.deleteProfilePicture(props.profile.uuid).then((response) => {
         response.json().then((data) => {
             imageUploadBase64.value = '';
             emits('image-updated', data.data);

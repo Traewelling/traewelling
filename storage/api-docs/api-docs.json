@@ -5045,6 +5045,70 @@
                 ]
             }
         },
+        "/settings/profile-picture/{userUuid}": {
+            "delete": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Delete a profile picture",
+                "description": "Delete a profile picture. The userUuid may be omitted to delete the own picture, which answers with a message. Deleting the picture of another user requires the admin role, is meant for moderation and answers with 204.",
+                "operationId": "deleteProfilePicture",
+                "parameters": [
+                    {
+                        "name": "userUuid",
+                        "in": "path",
+                        "description": "UUID of the user whose profile picture should be deleted. May be omitted to delete the own picture.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "message"
+                                    ],
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Profile picture deleted successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "Picture of another user deleted"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "securityScheme": "passport",
+                        "type": "oauth2"
+                    }
+                ]
+            }
+        },
         "/settings/profile-picture": {
             "post": {
                 "tags": [
@@ -5098,47 +5162,6 @@
                     },
                     "422": {
                         "description": "Unprocessable Entity"
-                    }
-                },
-                "security": [
-                    {
-                        "securityScheme": "passport",
-                        "type": "oauth2"
-                    }
-                ]
-            },
-            "delete": {
-                "tags": [
-                    "Settings"
-                ],
-                "summary": "Delete the current user's profile picture",
-                "description": "Delete the current user's profile picture",
-                "operationId": "deleteProfilePicture",
-                "responses": {
-                    "200": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "required": [
-                                        "message"
-                                    ],
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Profile picture deleted successfully."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
                     }
                 },
                 "security": [
@@ -12877,12 +12900,14 @@
                 "title": "AdminUserResource",
                 "required": [
                     "id",
+                    "uuid",
                     "username",
                     "displayName",
                     "email",
                     "emailVerifiedAt",
                     "hasPassword",
                     "mastodonUrl",
+                    "profilePictureUrl",
                     "lastLogin",
                     "createdAt",
                     "trainDistance",
@@ -12899,6 +12924,10 @@
                 "properties": {
                     "id": {
                         "type": "integer"
+                    },
+                    "uuid": {
+                        "type": "string",
+                        "format": "uuid"
                     },
                     "username": {
                         "type": "string"
@@ -12919,6 +12948,11 @@
                         "type": "boolean"
                     },
                     "mastodonUrl": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "profilePictureUrl": {
+                        "description": "URL of the uploaded profile picture. Null if the user has no uploaded picture.",
                         "type": "string",
                         "nullable": true
                     },
@@ -15904,6 +15938,7 @@
             "UserProfileSettingsResource": {
                 "title": "UserProfileSettings",
                 "required": [
+                    "uuid",
                     "username",
                     "displayName",
                     "profilePicture",
@@ -15927,6 +15962,10 @@
                     "bio"
                 ],
                 "properties": {
+                    "uuid": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
                     "username": {
                         "type": "string",
                         "example": "Gertrud123"

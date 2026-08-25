@@ -32,6 +32,18 @@ class ProfilePictureService
         return url('/uploads/avatars/' . $user->avatar);
     }
 
+    /**
+     * URL of the uploaded picture, without(!!!) any visibility check. Null if the user has no uploaded picture.
+     */
+    public function getUploadedUrl(User $user): ?string
+    {
+        if ($user->avatar === null) {
+            return null;
+        }
+
+        return url('/uploads/avatars/' . $user->avatar);
+    }
+
     public function generateProfilePicture(User $user): array
     {
         $publicPath = public_path('/uploads/avatars/' . $user->avatar);
