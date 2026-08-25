@@ -872,6 +872,7 @@
     "support.privacy.description": "Ton numéro d'identification, ton nom d'utilisateur·rice et ton adresse e-mail sont enregistrés ensemble avec ta demande dans notre système de ticket.",
     "support.privacy.description2": "Les données seront supprimées après un an indépendamment de ton compte Träwelling.",
     "support.rate_limit_exceeded": "Tu as récemment créé une demande d'assistance. Merci d'attendre quelques jours avant d'en créer une autre.",
+    "tag.suggestion.trip": "D'autres voyageurs sur ce trajet",
     "tag.add": "Ajouter un tag",
     "tag.save": "Enregistrer le tag",
     "tag.custom_key": "Type personnalisé",

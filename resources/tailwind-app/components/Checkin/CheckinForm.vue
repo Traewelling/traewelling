@@ -26,6 +26,7 @@ const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 const props = defineProps<{
     departure: DepartureResource;
     destination: StopoverResource;
+    tripUuid?: string | null;
 }>();
 
 const router = useRouter();
@@ -212,7 +213,7 @@ async function checkIn(): Promise<void> {
         </div>
 
         <!-- Tags -->
-        <TagEditor ref="tagEditor" />
+        <TagEditor ref="tagEditor" :trip-uuid="props.tripUuid" />
 
         <!-- Submit -->
         <button

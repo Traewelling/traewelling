@@ -49,6 +49,17 @@ export enum TravelType {
 }
 
 /**
+ * TagSuggestionSource
+ * Describes why a tag was suggested.
+ * @example "trip"
+ */
+export enum TagSuggestionSource {
+  Trip = "trip",
+  Recent = "recent",
+  Frequent = "frequent",
+}
+
+/**
  * visibility
  * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the user specify?
  * @example 0
@@ -2160,6 +2171,8 @@ export interface StatusTagSuggestionResource {
   key: string;
   /** @example "94 80 0450 921 D-AVG" */
   value: string;
+  /** Describes why a tag was suggested. */
+  source: TagSuggestionSource;
 }
 
 /** StopoverResource */
@@ -7486,7 +7499,7 @@ export class Api<
   };
   tags = {
     /**
-     * @description Returns tag suggestions based on the user's most recently used key:value pairs and the most frequently used key:value pairs in the last 3 days (minimum 2 uses).
+     * @description Returns tag suggestions based on the user's most recently used key:value pairs and the most frequently used key:value pairs in the last 3 days (minimum 2 uses). When a trip is given, tags that other users already added to that trip are suggested first, as long as both the status and the tag are visible for the requesting user.
      *
      * @tags Status
      * @name GetTagSuggestions
@@ -7494,7 +7507,17 @@ export class Api<
      * @request GET:/tags/suggestions
      * @secure
      */
-    getTagSuggestions: (params: RequestParams = {}) =>
+    getTagSuggestions: (
+      query?: {
+        /**
+         * UUID of the trip the user is about to check into. Adds tags that describe the trip itself and that another user already added to it: `trwl:vehicle_number`, `trwl:journey_number` and `trwl:locomotive_class`.
+         * @format uuid
+         * @example "00000000-0000-0000-0000-000000000000"
+         */
+        tripId?: string;
+      },
+      params: RequestParams = {},
+    ) =>
       this.request<
         {
           data: StatusTagSuggestionResource[];
@@ -7503,6 +7526,7 @@ export class Api<
       >({
         path: `/tags/suggestions`,
         method: "GET",
+        query: query,
         secure: true,
         format: "json",
         ...params,

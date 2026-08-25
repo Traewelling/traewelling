@@ -1,13 +1,17 @@
 <script setup lang="ts">
-import { Check, Plus, Tag, Trash2 } from '@lucide/vue';
+import { Check, Plus, Tag, Trash2, Users } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { Api, StatusTagResource, StatusTagSuggestionResource } from '../../../types/Api.gen';
 import { TrwlTag } from '../../../types/TrwlTags';
 import { getEnumValues, getTitle, keys } from '../../../vue/helpers/StatusTag';
 import { getVisibilityOptions } from '../../helpers/visibility';
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+
+const props = defineProps<{
+    tripUuid?: string | null;
+}>();
 
 const CUSTOM_SENTINEL = '__custom__';
 
@@ -17,14 +21,17 @@ const suggestions = ref<StatusTagSuggestionResource[]>([]);
 
 const availableSuggestions = computed(() => suggestions.value.filter((s) => !tags.value.some((t) => t.key === s.key)));
 
-onMounted(async () => {
+async function fetchSuggestions(): Promise<void> {
     try {
-        const res = await api.tags.getTagSuggestions();
+        const res = await api.tags.getTagSuggestions(props.tripUuid ? { tripId: props.tripUuid } : {});
         suggestions.value = (res.data?.data ?? []) as StatusTagSuggestionResource[];
     } catch {
         // ignore
     }
-});
+}
+
+onMounted(fetchSuggestions);
+watch(() => props.tripUuid, fetchSuggestions);
 
 function applySuggestion(suggestion: StatusTagSuggestionResource): void {
     if (tags.value.some((t) => t.key === suggestion.key)) return;
@@ -102,10 +109,13 @@ defineExpose({ postTags });
                 v-for="s in availableSuggestions"
                 :key="s.key + ':' + s.value"
                 type="button"
-                class="badge badge-outline gap-1 cursor-pointer hover:badge-primary transition-colors"
+                class="badge gap-1 cursor-pointer transition-colors"
+                :class="s.source === 'trip' ? 'badge-info badge-outline' : 'badge-outline hover:badge-primary'"
+                :title="s.source === 'trip' ? trans('tag.suggestion.trip') : undefined"
                 @click="applySuggestion(s)"
             >
-                <Plus class="w-2.5 h-2.5" />
+                <Users v-if="s.source === 'trip'" class="w-2.5 h-2.5" />
+                <Plus v-else class="w-2.5 h-2.5" />
                 <span class="text-xs">{{ getTitle(s.key!) }}: {{ s.value }}</span>
             </button>
         </div>

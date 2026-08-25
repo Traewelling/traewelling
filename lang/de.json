@@ -880,6 +880,7 @@
     "tag.title.trwl:vehicle_number": "Fahrzeugnummer",
     "tag.title.trwl:wagon": "Wagen",
     "tag.title.trwl:wagon_class": "Wagengattung",
+    "tag.suggestion.trip": "Von anderen auf dieser Fahrt",
     "tag.add": "Tag hinzufügen",
     "tag.save": "Tag speichern",
     "tag.key": "Typ",

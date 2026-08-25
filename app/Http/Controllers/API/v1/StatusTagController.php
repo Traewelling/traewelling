@@ -6,11 +6,13 @@ use App\Enum\StatusVisibility;
 use App\Events\StatusUpdateEvent;
 use App\Http\Controllers\Backend\Transport\StatusTagController as StatusTagBackend;
 use App\Http\Requests\StoreStatusTagRequest;
+use App\Http\Requests\TagSuggestionRequest;
 use App\Http\Requests\UpdateStatusTagRequest;
 use App\Http\Resources\StatusTagResource;
 use App\Http\Resources\StatusTagSuggestionResource;
 use App\Models\Status;
 use App\Models\StatusTag;
+use App\Repositories\TripRepository;
 use App\Services\Checkin\TagSuggestionService;
 
 use function auth;
@@ -26,10 +28,21 @@ class StatusTagController extends Controller
     #[OA\Get(
         path: '/tags/suggestions',
         operationId: 'getTagSuggestions',
-        description: 'Returns tag suggestions based on the user\'s most recently used key:value pairs and the most frequently used key:value pairs in the last 3 days (minimum 2 uses).',
+        description: 'Returns tag suggestions based on the user\'s most recently used key:value pairs and the most frequently used key:value pairs in the last 3 days (minimum 2 uses). '
+                     . 'When a trip is given, tags that other users already added to that trip are suggested first, as long as both the status and the tag are visible for the requesting user.',
         summary: 'Get tag suggestions for the authenticated user',
         security: [['passport' => ['write-statuses']], ['token' => []]],
         tags: ['Status'],
+        parameters: [
+            new OA\Parameter(
+                name: 'tripId',
+                description: 'UUID of the trip the user is about to check into. Adds tags that describe the trip itself and that another user already added to it: `trwl:vehicle_number`, `trwl:journey_number` and `trwl:locomotive_class`.',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'string', format: 'uuid'),
+                example: '00000000-0000-0000-0000-000000000000',
+            ),
+        ],
         responses: [
             new OA\Response(
                 response: 200,
@@ -46,12 +59,26 @@ class StatusTagController extends Controller
                 ),
             ),
             new OA\Response(response: 401, description: 'Unauthorized'),
+            new OA\Response(response: 404, description: 'No trip found for this id'),
         ],
     )]
-    public function suggestions(TagSuggestionService $service): JsonResponse
-    {
+    public function suggestions(
+        TagSuggestionRequest $request,
+        TagSuggestionService $service,
+        TripRepository $tripRepository,
+    ): JsonResponse {
+        $tripUuid = $request->validated('tripId');
+        $trip = null;
+
+        if ($tripUuid !== null) {
+            $trip = $tripRepository->getByUuid($tripUuid);
+            if ($trip === null) {
+                return $this->sendError(error: 'No trip found for this id');
+            }
+        }
+
         return $this->sendResponse(
-            data: StatusTagSuggestionResource::collection($service->getSuggestions(auth()->user())),
+            data: StatusTagSuggestionResource::collection($service->getSuggestions(auth()->user(), $trip)),
         );
     }
 

@@ -4,8 +4,10 @@ namespace Tests\Feature\APIv1;
 
 use App\Enum\StatusTagKey;
 use App\Enum\StatusVisibility;
+use App\Models\Checkin;
 use App\Models\Status;
 use App\Models\StatusTag;
+use App\Models\Trip;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Passport\Passport;
@@ -314,7 +316,7 @@ class StatusTagTest extends ApiTestCase
         $response->assertJsonCount(0, 'data');
     }
 
-    public function test_suggestions_response_contains_only_key_and_value(): void
+    public function test_suggestions_response_contains_key_value_and_source_but_no_visibility(): void
     {
         $user = User::factory()->create();
         Passport::actingAs($user, ['*']);
@@ -324,12 +326,132 @@ class StatusTagTest extends ApiTestCase
 
         $response = $this->get('/api/v1/tags/suggestions');
         $response->assertOk();
-        $response->assertJsonStructure(['data' => [['key', 'value']]]);
+        $response->assertJsonStructure(['data' => [['key', 'value', 'source']]]);
 
         $item = $response->json('data.0');
-        $this->assertArrayHasKey('key', $item);
-        $this->assertArrayHasKey('value', $item);
+        $this->assertSame('recent', $item['source']);
         $this->assertArrayNotHasKey('visibility', $item);
+    }
+
+    public function test_suggestions_include_visible_trip_specific_tags_of_other_users(): void
+    {
+        $user = User::factory()->create();
+        $other = User::factory()->create();
+        Passport::actingAs($user, ['*']);
+
+        $trip = Trip::factory()->create();
+        $tripSpecificTags = [
+            StatusTagKey::VEHICLE_NUMBER->value => '94 80 0450 921 D-AVG',
+            StatusTagKey::JOURNEY_NUMBER->value => '4711',
+            StatusTagKey::LOCOMOTIVE_CLASS->value => 'BR424',
+        ];
+
+        $this->createTaggedCheckin(
+            trip: $trip,
+            user: $other,
+            statusVisibility: StatusVisibility::PUBLIC,
+            tagVisibility: StatusVisibility::PUBLIC,
+            tags: $tripSpecificTags,
+        );
+
+        // Without the trip the tags of the other user must not be suggested
+        $this->get('/api/v1/tags/suggestions')->assertOk()->assertJsonCount(0, 'data');
+
+        $response = $this->get('/api/v1/tags/suggestions?tripId=' . $trip->uuid);
+        $response->assertOk();
+        $response->assertJsonCount(count($tripSpecificTags), 'data');
+
+        foreach ($tripSpecificTags as $key => $value) {
+            $response->assertJsonFragment(['key' => $key, 'value' => $value, 'source' => 'trip']);
+        }
+    }
+
+    public function test_suggestions_omit_trip_tags_which_are_not_visible_or_not_trip_specific(): void
+    {
+        $user = User::factory()->create();
+        Passport::actingAs($user, ['*']);
+
+        $trip = Trip::factory()->create();
+
+        // Status is private, so neither status nor tag are visible
+        $this->createTaggedCheckin(
+            trip: $trip,
+            user: User::factory()->create(),
+            statusVisibility: StatusVisibility::PRIVATE,
+            tagVisibility: StatusVisibility::PUBLIC,
+            tags: [StatusTagKey::VEHICLE_NUMBER->value => 'hidden-by-status'],
+        );
+
+        // Status is visible, but the tag itself is private
+        $this->createTaggedCheckin(
+            trip: $trip,
+            user: User::factory()->create(),
+            statusVisibility: StatusVisibility::PUBLIC,
+            tagVisibility: StatusVisibility::PRIVATE,
+            tags: [StatusTagKey::VEHICLE_NUMBER->value => 'hidden-by-tag'],
+        );
+
+        // Everything is visible, but these tags describe the passenger, not the trip
+        $this->createTaggedCheckin(
+            trip: $trip,
+            user: User::factory()->create(),
+            statusVisibility: StatusVisibility::PUBLIC,
+            tagVisibility: StatusVisibility::PUBLIC,
+            tags: [
+                StatusTagKey::SEAT->value => '61',
+                StatusTagKey::PRICE->value => '42,00 €',
+                StatusTagKey::WAGON_CLASS->value => 'Bpmz',
+            ],
+        );
+
+        $response = $this->get('/api/v1/tags/suggestions?tripId=' . $trip->uuid);
+        $response->assertOk();
+        $response->assertJsonCount(0, 'data');
+    }
+
+    public function test_suggestions_return_error_for_unknown_trip(): void
+    {
+        Passport::actingAs(User::factory()->create(), ['*']);
+
+        $this->get('/api/v1/tags/suggestions?tripId=' . fake()->uuid())->assertNotFound();
+        $this->get('/api/v1/tags/suggestions?tripId=not-a-uuid')->assertStatus(422);
+    }
+
+    /**
+     * Creates a checkin of the given user on the given trip and tags it.
+     *
+     * @param  array<string, string>  $tags  key => value
+     */
+    private function createTaggedCheckin(
+        Trip $trip,
+        User $user,
+        StatusVisibility $statusVisibility,
+        StatusVisibility $tagVisibility,
+        array $tags,
+    ): void {
+        $status = Status::factory([
+            'user_id' => $user->id,
+            'visibility' => $statusVisibility->value,
+        ])->create();
+
+        Checkin::factory([
+            'status_id' => $status->id,
+            'user_id' => $user->id,
+            'trip_id' => $trip->trip_id,
+            'origin_stopover_id' => $trip->stopovers->first()->id,
+            'destination_stopover_id' => $trip->stopovers->last()->id,
+            'departure' => $trip->departure,
+            'arrival' => $trip->arrival,
+        ])->create();
+
+        foreach ($tags as $key => $value) {
+            StatusTag::factory([
+                'status_id' => $status->id,
+                'key' => $key,
+                'value' => $value,
+                'visibility' => $tagVisibility->value,
+            ])->create();
+        }
     }
 
     public function test_social_status_tag_rejects_invalid_value_on_update(): void

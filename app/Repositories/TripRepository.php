@@ -87,6 +87,11 @@ class TripRepository
         return $segment;
     }
 
+    public function getByUuid(string $uuid): ?Trip
+    {
+        return Trip::whereUuid($uuid)->first();
+    }
+
     /**
      * @throws DataProviderException
      * @throws JsonException
