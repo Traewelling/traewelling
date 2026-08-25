@@ -33,8 +33,8 @@ function updateMapProvider() {
         <div class="modal-box">
             <h3 class="text-lg font-bold">{{ trans('user.mapprovider') }}</h3>
             <select v-model="input" class="select w-full mt-4">
-                <option :value="MapProvider.Cargo">{{ trans('map-providers.cargo') }}</option>
-                <option :value="MapProvider.OpenRailwayMap">{{ trans('map-providers.open-railway-map') }}</option>
+                <option :value="MapProvider.OpenFreeMap">OpenFreeMap</option>
+                <option :value="MapProvider.OpenRailwayMap">OpenRailwayMap</option>
             </select>
             <div class="modal-action">
                 <form method="dialog">

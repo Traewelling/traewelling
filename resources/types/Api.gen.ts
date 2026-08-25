@@ -176,11 +176,11 @@ export enum MastodonVisibility {
 
 /**
  * MapProvider
- * What type of map provider (cargo, open-railway-map) did the user specify?
- * @example "cargo"
+ * What type of map provider (open-free-map, open-railway-map) did the user specify?
+ * @example "open-free-map"
  */
 export enum MapProvider {
-  Cargo = "cargo",
+  OpenFreeMap = "open-free-map",
   OpenRailwayMap = "open-railway-map",
 }
 
@@ -244,7 +244,7 @@ export enum ExportableColumn {
 /**
  * DataProvider
  * What type of data provider did the user specify? (users need to be in closed-beta for this to take effect)
- * @example "cargo"
+ * @example "default"
  */
 export enum DataProvider {
   Default = "default",
@@ -2729,7 +2729,7 @@ export interface UserProfileSettingsResource {
   likesEnabled: boolean;
   /** @example true */
   pointsEnabled: boolean;
-  /** What type of map provider (cargo, open-railway-map) did the user specify? */
+  /** What type of map provider (open-free-map, open-railway-map) did the user specify? */
   mapProvider: MapProvider;
   /** @example "Europe/Berlin" */
   timezone: string;

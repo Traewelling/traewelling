@@ -88,6 +88,22 @@ class SettingsTest extends ApiTestCase
         $this->assertEquals(FriendCheckinSetting::FRIENDS, $user->friend_checkin);
     }
 
+    public function test_update_map_provider(): void
+    {
+        $user = User::factory()->create();
+        Passport::actingAs($user, ['*']);
+
+        foreach (MapProvider::cases() as $mapProvider) {
+            $response = $this->putJson(
+                uri: '/api/v1/settings/profile',
+                data: ['mapProvider' => $mapProvider->value],
+            );
+            $response->assertOk();
+            $this->assertEquals($mapProvider->value, $response->json('data.mapProvider'));
+            $this->assertEquals($mapProvider, $user->refresh()->mapprovider);
+        }
+    }
+
     public function test_set_email_without_prior_email_or_password(): void
     {
         $user = User::factory(['email' => null, 'email_verified_at' => null, 'password' => null])->create();

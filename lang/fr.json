@@ -380,8 +380,6 @@
     "maintenance.subtitle": "Ne t'inquiète pas, nous travaillons actuellement à l'amélioration du site.",
     "maintenance.title": "Nous effectuons actuellement des mises à jour.",
     "maintenance.try-later": "Merci de réessayer ultérieurement.",
-    "map-providers.cargo": "OpenFreeMap",
-    "map-providers.open-railway-map": "Open Railway Map",
     "map.consent.load": "Charger la carte",
     "map.consent.notice": "Cette carte charge des données cartographiques depuis des serveurs externes (OpenFreeMap / OpenStreetMap). Ton adresse IP sera partagée avec ces fournisseurs.",
     "map.consent.remember": "Mémoriser mon choix",
