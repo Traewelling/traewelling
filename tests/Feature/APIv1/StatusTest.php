@@ -112,6 +112,73 @@ class StatusTest extends ApiTestCase
         $response->assertNoContent();
     }
 
+    /**
+     * A user may correct the arrival by hand when the provider has no or wrong realtime data.
+     * That manual time wins over everything else, so the checkin stays active until it is reached.
+     *
+     * @see https://github.com/Traewelling/traewelling/issues/4940
+     */
+    public function test_active_status_uses_manual_times_before_realtime_and_planned(): void
+    {
+        $user = User::factory()->create();
+        Passport::actingAs($user, ['*']);
+
+        // according to the provider the journey ended an hour ago, the user says it ends in an hour
+        $checkin = Checkin::factory([
+            'user_id' => $user->id,
+            'departure' => Date::now()->subHours(2),
+            'arrival' => Date::now()->subHour(),
+            'manual_arrival' => Date::now()->addHour(),
+        ])->create();
+
+        $response = $this->get('/api/v1/user/statuses/active');
+        $response->assertOk();
+        $this->assertEquals($checkin->status_id, $response->json('data.id'));
+
+        $response = $this->get('/api/v1/statuses');
+        $response->assertOk();
+        $this->assertContains($checkin->status_id, $response->json('data.*.id'));
+    }
+
+    public function test_active_status_uses_realtime_before_planned_arrival(): void
+    {
+        $user = User::factory()->create();
+        Passport::actingAs($user, ['*']);
+
+        // the trip is delayed: planned arrival has passed, but the train is still on its way
+        $delayedCheckin = Checkin::factory([
+            'user_id' => $user->id,
+            'departure' => Date::now()->subHours(2),
+            'arrival' => Date::now()->subMinutes(10),
+        ])->create();
+        $delayedCheckin->destinationStopover->update(['arrival_real' => Date::now()->addMinutes(20)]);
+
+        $response = $this->get('/api/v1/user/statuses/active');
+        $response->assertOk();
+        $this->assertEquals($delayedCheckin->status_id, $response->json('data.id'));
+
+        // the trip was early: it has arrived although the planned arrival is still ahead
+        $delayedCheckin->destinationStopover->update(['arrival_real' => Date::now()->subMinutes(10)]);
+        $delayedCheckin->update(['arrival' => Date::now()->addMinutes(20)]);
+
+        $this->get('/api/v1/user/statuses/active')->assertNoContent();
+    }
+
+    public function test_active_status_ignores_checkins_whose_manual_departure_is_still_ahead(): void
+    {
+        $user = User::factory()->create();
+        Passport::actingAs($user, ['*']);
+
+        Checkin::factory([
+            'user_id' => $user->id,
+            'departure' => Date::now()->subHours(2),
+            'arrival' => Date::now()->addHours(2),
+            'manual_departure' => Date::now()->addHour(),
+        ])->create();
+
+        $this->get('/api/v1/user/statuses/active')->assertNoContent();
+    }
+
     public function test_status_update(): void
     {
         $user = User::factory()->create();

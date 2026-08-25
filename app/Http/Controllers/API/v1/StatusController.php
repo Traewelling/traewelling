@@ -10,13 +10,13 @@ use App\Events\StatusUpdateEvent;
 use App\Http\Controllers\Backend\Support\LocationController;
 use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\StatusController as StatusBackend;
-use App\Http\Controllers\UserController as UserBackend;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\StopoverResource;
 use App\Models\Status;
 use App\Models\Stopover;
 use App\Models\Ticket;
 use App\Models\Trip;
+use App\Repositories\CheckinRepository;
 use App\Services\Checkin\CheckinService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -916,16 +916,12 @@ class StatusController extends Controller
     )]
     public function getActiveStatus(): StatusResource|JsonResponse
     {
-        $latestStatuses = UserBackend::statusesForUser(Auth::user());
-        if ($latestStatuses->count() > 0) {
-            foreach ($latestStatuses as $status) {
-                if ($status->checkin->originStopover?->departure?->isPast()
-                    && $status->checkin->destinationStopover?->arrival?->isFuture()) {
-                    return new StatusResource($status);
-                }
-            }
+        $status = app(CheckinRepository::class)->getActiveStatusForUser(Auth::user());
+
+        if ($status === null) {
+            return response()->json(null, 204);
         }
 
-        return response()->json(null, 204);
+        return new StatusResource($status);
     }
 }

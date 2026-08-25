@@ -17,6 +17,7 @@ use App\Models\Like;
 use App\Models\Status;
 use App\Models\User;
 use App\Notifications\StatusLiked;
+use App\Repositories\CheckinRepository;
 use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -72,14 +73,11 @@ class StatusController extends Controller
 
     private static function getActiveStatusIds(): array
     {
-        return Cache::remember(CacheKey::ACTIVE_STATUSES_RAW, 60, function () {
-            return Status::join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
-                ->where('train_checkins.departure', '>', now()->subHours(config('trwl.max_journey_hours')))
-                ->where('train_checkins.departure', '<', now())
-                ->where('train_checkins.arrival', '>', now())
-                ->pluck('statuses.id')
-                ->toArray();
-        });
+        return Cache::remember(
+            CacheKey::ACTIVE_STATUSES_RAW,
+            60,
+            fn () => app(CheckinRepository::class)->getActiveStatusIds()
+        );
     }
 
     public static function getActiveStatuses(): Collection
@@ -120,7 +118,7 @@ class StatusController extends Controller
 
         return $query->get()
             ->reject(fn (Status $status) => $status->checkin === null)
-            ->sortByDesc(fn (Status $status) => $status->checkin->departure)
+            ->sortByDesc(fn (Status $status) => $status->checkin->display_departure->time)
             ->values();
     }
 
