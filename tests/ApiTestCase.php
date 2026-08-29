@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Enum\TripSource;
 use App\Models\Checkin;
@@ -50,10 +51,15 @@ abstract class ApiTestCase extends FeatureTestCase
 
     /**
      * Checks the given user into a trip, from its first to its last stopover.
-     * Passing a visibility also moves the resulting status to that user and applies it.
+     * Passing a visibility or a purpose of travel also moves the resulting status to that user
+     * and applies them.
      */
-    protected function checkinOnTrip(Trip $trip, User $user, ?StatusVisibility $visibility = null): Checkin
-    {
+    protected function checkinOnTrip(
+        Trip $trip,
+        User $user,
+        ?StatusVisibility $visibility = null,
+        ?Business $business = null,
+    ): Checkin {
         $checkin = Checkin::factory()->create([
             'user_id' => $user->id,
             'trip_id' => $trip->trip_id,
@@ -63,14 +69,19 @@ abstract class ApiTestCase extends FeatureTestCase
             'arrival' => $trip->arrival,
         ]);
 
-        if ($visibility === null) {
+        $status = [];
+        if ($visibility !== null) {
+            $status['visibility'] = $visibility->value;
+        }
+        if ($business !== null) {
+            $status['business'] = $business->value;
+        }
+
+        if ($status === []) {
             return $checkin;
         }
 
-        $checkin->status->update([
-            'user_id' => $user->id,
-            'visibility' => $visibility->value,
-        ]);
+        $checkin->status->update(array_merge(['user_id' => $user->id], $status));
 
         return $checkin->fresh();
     }
