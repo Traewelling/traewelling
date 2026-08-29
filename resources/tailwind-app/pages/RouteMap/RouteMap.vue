@@ -26,6 +26,13 @@ function fetchRouteMap(): void {
     loading.value = true;
     failed.value = false;
 
+    // an empty selection means the user deselected every mode of transport, so there is nothing to draw
+    if (filters.value.travelTypes.length === 0) {
+        entries.value = [];
+        loading.value = false;
+        return;
+    }
+
     api.routeMap
         .getRouteMap(toQuery(filters.value))
         .then((response) => {
