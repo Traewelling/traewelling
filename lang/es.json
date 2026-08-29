@@ -809,7 +809,7 @@
     "welcome.hero.mobile.description": "Träwelling está optimizado para móviles y se puede utilizar sobre la marcha.",
     "welcome.hero.mobile.title": "Mobile first",
     "welcome.hero.stats.description": "Tus registros de entrada se convierten en estadísticas por sí solos: compañías de transporte más utilizadas, medios de transporte, distancia recorrida y tiempo de viaje.",
-    "welcome.hero.stats.title": "Recopilar estadísticas",
+    "welcome.hero.stats.title": "El resumen de tus viajes",
     "welcome.stats.distance": "de kilómetros viajados",
     "welcome.stats.duration": "años de viaje",
     "welcome.stats.million": ":count Millones",
@@ -1054,5 +1054,18 @@
     "tickets.delete-confirm-title": "¿Eliminar billete? Todas las asignaciones de este billete a viajes se eliminarán de forma irreversible.",
     "tickets.edit": "Editar billete",
     "tickets.first-used": "Primer viaje",
-    "tickets.info-text": "Guarda tus billetes en Träwelling y asígnalos a tus viajes. De esta forma, siempre sabrás qué billete usaste y podrás ver en tus estadísticas cuánto te costó cada viaje. Tus billetes solo son visibles para ti."
+    "tickets.info-text": "Guarda tus billetes en Träwelling y asígnalos a tus viajes. De esta forma, siempre sabrás qué billete usaste y podrás ver en tus estadísticas cuánto te costó cada viaje. Tus billetes solo son visibles para ti.",
+    "time.now": "Ahora",
+    "tag.title.trwl:social_status": "Condición social",
+    "tag.suggestion.trip": "De tus compañeros de viaje",
+    "tickets.info-title": "¿Qué son los billetes?",
+    "tickets.last-used": "Último viaje",
+    "tickets.name": "Nombre",
+    "tickets.name-placeholder": "p. ej. BahnCard 100",
+    "tickets.none": "Todavía no tienes ningún billete.",
+    "tickets.none-selected": "Sin billete asignado",
+    "tickets.only-visible-to-you": "Visible solo para ti",
+    "tickets.operators": "Operadores",
+    "tickets.per-distance": "Reparto de distancia",
+    "tickets.per-duration": "Reparto de tiempo"
 }
