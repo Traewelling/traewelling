@@ -226,6 +226,7 @@ import {
     ShieldCogCorner,
     Ticket,
     User,
+    Waypoints,
     X,
 } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
@@ -338,6 +339,7 @@ const userLinks = computed<
         legacy: false,
     },
     { name: 'trip.list.title', icon: Route, route: { name: 'trip-list' } },
+    { name: 'route-map.title', icon: Waypoints, route: { name: 'route-map' } },
     { name: 'menu.export', icon: Save, route: { name: 'export' } },
     { name: 'menu.settings', icon: Settings, route: { name: 'settings-profile' } },
     { name: 'tickets.title', icon: Ticket, route: { name: 'tickets' }, condition: user.isClosedBeta },

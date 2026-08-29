@@ -18,6 +18,7 @@ import MonthlyLeaderboard from '../pages/Leaderboard/MonthlyLeaderboard.vue';
 import Notifications from '../pages/Notifications/Notifications.vue';
 import PrivacyPolicy from '../pages/PrivacyPolicy/PrivacyPolicy.vue';
 import UserProfile from '../pages/Profile/UserProfile.vue';
+import RouteMap from '../pages/RouteMap/RouteMap.vue';
 import Search from '../pages/Search/Search.vue';
 import Account from '../pages/Settings/Account/Account.vue';
 import Applications from '../pages/Settings/Applications/Applications.vue';
@@ -172,6 +173,12 @@ const routes: Array<RouteRecordRaw> = [
         name: 'statistics',
         component: Statistics,
         meta: { title: 'stats' },
+    },
+    {
+        path: '/route-map',
+        name: 'route-map',
+        component: RouteMap,
+        meta: { title: 'route-map.title' },
     },
     {
         path: '/statistics/daily/:dateString',

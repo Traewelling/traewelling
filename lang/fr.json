@@ -1428,5 +1428,15 @@
     "your-access-token": "Tes jetons d'accès",
     "your-access-token-description": "Tu peux générer un jeton d'accès pour accéder à ton propre compte.",
     "your-access-token.ask": "Chez Träwelling, nous ne te demanderons jamais ton jeton d'accès. Si on te le demande, il s'agit probablement d'une usurpation d'identité.",
-    "your-apps": "Tes applications"
+    "your-apps": "Tes applications",
+    "filter.title": "Filtres",
+    "filter.reset": "Réinitialiser",
+    "filter.period": "Période",
+    "filter.travel-type": "Moyen de transport",
+    "filter.travel-purpose": "Motif du voyage",
+    "route-map.title": "Carte du réseau",
+    "route-map.description": "Tous les tronçons que tu as parcourus au moins une fois.",
+    "route-map.approximated.hint": "Les tronçons sans itinéraire enregistré sont tracés en ligne droite entre les deux gares.",
+    "route-map.include-approximated": "Afficher les tronçons estimés",
+    "route-map.empty": "Aucun trajet ne correspond à ces filtres."
 }
