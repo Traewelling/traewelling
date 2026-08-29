@@ -10,6 +10,7 @@ import type { Feature, LineString } from 'geojson';
 import { DataDrivenPropertyValueSpecification, LngLat, LngLatBounds } from 'maplibre-gl';
 import { computed } from 'vue';
 import { RouteMapEntryResource } from '../../../../types/Api.gen';
+import { buildTransitBasemapStyle } from '../../../../vue/components/Map/transitBasemapStyle';
 import { decodePolyline } from '../../../helpers/polyline';
 import { categoryColor, primaryCategory } from '../categoryColors';
 
@@ -20,9 +21,7 @@ const props = defineProps<{
 const DEFAULT_BOUNDS = LngLatBounds.fromLngLat(new LngLat(9.9, 49.8), 500000);
 
 const isDarkMode = document.documentElement.classList.contains('dark');
-const mapStyle = isDarkMode
-    ? 'https://tiles.openfreemap.org/styles/dark'
-    : 'https://tiles.openfreemap.org/styles/positron';
+const mapStyle = buildTransitBasemapStyle(isDarkMode ? 'dark' : 'light');
 
 const brouterAttribution = '&copy; <a href="https://brouter.de" target="_blank">BRouter</a>';
 

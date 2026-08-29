@@ -11,11 +11,12 @@ import {
 } from '@indoorequal/vue-maplibre-gl';
 import { trans } from 'laravel-vue-i18n';
 import { GeoJSONFeature, LngLat, LngLatBounds } from 'maplibre-gl';
-import { computed, onMounted, PropType, ref } from 'vue';
+import { computed, PropType, ref } from 'vue';
 import { LivePointDto, MapProvider } from '../../../types/Api.gen';
 import { useMapConsentStore } from '../../stores/mapConsent';
 import { useUserStore } from '../../stores/user';
 import LiveMapPoint from './LiveMapPoint.vue';
+import { buildTransitBasemapStyle } from './transitBasemapStyle';
 
 const DEFAULT_BOUNDS = LngLatBounds.fromLngLat(new LngLat(9.902056, 49.843), 100000);
 
@@ -77,7 +78,6 @@ const props = defineProps({
     },
 });
 
-const mapRef = ref();
 const userStore = useUserStore();
 const mapConsentStore = useMapConsentStore();
 
@@ -107,25 +107,7 @@ const effectiveBounds = computed(
     () => (props.polyLines.length ? boundsFromPolylines(props.polyLines) : undefined) ?? props.bounds ?? DEFAULT_BOUNDS,
 );
 
-const mapStyle = isDarkMode
-    ? 'https://tiles.openfreemap.org/styles/dark'
-    : 'https://tiles.openfreemap.org/styles/positron';
-
-const ensureGlobeProjection = () => {
-    if (mapRef.value?.map) {
-        const style = mapRef.value.map.getStyle();
-        if (style && (!style.projection || style.projection.type !== 'globe')) {
-            style.projection = { type: 'globe' };
-            mapRef.value.map.setStyle(style);
-        }
-    }
-};
-
-onMounted(() => {
-    setTimeout(() => {
-        ensureGlobeProjection();
-    }, 100);
-});
+const mapStyle = buildTransitBasemapStyle(isDarkMode ? 'dark' : 'light');
 </script>
 
 <template>
@@ -147,7 +129,6 @@ onMounted(() => {
     <div v-else class="generic-map-wrapper">
         <!-- Map -->
         <mgl-map
-            ref="mapRef"
             :map-style="mapStyle"
             :max-zoom="18"
             :bounds="effectiveBounds"
