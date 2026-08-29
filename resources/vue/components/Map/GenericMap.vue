@@ -76,6 +76,10 @@ const props = defineProps({
         type: Array as PropType<{ id: string; lat: number; lng: number; color: string; title?: string }[]>,
         default: () => [],
     },
+    cooperativeGestures: {
+        type: Boolean,
+        default: true,
+    },
 });
 
 const userStore = useUserStore();
@@ -134,7 +138,7 @@ const mapStyle = buildTransitBasemapStyle(isDarkMode ? 'dark' : 'light');
             :bounds="effectiveBounds"
             height="45vh"
             :attribution-control="{ compact: true }"
-            :cooperative-gestures="true"
+            :cooperative-gestures="cooperativeGestures"
         >
             <mgl-navigation-control position="top-right" :show-zoom="false" :show-compass="true" />
             <mgl-geolocate-control />

@@ -97,6 +97,7 @@ onMounted(() => {
         :line-color="lineColor"
         :live-positions="livePositions"
         :map-provider="mapProvider"
+        :cooperative-gestures="false"
     >
         <EventMarker v-for="trwlEvent in events" :key="trwlEvent.id" :event="trwlEvent" />
     </GenericMap>
