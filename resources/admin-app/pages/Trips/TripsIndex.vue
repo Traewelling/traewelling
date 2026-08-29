@@ -3,7 +3,7 @@ import { onMounted, ref } from 'vue';
 import { type AdminTripResource, Api } from '../../../types/Api.gen';
 import BackendLayout from '../../layouts/BackendLayout.vue';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const trips = ref<AdminTripResource[]>([]);
 const loading = ref(true);

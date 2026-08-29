@@ -23,7 +23,7 @@ class StationIdentifierController extends Controller
     ) {}
 
     #[OA\Post(
-        path: '/stations/{stationId}/identifiers',
+        path: '/v1/stations/{stationId}/identifiers',
         operationId: 'storeStationIdentifier',
         description: 'Admin only. Manually add an identifier to a station. The `origin` field will be set to `null`.',
         summary: 'Add a station identifier',
@@ -74,7 +74,7 @@ class StationIdentifierController extends Controller
     }
 
     #[OA\Patch(
-        path: '/stations/{stationId}/identifiers/{identifierId}',
+        path: '/v1/stations/{stationId}/identifiers/{identifierId}',
         operationId: 'updateStationIdentifier',
         description: 'Admin only. Update the type and value of an existing station identifier.',
         summary: 'Update a station identifier',
@@ -131,7 +131,7 @@ class StationIdentifierController extends Controller
     }
 
     #[OA\Put(
-        path: '/stations/{stationId}/identifiers/{identifierId}/move',
+        path: '/v1/stations/{stationId}/identifiers/{identifierId}/move',
         operationId: 'moveStationIdentifier',
         description: 'Admin only. Move a station identifier to a different station. '
                      . 'Also moves the stopovers created via this identifier, updates origin/destination of affected trips and re-points route segments. '

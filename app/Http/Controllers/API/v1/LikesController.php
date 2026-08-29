@@ -31,7 +31,7 @@ class LikesController extends Controller
      * @todo maybe put this in separate controller?
      */
     #[OA\Get(
-        path: '/status/{id}/likes',
+        path: '/v1/status/{id}/likes',
         operationId: 'getLikesForStatus',
         description: 'Returns array of users that liked the status. Can return an empty dataset when the status author or the requesting user has deactivated likes',
         summary: '[Auth optional] Get likes for status',
@@ -79,7 +79,7 @@ class LikesController extends Controller
     }
 
     #[OA\Post(
-        path: '/status/{id}/like',
+        path: '/v1/status/{id}/like',
         operationId: 'addLikeToStatus',
         description: 'Add like to status',
         summary: 'Add like to status',
@@ -146,7 +146,7 @@ class LikesController extends Controller
     }
 
     #[OA\Delete(
-        path: '/status/{id}/like',
+        path: '/v1/status/{id}/like',
         operationId: 'removeLikeFromStatus',
         description: 'Removes like from status',
         summary: 'Remove like from status',

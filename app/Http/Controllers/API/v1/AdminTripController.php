@@ -15,7 +15,7 @@ use OpenApi\Attributes as OA;
 class AdminTripController extends Controller
 {
     #[OA\Get(
-        path: '/admin/trips',
+        path: '/v1/admin/trips',
         operationId: 'getAdminTrips',
         description: 'Admin only. Returns a cursor-paginated list of all trips with checkin counts.',
         summary: 'List trips',
@@ -51,7 +51,7 @@ class AdminTripController extends Controller
     }
 
     #[OA\Get(
-        path: '/admin/trips/{id}',
+        path: '/v1/admin/trips/{id}',
         operationId: 'getAdminTrip',
         description: 'Admin only. Returns full trip details including stopovers with route segment info and checkins.',
         summary: 'Get trip details',
@@ -93,7 +93,7 @@ class AdminTripController extends Controller
     }
 
     #[OA\Post(
-        path: '/admin/trips/{id}/reroute',
+        path: '/v1/admin/trips/{id}/reroute',
         operationId: 'rerouteAdminTrip',
         description: 'Admin only. Dispatches a background job to recalculate the polyline for the given trip.',
         summary: 'Dispatch reroute job',

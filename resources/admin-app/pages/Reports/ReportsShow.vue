@@ -5,7 +5,7 @@ import { useRoute } from 'vue-router';
 import { Api, type ReportResource } from '../../../types/Api.gen';
 import BackendLayout from '../../layouts/BackendLayout.vue';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const route = useRoute();
 const reportId = route.params.id as string;

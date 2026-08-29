@@ -14,7 +14,7 @@ defineProps({
     },
 });
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const fetchingGps = ref(false);
 

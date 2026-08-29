@@ -8,7 +8,7 @@ import StationMoveTargetModal from './StationMoveTargetModal.vue';
 const props = defineProps<{ station: Station; nearbyStations: Station[] }>();
 const emit = defineEmits<{ changed: [] }>();
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const router = useRouter();
 
 const usages = ref<StationUsageDto | null>(null);

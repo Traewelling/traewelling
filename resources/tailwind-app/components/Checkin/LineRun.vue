@@ -6,7 +6,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { Api, StationResource, StopoverResource, TripResource } from '../../../types/Api.gen';
 import { useUserStore } from '../../../vue/stores/user';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const userStore = useUserStore();
 
 const homeStation = computed<StationResource | null>(() => userStore.getHome);

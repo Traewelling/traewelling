@@ -13,7 +13,7 @@ use OpenApi\Attributes as OA;
 class TokenController extends Controller
 {
     #[OA\Get(
-        path: '/security/tokens',
+        path: '/v1/security/tokens',
         operationId: 'getTokens',
         description: 'Get all active API tokens for the authenticated user',
         summary: 'Get active API tokens',
@@ -39,7 +39,7 @@ class TokenController extends Controller
     }
 
     #[OA\Post(
-        path: '/security/tokens',
+        path: '/v1/security/tokens',
         operationId: 'createToken',
         description: 'Create a new API token for the authenticated user. Requires a personal access token, third-party OAuth application tokens are not accepted.',
         summary: 'Create API token',
@@ -69,7 +69,7 @@ class TokenController extends Controller
     }
 
     #[OA\Delete(
-        path: '/security/tokens/{tokenId}',
+        path: '/v1/security/tokens/{tokenId}',
         operationId: 'revokeToken',
         description: 'Revoke a specific API token for the authenticated user',
         summary: 'Revoke API token',
@@ -102,7 +102,7 @@ class TokenController extends Controller
     }
 
     #[OA\Delete(
-        path: '/security/tokens',
+        path: '/v1/security/tokens',
         operationId: 'revokeAllTokens',
         description: 'Revoke all API tokens for the authenticated user',
         summary: 'Revoke all API tokens',

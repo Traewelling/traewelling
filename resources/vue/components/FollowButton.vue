@@ -5,7 +5,7 @@ import { Api, UserResource } from '../../types/Api.gen';
 import { useUserStore } from '../stores/user';
 
 const authUser = useUserStore();
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const props = defineProps<{
     userData: UserResource;

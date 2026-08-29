@@ -15,7 +15,7 @@ const props = defineProps({
     },
 });
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const userStore = useUserStore();
 
 const lineColor = ref<string>('#c72730');

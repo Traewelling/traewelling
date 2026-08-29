@@ -8,7 +8,7 @@ import AppLayout from '../../layouts/AppLayout.vue';
 import Calendar, { CalendarEvent } from './partials/Calendar.vue';
 
 const loading = ref(false);
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const events = ref<CalendarEvent[]>([]);
 

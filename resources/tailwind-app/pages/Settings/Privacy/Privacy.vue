@@ -13,7 +13,7 @@ import MastodonVisibility from './partials/MastodonVisibility.vue';
 import PrivateProfile from './partials/PrivateProfile.vue';
 import SearchEngineIndexing from './partials/SearchEngineIndexing.vue';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const user = useUserStore();
 const profile = ref<UserProfileSettingsResource | null>(null);

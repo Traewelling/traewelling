@@ -11,7 +11,7 @@ import StationSearch from '../../components/StationSearch.vue';
 import StatusCard from '../../components/Status/StatusCard.vue';
 import AppLayout from '../../layouts/AppLayout.vue';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const notyf = inject('notyf') as Notyf;
 
 const statuses = ref<StatusResource[]>([]);

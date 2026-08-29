@@ -92,7 +92,7 @@ const showArrivalNowButton = computed(() => {
     return now >= plannedDeparture && now <= plannedArrival.plus({ days: 1 });
 });
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 function getNowWithoutSeconds(): string {
     return DateTime.now()

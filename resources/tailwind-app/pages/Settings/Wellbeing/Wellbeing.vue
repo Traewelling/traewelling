@@ -8,7 +8,7 @@ import SettingsLayout from '../../../layouts/SettingsLayout.vue';
 import ShowLikes from '../Privacy/partials/ShowLikes.vue';
 import ShowPoints from '../Privacy/partials/ShowPoints.vue';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const user = useUserStore();
 const profile = ref<UserProfileSettingsResource | null>(null);

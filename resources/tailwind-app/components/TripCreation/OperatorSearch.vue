@@ -9,7 +9,7 @@ type Operator = { uuid: string; name: string };
 const props = defineProps<{ modelValue: Operator | null }>();
 const emit = defineEmits<{ 'update:modelValue': [op: Operator | null] }>();
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const query = ref(props.modelValue?.name ?? '');
 const results = ref<Operator[]>([]);

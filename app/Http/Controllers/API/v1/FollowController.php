@@ -21,7 +21,7 @@ use OpenApi\Attributes as OA;
 class FollowController extends Controller
 {
     #[OA\Post(
-        path: '/user/{id}/follow',
+        path: '/v1/user/{id}/follow',
         operationId: 'createFollow',
         summary: 'Follow a user',
         security: [['passport' => ['write-follows']], ['token' => []]],
@@ -78,7 +78,7 @@ class FollowController extends Controller
     }
 
     #[OA\Delete(
-        path: '/user/{id}/follow',
+        path: '/v1/user/{id}/follow',
         operationId: 'destroyFollow',
         summary: 'Unfollow a user',
         security: [['passport' => ['write-follows']], ['token' => []]],
@@ -134,7 +134,7 @@ class FollowController extends Controller
     }
 
     #[OA\Get(
-        path: '/user/self/followers',
+        path: '/v1/user/self/followers',
         operationId: 'getFollowers',
         summary: 'List all followers',
         security: [['passport' => ['read-settings-followers']], ['token' => []]],
@@ -175,7 +175,7 @@ class FollowController extends Controller
     }
 
     #[OA\Get(
-        path: '/user/self/follow-requests',
+        path: '/v1/user/self/follow-requests',
         operationId: 'getFollowRequests',
         summary: 'List all followers',
         security: [['passport' => ['read-settings-followers']], ['token' => []]],
@@ -214,7 +214,7 @@ class FollowController extends Controller
     }
 
     #[OA\Get(
-        path: '/user/self/followings',
+        path: '/v1/user/self/followings',
         operationId: 'getFollowings',
         summary: 'List all users the current user is following',
         security: [['passport' => ['read-settings-followers']], ['token' => []]],
@@ -256,7 +256,7 @@ class FollowController extends Controller
      * @param  Request  $request
      */
     #[OA\Delete(
-        path: '/user/self/followers/{userId}',
+        path: '/v1/user/self/followers/{userId}',
         operationId: 'removeFollower',
         summary: 'Remove a follower',
         security: [['passport' => ['write-followers']], ['token' => []]],
@@ -307,7 +307,7 @@ class FollowController extends Controller
      * @param  Request  $request
      */
     #[OA\Put(
-        path: '/user/self/follow-requests/{userId}',
+        path: '/v1/user/self/follow-requests/{userId}',
         operationId: 'acceptFollowRequest',
         summary: 'Accept a follow request',
         security: [['passport' => ['write-followers']], ['token' => []]],
@@ -354,7 +354,7 @@ class FollowController extends Controller
      * @todo paths should not use verbs
      */
     #[OA\Delete(
-        path: '/user/self/follow-requests/{userId}',
+        path: '/v1/user/self/follow-requests/{userId}',
         operationId: 'rejectFollowRequest',
         summary: 'Reject a follow request',
         security: [['passport' => ['write-followers']], ['token' => []]],

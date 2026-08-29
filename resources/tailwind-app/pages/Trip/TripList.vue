@@ -8,7 +8,7 @@ import { Api, TripResource } from '../../../types/Api.gen';
 import TransportIcon from '../../components/TransportIcon.vue';
 import AppLayout from '../../layouts/AppLayout.vue';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const notyf = inject('notyf') as Notyf;
 
 const trips = ref<TripResource[]>([]);

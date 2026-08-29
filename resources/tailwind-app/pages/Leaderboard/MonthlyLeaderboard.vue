@@ -13,7 +13,7 @@ const selectedData = ref<LeaderboardUserResource[]>([]);
 const focusData = ref<'points' | 'distance' | 'duration' | 'speed'>('points');
 const loading = ref(true);
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const route = useRoute();
 

@@ -17,7 +17,7 @@ import EventDetail from './partials/EventDetail.vue';
 
 const route = useRoute();
 const slug = route.params.slug as string;
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const user = useUserStore();
 
 const event = ref<EventResource | null>(null);

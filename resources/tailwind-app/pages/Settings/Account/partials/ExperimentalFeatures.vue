@@ -8,7 +8,7 @@ defineProps<{
 }>();
 const emits = defineEmits(['profile-updated']);
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 function updateExperimental(value: boolean) {
     api.settings.updateProfileSettings({ experimental: value }).then((response) => {

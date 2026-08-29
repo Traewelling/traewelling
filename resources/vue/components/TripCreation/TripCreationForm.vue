@@ -7,7 +7,7 @@ import StationInput from './StationInput.vue';
 import StopoversCsvImporter from './StopoversCsvImporter.vue';
 import TripCreationMap from './TripCreationMap.vue';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 export default {
     name: 'TripCreationForm',

@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { Api, Notification } from '../../types/Api.gen';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 async function markAsRead(id: string) {
     const response = await api.notifications.markAsRead(id);

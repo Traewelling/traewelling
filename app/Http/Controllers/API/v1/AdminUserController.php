@@ -23,7 +23,7 @@ class AdminUserController extends Controller
     ) {}
 
     #[OA\Get(
-        path: '/admin/users',
+        path: '/v1/admin/users',
         operationId: 'getAdminUsers',
         description: 'Admin only. Returns a cursor-paginated list of all users, optionally filtered by a search query.',
         summary: 'List users',
@@ -83,7 +83,7 @@ class AdminUserController extends Controller
     }
 
     #[OA\Get(
-        path: '/admin/users/{id}',
+        path: '/v1/admin/users/{id}',
         operationId: 'getAdminUser',
         description: 'Admin only. Returns full details for a single user including stats, roles, mail changes, and recent statuses.',
         summary: 'Get user details',
@@ -137,7 +137,7 @@ class AdminUserController extends Controller
     }
 
     #[OA\Put(
-        path: '/admin/users/{id}/email',
+        path: '/v1/admin/users/{id}/email',
         operationId: 'updateAdminUserEmail',
         description: 'Admin only. Updates the email address for a user and sends a verification notification.',
         summary: 'Update user email',
@@ -186,7 +186,7 @@ class AdminUserController extends Controller
     }
 
     #[OA\Put(
-        path: '/admin/users/{id}/roles',
+        path: '/v1/admin/users/{id}/roles',
         operationId: 'updateAdminUserRoles',
         description: 'Admin only. Syncs roles for a user. The admin role is protected and cannot be removed.',
         summary: 'Update user roles',

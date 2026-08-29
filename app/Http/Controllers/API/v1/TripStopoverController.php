@@ -21,7 +21,7 @@ class TripStopoverController extends Controller
     public function __construct(private readonly TripEditService $tripEditService) {}
 
     #[OA\Post(
-        path: '/trips/{tripUuid}/stopovers',
+        path: '/v1/trips/{tripUuid}/stopovers',
         operationId: 'createTripStopover',
         description: 'Adds a stopover to a trip. You can only edit manual trips (`source = user`) that you created yourself; admins can edit any trip. The position within the trip is derived from the planned times. Origin, destination, departure and arrival of the trip as well as distance, points and duration of all checkins on this trip are recalculated afterwards.',
         summary: 'Add a stopover to a trip',
@@ -70,7 +70,7 @@ class TripStopoverController extends Controller
     }
 
     #[OA\Put(
-        path: '/trips/{tripUuid}/stopovers/{stopoverUuid}',
+        path: '/v1/trips/{tripUuid}/stopovers/{stopoverUuid}',
         operationId: 'updateTripStopover',
         description: 'Updates a stopover of a trip. You can only edit manual trips (`source = user`) that you created yourself; admins can edit any trip. All fields are optional, only the given ones are changed. Origin, destination, departure and arrival of the trip as well as distance, points and duration of all checkins on this trip are recalculated afterwards.',
         summary: 'Update a stopover of a trip',
@@ -119,7 +119,7 @@ class TripStopoverController extends Controller
     }
 
     #[OA\Post(
-        path: '/trips/{tripUuid}/stopovers/shift',
+        path: '/v1/trips/{tripUuid}/stopovers/shift',
         operationId: 'shiftTripStopovers',
         description: 'Moves all stopovers of a trip in time by the given amount of minutes. Positive values move the trip to a later time, negative values to an earlier one. Planned and real times are shifted alike, so the relative timing of the trip stays the same. You can only edit manual trips (`source = user`) that you created yourself; admins can edit any trip. Departure and arrival of the trip as well as duration and points of all checkins on this trip are recalculated afterwards.',
         summary: 'Shift all stopovers of a trip in time',
@@ -159,7 +159,7 @@ class TripStopoverController extends Controller
     }
 
     #[OA\Delete(
-        path: '/trips/{tripUuid}/stopovers/{stopoverUuid}',
+        path: '/v1/trips/{tripUuid}/stopovers/{stopoverUuid}',
         operationId: 'deleteTripStopover',
         description: 'Removes a stopover from a trip. You can only edit manual trips (`source = user`) that you created yourself; admins can edit any trip. Stopovers referenced by a checkin as origin or destination cannot be removed, and a trip must keep at least two stopovers.',
         summary: 'Delete a stopover of a trip',

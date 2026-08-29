@@ -8,7 +8,7 @@ export default defineComponent({
     name: 'UserSearchDropdown',
     emits: ['select-event'],
     setup() {
-        const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+        const api = new Api({ baseUrl: window.location.origin + '/api' });
 
         return { api };
     },

@@ -9,7 +9,7 @@ import TicketFormModal from '../../components/Tickets/TicketFormModal.vue';
 import AppLayout from '../../layouts/AppLayout.vue';
 
 const route = useRoute();
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const notyf = inject('notyf') as Notyf;
 
 const ticketId = route.params.id as string;

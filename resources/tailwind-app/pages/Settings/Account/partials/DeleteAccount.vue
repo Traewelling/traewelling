@@ -9,7 +9,7 @@ defineProps<{
 }>();
 
 const notyf = inject('notyf') as Notyf;
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const modal = ref<HTMLDialogElement>();
 const step = ref<1 | 2>(1);
 const confirmation = ref('');

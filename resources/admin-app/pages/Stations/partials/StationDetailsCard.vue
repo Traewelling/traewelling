@@ -6,7 +6,7 @@ import { Api, type Station } from '../../../../types/Api.gen';
 const props = defineProps<{ station: Station }>();
 const emit = defineEmits<{ updated: [station: Station] }>();
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const editing = ref(false);
 const saving = ref(false);

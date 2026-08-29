@@ -11,7 +11,7 @@ const props = defineProps<{
 const emits = defineEmits(['profile-updated']);
 
 const modal = ref<HTMLDialogElement>();
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const searchInput = ref<string>('');
 const input = ref<string>('');
 const selectedProvider = ref<ProviderOption | null>(null);

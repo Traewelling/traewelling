@@ -8,7 +8,7 @@ import SettingsListRow from '../../SettingsListRow.vue';
 const emits = defineEmits(['mastodon-removed', 'error']);
 
 const modal = ref<HTMLDialogElement>();
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const loading = ref(false);
 const sessions = ref<SessionResource[]>([]);
 

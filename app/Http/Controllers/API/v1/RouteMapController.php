@@ -21,7 +21,7 @@ class RouteMapController extends Controller
     }
 
     #[OA\Get(
-        path: '/route-map',
+        path: '/v1/route-map',
         operationId: 'getRouteMap',
         description: 'Returns every stretch of the network the authenticated user has travelled, as encoded '
                      . 'polylines. Stretches are deduplicated. '

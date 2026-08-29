@@ -26,7 +26,7 @@ use OpenApi\Attributes as OA;
 class StatusTagController extends Controller
 {
     #[OA\Get(
-        path: '/tags/suggestions',
+        path: '/v1/tags/suggestions',
         operationId: 'getTagSuggestions',
         description: 'Returns tag suggestions based on the user\'s most recently used key:value pairs and the most frequently used key:value pairs in the last 3 days (minimum 2 uses). '
                      . 'When a trip is given, tags that other users already added to that trip are suggested first, as long as both the status and the tag are visible for the requesting user.',
@@ -83,7 +83,7 @@ class StatusTagController extends Controller
     }
 
     #[OA\Get(
-        path: '/status/{statusId}/tags',
+        path: '/v1/status/{statusId}/tags',
         operationId: 'getTagsForStatus',
         description: 'Returns a collection of all visible tags for the given status, if user is authorized',
         summary: 'Show all tags for a status which are visible for the current user',
@@ -135,7 +135,7 @@ class StatusTagController extends Controller
     }
 
     #[OA\Get(
-        path: '/statuses/{statusIds}/tags',
+        path: '/v1/statuses/{statusIds}/tags',
         operationId: 'getTagsForMultipleStatuses',
         description: 'Returns a collection of all visible tags for the given statuses, if user is authorized',
         summary: 'Show all tags for multiple statuses which are visible for the current user',
@@ -210,7 +210,7 @@ class StatusTagController extends Controller
      * @throws ValidationException
      */
     #[OA\Put(
-        path: '/status/{statusId}/tags/{tagKey}',
+        path: '/v1/status/{statusId}/tags/{tagKey}',
         operationId: 'updateSingleStatusTag',
         description: 'Updates a single StatusTag Object, if user is authorized to. Triggers a `checkin_update` webhook event.',
         summary: 'Update a StatusTag',
@@ -295,7 +295,7 @@ class StatusTagController extends Controller
      * @throws ValidationException
      */
     #[OA\Post(
-        path: '/status/{statusId}/tags',
+        path: '/v1/status/{statusId}/tags',
         operationId: 'createSingleStatusTag',
         description: 'Creates a single StatusTag Object, if user is authorized to. Triggers a `checkin_update` webhook event. <br><br>The key of a tag is free text. You can choose it as you need it. However, <b>please use a namespace for tags</b> (<i>namespace:xxx</i>) that only affect your own application.<br><br>For tags related to standard actions we recommend the following tags in the trwl namespace:<br> <ul> <li>trwl:seat (i.e. 61)</li> <li>trwl:wagon (i.e. 25)</li> <li>trwl:ticket (i.e. BahnCard 100 first))</li> <li>trwl:price (420,69 €)</li> <li>trwl:travel_class (i.e. 1, 2, business, economy, ...)</li> <li>trwl:locomotive_class (BR424, BR450)</li> <li>trwl:journey_number (i.e. 1234. Used as a work-around for missing journey numbers)</li> <li>trwl:wagon_class (i.e. Bpmz)</li> <li>trwl:role (i.e. Tf, Zf, Gf, Lokführer, conducteur de train, ...)</li> <li>trwl:vehicle_number (i.e. 425 001, Tz9001, 123, ...)</li> <li>trwl:passenger_rights (i.e. yes / no / ID of claim)</li> <li>trwl:social_status – social availability indicator. Allowed values: <code>open</code> (open to chatting), <code>open_find_me</code> (open, but staying at seat), <code>open_lets_hang</code> (open and willing to move around), <code>do_not_disturb</code> (prefer not to be disturbed).</li> </ul>',
         summary: 'Create a StatusTag',
@@ -372,7 +372,7 @@ class StatusTagController extends Controller
     }
 
     #[OA\Delete(
-        path: '/status/{statusId}/tags/{tagKey}',
+        path: '/v1/status/{statusId}/tags/{tagKey}',
         operationId: 'destroySingleStatusTag',
         description: 'Deletes a single StatusTag Object, if user is authorized to. Triggers a `checkin_update` webhook event.',
         summary: 'Destroy a StatusTag',

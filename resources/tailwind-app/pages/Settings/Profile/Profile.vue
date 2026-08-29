@@ -11,7 +11,7 @@ import Displayname from './partials/Displayname.vue';
 import ProfileLinks from './partials/ProfileLinks.vue';
 import Username from './partials/Username.vue';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const user = useUserStore();
 const profile = ref<UserProfileSettingsResource | null>(null);

@@ -12,7 +12,7 @@ use OpenApi\Attributes as OA;
 class MotisSourceController extends Controller
 {
     #[OA\Get(
-        path: '/motis-sources',
+        path: '/v1/motis-sources',
         operationId: 'getMotisSources',
         description: 'Returns the transit data sources used by this instance, with their license information.',
         summary: 'List transit data sources',

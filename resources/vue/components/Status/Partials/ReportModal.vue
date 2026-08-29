@@ -12,7 +12,7 @@ const props = defineProps<{
 
 const modal = ref<InstanceType<typeof ModalComponent> | null>(null);
 const notyf = new Notyf({ position: { x: 'right', y: 'bottom' } });
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const titleKey: Record<string, string> = {
     Status: 'status.report',

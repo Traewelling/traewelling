@@ -44,7 +44,7 @@ class AdminEventController extends Controller
     }
 
     #[OA\Get(
-        path: '/admin/events',
+        path: '/v1/admin/events',
         operationId: 'getAdminEvents',
         summary: 'List events for admin management.',
         security: [['passport' => []], ['token' => []]],
@@ -83,7 +83,7 @@ class AdminEventController extends Controller
     }
 
     #[OA\Get(
-        path: '/admin/events/{id}',
+        path: '/v1/admin/events/{id}',
         operationId: 'getAdminEvent',
         summary: 'Get a single event for editing.',
         security: [['passport' => []], ['token' => []]],
@@ -114,7 +114,7 @@ class AdminEventController extends Controller
     }
 
     #[OA\Post(
-        path: '/admin/events',
+        path: '/v1/admin/events',
         operationId: 'createAdminEvent',
         summary: 'Create a new event.',
         security: [['passport' => []], ['token' => []]],
@@ -159,7 +159,7 @@ class AdminEventController extends Controller
     }
 
     #[OA\Put(
-        path: '/admin/events/{id}',
+        path: '/v1/admin/events/{id}',
         operationId: 'updateAdminEvent',
         summary: 'Update an existing event.',
         security: [['passport' => []], ['token' => []]],
@@ -209,7 +209,7 @@ class AdminEventController extends Controller
     }
 
     #[OA\Delete(
-        path: '/admin/events/{id}',
+        path: '/v1/admin/events/{id}',
         operationId: 'deleteAdminEvent',
         summary: 'Delete an event.',
         security: [['passport' => []], ['token' => []]],

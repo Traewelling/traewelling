@@ -26,7 +26,7 @@ const route = useRoute();
 const router = useRouter();
 const userStore = useUserStore();
 const checkinSuccess = checkinSuccessStore();
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const statusId = computed(() => Number(route.params.id));
 

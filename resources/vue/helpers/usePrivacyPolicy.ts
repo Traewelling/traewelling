@@ -4,7 +4,7 @@ import { computed, inject, onMounted, ref } from 'vue';
 import { Api } from '../../types/Api.gen';
 
 export function usePrivacyPolicy(isLoggedIn: boolean) {
-    const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+    const api = new Api({ baseUrl: window.location.origin + '/api' });
     const locale = document.documentElement.lang ?? 'en';
     const notyf = inject('notyf') as Notyf;
 

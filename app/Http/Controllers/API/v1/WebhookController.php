@@ -13,7 +13,7 @@ use OpenApi\Attributes as OA;
 class WebhookController extends APIController
 {
     #[OA\Get(
-        path: '/webhooks',
+        path: '/v1/webhooks',
         operationId: 'getWebhooks',
         description: 'Returns all webhooks which are created for the current user and which the current authorized applicaton has access to.',
         summary: 'Get webhooks for current user and current application.',
@@ -50,7 +50,7 @@ class WebhookController extends APIController
     }
 
     #[OA\Get(
-        path: '/webhooks/{id}',
+        path: '/v1/webhooks/{id}',
         operationId: 'getSingleWebhook',
         description: 'Returns a single webhook Object, if user and application is authorized to see it',
         summary: 'Get single webhook',
@@ -92,7 +92,7 @@ class WebhookController extends APIController
     }
 
     #[OA\Delete(
-        path: '/webhooks/{id}',
+        path: '/v1/webhooks/{id}',
         operationId: 'deleteWebhook',
         description: '',
         summary: 'Delete a webhook if the user and application is authorized to do',

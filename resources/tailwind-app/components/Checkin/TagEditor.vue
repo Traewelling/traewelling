@@ -7,7 +7,7 @@ import { TrwlTag } from '../../../types/TrwlTags';
 import { getEnumValues, getTitle, keys } from '../../../vue/helpers/StatusTag';
 import { getVisibilityOptions } from '../../helpers/visibility';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const props = defineProps<{
     tripUuid?: string | null;

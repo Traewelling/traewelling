@@ -7,7 +7,7 @@ const props = defineProps<{
     username: string;
 }>();
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const modal = ref<HTMLDialogElement>();
 const deleteStep = ref<1 | 2>(1);

@@ -10,7 +10,7 @@ const props = defineProps<{
 const emits = defineEmits(['profile-updated', 'error']);
 
 const modal = ref<HTMLDialogElement>();
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const input = ref<number>(props.profile.privacyHideDays);
 
 function updateDays() {

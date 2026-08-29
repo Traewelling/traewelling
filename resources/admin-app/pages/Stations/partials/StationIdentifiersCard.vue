@@ -13,7 +13,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{ changed: [] }>();
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const moveModalOpen = ref(false);
 const movingIdentifier = ref<StationIdentifier | null>(null);
