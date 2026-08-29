@@ -34,6 +34,7 @@ use App\Http\Controllers\API\v1\NotificationsController;
 use App\Http\Controllers\API\v1\OperatorController;
 use App\Http\Controllers\API\v1\PrivacyPolicyController;
 use App\Http\Controllers\API\v1\ReportController;
+use App\Http\Controllers\API\v1\RouteMapController;
 use App\Http\Controllers\API\v1\RouteSegmentController;
 use App\Http\Controllers\API\v1\SessionController;
 use App\Http\Controllers\API\v1\SettingsController;
@@ -130,6 +131,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::put('/{id}/home', [HomeStationController::class, 'setHome']);
             Route::get('/{id}/departures', [TransportController::class, 'getDepartures'])->whereNumber('id');
         });
+
+        Route::get('route-map', [RouteMapController::class, 'show'])->middleware(['scope:read-statistics']);
 
         Route::group(['prefix' => 'statistics', 'middleware' => 'scope:read-statistics'], static function () {
             Route::get('/', [StatisticsController::class, 'getPersonalStatistics']);

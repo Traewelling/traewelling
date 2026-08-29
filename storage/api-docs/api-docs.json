@@ -4239,6 +4239,142 @@
                 ]
             }
         },
+        "/route-map": {
+            "get": {
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Get the route map of the authenticated user",
+                "description": "Returns every stretch of the network the authenticated user has travelled, as encoded polylines. Stretches are deduplicated. Stretches without a route segment are returned as a straight line between both stations and flagged with `approximated`.",
+                "operationId": "getRouteMap",
+                "parameters": [
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "description": "Only include journeys departing at or after this point in time",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "example": "2024-01-01"
+                    },
+                    {
+                        "name": "until",
+                        "in": "query",
+                        "description": "Only include journeys departing at or before this point in time",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "example": "2024-12-31"
+                    },
+                    {
+                        "name": "travelTypes[]",
+                        "in": "query",
+                        "description": "Only include journeys with these modes of transport. Repeatable, or a comma separated list. Empty means all.",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/HafasTravelType"
+                            }
+                        }
+                    },
+                    {
+                        "name": "travelPurposes[]",
+                        "in": "query",
+                        "description": "Only include journeys with these purposes of travel (0=private, 1=business, 2=commute). Repeatable, or a comma separated list. Values are combined with OR, so `1,2` returns business trips and commutes. Empty means all.",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/Business"
+                            }
+                        }
+                    },
+                    {
+                        "name": "includeApproximated",
+                        "in": "query",
+                        "description": "Include stretches that have no route segment yet as a straight line between both stations. Defaults to true.",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "default": true
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "data",
+                                        "meta"
+                                    ],
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/RouteMapEntryResource"
+                                            }
+                                        },
+                                        "meta": {
+                                            "required": [
+                                                "count",
+                                                "approximatedCount",
+                                                "distance"
+                                            ],
+                                            "properties": {
+                                                "count": {
+                                                    "description": "Number of returned stretches",
+                                                    "type": "integer",
+                                                    "example": 1337
+                                                },
+                                                "approximatedCount": {
+                                                    "description": "How many of them are approximated straight lines",
+                                                    "type": "integer",
+                                                    "example": 42
+                                                },
+                                                "distance": {
+                                                    "description": "Length of the travelled network in meters. Each stretch counts once, no matter how often it was travelled.",
+                                                    "type": "integer",
+                                                    "example": 1234567
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "read-statistics"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/route-segments": {
             "get": {
                 "tags": [
@@ -14555,6 +14691,75 @@
                             "type": "object"
                         },
                         "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "RouteMapEntryResource": {
+                "title": "RouteMapEntryResource",
+                "description": "One stretch of the network the user has travelled, deduplicated over all check-ins.",
+                "required": [
+                    "routeSegmentId",
+                    "fromStation",
+                    "toStation",
+                    "polyline",
+                    "polylinePrecision",
+                    "distance",
+                    "pathType",
+                    "categories",
+                    "approximated"
+                ],
+                "properties": {
+                    "routeSegmentId": {
+                        "description": "UUID of the underlying route segment. Null when the stretch is approximated.",
+                        "type": "string",
+                        "format": "uuid",
+                        "nullable": true
+                    },
+                    "fromStation": {
+                        "description": "UUID of the station the stretch starts at. Only set for approximated stretches.",
+                        "type": "string",
+                        "format": "uuid",
+                        "nullable": true
+                    },
+                    "toStation": {
+                        "description": "UUID of the station the stretch ends at. Only set for approximated stretches.",
+                        "type": "string",
+                        "format": "uuid",
+                        "nullable": true
+                    },
+                    "polyline": {
+                        "description": "Google Encoded Polyline",
+                        "type": "string",
+                        "example": "_p~iF~ps|U_ulLnnqC_mqNvxq`@"
+                    },
+                    "polylinePrecision": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "distance": {
+                        "description": "Length of the stretch in meters",
+                        "type": "integer",
+                        "example": 42300,
+                        "nullable": true
+                    },
+                    "pathType": {
+                        "description": "How the stretch was routed",
+                        "type": "string",
+                        "example": "rail",
+                        "nullable": true
+                    },
+                    "categories": {
+                        "description": "Modes of transport this stretch was travelled with.",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/HafasTravelType"
+                        }
+                    },
+                    "approximated": {
+                        "description": "True when no route segment exists yet and the stretch is a straight line between both stations.",
+                        "type": "boolean",
+                        "example": false
                     }
                 },
                 "type": "object"

@@ -124,6 +124,8 @@ Route::middleware(['auth', 'privacy'])->group(function () {
             ->name('stats.daily');
     });
 
+    Route::view('/route-map', 'vue.spa')->name('route-map');
+
     Route::prefix('contribute')->group(function () {
         Route::get('/{any?}', function () {
             return view('vue.spa');

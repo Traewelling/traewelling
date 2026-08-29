@@ -1940,6 +1940,52 @@ export interface ReportResource {
     | null;
 }
 
+/**
+ * RouteMapEntryResource
+ * One stretch of the network the user has travelled, deduplicated over all check-ins.
+ */
+export interface RouteMapEntryResource {
+  /**
+   * UUID of the underlying route segment. Null when the stretch is approximated.
+   * @format uuid
+   */
+  routeSegmentId: string | null;
+  /**
+   * UUID of the station the stretch starts at. Only set for approximated stretches.
+   * @format uuid
+   */
+  fromStation: string | null;
+  /**
+   * UUID of the station the stretch ends at. Only set for approximated stretches.
+   * @format uuid
+   */
+  toStation: string | null;
+  /**
+   * Google Encoded Polyline
+   * @example "_p~iF~ps|U_ulLnnqC_mqNvxq`@"
+   */
+  polyline: string;
+  /** @example 5 */
+  polylinePrecision: number;
+  /**
+   * Length of the stretch in meters
+   * @example 42300
+   */
+  distance: number | null;
+  /**
+   * How the stretch was routed
+   * @example "rail"
+   */
+  pathType: string | null;
+  /** Modes of transport this stretch was travelled with. */
+  categories: HafasTravelType[];
+  /**
+   * True when no route segment exists yet and the stretch is a straight line between both stations.
+   * @example false
+   */
+  approximated: boolean;
+}
+
 /** RouteSegmentResource */
 export interface RouteSegmentResource {
   /**
@@ -5861,6 +5907,73 @@ export class Api<
         body: data,
         secure: true,
         type: ContentType.Json,
+        ...params,
+      }),
+  };
+  routeMap = {
+    /**
+     * @description Returns every stretch of the network the authenticated user has travelled, as encoded polylines. Stretches are deduplicated. Stretches without a route segment are returned as a straight line between both stations and flagged with `approximated`.
+     *
+     * @tags Statistics
+     * @name GetRouteMap
+     * @summary Get the route map of the authenticated user
+     * @request GET:/route-map
+     * @secure
+     */
+    getRouteMap: (
+      query?: {
+        /**
+         * Only include journeys departing at or after this point in time
+         * @format date-time
+         * @example "2024-01-01"
+         */
+        from?: string;
+        /**
+         * Only include journeys departing at or before this point in time
+         * @format date-time
+         * @example "2024-12-31"
+         */
+        until?: string;
+        /** Only include journeys with these modes of transport. Repeatable, or a comma separated list. Empty means all. */
+        "travelTypes[]"?: HafasTravelType[];
+        /** Only include journeys with these purposes of travel (0=private, 1=business, 2=commute). Repeatable, or a comma separated list. Values are combined with OR, so `1,2` returns business trips and commutes. Empty means all. */
+        "travelPurposes[]"?: Business[];
+        /**
+         * Include stretches that have no route segment yet as a straight line between both stations. Defaults to true.
+         * @default true
+         */
+        includeApproximated?: boolean;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data: RouteMapEntryResource[];
+          meta: {
+            /**
+             * Number of returned stretches
+             * @example 1337
+             */
+            count: number;
+            /**
+             * How many of them are approximated straight lines
+             * @example 42
+             */
+            approximatedCount: number;
+            /**
+             * Length of the travelled network in meters. Each stretch counts once, no matter how often it was travelled.
+             * @example 1234567
+             */
+            distance: number;
+          };
+        },
+        void
+      >({
+        path: `/route-map`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
         ...params,
       }),
   };
