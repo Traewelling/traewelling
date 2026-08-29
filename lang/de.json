@@ -1429,5 +1429,15 @@
     "validation.attributes.price": "Preis",
     "validation.attributes.role": "Rolle",
     "validation.attributes.subject": "Thema",
-    "validation.attributes.terms": "Bedingungen"
+    "validation.attributes.terms": "Bedingungen",
+    "filter.title": "Filter",
+    "filter.reset": "Zurücksetzen",
+    "filter.period": "Zeitraum",
+    "filter.travel-type": "Verkehrsmittel",
+    "filter.travel-purpose": "Reisezweck",
+    "route-map.title": "Streckenkarte",
+    "route-map.description": "Alle Strecken, die du mindestens einmal befahren hast.",
+    "route-map.approximated.hint": "Abschnitte ohne hinterlegten Streckenverlauf werden als Luftlinie zwischen beiden Stationen gezeichnet.",
+    "route-map.include-approximated": "Geschätzte Abschnitte anzeigen",
+    "route-map.empty": "Zu diesen Filtern gibt es keine Fahrten."
 }

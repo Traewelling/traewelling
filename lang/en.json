@@ -1426,5 +1426,15 @@
   "stats.to": "To",
   "stats.today": "today",
   "beta.banner.text": "You are viewing a new design that is still under development. You may encounter occasional errors. You can disable experimental features in your",
-  "beta.banner.settings": "settings."
+  "beta.banner.settings": "settings.",
+  "filter.title": "Filter",
+  "filter.reset": "Reset",
+  "filter.period": "Period",
+  "filter.travel-type": "Mode of transport",
+  "filter.travel-purpose": "Purpose of travel",
+  "route-map.title": "Route map",
+  "route-map.description": "Every stretch you have travelled at least once.",
+  "route-map.approximated.hint": "Stretches without a stored route are drawn as a straight line between both stations.",
+  "route-map.include-approximated": "Show estimated stretches",
+  "route-map.empty": "No journeys match these filters."
 }
