@@ -9,8 +9,7 @@ class GeoService
 {
     private const int EQUATORIAL_RADIUS_IN_METERS = 6378137;
 
-    public function getDistance(Coordinate $start, Coordinate $end): float
-    {
+    public function getDistance(Coordinate $start, Coordinate $end): float {
         if ($start->longitude === $end->longitude && $start->latitude === $end->latitude) {
             return 0.0;
         }
@@ -20,20 +19,26 @@ class GeoService
         $latB = $end->latitude / 180 * M_PI;
         $lonB = $end->longitude / 180 * M_PI;
 
-        return round(acos(sin($latA) * sin($latB) + cos($latA) * cos($latB) * cos($lonB - $lonA))
-                     * self::EQUATORIAL_RADIUS_IN_METERS);
+        $cosineOfCentralAngle = sin($latA) * sin($latB) + cos($latA) * cos($latB) * cos($lonB - $lonA);
+
+        if ($cosineOfCentralAngle > 1.0) {
+            $cosineOfCentralAngle = 1.0;
+        } elseif ($cosineOfCentralAngle < -1.0) {
+            $cosineOfCentralAngle = -1.0;
+        }
+
+        return round(acos($cosineOfCentralAngle) * self::EQUATORIAL_RADIUS_IN_METERS);
     }
 
-    public function getBoundingBox(Coordinate $center, int $radius, int $precision = 6): BoundingBox
-    {
+    public function getBoundingBox(Coordinate $center, int $radius, int $precision = 6): BoundingBox {
         $lat = deg2rad($center->latitude);
         $lon = deg2rad($center->longitude);
-        $d = $radius / self::EQUATORIAL_RADIUS_IN_METERS;
+        $d   = $radius / self::EQUATORIAL_RADIUS_IN_METERS;
 
         $latMin = $lat - $d;
         $latMax = $lat + $d;
 
-        $lonT = asin(sin($d) / cos($lat));
+        $lonT   = asin(sin($d) / cos($lat));
         $lonMin = $lon - $lonT;
         $lonMax = $lon + $lonT;
 
@@ -43,8 +48,7 @@ class GeoService
         );
     }
 
-    public function interpolatePoint(?Coordinate $start, ?Coordinate $end, float $percent): ?Coordinate
-    {
+    public function interpolatePoint(?Coordinate $start, ?Coordinate $end, float $percent): ?Coordinate {
         if ($start === null || $end === null) {
             return $start ?? $end ?? null;
         }

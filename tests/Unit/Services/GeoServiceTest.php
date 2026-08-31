@@ -19,6 +19,11 @@ class GeoServiceTest extends UnitTestCase
             'Hanover → Kroepcke' => [52.376589, 9.741083, 52.374497, 9.738573, 289],
             'Karlsruhe → Hanover' => [48.993962, 8.401107, 52.376589, 9.741083, 388213],
             'Karlsruhe → Karlsruhe' => [48.993962, 8.401107, 48.993962, 8.401107, 0],
+            // test very close coordinates (problems with round in the past):
+            'Dortmund, one step west' => [51.517477, 7.687345, 51.517477, 7.687344, 0],
+            'Fläming, one step east' => [51.957028, 13.872828, 51.957028, 13.872829, 0],
+            'Vogelsberg, one step east' => [50.693538, 9.993901, 50.693538, 9.993902, 0],
+            'Ardennes, one step west' => [49.758224, 5.026425, 49.758224, 5.026424, 0],
         ];
     }
 
@@ -43,6 +48,7 @@ class GeoServiceTest extends UnitTestCase
             new Coordinate($startLat, $startLon),
             new Coordinate($endLat, $endLon)
         );
+        $this->assertFalse(is_nan($result), 'Distance must never be NAN');
         $this->assertEquals($expected, $result);
     }
 
