@@ -4,7 +4,8 @@ namespace Tests\Feature;
 
 use App\Enum\HafasTravelType;
 use App\Http\Controllers\Backend\Support\LocationController;
-use App\Models\Polyline;
+use App\Models\Checkin;
+use App\Models\PolyLine;
 use App\Models\RouteSegment;
 use App\Models\Station;
 use App\Models\Stopover;
@@ -12,6 +13,7 @@ use App\Models\Trip;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Date;
 use Tests\FeatureTestCase;
+use Traewelling\GooglePolyline\PolylineTranscoder;
 
 class LocationControllerCalculateDistanceTest extends FeatureTestCase
 {
@@ -190,7 +192,7 @@ class LocationControllerCalculateDistanceTest extends FeatureTestCase
             ],
         ];
 
-        $polyline = Polyline::factory(['polyline' => json_encode($geoJson)])->create();
+        $polyline = PolyLine::factory(['polyline' => json_encode($geoJson)])->create();
 
         $trip = Trip::create([
             'trip_id' => '1|2|3|4',
@@ -271,7 +273,7 @@ class LocationControllerCalculateDistanceTest extends FeatureTestCase
         $origin = Station::factory(['latitude' => 52.379811, 'longitude' => 9.742779])->create();
         $destination = Station::factory(['latitude' => 52.341994, 'longitude' => 9.718319])->create();
 
-        $polyline = Polyline::factory(['polyline' => '{}'])->create();
+        $polyline = PolyLine::factory(['polyline' => '{}'])->create();
 
         $trip = Trip::create([
             'trip_id' => '1|2|3|4',
@@ -302,5 +304,73 @@ class LocationControllerCalculateDistanceTest extends FeatureTestCase
         $result = (new LocationController($trip, $originStopover, $destinationStopover))->calculateDistance();
 
         $this->assertEquals(4526, $result);
+    }
+
+    /**
+     * Two route segment points less than a metre apart used to push the spherical law of cosines
+     * above 1, so acos() returned NAN and the int-typed distance sum threw an uncaught TypeError,
+     * which took down the whole /api/v1/positions response instead of just this one status.
+     */
+    public function test_calculate_live_position_with_sub_metre_polyline_points(): void
+    {
+        $origin = Station::factory(['latitude' => 51.517477, 'longitude' => 7.687345])->create();
+        $destination = Station::factory(['latitude' => 51.500000, 'longitude' => 7.600000])->create();
+
+        $departure = Date::now()->subMinutes(10);
+        $arrival = Date::now()->addMinutes(10);
+
+        // Second point is the same latitude, one step of 1e-6 degrees (about 7 cm) to the west.
+        $polyline = new PolylineTranscoder()->encodePolyline([
+            [7.687345, 51.517477],
+            [7.687344, 51.517477],
+            [7.600000, 51.500000],
+        ], 6);
+
+        $routeSegment = RouteSegment::factory([
+            'from_station_id' => $origin->id,
+            'to_station_id' => $destination->id,
+            'polyline' => $polyline,
+            'polyline_precision' => 6,
+        ])->create();
+
+        $trip = Trip::create([
+            'trip_id' => '1|2|3|4',
+            'category' => HafasTravelType::REGIONAL,
+            'number' => 'xxx',
+            'linename' => 'xxx',
+            'origin_id' => $origin->id,
+            'destination_id' => $destination->id,
+            'departure' => $departure,
+            'arrival' => $arrival,
+        ]);
+
+        $originStopover = Stopover::factory([
+            'trip_id' => $trip->trip_id,
+            'train_station_id' => $origin->id,
+            'arrival_planned' => $departure,
+            'departure_planned' => $departure,
+            'route_segment_id' => $routeSegment->id,
+        ])->create();
+
+        $destinationStopover = Stopover::factory([
+            'trip_id' => $trip->trip_id,
+            'train_station_id' => $destination->id,
+            'arrival_planned' => $arrival,
+            'departure_planned' => $arrival,
+        ])->create();
+
+        $trip->load(['stopovers', 'polyline']);
+
+        $checkin = Checkin::factory([
+            'trip_id' => $trip->trip_id,
+            'origin_stopover_id' => $originStopover->id,
+            'destination_stopover_id' => $destinationStopover->id,
+            'departure' => $departure,
+            'arrival' => $arrival,
+        ])->create();
+
+        $position = LocationController::forStatus($checkin->status->fresh())->calculateLivePosition();
+
+        $this->assertNotNull($position);
     }
 }
