@@ -13,7 +13,7 @@ const emit = defineEmits<{
     (e: 'update:modelValue', event: EventResource | null): void;
 }>();
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const events = ref<EventResource[]>([]);
 const search = ref('');
 const open = ref(false);

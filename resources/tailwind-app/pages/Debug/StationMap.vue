@@ -23,7 +23,7 @@ const props = withDefaults(defineProps<Props>(), {
     minZoomForData: 11,
 });
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const style: StyleSpecification = {
     version: 8,

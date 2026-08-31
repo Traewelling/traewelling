@@ -9,7 +9,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use OpenApi\Attributes as OA;
 
 #[OA\Get(
-    path: '/app/changelog',
+    path: '/v1/app/changelog',
     operationId: 'getChangelog',
     responses: [
         new OA\Response(

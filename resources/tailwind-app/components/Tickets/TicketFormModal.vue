@@ -14,7 +14,7 @@ const emit = defineEmits<{
     updated: [ticket: TicketResource];
 }>();
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const form = ref({
     name: '',

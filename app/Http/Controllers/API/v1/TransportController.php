@@ -49,7 +49,7 @@ class TransportController extends Controller
      * @todo: This endpoint needs to be restructured to use own Resources! Currently we just throw the raw db-rest response.
      */
     #[OA\Get(
-        path: '/station/{id}/departures',
+        path: '/v1/station/{id}/departures',
         operationId: 'getDepartures',
         description: 'Get departures from a station.',
         summary: 'Get departures from a station',
@@ -213,7 +213,7 @@ class TransportController extends Controller
     }
 
     #[OA\Get(
-        path: '/trains/trip',
+        path: '/v1/trains/trip',
         operationId: 'getTrainTrip',
         summary: 'Get the stopovers and trip information for a given train',
         security: [['passport' => ['create-statuses']], ['token' => []]],
@@ -281,7 +281,7 @@ class TransportController extends Controller
     }
 
     #[OA\Get(
-        path: '/trains/station/nearby',
+        path: '/v1/trains/station/nearby',
         operationId: 'trainStationsNearby',
         description: 'Returns the nearest station to the given coordinates',
         summary: 'Location based search for stations',
@@ -358,7 +358,7 @@ class TransportController extends Controller
     }
 
     #[OA\Post(
-        path: '/trains/checkin',
+        path: '/v1/trains/checkin',
         operationId: 'createCheckin',
         summary: 'Check in to a trip.',
         security: [['passport' => ['create-statuses']], ['token' => []]],
@@ -477,7 +477,7 @@ class TransportController extends Controller
     }
 
     #[OA\Get(
-        path: '/trains/station/autocomplete/{query}',
+        path: '/v1/trains/station/autocomplete/{query}',
         operationId: 'trainStationAutocomplete',
         description: 'This request returns an array of max. 10 station objects matching the query. **CAUTION:** All slashes (as well as encoded to %2F) in {query} need to be replaced, preferrably by a space (%20)',
         summary: 'Autocomplete for stations',
@@ -531,7 +531,7 @@ class TransportController extends Controller
     }
 
     #[OA\Get(
-        path: '/trains/station/history',
+        path: '/v1/trains/station/history',
         operationId: 'trainStationHistory',
         description: 'This request returns an array of max. 10 most recent station objects that the user has arrived at.',
         summary: 'History for stations',

@@ -61,7 +61,7 @@ graph LR
 
 | Interface       | Technology                  | Notes                                                                                                                                      |
 |-----------------|-----------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
-| Public API      | REST over HTTPS, `/api/v1/` | OAuth 2 via Laravel Passport, scope based authorisation, documented in Swagger                                                             |
+| Public API      | REST over HTTPS, `/api/`    | OAuth 2 via Laravel Passport, scope based authorisation, documented in Swagger. Versioned per endpoint: the version is the first path segment, see [ADR-0002](decisions/0002-per-endpoint-api-versioning.md) |
 | Web frontend    | Vue 3 SPA components        | Consumes the same public API, no privileged backdoor                                                                                       |
 | Transit data    | MOTIS HTTP API              | Only active provider. HAFAS naming in the code is historical only                                                                          |
 | Reference data  | HTTPS, SPARQL and raw files | Wikidata SPARQL endpoint, plus JSON and CSV files pulled from Träwelling's own GitHub repositories                                         |

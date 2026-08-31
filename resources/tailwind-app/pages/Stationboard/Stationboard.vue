@@ -21,7 +21,7 @@ const route = useRoute();
 const router = useRouter();
 const notyf = inject('notyf') as Notyf;
 const userStore = useUserStore();
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 type DepartureMeta = {
     station?: Station;

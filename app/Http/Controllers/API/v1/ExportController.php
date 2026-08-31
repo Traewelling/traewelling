@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class ExportController extends Controller
 {
     #[OA\Post(
-        path: '/export/gdpr',
+        path: '/v1/export/gdpr',
         operationId: 'requestGdprExport',
         description: 'Requests a full GDPR data export. The export is processed asynchronously and delivered via email. Only available when the GDPR export feature is enabled for the account. Subject to a per-user cooldown (see `gdprExportCooldown` in the configuration endpoint). The `recentGdprExport` field on the authenticated user resource reflects the last request timestamp.',
         summary: 'Request a GDPR data export',
@@ -70,7 +70,7 @@ class ExportController extends Controller
     }
 
     #[OA\Post(
-        path: '/export/statuses',
+        path: '/v1/export/statuses',
         operationId: 'generateStatusExport',
         description: 'Generates a downloadable export of the authenticated user\'s statuses. Supported formats are `pdf`, `csv_human` (human-readable column headings), `csv_machine` (machine-readable column headings), and `json`. The `columns` parameter selects which fields to include and is required for PDF and CSV formats; it is ignored for JSON. The date range may not exceed 365 days, and the result set is capped at 2000 trips.',
         summary: 'Export statuses as PDF, CSV or JSON',

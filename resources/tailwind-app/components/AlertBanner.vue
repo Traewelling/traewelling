@@ -4,7 +4,7 @@ import { getActiveLanguage } from 'laravel-vue-i18n';
 import { onMounted, ref } from 'vue';
 import { AlertResource, AlertTranslationResource, Api } from '../../types/Api.gen';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const alerts = ref<AlertResource[]>([]);
 
 onMounted(async () => {

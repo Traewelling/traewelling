@@ -16,7 +16,7 @@ const emit = defineEmits<{
     changed: [];
 }>();
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const notyf = inject('notyf') as Notyf;
 
 const expanded = ref(false);

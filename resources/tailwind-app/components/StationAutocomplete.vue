@@ -27,7 +27,7 @@ const emit = defineEmits<{
     'update:modelValue': [station: StationResource];
 }>();
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const userStore = useUserStore();
 
 const homeStation = computed<StationResource | null>(() => userStore.getHome);

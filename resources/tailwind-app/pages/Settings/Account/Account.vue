@@ -13,7 +13,7 @@ import MapProvider from './partials/MapProvider.vue';
 import Password from './partials/Password.vue';
 import Timezone from './partials/Timezone.vue';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const user = useUserStore();
 const profile = ref<UserProfileSettingsResource | null>(null);

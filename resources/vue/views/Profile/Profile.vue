@@ -11,7 +11,7 @@ import Statuses from './partials/Statuses.vue';
 
 const props = defineProps<{ username: string }>();
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const notyf = new Notyf({ position: { x: 'right', y: 'bottom' } });
 
 // -------------------------

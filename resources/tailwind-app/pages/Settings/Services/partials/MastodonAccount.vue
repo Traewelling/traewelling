@@ -8,7 +8,7 @@ import SettingsListRow from '../../SettingsListRow.vue';
 const emits = defineEmits(['mastodon-removed', 'profile-picture-updated']);
 
 const modal = ref<HTMLDialogElement>();
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const notyf = inject('notyf') as Notyf;
 const input = ref<string>('');
 const importingPicture = ref(false);

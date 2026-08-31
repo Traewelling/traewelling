@@ -17,7 +17,7 @@ class PrivacyPolicyController extends Controller
     ) {}
 
     #[OA\Get(
-        path: '/privacy-policies/current',
+        path: '/v1/privacy-policies/current',
         operationId: 'getCurrentPrivacyPolicy',
         description: 'Get the current privacy policy',
         summary: 'Get the current privacy policy',
@@ -49,7 +49,7 @@ class PrivacyPolicyController extends Controller
     }
 
     #[OA\Put(
-        path: '/privacy-policies/{id}/acceptance',
+        path: '/v1/privacy-policies/{id}/acceptance',
         operationId: 'acceptPrivacyPolicy',
         description: 'Accept the current privacy policy',
         summary: 'Accept the current privacy policy',

@@ -18,7 +18,7 @@ const props = defineProps({
     },
 });
 const emits = defineEmits(['select-event']);
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const events = ref<EventResource[]>([]);
 const filteredEvents = ref<EventResource[]>([]);
 const search = ref<string>('');

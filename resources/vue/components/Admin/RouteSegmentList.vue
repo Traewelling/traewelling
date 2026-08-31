@@ -2,7 +2,7 @@
 import { onMounted, ref } from 'vue';
 import { Api, type RouteSegmentResource } from '../../../types/Api.gen';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const props = defineProps<{
     fromStationId: number;

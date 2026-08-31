@@ -3034,7 +3034,7 @@ export enum ContentType {
 }
 
 export class HttpClient<SecurityDataType = unknown> {
-  public baseUrl: string = "https://traewelling.de/api/v1";
+  public baseUrl: string = "https://traewelling.de/api";
   private securityData: SecurityDataType | null = null;
   private securityWorker?: ApiConfig<SecurityDataType>["securityWorker"];
   private abortControllers = new Map<CancelToken, AbortController>();
@@ -3240,10 +3240,12 @@ export class HttpClient<SecurityDataType = unknown> {
  * @title Träwelling API
  * @version 1.0.0 - alpha
  * @license Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0.html)
- * @baseUrl https://traewelling.de/api/v1
+ * @baseUrl https://traewelling.de/api
  * @contact <support@traewelling.de>
  *
- * Träwelling user API description. This is an incomplete documentation with still many errors. The API is currently not yet stable. Endpoints are still being restructured. Both the URL and the request or body can be changed. Breaking changes will be announced on GitHub: https://github.com/Traewelling/traewelling/blob/develop/API_CHANGELOG.md
+ * Träwelling user API description. Breaking changes will be announced on GitHub: https://github.com/Traewelling/traewelling/blob/develop/API_CHANGELOG.md
+ *
+ * Endpoints are versioned individually. The version is the first segment of every path, so `/v1/status/{id}` and a future `/v2/status/{id}` are two independent endpoints that can be offered side by side.
  */
 export class Api<
   SecurityDataType extends unknown,
@@ -3253,7 +3255,7 @@ export class Api<
      * No description
      *
      * @name GetChangelog
-     * @request GET:/app/changelog
+     * @request GET:/v1/app/changelog
      */
     getChangelog: (params: RequestParams = {}) =>
       this.request<
@@ -3262,7 +3264,7 @@ export class Api<
         },
         any
       >({
-        path: `/app/changelog`,
+        path: `/v1/app/changelog`,
         method: "GET",
         format: "json",
         ...params,
@@ -3274,11 +3276,11 @@ export class Api<
      * @tags Configuration Information
      * @name GetConfigurationInfo
      * @summary Get Application Configuration Information
-     * @request GET:/app/configuration
+     * @request GET:/v1/app/configuration
      */
     getConfigurationInfo: (params: RequestParams = {}) =>
       this.request<ConfigurationInformation, any>({
-        path: `/app/configuration`,
+        path: `/v1/app/configuration`,
         method: "GET",
         format: "json",
         ...params,
@@ -3291,7 +3293,7 @@ export class Api<
      * @tags Admin
      * @name GetAdminActivity
      * @summary List activity log
-     * @request GET:/admin/activity
+     * @request GET:/v1/admin/activity
      * @secure
      */
     getAdminActivity: (
@@ -3310,7 +3312,7 @@ export class Api<
         },
         void
       >({
-        path: `/admin/activity`,
+        path: `/v1/admin/activity`,
         method: "GET",
         query: query,
         secure: true,
@@ -3324,7 +3326,7 @@ export class Api<
      * @tags Admin
      * @name GetAdminEvents
      * @summary List events for admin management.
-     * @request GET:/admin/events
+     * @request GET:/v1/admin/events
      * @secure
      */
     getAdminEvents: (
@@ -3341,7 +3343,7 @@ export class Api<
         },
         void
       >({
-        path: `/admin/events`,
+        path: `/v1/admin/events`,
         method: "GET",
         query: query,
         secure: true,
@@ -3355,7 +3357,7 @@ export class Api<
      * @tags Admin
      * @name CreateAdminEvent
      * @summary Create a new event.
-     * @request POST:/admin/events
+     * @request POST:/v1/admin/events
      * @secure
      */
     createAdminEvent: (data: AdminEventRequest, params: RequestParams = {}) =>
@@ -3366,7 +3368,7 @@ export class Api<
         },
         void
       >({
-        path: `/admin/events`,
+        path: `/v1/admin/events`,
         method: "POST",
         body: data,
         secure: true,
@@ -3381,7 +3383,7 @@ export class Api<
      * @tags Admin
      * @name GetAdminEvent
      * @summary Get a single event for editing.
-     * @request GET:/admin/events/{id}
+     * @request GET:/v1/admin/events/{id}
      * @secure
      */
     getAdminEvent: (id: number, params: RequestParams = {}) =>
@@ -3392,7 +3394,7 @@ export class Api<
         },
         void
       >({
-        path: `/admin/events/${id}`,
+        path: `/v1/admin/events/${id}`,
         method: "GET",
         secure: true,
         format: "json",
@@ -3405,7 +3407,7 @@ export class Api<
      * @tags Admin
      * @name UpdateAdminEvent
      * @summary Update an existing event.
-     * @request PUT:/admin/events/{id}
+     * @request PUT:/v1/admin/events/{id}
      * @secure
      */
     updateAdminEvent: (
@@ -3420,7 +3422,7 @@ export class Api<
         },
         void
       >({
-        path: `/admin/events/${id}`,
+        path: `/v1/admin/events/${id}`,
         method: "PUT",
         body: data,
         secure: true,
@@ -3435,12 +3437,12 @@ export class Api<
      * @tags Admin
      * @name DeleteAdminEvent
      * @summary Delete an event.
-     * @request DELETE:/admin/events/{id}
+     * @request DELETE:/v1/admin/events/{id}
      * @secure
      */
     deleteAdminEvent: (id: number, params: RequestParams = {}) =>
       this.request<void, void>({
-        path: `/admin/events/${id}`,
+        path: `/v1/admin/events/${id}`,
         method: "DELETE",
         secure: true,
         ...params,
@@ -3452,7 +3454,7 @@ export class Api<
      * @tags Admin
      * @name GetAdminEventSuggestions
      * @summary List unprocessed event suggestions.
-     * @request GET:/admin/event-suggestions
+     * @request GET:/v1/admin/event-suggestions
      * @secure
      */
     getAdminEventSuggestions: (
@@ -3467,7 +3469,7 @@ export class Api<
         },
         void
       >({
-        path: `/admin/event-suggestions`,
+        path: `/v1/admin/event-suggestions`,
         method: "GET",
         query: query,
         secure: true,
@@ -3481,7 +3483,7 @@ export class Api<
      * @tags Admin
      * @name GetAdminEventSuggestion
      * @summary Get a single suggestion with parallel events for the accept view.
-     * @request GET:/admin/event-suggestions/{id}
+     * @request GET:/v1/admin/event-suggestions/{id}
      * @secure
      */
     getAdminEventSuggestion: (id: number, params: RequestParams = {}) =>
@@ -3505,7 +3507,7 @@ export class Api<
         },
         void
       >({
-        path: `/admin/event-suggestions/${id}`,
+        path: `/v1/admin/event-suggestions/${id}`,
         method: "GET",
         secure: true,
         format: "json",
@@ -3518,7 +3520,7 @@ export class Api<
      * @tags Admin
      * @name AcceptAdminEventSuggestion
      * @summary Accept an event suggestion and create the event.
-     * @request POST:/admin/event-suggestions/{id}/accept
+     * @request POST:/v1/admin/event-suggestions/{id}/accept
      * @secure
      */
     acceptAdminEventSuggestion: (
@@ -3533,7 +3535,7 @@ export class Api<
         },
         void
       >({
-        path: `/admin/event-suggestions/${id}/accept`,
+        path: `/v1/admin/event-suggestions/${id}/accept`,
         method: "POST",
         body: data,
         secure: true,
@@ -3548,7 +3550,7 @@ export class Api<
      * @tags Admin
      * @name DenyAdminEventSuggestion
      * @summary Deny an event suggestion.
-     * @request POST:/admin/event-suggestions/{id}/deny
+     * @request POST:/v1/admin/event-suggestions/{id}/deny
      * @secure
      */
     denyAdminEventSuggestion: (
@@ -3564,7 +3566,7 @@ export class Api<
       params: RequestParams = {},
     ) =>
       this.request<void, void>({
-        path: `/admin/event-suggestions/${id}/deny`,
+        path: `/v1/admin/event-suggestions/${id}/deny`,
         method: "POST",
         body: data,
         secure: true,
@@ -3578,7 +3580,7 @@ export class Api<
      * @tags Admin
      * @name GetAdminStatuses
      * @summary List statuses for admin moderation. Admin only.
-     * @request GET:/admin/statuses
+     * @request GET:/v1/admin/statuses
      * @secure
      */
     getAdminStatuses: (
@@ -3595,7 +3597,7 @@ export class Api<
         },
         void
       >({
-        path: `/admin/statuses`,
+        path: `/v1/admin/statuses`,
         method: "GET",
         query: query,
         secure: true,
@@ -3609,7 +3611,7 @@ export class Api<
      * @tags Admin
      * @name GetAdminStatus
      * @summary Get a single status with all admin details. Admin only.
-     * @request GET:/admin/statuses/{id}
+     * @request GET:/v1/admin/statuses/{id}
      * @secure
      */
     getAdminStatus: (id: number, params: RequestParams = {}) =>
@@ -3619,7 +3621,7 @@ export class Api<
         },
         void
       >({
-        path: `/admin/statuses/${id}`,
+        path: `/v1/admin/statuses/${id}`,
         method: "GET",
         secure: true,
         format: "json",
@@ -3632,7 +3634,7 @@ export class Api<
      * @tags Admin
      * @name UpdateAdminStatus
      * @summary Update a status including moderation fields. Admin only.
-     * @request PUT:/admin/statuses/{id}
+     * @request PUT:/v1/admin/statuses/{id}
      * @secure
      */
     updateAdminStatus: (
@@ -3661,7 +3663,7 @@ export class Api<
         },
         void
       >({
-        path: `/admin/statuses/${id}`,
+        path: `/v1/admin/statuses/${id}`,
         method: "PUT",
         body: data,
         secure: true,
@@ -3676,7 +3678,7 @@ export class Api<
      * @tags Admin
      * @name GetAdminTrips
      * @summary List trips
-     * @request GET:/admin/trips
+     * @request GET:/v1/admin/trips
      * @secure
      */
     getAdminTrips: (
@@ -3691,7 +3693,7 @@ export class Api<
         },
         void
       >({
-        path: `/admin/trips`,
+        path: `/v1/admin/trips`,
         method: "GET",
         query: query,
         secure: true,
@@ -3705,7 +3707,7 @@ export class Api<
      * @tags Admin
      * @name GetAdminTrip
      * @summary Get trip details
-     * @request GET:/admin/trips/{id}
+     * @request GET:/v1/admin/trips/{id}
      * @secure
      */
     getAdminTrip: (id: number, params: RequestParams = {}) =>
@@ -3715,7 +3717,7 @@ export class Api<
         },
         void
       >({
-        path: `/admin/trips/${id}`,
+        path: `/v1/admin/trips/${id}`,
         method: "GET",
         secure: true,
         format: "json",
@@ -3728,12 +3730,12 @@ export class Api<
      * @tags Admin
      * @name RerouteAdminTrip
      * @summary Dispatch reroute job
-     * @request POST:/admin/trips/{id}/reroute
+     * @request POST:/v1/admin/trips/{id}/reroute
      * @secure
      */
     rerouteAdminTrip: (id: number, params: RequestParams = {}) =>
       this.request<void, void>({
-        path: `/admin/trips/${id}/reroute`,
+        path: `/v1/admin/trips/${id}/reroute`,
         method: "POST",
         secure: true,
         ...params,
@@ -3745,7 +3747,7 @@ export class Api<
      * @tags Admin
      * @name GetAdminUsers
      * @summary List users
-     * @request GET:/admin/users
+     * @request GET:/v1/admin/users
      * @secure
      */
     getAdminUsers: (
@@ -3761,7 +3763,7 @@ export class Api<
         },
         void
       >({
-        path: `/admin/users`,
+        path: `/v1/admin/users`,
         method: "GET",
         query: query,
         secure: true,
@@ -3775,7 +3777,7 @@ export class Api<
      * @tags Admin
      * @name GetAdminUser
      * @summary Get user details
-     * @request GET:/admin/users/{id}
+     * @request GET:/v1/admin/users/{id}
      * @secure
      */
     getAdminUser: (id: number, params: RequestParams = {}) =>
@@ -3785,7 +3787,7 @@ export class Api<
         },
         void
       >({
-        path: `/admin/users/${id}`,
+        path: `/v1/admin/users/${id}`,
         method: "GET",
         secure: true,
         format: "json",
@@ -3798,7 +3800,7 @@ export class Api<
      * @tags Admin
      * @name UpdateAdminUserEmail
      * @summary Update user email
-     * @request PUT:/admin/users/{id}/email
+     * @request PUT:/v1/admin/users/{id}/email
      * @secure
      */
     updateAdminUserEmail: (
@@ -3810,7 +3812,7 @@ export class Api<
       params: RequestParams = {},
     ) =>
       this.request<void, void>({
-        path: `/admin/users/${id}/email`,
+        path: `/v1/admin/users/${id}/email`,
         method: "PUT",
         body: data,
         secure: true,
@@ -3824,7 +3826,7 @@ export class Api<
      * @tags Admin
      * @name UpdateAdminUserRoles
      * @summary Update user roles
-     * @request PUT:/admin/users/{id}/roles
+     * @request PUT:/v1/admin/users/{id}/roles
      * @secure
      */
     updateAdminUserRoles: (
@@ -3835,7 +3837,7 @@ export class Api<
       params: RequestParams = {},
     ) =>
       this.request<void, void>({
-        path: `/admin/users/${id}/roles`,
+        path: `/v1/admin/users/${id}/roles`,
         method: "PUT",
         body: data,
         secure: true,
@@ -3850,7 +3852,7 @@ export class Api<
      * @tags Notifications
      * @name GetAlerts
      * @summary Get alerts. Without ?all returns only currently active alerts. With ?all=true (admin only) returns all alerts with cursor pagination.
-     * @request GET:/alerts
+     * @request GET:/v1/alerts
      */
     getAlerts: (
       query?: {
@@ -3866,7 +3868,7 @@ export class Api<
         },
         any
       >({
-        path: `/alerts`,
+        path: `/v1/alerts`,
         method: "GET",
         query: query,
         format: "json",
@@ -3879,7 +3881,7 @@ export class Api<
      * @tags Notifications
      * @name CreateAlert
      * @summary Create a new alert. Admin only.
-     * @request POST:/alerts
+     * @request POST:/v1/alerts
      * @secure
      */
     createAlert: (
@@ -3905,7 +3907,7 @@ export class Api<
         },
         void
       >({
-        path: `/alerts`,
+        path: `/v1/alerts`,
         method: "POST",
         body: data,
         secure: true,
@@ -3920,7 +3922,7 @@ export class Api<
      * @tags Notifications
      * @name GetAlert
      * @summary Get a single alert. Admin only.
-     * @request GET:/alerts/{id}
+     * @request GET:/v1/alerts/{id}
      * @secure
      */
     getAlert: (id: string, params: RequestParams = {}) =>
@@ -3930,7 +3932,7 @@ export class Api<
         },
         void
       >({
-        path: `/alerts/${id}`,
+        path: `/v1/alerts/${id}`,
         method: "GET",
         secure: true,
         format: "json",
@@ -3943,7 +3945,7 @@ export class Api<
      * @tags Notifications
      * @name UpdateAlert
      * @summary Update an alert. Admin only.
-     * @request PUT:/alerts/{id}
+     * @request PUT:/v1/alerts/{id}
      * @secure
      */
     updateAlert: (
@@ -3970,7 +3972,7 @@ export class Api<
         },
         void
       >({
-        path: `/alerts/${id}`,
+        path: `/v1/alerts/${id}`,
         method: "PUT",
         body: data,
         secure: true,
@@ -3985,12 +3987,12 @@ export class Api<
      * @tags Notifications
      * @name DeleteAlert
      * @summary Delete an alert. Admin only.
-     * @request DELETE:/alerts/{id}
+     * @request DELETE:/v1/alerts/{id}
      * @secure
      */
     deleteAlert: (id: string, params: RequestParams = {}) =>
       this.request<void, void>({
-        path: `/alerts/${id}`,
+        path: `/v1/alerts/${id}`,
         method: "DELETE",
         secure: true,
         ...params,
@@ -4003,7 +4005,7 @@ export class Api<
      * @tags Applications
      * @name GetApplications
      * @summary List OAuth applications
-     * @request GET:/applications
+     * @request GET:/v1/applications
      * @secure
      */
     getApplications: (params: RequestParams = {}) =>
@@ -4013,7 +4015,7 @@ export class Api<
         },
         void
       >({
-        path: `/applications`,
+        path: `/v1/applications`,
         method: "GET",
         secure: true,
         format: "json",
@@ -4026,7 +4028,7 @@ export class Api<
      * @tags Applications
      * @name CreateApplication
      * @summary Create OAuth application
-     * @request POST:/applications
+     * @request POST:/v1/applications
      * @secure
      */
     createApplication: (
@@ -4040,7 +4042,7 @@ export class Api<
         },
         void
       >({
-        path: `/applications`,
+        path: `/v1/applications`,
         method: "POST",
         body: data,
         secure: true,
@@ -4055,7 +4057,7 @@ export class Api<
      * @tags Applications
      * @name UpdateApplication
      * @summary Update OAuth application
-     * @request PUT:/applications/{clientId}
+     * @request PUT:/v1/applications/{clientId}
      * @secure
      */
     updateApplication: (
@@ -4070,7 +4072,7 @@ export class Api<
         },
         void
       >({
-        path: `/applications/${clientId}`,
+        path: `/v1/applications/${clientId}`,
         method: "PUT",
         body: data,
         secure: true,
@@ -4085,12 +4087,12 @@ export class Api<
      * @tags Applications
      * @name DeleteApplication
      * @summary Delete OAuth application
-     * @request DELETE:/applications/{clientId}
+     * @request DELETE:/v1/applications/{clientId}
      * @secure
      */
     deleteApplication: (clientId: number, params: RequestParams = {}) =>
       this.request<void, void>({
-        path: `/applications/${clientId}`,
+        path: `/v1/applications/${clientId}`,
         method: "DELETE",
         secure: true,
         ...params,
@@ -4102,7 +4104,7 @@ export class Api<
      * @tags Applications
      * @name GetApplicationWebhookStats
      * @summary Get webhook call statistics for an application
-     * @request GET:/applications/{clientId}/webhook-stats
+     * @request GET:/v1/applications/{clientId}/webhook-stats
      * @secure
      */
     getApplicationWebhookStats: (
@@ -4116,7 +4118,7 @@ export class Api<
         },
         void
       >({
-        path: `/applications/${clientId}/webhook-stats`,
+        path: `/v1/applications/${clientId}/webhook-stats`,
         method: "GET",
         secure: true,
         format: "json",
@@ -4130,7 +4132,7 @@ export class Api<
      * @tags Auth
      * @name LogoutUser
      * @summary Logout & invalidate current bearer token
-     * @request POST:/auth/logout
+     * @request POST:/v1/auth/logout
      * @secure
      */
     logoutUser: (params: RequestParams = {}) =>
@@ -4141,7 +4143,7 @@ export class Api<
         },
         void
       >({
-        path: `/auth/logout`,
+        path: `/v1/auth/logout`,
         method: "POST",
         secure: true,
         format: "json",
@@ -4154,7 +4156,7 @@ export class Api<
      * @tags Auth, User
      * @name GetAuthenticatedUser
      * @summary Get authenticated user information
-     * @request GET:/auth/user
+     * @request GET:/v1/auth/user
      * @secure
      */
     getAuthenticatedUser: (params: RequestParams = {}) =>
@@ -4164,7 +4166,7 @@ export class Api<
         },
         void
       >({
-        path: `/auth/user`,
+        path: `/v1/auth/user`,
         method: "GET",
         secure: true,
         format: "json",
@@ -4177,7 +4179,7 @@ export class Api<
      * @tags Auth
      * @name RefreshToken
      * @summary Refresh Bearer Token
-     * @request POST:/auth/refresh
+     * @request POST:/v1/auth/refresh
      * @secure
      */
     refreshToken: (params: RequestParams = {}) =>
@@ -4187,7 +4189,7 @@ export class Api<
         },
         void
       >({
-        path: `/auth/refresh`,
+        path: `/v1/auth/refresh`,
         method: "POST",
         secure: true,
         format: "json",
@@ -4201,7 +4203,7 @@ export class Api<
      * @tags Community
      * @name GetCommunityProfile
      * @summary Get your contribution profile
-     * @request GET:/community/profile
+     * @request GET:/v1/community/profile
      * @secure
      */
     getCommunityProfile: (params: RequestParams = {}) =>
@@ -4212,7 +4214,7 @@ export class Api<
         },
         void
       >({
-        path: `/community/profile`,
+        path: `/v1/community/profile`,
         method: "GET",
         secure: true,
         format: "json",
@@ -4225,7 +4227,7 @@ export class Api<
      * @tags Community
      * @name GetCommunityHistory
      * @summary Get your contribution history
-     * @request GET:/community/history
+     * @request GET:/v1/community/history
      * @secure
      */
     getCommunityHistory: (
@@ -4248,7 +4250,7 @@ export class Api<
         },
         void
       >({
-        path: `/community/history`,
+        path: `/v1/community/history`,
         method: "GET",
         query: query,
         secure: true,
@@ -4263,7 +4265,7 @@ export class Api<
      * @tags Events
      * @name GetEvent
      * @summary [Auth optional] Get basic information for event
-     * @request GET:/event/{slug}
+     * @request GET:/v1/event/{slug}
      * @secure
      */
     getEvent: (slug?: string, params: RequestParams = {}) =>
@@ -4273,7 +4275,7 @@ export class Api<
         },
         void
       >({
-        path: `/event/${slug}`,
+        path: `/v1/event/${slug}`,
         method: "GET",
         secure: true,
         format: "json",
@@ -4286,7 +4288,7 @@ export class Api<
      * @tags Events
      * @name GetEventDetails
      * @summary [Auth optional] Get additional information for event
-     * @request GET:/event/{slug}/details
+     * @request GET:/v1/event/{slug}/details
      * @secure
      */
     getEventDetails: (slug?: string, params: RequestParams = {}) =>
@@ -4296,7 +4298,7 @@ export class Api<
         },
         void
       >({
-        path: `/event/${slug}/details`,
+        path: `/v1/event/${slug}/details`,
         method: "GET",
         secure: true,
         format: "json",
@@ -4309,7 +4311,7 @@ export class Api<
      * @tags Events
      * @name GetEventStatuses
      * @summary [Auth optional] Get paginated statuses for event
-     * @request GET:/event/{slug}/statuses
+     * @request GET:/v1/event/{slug}/statuses
      * @secure
      */
     getEventStatuses: (
@@ -4330,7 +4332,7 @@ export class Api<
         },
         void
       >({
-        path: `/event/${slug}/statuses`,
+        path: `/v1/event/${slug}/statuses`,
         method: "GET",
         query: query,
         secure: true,
@@ -4344,12 +4346,12 @@ export class Api<
      * @tags Events
      * @name SuggestEvent
      * @summary Suggest a event
-     * @request POST:/event
+     * @request POST:/v1/event
      * @secure
      */
     suggestEvent: (data: EventSuggestion, params: RequestParams = {}) =>
       this.request<void, void>({
-        path: `/event`,
+        path: `/v1/event`,
         method: "POST",
         body: data,
         secure: true,
@@ -4364,7 +4366,7 @@ export class Api<
      * @tags Events
      * @name GetEvents
      * @summary [Auth optional] Show active or upcoming events for the given timestamp
-     * @request GET:/events
+     * @request GET:/v1/events
      * @secure
      */
     getEvents: (
@@ -4401,7 +4403,7 @@ export class Api<
         },
         void
       >({
-        path: `/events`,
+        path: `/v1/events`,
         method: "GET",
         query: query,
         secure: true,
@@ -4416,7 +4418,7 @@ export class Api<
      * @tags Export
      * @name RequestGdprExport
      * @summary Request a GDPR data export
-     * @request POST:/export/gdpr
+     * @request POST:/v1/export/gdpr
      * @secure
      */
     requestGdprExport: (params: RequestParams = {}) =>
@@ -4427,7 +4429,7 @@ export class Api<
         },
         void
       >({
-        path: `/export/gdpr`,
+        path: `/v1/export/gdpr`,
         method: "POST",
         secure: true,
         format: "json",
@@ -4440,7 +4442,7 @@ export class Api<
      * @tags Export
      * @name GenerateStatusExport
      * @summary Export statuses as PDF, CSV or JSON
-     * @request POST:/export/statuses
+     * @request POST:/v1/export/statuses
      * @secure
      */
     generateStatusExport: (
@@ -4465,7 +4467,7 @@ export class Api<
       params: RequestParams = {},
     ) =>
       this.request<File, void>({
-        path: `/export/statuses`,
+        path: `/v1/export/statuses`,
         method: "POST",
         body: data,
         secure: true,
@@ -4481,7 +4483,7 @@ export class Api<
      * @tags User/Follow
      * @name CreateFollow
      * @summary Follow a user
-     * @request POST:/user/{id}/follow
+     * @request POST:/v1/user/{id}/follow
      * @secure
      */
     createFollow: (id?: string | number, params: RequestParams = {}) =>
@@ -4492,7 +4494,7 @@ export class Api<
         },
         void
       >({
-        path: `/user/${id}/follow`,
+        path: `/v1/user/${id}/follow`,
         method: "POST",
         secure: true,
         format: "json",
@@ -4505,7 +4507,7 @@ export class Api<
      * @tags User/Follow
      * @name DestroyFollow
      * @summary Unfollow a user
-     * @request DELETE:/user/{id}/follow
+     * @request DELETE:/v1/user/{id}/follow
      * @secure
      */
     destroyFollow: (id?: string | number, params: RequestParams = {}) =>
@@ -4516,7 +4518,7 @@ export class Api<
         },
         void
       >({
-        path: `/user/${id}/follow`,
+        path: `/v1/user/${id}/follow`,
         method: "DELETE",
         secure: true,
         format: "json",
@@ -4529,7 +4531,7 @@ export class Api<
      * @tags User/Follow, Settings
      * @name GetFollowers
      * @summary List all followers
-     * @request GET:/user/self/followers
+     * @request GET:/v1/user/self/followers
      * @secure
      */
     getFollowers: (
@@ -4552,7 +4554,7 @@ export class Api<
         },
         void
       >({
-        path: `/user/self/followers`,
+        path: `/v1/user/self/followers`,
         method: "GET",
         query: query,
         secure: true,
@@ -4566,7 +4568,7 @@ export class Api<
      * @tags User/Follow, Settings
      * @name GetFollowRequests
      * @summary List all followers
-     * @request GET:/user/self/follow-requests
+     * @request GET:/v1/user/self/follow-requests
      * @secure
      */
     getFollowRequests: (
@@ -4589,7 +4591,7 @@ export class Api<
         },
         any
       >({
-        path: `/user/self/follow-requests`,
+        path: `/v1/user/self/follow-requests`,
         method: "GET",
         query: query,
         secure: true,
@@ -4603,7 +4605,7 @@ export class Api<
      * @tags User/Follow, Settings
      * @name GetFollowings
      * @summary List all users the current user is following
-     * @request GET:/user/self/followings
+     * @request GET:/v1/user/self/followings
      * @secure
      */
     getFollowings: (
@@ -4626,7 +4628,7 @@ export class Api<
         },
         any
       >({
-        path: `/user/self/followings`,
+        path: `/v1/user/self/followings`,
         method: "GET",
         query: query,
         secure: true,
@@ -4640,12 +4642,12 @@ export class Api<
      * @tags User/Follow
      * @name RemoveFollower
      * @summary Remove a follower
-     * @request DELETE:/user/self/followers/{userId}
+     * @request DELETE:/v1/user/self/followers/{userId}
      * @secure
      */
     removeFollower: (userId?: string | number, params: RequestParams = {}) =>
       this.request<void, void>({
-        path: `/user/self/followers/${userId}`,
+        path: `/v1/user/self/followers/${userId}`,
         method: "DELETE",
         secure: true,
         ...params,
@@ -4657,7 +4659,7 @@ export class Api<
      * @tags User/Follow
      * @name AcceptFollowRequest
      * @summary Accept a follow request
-     * @request PUT:/user/self/follow-requests/{userId}
+     * @request PUT:/v1/user/self/follow-requests/{userId}
      * @secure
      */
     acceptFollowRequest: (
@@ -4665,7 +4667,7 @@ export class Api<
       params: RequestParams = {},
     ) =>
       this.request<void, void>({
-        path: `/user/self/follow-requests/${userId}`,
+        path: `/v1/user/self/follow-requests/${userId}`,
         method: "PUT",
         secure: true,
         ...params,
@@ -4677,7 +4679,7 @@ export class Api<
      * @tags User/Follow
      * @name RejectFollowRequest
      * @summary Reject a follow request
-     * @request DELETE:/user/self/follow-requests/{userId}
+     * @request DELETE:/v1/user/self/follow-requests/{userId}
      * @secure
      */
     rejectFollowRequest: (
@@ -4685,7 +4687,7 @@ export class Api<
       params: RequestParams = {},
     ) =>
       this.request<void, void>({
-        path: `/user/self/follow-requests/${userId}`,
+        path: `/v1/user/self/follow-requests/${userId}`,
         method: "DELETE",
         secure: true,
         ...params,
@@ -4697,7 +4699,7 @@ export class Api<
      * @tags Auth
      * @name UserState
      * @summary User state
-     * @request GET:/user/statuses/active
+     * @request GET:/v1/user/statuses/active
      * @secure
      */
     userState: (params: RequestParams = {}) =>
@@ -4707,7 +4709,7 @@ export class Api<
         },
         void
       >({
-        path: `/user/statuses/active`,
+        path: `/v1/user/statuses/active`,
         method: "GET",
         secure: true,
         format: "json",
@@ -4720,7 +4722,7 @@ export class Api<
      * @tags User
      * @name TrustedUserIndex
      * @summary Get all trusted users for a user
-     * @request GET:/user/{user}/trusted
+     * @request GET:/v1/user/{user}/trusted
      */
     trustedUserIndex: (user: string, params: RequestParams = {}) =>
       this.request<
@@ -4729,7 +4731,7 @@ export class Api<
         },
         void
       >({
-        path: `/user/${user}/trusted`,
+        path: `/v1/user/${user}/trusted`,
         method: "GET",
         format: "json",
         ...params,
@@ -4741,7 +4743,7 @@ export class Api<
      * @tags User
      * @name TrustedUserStore
      * @summary Add a user to the trusted users for a user
-     * @request POST:/user/{user}/trusted
+     * @request POST:/v1/user/{user}/trusted
      */
     trustedUserStore: (
       user: string,
@@ -4760,7 +4762,7 @@ export class Api<
       params: RequestParams = {},
     ) =>
       this.request<void, void>({
-        path: `/user/${user}/trusted`,
+        path: `/v1/user/${user}/trusted`,
         method: "POST",
         body: data,
         type: ContentType.Json,
@@ -4773,7 +4775,7 @@ export class Api<
      * @tags User
      * @name TrustedByUserIndex
      * @summary Get all users who trust the current user
-     * @request GET:/user/self/trusted-by
+     * @request GET:/v1/user/self/trusted-by
      */
     trustedByUserIndex: (params: RequestParams = {}) =>
       this.request<
@@ -4782,7 +4784,7 @@ export class Api<
         },
         void
       >({
-        path: `/user/self/trusted-by`,
+        path: `/v1/user/self/trusted-by`,
         method: "GET",
         format: "json",
         ...params,
@@ -4794,7 +4796,7 @@ export class Api<
      * @tags User
      * @name TrustedUserDestroy
      * @summary Remove a user from the trusted users for a user
-     * @request DELETE:/user/{user}/trusted/{trusted}
+     * @request DELETE:/v1/user/{user}/trusted/{trusted}
      */
     trustedUserDestroy: (
       user: string | number,
@@ -4802,7 +4804,7 @@ export class Api<
       params: RequestParams = {},
     ) =>
       this.request<void, void>({
-        path: `/user/${user}/trusted/${trusted}`,
+        path: `/v1/user/${user}/trusted/${trusted}`,
         method: "DELETE",
         ...params,
       }),
@@ -4813,7 +4815,7 @@ export class Api<
      * @tags User, Status
      * @name GetStatusesForUser
      * @summary [Auth optional] Get paginated statuses for single user
-     * @request GET:/user/{username}/statuses
+     * @request GET:/v1/user/{username}/statuses
      * @secure
      */
     getStatusesForUser: (
@@ -4834,7 +4836,7 @@ export class Api<
         },
         void
       >({
-        path: `/user/${username}/statuses`,
+        path: `/v1/user/${username}/statuses`,
         method: "GET",
         query: query,
         secure: true,
@@ -4848,7 +4850,7 @@ export class Api<
      * @tags User
      * @name ShowUser
      * @summary [Auth optional] Get information for single user
-     * @request GET:/user/{username}
+     * @request GET:/v1/user/{username}
      * @secure
      */
     showUser: (
@@ -4872,7 +4874,7 @@ export class Api<
           user: UserResource;
         }
       >({
-        path: `/user/${username}`,
+        path: `/v1/user/${username}`,
         method: "GET",
         query: query,
         secure: true,
@@ -4886,7 +4888,7 @@ export class Api<
      * @tags User/Hide and Block
      * @name CreateBlock
      * @summary Block a user
-     * @request POST:/user/{id}/block
+     * @request POST:/v1/user/{id}/block
      * @secure
      */
     createBlock: (id?: string | number, params: RequestParams = {}) =>
@@ -4897,7 +4899,7 @@ export class Api<
         },
         void
       >({
-        path: `/user/${id}/block`,
+        path: `/v1/user/${id}/block`,
         method: "POST",
         secure: true,
         format: "json",
@@ -4910,7 +4912,7 @@ export class Api<
      * @tags User/Hide and Block
      * @name DestroyBlock
      * @summary Unmute a user
-     * @request DELETE:/user/{id}/block
+     * @request DELETE:/v1/user/{id}/block
      * @secure
      */
     destroyBlock: (id?: string | number, params: RequestParams = {}) =>
@@ -4921,7 +4923,7 @@ export class Api<
         },
         void
       >({
-        path: `/user/${id}/block`,
+        path: `/v1/user/${id}/block`,
         method: "DELETE",
         secure: true,
         format: "json",
@@ -4934,7 +4936,7 @@ export class Api<
      * @tags User/Hide and Block
      * @name CreateMute
      * @summary Mute a user
-     * @request POST:/user/{id}/mute
+     * @request POST:/v1/user/{id}/mute
      * @secure
      */
     createMute: (id?: string | number, params: RequestParams = {}) =>
@@ -4945,7 +4947,7 @@ export class Api<
         },
         void
       >({
-        path: `/user/${id}/mute`,
+        path: `/v1/user/${id}/mute`,
         method: "POST",
         secure: true,
         format: "json",
@@ -4958,7 +4960,7 @@ export class Api<
      * @tags User/Hide and Block
      * @name DestroyMute
      * @summary Unmute a user
-     * @request DELETE:/user/{id}/mute
+     * @request DELETE:/v1/user/{id}/mute
      * @secure
      */
     destroyMute: (id?: string | number, params: RequestParams = {}) =>
@@ -4969,7 +4971,7 @@ export class Api<
         },
         void
       >({
-        path: `/user/${id}/mute`,
+        path: `/v1/user/${id}/mute`,
         method: "DELETE",
         secure: true,
         format: "json",
@@ -4982,7 +4984,7 @@ export class Api<
      * @tags User
      * @name SearchUsers
      * @summary Get paginated search results for combined search on username and (display)name
-     * @request GET:/user/search/{query}
+     * @request GET:/v1/user/search/{query}
      * @secure
      */
     searchUsers: (
@@ -5003,7 +5005,7 @@ export class Api<
         },
         void
       >({
-        path: `/user/search/${query}`,
+        path: `/v1/user/search/${query}`,
         method: "GET",
         query: queryParams,
         secure: true,
@@ -5017,7 +5019,7 @@ export class Api<
      * @tags User
      * @name SearchUsersByParameters
      * @summary Get paginated search results for users by either username or (display)name
-     * @request GET:/user/search
+     * @request GET:/v1/user/search
      * @secure
      */
     searchUsersByParameters: (
@@ -5041,7 +5043,7 @@ export class Api<
         },
         void
       >({
-        path: `/user/search`,
+        path: `/v1/user/search`,
         method: "GET",
         query: query,
         secure: true,
@@ -5056,7 +5058,7 @@ export class Api<
      * @tags Checkin
      * @name SetHomeStation
      * @summary Set a station as home station
-     * @request PUT:/station/{id}/home
+     * @request PUT:/v1/station/{id}/home
      * @secure
      */
     setHomeStation: (id: any, params: RequestParams = {}) =>
@@ -5066,7 +5068,7 @@ export class Api<
         },
         void
       >({
-        path: `/station/${id}/home`,
+        path: `/v1/station/${id}/home`,
         method: "PUT",
         secure: true,
         format: "json",
@@ -5079,12 +5081,12 @@ export class Api<
      * @tags Checkin
      * @name DeleteHomeStation
      * @summary Remove the home station of the authenticated user
-     * @request DELETE:/station/home
+     * @request DELETE:/v1/station/home
      * @secure
      */
     deleteHomeStation: (params: RequestParams = {}) =>
       this.request<void, void>({
-        path: `/station/home`,
+        path: `/v1/station/home`,
         method: "DELETE",
         secure: true,
         ...params,
@@ -5096,7 +5098,7 @@ export class Api<
      * @tags Checkin
      * @name GetDepartures
      * @summary Get departures from a station
-     * @request GET:/station/{id}/departures
+     * @request GET:/v1/station/{id}/departures
      * @secure
      */
     getDepartures: (
@@ -5147,7 +5149,7 @@ export class Api<
         },
         void
       >({
-        path: `/station/${id}/departures`,
+        path: `/v1/station/${id}/departures`,
         method: "GET",
         query: query,
         secure: true,
@@ -5162,7 +5164,7 @@ export class Api<
      * @tags ICS Tokens
      * @name GetIcsTokens
      * @summary Get ICS tokens
-     * @request GET:/ics-tokens
+     * @request GET:/v1/ics-tokens
      * @secure
      */
     getIcsTokens: (params: RequestParams = {}) =>
@@ -5173,7 +5175,7 @@ export class Api<
         },
         any
       >({
-        path: `/ics-tokens`,
+        path: `/v1/ics-tokens`,
         method: "GET",
         secure: true,
         format: "json",
@@ -5186,7 +5188,7 @@ export class Api<
      * @tags ICS Tokens
      * @name CreateIcsToken
      * @summary Create ICS token
-     * @request POST:/ics-tokens
+     * @request POST:/v1/ics-tokens
      * @secure
      */
     createIcsToken: (
@@ -5213,7 +5215,7 @@ export class Api<
         },
         void
       >({
-        path: `/ics-tokens`,
+        path: `/v1/ics-tokens`,
         method: "POST",
         body: data,
         secure: true,
@@ -5228,12 +5230,12 @@ export class Api<
      * @tags ICS Tokens
      * @name RevokeIcsToken
      * @summary Revoke ICS token
-     * @request DELETE:/ics-tokens/{tokenId}
+     * @request DELETE:/v1/ics-tokens/{tokenId}
      * @secure
      */
     revokeIcsToken: (tokenId: number, params: RequestParams = {}) =>
       this.request<void, void>({
-        path: `/ics-tokens/${tokenId}`,
+        path: `/v1/ics-tokens/${tokenId}`,
         method: "DELETE",
         secure: true,
         ...params,
@@ -5246,7 +5248,7 @@ export class Api<
      * @tags Likes
      * @name GetLikesForStatus
      * @summary [Auth optional] Get likes for status
-     * @request GET:/status/{id}/likes
+     * @request GET:/v1/status/{id}/likes
      * @secure
      */
     getLikesForStatus: (id?: number, params: RequestParams = {}) =>
@@ -5256,7 +5258,7 @@ export class Api<
         },
         void
       >({
-        path: `/status/${id}/likes`,
+        path: `/v1/status/${id}/likes`,
         method: "GET",
         secure: true,
         format: "json",
@@ -5269,7 +5271,7 @@ export class Api<
      * @tags Likes
      * @name AddLikeToStatus
      * @summary Add like to status
-     * @request POST:/status/{id}/like
+     * @request POST:/v1/status/{id}/like
      * @secure
      */
     addLikeToStatus: (id?: number, params: RequestParams = {}) =>
@@ -5279,7 +5281,7 @@ export class Api<
         },
         void
       >({
-        path: `/status/${id}/like`,
+        path: `/v1/status/${id}/like`,
         method: "POST",
         secure: true,
         format: "json",
@@ -5292,7 +5294,7 @@ export class Api<
      * @tags Likes
      * @name RemoveLikeFromStatus
      * @summary Remove like from status
-     * @request DELETE:/status/{id}/like
+     * @request DELETE:/v1/status/{id}/like
      * @secure
      */
     removeLikeFromStatus: (id?: number, params: RequestParams = {}) =>
@@ -5302,7 +5304,7 @@ export class Api<
         },
         void
       >({
-        path: `/status/${id}/like`,
+        path: `/v1/status/${id}/like`,
         method: "DELETE",
         secure: true,
         format: "json",
@@ -5315,7 +5317,7 @@ export class Api<
      * @tags Status
      * @name ListStatuses
      * @summary [Auth optional] List and filter statuses
-     * @request GET:/status
+     * @request GET:/v1/status
      */
     listStatuses: (
       query?: {
@@ -5370,7 +5372,7 @@ export class Api<
         },
         any
       >({
-        path: `/status`,
+        path: `/v1/status`,
         method: "GET",
         query: query,
         format: "json",
@@ -5383,7 +5385,7 @@ export class Api<
      * @tags Status
      * @name GetSingleStatus
      * @summary [Auth optional] Get single statuses
-     * @request GET:/status/{id}
+     * @request GET:/v1/status/{id}
      * @secure
      */
     getSingleStatus: (
@@ -5403,7 +5405,7 @@ export class Api<
         },
         void
       >({
-        path: `/status/${id}`,
+        path: `/v1/status/${id}`,
         method: "GET",
         query: query,
         secure: true,
@@ -5417,7 +5419,7 @@ export class Api<
      * @tags Status
      * @name UpdateSingleStatus
      * @summary Update a status
-     * @request PUT:/status/{id}
+     * @request PUT:/v1/status/{id}
      * @secure
      */
     updateSingleStatus: (
@@ -5431,7 +5433,7 @@ export class Api<
         },
         void
       >({
-        path: `/status/${id}`,
+        path: `/v1/status/${id}`,
         method: "PUT",
         body: data,
         secure: true,
@@ -5446,12 +5448,12 @@ export class Api<
      * @tags Status
      * @name DestroySingleStatus
      * @summary Destroy a status
-     * @request DELETE:/status/{id}
+     * @request DELETE:/v1/status/{id}
      * @secure
      */
     destroySingleStatus: (id?: number, params: RequestParams = {}) =>
       this.request<void, void>({
-        path: `/status/${id}`,
+        path: `/v1/status/${id}`,
         method: "DELETE",
         secure: true,
         ...params,
@@ -5463,7 +5465,7 @@ export class Api<
      * @tags Status
      * @name GetTagsForStatus
      * @summary Show all tags for a status which are visible for the current user
-     * @request GET:/status/{statusId}/tags
+     * @request GET:/v1/status/{statusId}/tags
      * @secure
      */
     getTagsForStatus: (statusId?: number, params: RequestParams = {}) =>
@@ -5473,7 +5475,7 @@ export class Api<
         },
         void
       >({
-        path: `/status/${statusId}/tags`,
+        path: `/v1/status/${statusId}/tags`,
         method: "GET",
         secure: true,
         format: "json",
@@ -5486,7 +5488,7 @@ export class Api<
      * @tags Status
      * @name CreateSingleStatusTag
      * @summary Create a StatusTag
-     * @request POST:/status/{statusId}/tags
+     * @request POST:/v1/status/{statusId}/tags
      * @secure
      */
     createSingleStatusTag: (
@@ -5500,7 +5502,7 @@ export class Api<
         },
         void
       >({
-        path: `/status/${statusId}/tags`,
+        path: `/v1/status/${statusId}/tags`,
         method: "POST",
         body: data,
         secure: true,
@@ -5515,7 +5517,7 @@ export class Api<
      * @tags Status
      * @name UpdateSingleStatusTag
      * @summary Update a StatusTag
-     * @request PUT:/status/{statusId}/tags/{tagKey}
+     * @request PUT:/v1/status/{statusId}/tags/{tagKey}
      * @secure
      */
     updateSingleStatusTag: (
@@ -5530,7 +5532,7 @@ export class Api<
         },
         void
       >({
-        path: `/status/${statusId}/tags/${tagKey}`,
+        path: `/v1/status/${statusId}/tags/${tagKey}`,
         method: "PUT",
         body: data,
         secure: true,
@@ -5545,7 +5547,7 @@ export class Api<
      * @tags Status
      * @name DestroySingleStatusTag
      * @summary Destroy a StatusTag
-     * @request DELETE:/status/{statusId}/tags/{tagKey}
+     * @request DELETE:/v1/status/{statusId}/tags/{tagKey}
      * @secure
      */
     destroySingleStatusTag: (
@@ -5560,7 +5562,7 @@ export class Api<
         },
         void
       >({
-        path: `/status/${statusId}/tags/${tagKey}`,
+        path: `/v1/status/${statusId}/tags/${tagKey}`,
         method: "DELETE",
         secure: true,
         format: "json",
@@ -5574,7 +5576,7 @@ export class Api<
      * @tags Debug
      * @name GetMotisSources
      * @summary List transit data sources
-     * @request GET:/motis-sources
+     * @request GET:/v1/motis-sources
      */
     getMotisSources: (params: RequestParams = {}) =>
       this.request<
@@ -5583,7 +5585,7 @@ export class Api<
         },
         any
       >({
-        path: `/motis-sources`,
+        path: `/v1/motis-sources`,
         method: "GET",
         format: "json",
         ...params,
@@ -5596,7 +5598,7 @@ export class Api<
      * @tags Notifications
      * @name GetUnreadCount
      * @summary Get count of unread notifications for authenticated user
-     * @request GET:/notifications/unread/count
+     * @request GET:/v1/notifications/unread/count
      * @secure
      */
     getUnreadCount: (params: RequestParams = {}) =>
@@ -5607,7 +5609,7 @@ export class Api<
         },
         void
       >({
-        path: `/notifications/unread/count`,
+        path: `/v1/notifications/unread/count`,
         method: "GET",
         secure: true,
         format: "json",
@@ -5620,7 +5622,7 @@ export class Api<
      * @tags Notifications
      * @name ListNotifications
      * @summary Get paginated notifications for authenticated user
-     * @request GET:/notifications
+     * @request GET:/v1/notifications
      * @secure
      */
     listNotifications: (params: RequestParams = {}) =>
@@ -5634,7 +5636,7 @@ export class Api<
         },
         void
       >({
-        path: `/notifications`,
+        path: `/v1/notifications`,
         method: "GET",
         secure: true,
         format: "json",
@@ -5647,7 +5649,7 @@ export class Api<
      * @tags Notifications
      * @name MarkAsRead
      * @summary Mark notification as read
-     * @request PUT:/notifications/read/{id}
+     * @request PUT:/v1/notifications/read/{id}
      * @secure
      */
     markAsRead: (id?: string, params: RequestParams = {}) =>
@@ -5658,7 +5660,7 @@ export class Api<
         },
         void
       >({
-        path: `/notifications/read/${id}`,
+        path: `/v1/notifications/read/${id}`,
         method: "PUT",
         secure: true,
         format: "json",
@@ -5671,7 +5673,7 @@ export class Api<
      * @tags Notifications
      * @name MarkAsUnread
      * @summary Mark notification as unread
-     * @request PUT:/notifications/unread/{id}
+     * @request PUT:/v1/notifications/unread/{id}
      * @secure
      */
     markAsUnread: (id?: string, params: RequestParams = {}) =>
@@ -5682,7 +5684,7 @@ export class Api<
         },
         void
       >({
-        path: `/notifications/unread/${id}`,
+        path: `/v1/notifications/unread/${id}`,
         method: "PUT",
         secure: true,
         format: "json",
@@ -5695,7 +5697,7 @@ export class Api<
      * @tags Notifications
      * @name MarkAllAsRead
      * @summary Mark all notification as read
-     * @request PUT:/notifications/read/all
+     * @request PUT:/v1/notifications/read/all
      * @secure
      */
     markAllAsRead: (params: RequestParams = {}) =>
@@ -5706,7 +5708,7 @@ export class Api<
         },
         void
       >({
-        path: `/notifications/read/all`,
+        path: `/v1/notifications/read/all`,
         method: "PUT",
         secure: true,
         format: "json",
@@ -5720,7 +5722,7 @@ export class Api<
      * @tags Checkin
      * @name GetOperators
      * @summary Get a list of operators, optionally filtered by name.
-     * @request GET:/operators
+     * @request GET:/v1/operators
      */
     getOperators: (
       query?: {
@@ -5735,7 +5737,7 @@ export class Api<
         },
         void
       >({
-        path: `/operators`,
+        path: `/v1/operators`,
         method: "GET",
         query: query,
         format: "json",
@@ -5748,7 +5750,7 @@ export class Api<
      * @tags Checkin
      * @name MergeOperators
      * @summary Merge two operators into one (admin only).
-     * @request PUT:/operators/{oldOperatorId}/merge/{newOperatorId}
+     * @request PUT:/v1/operators/{oldOperatorId}/merge/{newOperatorId}
      */
     mergeOperators: (
       oldOperatorId: string,
@@ -5756,7 +5758,7 @@ export class Api<
       params: RequestParams = {},
     ) =>
       this.request<void, void>({
-        path: `/operators/${oldOperatorId}/merge/${newOperatorId}`,
+        path: `/v1/operators/${oldOperatorId}/merge/${newOperatorId}`,
         method: "PUT",
         ...params,
       }),
@@ -5768,7 +5770,7 @@ export class Api<
      * @tags Privacy Policy
      * @name GetCurrentPrivacyPolicy
      * @summary Get the current privacy policy
-     * @request GET:/privacy-policies/current
+     * @request GET:/v1/privacy-policies/current
      */
     getCurrentPrivacyPolicy: (params: RequestParams = {}) =>
       this.request<
@@ -5777,7 +5779,7 @@ export class Api<
         },
         any
       >({
-        path: `/privacy-policies/current`,
+        path: `/v1/privacy-policies/current`,
         method: "GET",
         format: "json",
         ...params,
@@ -5789,12 +5791,12 @@ export class Api<
      * @tags Privacy Policy
      * @name AcceptPrivacyPolicy
      * @summary Accept the current privacy policy
-     * @request PUT:/privacy-policies/{id}/acceptance
+     * @request PUT:/v1/privacy-policies/{id}/acceptance
      * @secure
      */
     acceptPrivacyPolicy: (id?: any, params: RequestParams = {}) =>
       this.request<void, void>({
-        path: `/privacy-policies/${id}/acceptance`,
+        path: `/v1/privacy-policies/${id}/acceptance`,
         method: "PUT",
         secure: true,
         ...params,
@@ -5807,7 +5809,7 @@ export class Api<
      * @tags Report
      * @name ListReports
      * @summary List all reports. Admin only.
-     * @request GET:/reports
+     * @request GET:/v1/reports
      * @secure
      */
     listReports: (
@@ -5822,7 +5824,7 @@ export class Api<
         },
         void
       >({
-        path: `/reports`,
+        path: `/v1/reports`,
         method: "GET",
         query: query,
         secure: true,
@@ -5836,7 +5838,7 @@ export class Api<
      * @tags Report
      * @name CreateReport
      * @summary Report a Status, Event or User to the admins.
-     * @request POST:/reports
+     * @request POST:/v1/reports
      * @secure
      */
     createReport: (
@@ -5853,7 +5855,7 @@ export class Api<
       params: RequestParams = {},
     ) =>
       this.request<void, void>({
-        path: `/reports`,
+        path: `/v1/reports`,
         method: "POST",
         body: data,
         secure: true,
@@ -5867,7 +5869,7 @@ export class Api<
      * @tags Report
      * @name GetReport
      * @summary Get a single report with activity log. Admin only.
-     * @request GET:/reports/{id}
+     * @request GET:/v1/reports/{id}
      * @secure
      */
     getReport: (id: string, params: RequestParams = {}) =>
@@ -5877,7 +5879,7 @@ export class Api<
         },
         void
       >({
-        path: `/reports/${id}`,
+        path: `/v1/reports/${id}`,
         method: "GET",
         secure: true,
         format: "json",
@@ -5890,7 +5892,7 @@ export class Api<
      * @tags Report
      * @name UpdateReport
      * @summary Update a report status. Admin only.
-     * @request PUT:/reports/{id}
+     * @request PUT:/v1/reports/{id}
      * @secure
      */
     updateReport: (
@@ -5902,7 +5904,7 @@ export class Api<
       params: RequestParams = {},
     ) =>
       this.request<void, void>({
-        path: `/reports/${id}`,
+        path: `/v1/reports/${id}`,
         method: "PUT",
         body: data,
         secure: true,
@@ -5917,7 +5919,7 @@ export class Api<
      * @tags Statistics
      * @name GetRouteMap
      * @summary Get the route map of the authenticated user
-     * @request GET:/route-map
+     * @request GET:/v1/route-map
      * @secure
      */
     getRouteMap: (
@@ -5969,7 +5971,7 @@ export class Api<
         },
         void
       >({
-        path: `/route-map`,
+        path: `/v1/route-map`,
         method: "GET",
         query: query,
         secure: true,
@@ -5984,7 +5986,7 @@ export class Api<
      * @tags Polyline
      * @name ListRouteSegments
      * @summary List route segments for a given station pair (admin only).
-     * @request GET:/route-segments
+     * @request GET:/v1/route-segments
      */
     listRouteSegments: (
       query: {
@@ -5999,7 +6001,7 @@ export class Api<
         },
         void
       >({
-        path: `/route-segments`,
+        path: `/v1/route-segments`,
         method: "GET",
         query: query,
         format: "json",
@@ -6012,7 +6014,7 @@ export class Api<
      * @tags Polyline
      * @name CreateRouteSegment
      * @summary Create a straight-line route segment between two stations (admin only).
-     * @request POST:/route-segments
+     * @request POST:/v1/route-segments
      */
     createRouteSegment: (
       data: {
@@ -6044,7 +6046,7 @@ export class Api<
         },
         void
       >({
-        path: `/route-segments`,
+        path: `/v1/route-segments`,
         method: "POST",
         body: data,
         type: ContentType.Json,
@@ -6058,7 +6060,7 @@ export class Api<
      * @tags Polyline
      * @name GetRouteSegment
      * @summary Get a single route segment with station names and counts (admin only).
-     * @request GET:/route-segments/{id}
+     * @request GET:/v1/route-segments/{id}
      */
     getRouteSegment: (id: string, params: RequestParams = {}) =>
       this.request<
@@ -6067,7 +6069,7 @@ export class Api<
         },
         void
       >({
-        path: `/route-segments/${id}`,
+        path: `/v1/route-segments/${id}`,
         method: "GET",
         format: "json",
         ...params,
@@ -6079,11 +6081,11 @@ export class Api<
      * @tags Polyline
      * @name DeleteRouteSegment
      * @summary Delete a route segment (admin only). All stopovers using this segment are reassigned to another matching segment if available, otherwise their assignment is cleared.
-     * @request DELETE:/route-segments/{id}
+     * @request DELETE:/v1/route-segments/{id}
      */
     deleteRouteSegment: (id: string, params: RequestParams = {}) =>
       this.request<void, void>({
-        path: `/route-segments/${id}`,
+        path: `/v1/route-segments/${id}`,
         method: "DELETE",
         ...params,
       }),
@@ -6094,11 +6096,11 @@ export class Api<
      * @tags Polyline
      * @name AssignRouteSegmentToStopovers
      * @summary Dispatch a background job that assigns this segment to all matching unassigned stopovers (admin only).
-     * @request POST:/route-segments/{id}/assign-stopovers
+     * @request POST:/v1/route-segments/{id}/assign-stopovers
      */
     assignRouteSegmentToStopovers: (id: string, params: RequestParams = {}) =>
       this.request<void, void>({
-        path: `/route-segments/${id}/assign-stopovers`,
+        path: `/v1/route-segments/${id}/assign-stopovers`,
         method: "POST",
         ...params,
       }),
@@ -6109,7 +6111,7 @@ export class Api<
      * @tags Polyline
      * @name BrouterPreviewRouteSegment
      * @summary Request a BRouter route preview for the given waypoints (admin only).
-     * @request POST:/route-segments/{id}/brouter-preview
+     * @request POST:/v1/route-segments/{id}/brouter-preview
      */
     brouterPreviewRouteSegment: (
       id: string,
@@ -6133,7 +6135,7 @@ export class Api<
         },
         void
       >({
-        path: `/route-segments/${id}/brouter-preview`,
+        path: `/v1/route-segments/${id}/brouter-preview`,
         method: "POST",
         body: data,
         type: ContentType.Json,
@@ -6147,7 +6149,7 @@ export class Api<
      * @tags Polyline
      * @name ApplyPolylineToRouteSegment
      * @summary Save custom waypoints and regenerate the segment's polyline via BRouter (admin only).
-     * @request POST:/route-segments/{id}/polyline
+     * @request POST:/v1/route-segments/{id}/polyline
      */
     applyPolylineToRouteSegment: (
       id: string,
@@ -6171,7 +6173,7 @@ export class Api<
         },
         void
       >({
-        path: `/route-segments/${id}/polyline`,
+        path: `/v1/route-segments/${id}/polyline`,
         method: "POST",
         body: data,
         type: ContentType.Json,
@@ -6186,7 +6188,7 @@ export class Api<
      * @tags Security
      * @name GetSessions
      * @summary Get active sessions
-     * @request GET:/security/sessions
+     * @request GET:/v1/security/sessions
      * @secure
      */
     getSessions: (params: RequestParams = {}) =>
@@ -6196,7 +6198,7 @@ export class Api<
         },
         any
       >({
-        path: `/security/sessions`,
+        path: `/v1/security/sessions`,
         method: "GET",
         secure: true,
         format: "json",
@@ -6209,12 +6211,12 @@ export class Api<
      * @tags Security
      * @name DeleteAllSessions
      * @summary Delete all sessions
-     * @request DELETE:/security/sessions
+     * @request DELETE:/v1/security/sessions
      * @secure
      */
     deleteAllSessions: (params: RequestParams = {}) =>
       this.request<void, any>({
-        path: `/security/sessions`,
+        path: `/v1/security/sessions`,
         method: "DELETE",
         secure: true,
         ...params,
@@ -6226,7 +6228,7 @@ export class Api<
      * @tags Security
      * @name DeleteSocialProvider
      * @summary Delete social provider
-     * @request DELETE:/security/social
+     * @request DELETE:/v1/security/social
      * @secure
      */
     deleteSocialProvider: (
@@ -6237,7 +6239,7 @@ export class Api<
       params: RequestParams = {},
     ) =>
       this.request<void, void>({
-        path: `/security/social`,
+        path: `/v1/security/social`,
         method: "DELETE",
         body: data,
         secure: true,
@@ -6251,7 +6253,7 @@ export class Api<
      * @tags Security
      * @name GetTokens
      * @summary Get active API tokens
-     * @request GET:/security/tokens
+     * @request GET:/v1/security/tokens
      * @secure
      */
     getTokens: (params: RequestParams = {}) =>
@@ -6261,7 +6263,7 @@ export class Api<
         },
         any
       >({
-        path: `/security/tokens`,
+        path: `/v1/security/tokens`,
         method: "GET",
         secure: true,
         format: "json",
@@ -6274,7 +6276,7 @@ export class Api<
      * @tags Security
      * @name CreateToken
      * @summary Create API token
-     * @request POST:/security/tokens
+     * @request POST:/v1/security/tokens
      * @secure
      */
     createToken: (params: RequestParams = {}) =>
@@ -6290,7 +6292,7 @@ export class Api<
         },
         any
       >({
-        path: `/security/tokens`,
+        path: `/v1/security/tokens`,
         method: "POST",
         secure: true,
         format: "json",
@@ -6303,12 +6305,12 @@ export class Api<
      * @tags Security
      * @name RevokeAllTokens
      * @summary Revoke all API tokens
-     * @request DELETE:/security/tokens
+     * @request DELETE:/v1/security/tokens
      * @secure
      */
     revokeAllTokens: (params: RequestParams = {}) =>
       this.request<void, any>({
-        path: `/security/tokens`,
+        path: `/v1/security/tokens`,
         method: "DELETE",
         secure: true,
         ...params,
@@ -6320,12 +6322,12 @@ export class Api<
      * @tags Security
      * @name RevokeToken
      * @summary Revoke API token
-     * @request DELETE:/security/tokens/{tokenId}
+     * @request DELETE:/v1/security/tokens/{tokenId}
      * @secure
      */
     revokeToken: (tokenId: string, params: RequestParams = {}) =>
       this.request<void, void>({
-        path: `/security/tokens/${tokenId}`,
+        path: `/v1/security/tokens/${tokenId}`,
         method: "DELETE",
         secure: true,
         ...params,
@@ -6338,7 +6340,7 @@ export class Api<
      * @tags Settings
      * @name GetProfileSettings
      * @summary Get the current user's profile settings
-     * @request GET:/settings/profile
+     * @request GET:/v1/settings/profile
      * @secure
      */
     getProfileSettings: (params: RequestParams = {}) =>
@@ -6348,7 +6350,7 @@ export class Api<
         },
         void
       >({
-        path: `/settings/profile`,
+        path: `/v1/settings/profile`,
         method: "GET",
         secure: true,
         format: "json",
@@ -6361,7 +6363,7 @@ export class Api<
      * @tags Settings
      * @name UpdateProfileSettings
      * @summary Update the current user's profile settings
-     * @request PUT:/settings/profile
+     * @request PUT:/v1/settings/profile
      * @secure
      */
     updateProfileSettings: (
@@ -6374,7 +6376,7 @@ export class Api<
         },
         void
       >({
-        path: `/settings/profile`,
+        path: `/v1/settings/profile`,
         method: "PUT",
         body: data,
         secure: true,
@@ -6389,7 +6391,7 @@ export class Api<
      * @tags Settings
      * @name UpdateEmail
      * @summary Update the current user's email address
-     * @request PUT:/settings/email
+     * @request PUT:/v1/settings/email
      * @secure
      */
     updateEmail: (
@@ -6414,7 +6416,7 @@ export class Api<
         },
         void
       >({
-        path: `/settings/email`,
+        path: `/v1/settings/email`,
         method: "PUT",
         body: data,
         secure: true,
@@ -6429,12 +6431,12 @@ export class Api<
      * @tags Settings
      * @name ResendVerificationEmail
      * @summary Resend verification email
-     * @request POST:/settings/email/verification
+     * @request POST:/v1/settings/email/verification
      * @secure
      */
     resendVerificationEmail: (params: RequestParams = {}) =>
       this.request<void, void>({
-        path: `/settings/email/verification`,
+        path: `/v1/settings/email/verification`,
         method: "POST",
         secure: true,
         ...params,
@@ -6446,7 +6448,7 @@ export class Api<
      * @tags Settings
      * @name UpdatePassword
      * @summary Change password
-     * @request PUT:/settings/password
+     * @request PUT:/v1/settings/password
      * @secure
      */
     updatePassword: (
@@ -6472,7 +6474,7 @@ export class Api<
         },
         void
       >({
-        path: `/settings/password`,
+        path: `/v1/settings/password`,
         method: "PUT",
         body: data,
         secure: true,
@@ -6487,7 +6489,7 @@ export class Api<
      * @tags Settings
      * @name DeleteProfilePicture
      * @summary Delete a profile picture
-     * @request DELETE:/settings/profile-picture/{userUuid}
+     * @request DELETE:/v1/settings/profile-picture/{userUuid}
      * @secure
      */
     deleteProfilePicture: (userUuid: string, params: RequestParams = {}) =>
@@ -6498,7 +6500,7 @@ export class Api<
         },
         void
       >({
-        path: `/settings/profile-picture/${userUuid}`,
+        path: `/v1/settings/profile-picture/${userUuid}`,
         method: "DELETE",
         secure: true,
         format: "json",
@@ -6511,7 +6513,7 @@ export class Api<
      * @tags Settings
      * @name UploadProfilePicture
      * @summary Upload a new profile picture for the current user
-     * @request POST:/settings/profile-picture
+     * @request POST:/v1/settings/profile-picture
      * @secure
      */
     uploadProfilePicture: (
@@ -6531,7 +6533,7 @@ export class Api<
         },
         void
       >({
-        path: `/settings/profile-picture`,
+        path: `/v1/settings/profile-picture`,
         method: "POST",
         body: data,
         secure: true,
@@ -6546,12 +6548,12 @@ export class Api<
      * @tags Settings
      * @name ImportProfilePictureFromMastodon
      * @summary Import profile picture from Mastodon
-     * @request POST:/settings/profile-picture/mastodon
+     * @request POST:/v1/settings/profile-picture/mastodon
      * @secure
      */
     importProfilePictureFromMastodon: (params: RequestParams = {}) =>
       this.request<void, void>({
-        path: `/settings/profile-picture/mastodon`,
+        path: `/v1/settings/profile-picture/mastodon`,
         method: "POST",
         secure: true,
         ...params,
@@ -6563,7 +6565,7 @@ export class Api<
      * @tags Settings
      * @name DeleteUserAccount
      * @summary Delete User Account
-     * @request DELETE:/settings/account
+     * @request DELETE:/v1/settings/account
      * @secure
      */
     deleteUserAccount: (
@@ -6578,7 +6580,7 @@ export class Api<
       params: RequestParams = {},
     ) =>
       this.request<void, void>({
-        path: `/settings/account`,
+        path: `/v1/settings/account`,
         method: "DELETE",
         body: data,
         secure: true,
@@ -6593,7 +6595,7 @@ export class Api<
      * @tags Stations
      * @name GetStationUsages
      * @summary Get station usage counts
-     * @request GET:/stations/{id}/usages
+     * @request GET:/v1/stations/{id}/usages
      * @secure
      */
     getStationUsages: (id: number, params: RequestParams = {}) =>
@@ -6603,7 +6605,7 @@ export class Api<
         },
         void
       >({
-        path: `/stations/${id}/usages`,
+        path: `/v1/stations/${id}/usages`,
         method: "GET",
         secure: true,
         format: "json",
@@ -6616,7 +6618,7 @@ export class Api<
      * @tags Stations
      * @name MoveStationUsages
      * @summary Move station references to another station
-     * @request PUT:/stations/{id}/usages/move
+     * @request PUT:/v1/stations/{id}/usages/move
      * @secure
      */
     moveStationUsages: (
@@ -6642,7 +6644,7 @@ export class Api<
         },
         void
       >({
-        path: `/stations/${id}/usages/move`,
+        path: `/v1/stations/${id}/usages/move`,
         method: "PUT",
         body: data,
         secure: true,
@@ -6657,7 +6659,7 @@ export class Api<
      * @tags Checkin
      * @name ShowStation
      * @summary Show station
-     * @request GET:/stations/{id}
+     * @request GET:/v1/stations/{id}
      * @secure
      */
     showStation: (
@@ -6674,7 +6676,7 @@ export class Api<
         },
         void
       >({
-        path: `/stations/${id}`,
+        path: `/v1/stations/${id}`,
         method: "GET",
         query: query,
         secure: true,
@@ -6688,7 +6690,7 @@ export class Api<
      * @tags Stations
      * @name DeleteStation
      * @summary Delete a station
-     * @request DELETE:/stations/{id}
+     * @request DELETE:/v1/stations/{id}
      * @secure
      */
     deleteStation: (id: number, params: RequestParams = {}) =>
@@ -6700,7 +6702,7 @@ export class Api<
           data: StationUsageDto;
         }
       >({
-        path: `/stations/${id}`,
+        path: `/v1/stations/${id}`,
         method: "DELETE",
         secure: true,
         ...params,
@@ -6712,7 +6714,7 @@ export class Api<
      * @tags Stations
      * @name UpdateStation
      * @summary Update a station
-     * @request PATCH:/stations/{id}
+     * @request PATCH:/v1/stations/{id}
      * @secure
      */
     updateStation: (
@@ -6742,7 +6744,7 @@ export class Api<
         },
         void
       >({
-        path: `/stations/${id}`,
+        path: `/v1/stations/${id}`,
         method: "PATCH",
         body: data,
         secure: true,
@@ -6757,7 +6759,7 @@ export class Api<
      * @tags Checkin
      * @name IndexStation
      * @summary Search for stations
-     * @request GET:/stations
+     * @request GET:/v1/stations
      * @secure
      */
     indexStation: (
@@ -6821,7 +6823,7 @@ export class Api<
         },
         void
       >({
-        path: `/stations`,
+        path: `/v1/stations`,
         method: "GET",
         query: query,
         secure: true,
@@ -6835,7 +6837,7 @@ export class Api<
      * @tags Stations
      * @name StoreStationIdentifier
      * @summary Add a station identifier
-     * @request POST:/stations/{stationId}/identifiers
+     * @request POST:/v1/stations/{stationId}/identifiers
      * @secure
      */
     storeStationIdentifier: (
@@ -6859,7 +6861,7 @@ export class Api<
       params: RequestParams = {},
     ) =>
       this.request<void, void>({
-        path: `/stations/${stationId}/identifiers`,
+        path: `/v1/stations/${stationId}/identifiers`,
         method: "POST",
         body: data,
         secure: true,
@@ -6873,7 +6875,7 @@ export class Api<
      * @tags Stations
      * @name UpdateStationIdentifier
      * @summary Update a station identifier
-     * @request PATCH:/stations/{stationId}/identifiers/{identifierId}
+     * @request PATCH:/v1/stations/{stationId}/identifiers/{identifierId}
      * @secure
      */
     updateStationIdentifier: (
@@ -6898,7 +6900,7 @@ export class Api<
       params: RequestParams = {},
     ) =>
       this.request<void, void>({
-        path: `/stations/${stationId}/identifiers/${identifierId}`,
+        path: `/v1/stations/${stationId}/identifiers/${identifierId}`,
         method: "PATCH",
         body: data,
         secure: true,
@@ -6912,7 +6914,7 @@ export class Api<
      * @tags Stations
      * @name MoveStationIdentifier
      * @summary Move a station identifier
-     * @request PUT:/stations/{stationId}/identifiers/{identifierId}/move
+     * @request PUT:/v1/stations/{stationId}/identifiers/{identifierId}/move
      * @secure
      */
     moveStationIdentifier: (
@@ -6942,7 +6944,7 @@ export class Api<
         },
         void
       >({
-        path: `/stations/${stationId}/identifiers/${identifierId}/move`,
+        path: `/v1/stations/${stationId}/identifiers/${identifierId}/move`,
         method: "PUT",
         body: data,
         secure: true,
@@ -6958,7 +6960,7 @@ export class Api<
      * @tags Leaderboard
      * @name GetLeaderboard
      * @summary [Auth optional] Get array of 20 best users
-     * @request GET:/leaderboard
+     * @request GET:/v1/leaderboard
      * @secure
      */
     getLeaderboard: (params: RequestParams = {}) =>
@@ -6968,7 +6970,7 @@ export class Api<
         },
         void
       >({
-        path: `/leaderboard`,
+        path: `/v1/leaderboard`,
         method: "GET",
         secure: true,
         format: "json",
@@ -6981,7 +6983,7 @@ export class Api<
      * @tags Leaderboard
      * @name GetLeaderboardByDistance
      * @summary [Auth optional] Get leaderboard array sorted by distance
-     * @request GET:/leaderboard/distance
+     * @request GET:/v1/leaderboard/distance
      * @secure
      */
     getLeaderboardByDistance: (params: RequestParams = {}) =>
@@ -6991,7 +6993,7 @@ export class Api<
         },
         void
       >({
-        path: `/leaderboard/distance`,
+        path: `/v1/leaderboard/distance`,
         method: "GET",
         secure: true,
         format: "json",
@@ -7004,7 +7006,7 @@ export class Api<
      * @tags Leaderboard
      * @name GetLeaderboardByFriends
      * @summary Get friends-leaderboard array sorted
-     * @request GET:/leaderboard/friends
+     * @request GET:/v1/leaderboard/friends
      * @secure
      */
     getLeaderboardByFriends: (params: RequestParams = {}) =>
@@ -7014,7 +7016,7 @@ export class Api<
         },
         void
       >({
-        path: `/leaderboard/friends`,
+        path: `/v1/leaderboard/friends`,
         method: "GET",
         secure: true,
         format: "json",
@@ -7027,7 +7029,7 @@ export class Api<
      * @tags Leaderboard
      * @name GetMonthlyLeaderboard
      * @summary [Auth optional] Get leaderboard array for a specific month
-     * @request GET:/leaderboard/{month}
+     * @request GET:/v1/leaderboard/{month}
      * @secure
      */
     getMonthlyLeaderboard: (month?: string, params: RequestParams = {}) =>
@@ -7037,7 +7039,7 @@ export class Api<
         },
         void
       >({
-        path: `/leaderboard/${month}`,
+        path: `/v1/leaderboard/${month}`,
         method: "GET",
         secure: true,
         format: "json",
@@ -7051,7 +7053,7 @@ export class Api<
      * @tags Statistics
      * @name GetStatistics
      * @summary Get personal statistics
-     * @request GET:/statistics
+     * @request GET:/v1/statistics
      * @secure
      */
     getStatistics: (
@@ -7124,7 +7126,7 @@ export class Api<
         },
         void
       >({
-        path: `/statistics`,
+        path: `/v1/statistics`,
         method: "GET",
         query: query,
         secure: true,
@@ -7138,7 +7140,7 @@ export class Api<
      * @tags Statistics
      * @name GetDailyStatistics
      * @summary Get statistics and statuses of one day
-     * @request GET:/statistics/daily/{date}
+     * @request GET:/v1/statistics/daily/{date}
      * @secure
      */
     getDailyStatistics: (
@@ -7179,7 +7181,7 @@ export class Api<
         },
         void
       >({
-        path: `/statistics/daily/${date}`,
+        path: `/v1/statistics/daily/${date}`,
         method: "GET",
         query: query,
         secure: true,
@@ -7193,7 +7195,7 @@ export class Api<
      * @tags Statistics
      * @name GetGlobalStatistics
      * @summary Get global statistics of the last 4 weeks
-     * @request GET:/statistics/global
+     * @request GET:/v1/statistics/global
      * @secure
      */
     getGlobalStatistics: (params: RequestParams = {}) =>
@@ -7209,7 +7211,7 @@ export class Api<
         },
         any
       >({
-        path: `/statistics/global`,
+        path: `/v1/statistics/global`,
         method: "GET",
         secure: true,
         format: "json",
@@ -7222,7 +7224,7 @@ export class Api<
      * @tags Statistics
      * @name GetStatisticsOverview
      * @summary Get a summary of personal statistics for a date range
-     * @request GET:/statistics/overview
+     * @request GET:/v1/statistics/overview
      * @secure
      */
     getStatisticsOverview: (
@@ -7267,7 +7269,7 @@ export class Api<
         },
         void
       >({
-        path: `/statistics/overview`,
+        path: `/v1/statistics/overview`,
         method: "GET",
         query: query,
         secure: true,
@@ -7281,7 +7283,7 @@ export class Api<
      * @tags Statistics
      * @name GetStatisticsHistory
      * @summary Get all-time checkin counts and distances grouped by year, month, and week
-     * @request GET:/statistics/history
+     * @request GET:/v1/statistics/history
      * @secure
      */
     getStatisticsHistory: (params: RequestParams = {}) =>
@@ -7307,7 +7309,7 @@ export class Api<
         },
         void
       >({
-        path: `/statistics/history`,
+        path: `/v1/statistics/history`,
         method: "GET",
         secure: true,
         format: "json",
@@ -7320,7 +7322,7 @@ export class Api<
      * @tags Statistics
      * @name GetStatisticsFavorites
      * @summary Get favorite stations, lines, and routes for a date range
-     * @request GET:/statistics/favorites
+     * @request GET:/v1/statistics/favorites
      * @secure
      */
     getStatisticsFavorites: (
@@ -7355,7 +7357,7 @@ export class Api<
         },
         void
       >({
-        path: `/statistics/favorites`,
+        path: `/v1/statistics/favorites`,
         method: "GET",
         query: query,
         secure: true,
@@ -7370,7 +7372,7 @@ export class Api<
      * @tags Dashboard
      * @name GetDashboard
      * @summary Get paginated statuses of personal dashboard
-     * @request GET:/dashboard
+     * @request GET:/v1/dashboard
      * @secure
      */
     getDashboard: (
@@ -7390,7 +7392,7 @@ export class Api<
         },
         void
       >({
-        path: `/dashboard`,
+        path: `/v1/dashboard`,
         method: "GET",
         query: query,
         secure: true,
@@ -7404,7 +7406,7 @@ export class Api<
      * @tags Dashboard
      * @name GetFutureDashboard
      * @summary Get paginated future statuses of current user
-     * @request GET:/dashboard/future
+     * @request GET:/v1/dashboard/future
      * @secure
      */
     getFutureDashboard: (
@@ -7424,7 +7426,7 @@ export class Api<
         },
         void
       >({
-        path: `/dashboard/future`,
+        path: `/v1/dashboard/future`,
         method: "GET",
         query: query,
         secure: true,
@@ -7439,7 +7441,7 @@ export class Api<
      * @tags Status
      * @name GetActiveStatuses
      * @summary [Auth optional] Get active statuses
-     * @request GET:/statuses
+     * @request GET:/v1/statuses
      * @secure
      */
     getActiveStatuses: (params: RequestParams = {}) =>
@@ -7449,7 +7451,7 @@ export class Api<
         },
         void
       >({
-        path: `/statuses`,
+        path: `/v1/statuses`,
         method: "GET",
         secure: true,
         format: "json",
@@ -7462,7 +7464,7 @@ export class Api<
      * @tags Tickets
      * @name AssignTicketToStatus
      * @summary Assign or remove a ticket from a status
-     * @request PUT:/statuses/{id}/tickets
+     * @request PUT:/v1/statuses/{id}/tickets
      * @secure
      */
     assignTicketToStatus: (
@@ -7476,7 +7478,7 @@ export class Api<
         },
         void
       >({
-        path: `/statuses/${id}/tickets`,
+        path: `/v1/statuses/${id}/tickets`,
         method: "PUT",
         body: data,
         secure: true,
@@ -7491,7 +7493,7 @@ export class Api<
      * @tags Status
      * @name GetTagsForMultipleStatuses
      * @summary Show all tags for multiple statuses which are visible for the current user
-     * @request GET:/statuses/{statusIds}/tags
+     * @request GET:/v1/statuses/{statusIds}/tags
      * @secure
      */
     getTagsForMultipleStatuses: (
@@ -7507,7 +7509,7 @@ export class Api<
         },
         void
       >({
-        path: `/statuses/${statusIds}/tags`,
+        path: `/v1/statuses/${statusIds}/tags`,
         method: "GET",
         secure: true,
         format: "json",
@@ -7521,7 +7523,7 @@ export class Api<
      * @tags Status
      * @name GetLivePositionsForActiveStatuses
      * @summary [Auth optional] get live positions for active statuses
-     * @request GET:/positions
+     * @request GET:/v1/positions
      * @secure
      */
     getLivePositionsForActiveStatuses: (params: RequestParams = {}) =>
@@ -7531,7 +7533,7 @@ export class Api<
         },
         void
       >({
-        path: `/positions`,
+        path: `/v1/positions`,
         method: "GET",
         secure: true,
         format: "json",
@@ -7544,7 +7546,7 @@ export class Api<
      * @tags Status
      * @name GetLivePositionsForStatuses
      * @summary [Auth optional] get live positions for given statuses
-     * @request GET:/positions/{ids}
+     * @request GET:/v1/positions/{ids}
      * @secure
      */
     getLivePositionsForStatuses: (ids?: string, params: RequestParams = {}) =>
@@ -7554,7 +7556,7 @@ export class Api<
         },
         void
       >({
-        path: `/positions/${ids}`,
+        path: `/v1/positions/${ids}`,
         method: "GET",
         secure: true,
         format: "json",
@@ -7568,7 +7570,7 @@ export class Api<
      * @tags Status
      * @name GetPolylines
      * @summary [Auth optional] Get GeoJSON for statuses
-     * @request GET:/polyline/{ids}
+     * @request GET:/v1/polyline/{ids}
      * @secure
      */
     getPolylines: (ids?: string, params: RequestParams = {}) =>
@@ -7582,7 +7584,7 @@ export class Api<
         },
         void
       >({
-        path: `/polyline/${ids}`,
+        path: `/v1/polyline/${ids}`,
         method: "GET",
         secure: true,
         format: "json",
@@ -7596,7 +7598,7 @@ export class Api<
      * @tags Status
      * @name GetStopOvers
      * @summary [Auth optional] Get stopovers for statuses
-     * @request GET:/stopovers/{ids}
+     * @request GET:/v1/stopovers/{ids}
      * @secure
      */
     getStopOvers: (ids?: string, params: RequestParams = {}) =>
@@ -7609,7 +7611,7 @@ export class Api<
         },
         void
       >({
-        path: `/stopovers/${ids}`,
+        path: `/v1/stopovers/${ids}`,
         method: "GET",
         secure: true,
         format: "json",
@@ -7623,7 +7625,7 @@ export class Api<
      * @tags Status
      * @name GetTagSuggestions
      * @summary Get tag suggestions for the authenticated user
-     * @request GET:/tags/suggestions
+     * @request GET:/v1/tags/suggestions
      * @secure
      */
     getTagSuggestions: (
@@ -7643,7 +7645,7 @@ export class Api<
         },
         void
       >({
-        path: `/tags/suggestions`,
+        path: `/v1/tags/suggestions`,
         method: "GET",
         query: query,
         secure: true,
@@ -7658,7 +7660,7 @@ export class Api<
      * @tags Tickets
      * @name GetTickets
      * @summary List all tickets of the current user
-     * @request GET:/tickets
+     * @request GET:/v1/tickets
      * @secure
      */
     getTickets: (
@@ -7678,7 +7680,7 @@ export class Api<
         },
         void
       >({
-        path: `/tickets`,
+        path: `/v1/tickets`,
         method: "GET",
         query: query,
         secure: true,
@@ -7692,7 +7694,7 @@ export class Api<
      * @tags Tickets
      * @name CreateTicket
      * @summary Create a ticket
-     * @request POST:/tickets
+     * @request POST:/v1/tickets
      * @secure
      */
     createTicket: (
@@ -7726,7 +7728,7 @@ export class Api<
         },
         void
       >({
-        path: `/tickets`,
+        path: `/v1/tickets`,
         method: "POST",
         body: data,
         secure: true,
@@ -7741,7 +7743,7 @@ export class Api<
      * @tags Tickets
      * @name GetTicket
      * @summary Get a ticket
-     * @request GET:/tickets/{id}
+     * @request GET:/v1/tickets/{id}
      * @secure
      */
     getTicket: (id: string, params: RequestParams = {}) =>
@@ -7752,7 +7754,7 @@ export class Api<
         },
         void
       >({
-        path: `/tickets/${id}`,
+        path: `/v1/tickets/${id}`,
         method: "GET",
         secure: true,
         format: "json",
@@ -7765,7 +7767,7 @@ export class Api<
      * @tags Tickets
      * @name UpdateTicket
      * @summary Update a ticket
-     * @request PUT:/tickets/{id}
+     * @request PUT:/v1/tickets/{id}
      * @secure
      */
     updateTicket: (
@@ -7800,7 +7802,7 @@ export class Api<
         },
         void
       >({
-        path: `/tickets/${id}`,
+        path: `/v1/tickets/${id}`,
         method: "PUT",
         body: data,
         secure: true,
@@ -7815,12 +7817,12 @@ export class Api<
      * @tags Tickets
      * @name DeleteTicket
      * @summary Delete a ticket
-     * @request DELETE:/tickets/{id}
+     * @request DELETE:/v1/tickets/{id}
      * @secure
      */
     deleteTicket: (id: string, params: RequestParams = {}) =>
       this.request<void, void>({
-        path: `/tickets/${id}`,
+        path: `/v1/tickets/${id}`,
         method: "DELETE",
         secure: true,
         ...params,
@@ -7832,7 +7834,7 @@ export class Api<
      * @tags Tickets
      * @name GetTicketStatistics
      * @summary Get statistics for a ticket
-     * @request GET:/tickets/{id}/statistics
+     * @request GET:/v1/tickets/{id}/statistics
      * @secure
      */
     getTicketStatistics: (id: string, params: RequestParams = {}) =>
@@ -7843,7 +7845,7 @@ export class Api<
         },
         void
       >({
-        path: `/tickets/${id}/statistics`,
+        path: `/v1/tickets/${id}/statistics`,
         method: "GET",
         secure: true,
         format: "json",
@@ -7857,7 +7859,7 @@ export class Api<
      * @tags Checkin
      * @name GetTrainTrip
      * @summary Get the stopovers and trip information for a given train
-     * @request GET:/trains/trip
+     * @request GET:/v1/trains/trip
      * @secure
      */
     getTrainTrip: (
@@ -7881,7 +7883,7 @@ export class Api<
         },
         void
       >({
-        path: `/trains/trip`,
+        path: `/v1/trains/trip`,
         method: "GET",
         query: query,
         secure: true,
@@ -7895,7 +7897,7 @@ export class Api<
      * @tags Checkin
      * @name TrainStationsNearby
      * @summary Location based search for stations
-     * @request GET:/trains/station/nearby
+     * @request GET:/v1/trains/station/nearby
      * @secure
      */
     trainStationsNearby: (
@@ -7919,7 +7921,7 @@ export class Api<
         },
         void
       >({
-        path: `/trains/station/nearby`,
+        path: `/v1/trains/station/nearby`,
         method: "GET",
         query: query,
         secure: true,
@@ -7933,7 +7935,7 @@ export class Api<
      * @tags Checkin
      * @name CreateCheckin
      * @summary Check in to a trip.
-     * @request POST:/trains/checkin
+     * @request POST:/v1/trains/checkin
      * @secure
      */
     createCheckin: (data: CheckinRequestBody, params: RequestParams = {}) =>
@@ -7963,7 +7965,7 @@ export class Api<
             };
           }
       >({
-        path: `/trains/checkin`,
+        path: `/v1/trains/checkin`,
         method: "POST",
         body: data,
         secure: true,
@@ -7978,7 +7980,7 @@ export class Api<
      * @tags Checkin
      * @name TrainStationAutocomplete
      * @summary Autocomplete for stations
-     * @request GET:/trains/station/autocomplete/{query}
+     * @request GET:/v1/trains/station/autocomplete/{query}
      * @secure
      */
     trainStationAutocomplete: (query?: any, params: RequestParams = {}) =>
@@ -7988,7 +7990,7 @@ export class Api<
         },
         void
       >({
-        path: `/trains/station/autocomplete/${query}`,
+        path: `/v1/trains/station/autocomplete/${query}`,
         method: "GET",
         secure: true,
         format: "json",
@@ -8001,7 +8003,7 @@ export class Api<
      * @tags Checkin
      * @name TrainStationHistory
      * @summary History for stations
-     * @request GET:/trains/station/history
+     * @request GET:/v1/trains/station/history
      * @secure
      */
     trainStationHistory: (params: RequestParams = {}) =>
@@ -8011,7 +8013,7 @@ export class Api<
         },
         void
       >({
-        path: `/trains/station/history`,
+        path: `/v1/trains/station/history`,
         method: "GET",
         secure: true,
         format: "json",
@@ -8025,7 +8027,7 @@ export class Api<
      * @tags Trips
      * @name GetTripStatuses
      * @summary [Auth optional] Get statuses for a trip
-     * @request GET:/trips/{id}/statuses
+     * @request GET:/v1/trips/{id}/statuses
      * @secure
      */
     getTripStatuses: (id: number, params: RequestParams = {}) =>
@@ -8035,7 +8037,7 @@ export class Api<
         },
         void
       >({
-        path: `/trips/${id}/statuses`,
+        path: `/v1/trips/${id}/statuses`,
         method: "GET",
         secure: true,
         format: "json",
@@ -8048,7 +8050,7 @@ export class Api<
      * @tags Trips
      * @name RoutePreviewTrip
      * @summary Preview the routing for a manual trip before creating it.
-     * @request POST:/trips/route-preview
+     * @request POST:/v1/trips/route-preview
      * @secure
      */
     routePreviewTrip: (
@@ -8070,7 +8072,7 @@ export class Api<
         },
         void
       >({
-        path: `/trips/route-preview`,
+        path: `/v1/trips/route-preview`,
         method: "POST",
         body: data,
         secure: true,
@@ -8085,7 +8087,7 @@ export class Api<
      * @tags Trips
      * @name GetOwnTrips
      * @summary List your own trips
-     * @request GET:/trips
+     * @request GET:/v1/trips
      * @secure
      */
     getOwnTrips: (
@@ -8100,7 +8102,7 @@ export class Api<
         },
         void
       >({
-        path: `/trips`,
+        path: `/v1/trips`,
         method: "GET",
         query: query,
         secure: true,
@@ -8114,7 +8116,7 @@ export class Api<
      * @tags Trips
      * @name CreateTrip
      * @summary Create a trip
-     * @request POST:/trips
+     * @request POST:/v1/trips
      * @secure
      */
     createTrip: (
@@ -8169,7 +8171,7 @@ export class Api<
         },
         void
       >({
-        path: `/trips`,
+        path: `/v1/trips`,
         method: "POST",
         body: data,
         secure: true,
@@ -8184,7 +8186,7 @@ export class Api<
      * @tags Trips
      * @name CopyTrip
      * @summary Copy a trip
-     * @request POST:/trips/{tripUuid}/copy
+     * @request POST:/v1/trips/{tripUuid}/copy
      * @secure
      */
     copyTrip: (tripUuid: string, params: RequestParams = {}) =>
@@ -8194,7 +8196,7 @@ export class Api<
         },
         void
       >({
-        path: `/trips/${tripUuid}/copy`,
+        path: `/v1/trips/${tripUuid}/copy`,
         method: "POST",
         secure: true,
         format: "json",
@@ -8207,7 +8209,7 @@ export class Api<
      * @tags Trips
      * @name GetTrip
      * @summary Get a trip
-     * @request GET:/trips/{tripUuid}
+     * @request GET:/v1/trips/{tripUuid}
      * @secure
      */
     getTrip: (tripUuid: string, params: RequestParams = {}) =>
@@ -8217,7 +8219,7 @@ export class Api<
         },
         void
       >({
-        path: `/trips/${tripUuid}`,
+        path: `/v1/trips/${tripUuid}`,
         method: "GET",
         secure: true,
         format: "json",
@@ -8230,7 +8232,7 @@ export class Api<
      * @tags Trips
      * @name UpdateTrip
      * @summary Update a trip
-     * @request PUT:/trips/{tripUuid}
+     * @request PUT:/v1/trips/{tripUuid}
      * @secure
      */
     updateTrip: (
@@ -8252,7 +8254,7 @@ export class Api<
       params: RequestParams = {},
     ) =>
       this.request<void, void>({
-        path: `/trips/${tripUuid}`,
+        path: `/v1/trips/${tripUuid}`,
         method: "PUT",
         body: data,
         secure: true,
@@ -8266,12 +8268,12 @@ export class Api<
      * @tags Trips
      * @name DeleteTrip
      * @summary Delete a trip
-     * @request DELETE:/trips/{tripUuid}
+     * @request DELETE:/v1/trips/{tripUuid}
      * @secure
      */
     deleteTrip: (tripUuid: string, params: RequestParams = {}) =>
       this.request<void, void>({
-        path: `/trips/${tripUuid}`,
+        path: `/v1/trips/${tripUuid}`,
         method: "DELETE",
         secure: true,
         ...params,
@@ -8283,7 +8285,7 @@ export class Api<
      * @tags Trips
      * @name CreateTripStopover
      * @summary Add a stopover to a trip
-     * @request POST:/trips/{tripUuid}/stopovers
+     * @request POST:/v1/trips/{tripUuid}/stopovers
      * @secure
      */
     createTripStopover: (
@@ -8321,7 +8323,7 @@ export class Api<
       params: RequestParams = {},
     ) =>
       this.request<void, void>({
-        path: `/trips/${tripUuid}/stopovers`,
+        path: `/v1/trips/${tripUuid}/stopovers`,
         method: "POST",
         body: data,
         secure: true,
@@ -8335,7 +8337,7 @@ export class Api<
      * @tags Trips
      * @name UpdateTripStopover
      * @summary Update a stopover of a trip
-     * @request PUT:/trips/{tripUuid}/stopovers/{stopoverUuid}
+     * @request PUT:/v1/trips/{tripUuid}/stopovers/{stopoverUuid}
      * @secure
      */
     updateTripStopover: (
@@ -8374,7 +8376,7 @@ export class Api<
       params: RequestParams = {},
     ) =>
       this.request<void, void>({
-        path: `/trips/${tripUuid}/stopovers/${stopoverUuid}`,
+        path: `/v1/trips/${tripUuid}/stopovers/${stopoverUuid}`,
         method: "PUT",
         body: data,
         secure: true,
@@ -8388,7 +8390,7 @@ export class Api<
      * @tags Trips
      * @name DeleteTripStopover
      * @summary Delete a stopover of a trip
-     * @request DELETE:/trips/{tripUuid}/stopovers/{stopoverUuid}
+     * @request DELETE:/v1/trips/{tripUuid}/stopovers/{stopoverUuid}
      * @secure
      */
     deleteTripStopover: (
@@ -8397,7 +8399,7 @@ export class Api<
       params: RequestParams = {},
     ) =>
       this.request<void, void>({
-        path: `/trips/${tripUuid}/stopovers/${stopoverUuid}`,
+        path: `/v1/trips/${tripUuid}/stopovers/${stopoverUuid}`,
         method: "DELETE",
         secure: true,
         ...params,
@@ -8409,7 +8411,7 @@ export class Api<
      * @tags Trips
      * @name ShiftTripStopovers
      * @summary Shift all stopovers of a trip in time
-     * @request POST:/trips/{tripUuid}/stopovers/shift
+     * @request POST:/v1/trips/{tripUuid}/stopovers/shift
      * @secure
      */
     shiftTripStopovers: (
@@ -8426,7 +8428,7 @@ export class Api<
       params: RequestParams = {},
     ) =>
       this.request<void, void>({
-        path: `/trips/${tripUuid}/stopovers/shift`,
+        path: `/v1/trips/${tripUuid}/stopovers/shift`,
         method: "POST",
         body: data,
         secure: true,
@@ -8441,7 +8443,7 @@ export class Api<
      * @tags User/Hide and Block
      * @name GetBlockedUsers
      * @summary List blocked users
-     * @request GET:/users/self/blocks
+     * @request GET:/v1/users/self/blocks
      * @secure
      */
     getBlockedUsers: (params: RequestParams = {}) =>
@@ -8451,7 +8453,7 @@ export class Api<
         },
         void
       >({
-        path: `/users/self/blocks`,
+        path: `/v1/users/self/blocks`,
         method: "GET",
         secure: true,
         format: "json",
@@ -8464,7 +8466,7 @@ export class Api<
      * @tags User/Hide and Block
      * @name GetMutedUsers
      * @summary List muted users
-     * @request GET:/users/self/mutes
+     * @request GET:/v1/users/self/mutes
      * @secure
      */
     getMutedUsers: (params: RequestParams = {}) =>
@@ -8474,7 +8476,7 @@ export class Api<
         },
         void
       >({
-        path: `/users/self/mutes`,
+        path: `/v1/users/self/mutes`,
         method: "GET",
         secure: true,
         format: "json",
@@ -8488,7 +8490,7 @@ export class Api<
      * @tags Webhooks
      * @name GetWebhooks
      * @summary Get webhooks for current user and current application.
-     * @request GET:/webhooks
+     * @request GET:/v1/webhooks
      * @secure
      */
     getWebhooks: (params: RequestParams = {}) =>
@@ -8498,7 +8500,7 @@ export class Api<
         },
         void
       >({
-        path: `/webhooks`,
+        path: `/v1/webhooks`,
         method: "GET",
         secure: true,
         format: "json",
@@ -8511,7 +8513,7 @@ export class Api<
      * @tags Webhooks
      * @name GetSingleWebhook
      * @summary Get single webhook
-     * @request GET:/webhooks/{id}
+     * @request GET:/v1/webhooks/{id}
      * @secure
      */
     getSingleWebhook: (id?: number, params: RequestParams = {}) =>
@@ -8522,7 +8524,7 @@ export class Api<
         },
         void
       >({
-        path: `/webhooks/${id}`,
+        path: `/v1/webhooks/${id}`,
         method: "GET",
         secure: true,
         format: "json",
@@ -8535,12 +8537,12 @@ export class Api<
      * @tags Webhooks
      * @name DeleteWebhook
      * @summary Delete a webhook if the user and application is authorized to do
-     * @request DELETE:/webhooks/{id}
+     * @request DELETE:/v1/webhooks/{id}
      * @secure
      */
     deleteWebhook: (id?: number, params: RequestParams = {}) =>
       this.request<void, void>({
-        path: `/webhooks/${id}`,
+        path: `/v1/webhooks/${id}`,
         method: "DELETE",
         secure: true,
         ...params,
@@ -8553,12 +8555,12 @@ export class Api<
      * @tags Statistics
      * @name GetYearInReview
      * @summary Returns the year in review for the given year and authenticated user
-     * @request GET:/year-in-review
+     * @request GET:/v1/year-in-review
      * @secure
      */
     getYearInReview: (params: RequestParams = {}) =>
       this.request<void, void>({
-        path: `/year-in-review`,
+        path: `/v1/year-in-review`,
         method: "GET",
         secure: true,
         ...params,

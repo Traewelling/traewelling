@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
         "title": "Träwelling API",
-        "description": "Träwelling user API description. This is an incomplete documentation with still many errors. The API is currently not yet stable. Endpoints are still being restructured. Both the URL and the request or body can be changed. Breaking changes will be announced on GitHub: https://github.com/Traewelling/traewelling/blob/develop/API_CHANGELOG.md",
+        "description": "Träwelling user API description. Breaking changes will be announced on GitHub: https://github.com/Traewelling/traewelling/blob/develop/API_CHANGELOG.md\n\nEndpoints are versioned individually. The version is the first segment of every path, so `/v1/status/{id}` and a future `/v2/status/{id}` are two independent endpoints that can be offered side by side.",
         "contact": {
             "email": "support@traewelling.de"
         },
@@ -14,16 +14,16 @@
     },
     "servers": [
         {
-            "url": "https://traewelling.de/api/v1",
+            "url": "https://traewelling.de/api",
             "description": "Production Server"
         },
         {
-            "url": "http://localhost:8000/api/v1",
+            "url": "http://localhost:8000/api",
             "description": "This instance"
         }
     ],
     "paths": {
-        "/app/changelog": {
+        "/v1/app/changelog": {
             "get": {
                 "operationId": "getChangelog",
                 "responses": {
@@ -51,7 +51,7 @@
                 }
             }
         },
-        "/admin/activity": {
+        "/v1/admin/activity": {
             "get": {
                 "tags": [
                     "Admin"
@@ -126,7 +126,7 @@
                 ]
             }
         },
-        "/admin/events": {
+        "/v1/admin/events": {
             "get": {
                 "tags": [
                     "Admin"
@@ -251,7 +251,7 @@
                 ]
             }
         },
-        "/admin/events/{id}": {
+        "/v1/admin/events/{id}": {
             "get": {
                 "tags": [
                     "Admin"
@@ -404,7 +404,7 @@
                 ]
             }
         },
-        "/admin/event-suggestions": {
+        "/v1/admin/event-suggestions": {
             "get": {
                 "tags": [
                     "Admin"
@@ -457,7 +457,7 @@
                 ]
             }
         },
-        "/admin/event-suggestions/{id}": {
+        "/v1/admin/event-suggestions/{id}": {
             "get": {
                 "tags": [
                     "Admin"
@@ -544,7 +544,7 @@
                 ]
             }
         },
-        "/admin/event-suggestions/{id}/accept": {
+        "/v1/admin/event-suggestions/{id}/accept": {
             "post": {
                 "tags": [
                     "Admin"
@@ -607,7 +607,7 @@
                 ]
             }
         },
-        "/admin/event-suggestions/{id}/deny": {
+        "/v1/admin/event-suggestions/{id}/deny": {
             "post": {
                 "tags": [
                     "Admin"
@@ -670,7 +670,7 @@
                 ]
             }
         },
-        "/admin/statuses": {
+        "/v1/admin/statuses": {
             "get": {
                 "tags": [
                     "Admin"
@@ -735,7 +735,7 @@
                 ]
             }
         },
-        "/admin/statuses/{id}": {
+        "/v1/admin/statuses/{id}": {
             "get": {
                 "tags": [
                     "Admin"
@@ -900,7 +900,7 @@
                 ]
             }
         },
-        "/admin/trips": {
+        "/v1/admin/trips": {
             "get": {
                 "tags": [
                     "Admin"
@@ -954,7 +954,7 @@
                 ]
             }
         },
-        "/admin/trips/{id}": {
+        "/v1/admin/trips/{id}": {
             "get": {
                 "tags": [
                     "Admin"
@@ -1008,7 +1008,7 @@
                 ]
             }
         },
-        "/admin/trips/{id}/reroute": {
+        "/v1/admin/trips/{id}/reroute": {
             "post": {
                 "tags": [
                     "Admin"
@@ -1047,7 +1047,7 @@
                 ]
             }
         },
-        "/admin/users": {
+        "/v1/admin/users": {
             "get": {
                 "tags": [
                     "Admin"
@@ -1109,7 +1109,7 @@
                 ]
             }
         },
-        "/admin/users/{id}": {
+        "/v1/admin/users/{id}": {
             "get": {
                 "tags": [
                     "Admin"
@@ -1163,7 +1163,7 @@
                 ]
             }
         },
-        "/admin/users/{id}/email": {
+        "/v1/admin/users/{id}/email": {
             "put": {
                 "tags": [
                     "Admin"
@@ -1224,7 +1224,7 @@
                 ]
             }
         },
-        "/admin/users/{id}/roles": {
+        "/v1/admin/users/{id}/roles": {
             "put": {
                 "tags": [
                     "Admin"
@@ -1287,7 +1287,7 @@
                 ]
             }
         },
-        "/alerts": {
+        "/v1/alerts": {
             "get": {
                 "tags": [
                     "Notifications"
@@ -1441,7 +1441,7 @@
                 ]
             }
         },
-        "/alerts/{id}": {
+        "/v1/alerts/{id}": {
             "get": {
                 "tags": [
                     "Notifications"
@@ -1649,7 +1649,7 @@
                 ]
             }
         },
-        "/applications": {
+        "/v1/applications": {
             "get": {
                 "tags": [
                     "Applications"
@@ -1739,7 +1739,7 @@
                 ]
             }
         },
-        "/applications/{clientId}": {
+        "/v1/applications/{clientId}": {
             "put": {
                 "tags": [
                     "Applications"
@@ -1837,7 +1837,7 @@
                 ]
             }
         },
-        "/applications/{clientId}/webhook-stats": {
+        "/v1/applications/{clientId}/webhook-stats": {
             "get": {
                 "tags": [
                     "Applications"
@@ -1892,7 +1892,7 @@
                 ]
             }
         },
-        "/auth/logout": {
+        "/v1/auth/logout": {
             "post": {
                 "tags": [
                     "Auth"
@@ -1932,7 +1932,7 @@
                 ]
             }
         },
-        "/auth/user": {
+        "/v1/auth/user": {
             "get": {
                 "tags": [
                     "Auth",
@@ -1974,7 +1974,7 @@
                 ]
             }
         },
-        "/auth/refresh": {
+        "/v1/auth/refresh": {
             "post": {
                 "tags": [
                     "Auth"
@@ -2015,7 +2015,7 @@
                 ]
             }
         },
-        "/community/profile": {
+        "/v1/community/profile": {
             "get": {
                 "tags": [
                     "Community"
@@ -2053,7 +2053,7 @@
                 ]
             }
         },
-        "/community/history": {
+        "/v1/community/history": {
             "get": {
                 "tags": [
                     "Community"
@@ -2117,7 +2117,7 @@
                 ]
             }
         },
-        "/app/configuration": {
+        "/v1/app/configuration": {
             "get": {
                 "tags": [
                     "Configuration Information"
@@ -2139,7 +2139,7 @@
                 }
             }
         },
-        "/event/{slug}": {
+        "/v1/event/{slug}": {
             "get": {
                 "tags": [
                     "Events"
@@ -2196,7 +2196,7 @@
                 ]
             }
         },
-        "/event/{slug}/details": {
+        "/v1/event/{slug}/details": {
             "get": {
                 "tags": [
                     "Events"
@@ -2253,7 +2253,7 @@
                 ]
             }
         },
-        "/event/{slug}/statuses": {
+        "/v1/event/{slug}/statuses": {
             "get": {
                 "tags": [
                     "Events"
@@ -2330,7 +2330,7 @@
                 ]
             }
         },
-        "/events": {
+        "/v1/events": {
             "get": {
                 "tags": [
                     "Events"
@@ -2434,7 +2434,7 @@
                 ]
             }
         },
-        "/event": {
+        "/v1/event": {
             "post": {
                 "tags": [
                     "Events"
@@ -2473,7 +2473,7 @@
                 ]
             }
         },
-        "/export/gdpr": {
+        "/v1/export/gdpr": {
             "post": {
                 "tags": [
                     "Export"
@@ -2522,7 +2522,7 @@
                 ]
             }
         },
-        "/export/statuses": {
+        "/v1/export/statuses": {
             "post": {
                 "tags": [
                     "Export"
@@ -2620,7 +2620,7 @@
                 ]
             }
         },
-        "/user/{id}/follow": {
+        "/v1/user/{id}/follow": {
             "post": {
                 "tags": [
                     "User/Follow"
@@ -2752,7 +2752,7 @@
                 ]
             }
         },
-        "/user/self/followers": {
+        "/v1/user/self/followers": {
             "get": {
                 "tags": [
                     "User/Follow",
@@ -2820,7 +2820,7 @@
                 ]
             }
         },
-        "/user/self/follow-requests": {
+        "/v1/user/self/follow-requests": {
             "get": {
                 "tags": [
                     "User/Follow",
@@ -2882,7 +2882,7 @@
                 ]
             }
         },
-        "/user/self/followings": {
+        "/v1/user/self/followings": {
             "get": {
                 "tags": [
                     "User/Follow",
@@ -2944,7 +2944,7 @@
                 ]
             }
         },
-        "/user/self/followers/{userId}": {
+        "/v1/user/self/followers/{userId}": {
             "delete": {
                 "tags": [
                     "User/Follow"
@@ -2999,7 +2999,7 @@
                 ]
             }
         },
-        "/user/self/follow-requests/{userId}": {
+        "/v1/user/self/follow-requests/{userId}": {
             "put": {
                 "tags": [
                     "User/Follow"
@@ -3101,7 +3101,7 @@
                 ]
             }
         },
-        "/station/{id}/home": {
+        "/v1/station/{id}/home": {
             "put": {
                 "tags": [
                     "Checkin"
@@ -3161,7 +3161,7 @@
                 ]
             }
         },
-        "/station/home": {
+        "/v1/station/home": {
             "delete": {
                 "tags": [
                     "Checkin"
@@ -3191,7 +3191,7 @@
                 ]
             }
         },
-        "/ics-tokens": {
+        "/v1/ics-tokens": {
             "get": {
                 "tags": [
                     "ICS Tokens"
@@ -3304,7 +3304,7 @@
                 ]
             }
         },
-        "/ics-tokens/{tokenId}": {
+        "/v1/ics-tokens/{tokenId}": {
             "delete": {
                 "tags": [
                     "ICS Tokens"
@@ -3342,7 +3342,7 @@
                 ]
             }
         },
-        "/status/{id}/likes": {
+        "/v1/status/{id}/likes": {
             "get": {
                 "tags": [
                     "Likes"
@@ -3405,7 +3405,7 @@
                 ]
             }
         },
-        "/status/{id}/like": {
+        "/v1/status/{id}/like": {
             "post": {
                 "tags": [
                     "Likes"
@@ -3526,7 +3526,7 @@
                 ]
             }
         },
-        "/motis-sources": {
+        "/v1/motis-sources": {
             "get": {
                 "tags": [
                     "Debug"
@@ -3559,7 +3559,7 @@
                 }
             }
         },
-        "/notifications/unread/count": {
+        "/v1/notifications/unread/count": {
             "get": {
                 "tags": [
                     "Notifications"
@@ -3609,7 +3609,7 @@
                 ]
             }
         },
-        "/notifications": {
+        "/v1/notifications": {
             "get": {
                 "tags": [
                     "Notifications"
@@ -3669,7 +3669,7 @@
                 ]
             }
         },
-        "/notifications/read/{id}": {
+        "/v1/notifications/read/{id}": {
             "put": {
                 "tags": [
                     "Notifications"
@@ -3725,7 +3725,7 @@
                 ]
             }
         },
-        "/notifications/unread/{id}": {
+        "/v1/notifications/unread/{id}": {
             "put": {
                 "tags": [
                     "Notifications"
@@ -3781,7 +3781,7 @@
                 ]
             }
         },
-        "/notifications/read/all": {
+        "/v1/notifications/read/all": {
             "put": {
                 "tags": [
                     "Notifications"
@@ -3824,7 +3824,7 @@
                 ]
             }
         },
-        "/operators": {
+        "/v1/operators": {
             "get": {
                 "tags": [
                     "Checkin"
@@ -3873,7 +3873,7 @@
                 }
             }
         },
-        "/operators/{oldOperatorId}/merge/{newOperatorId}": {
+        "/v1/operators/{oldOperatorId}/merge/{newOperatorId}": {
             "put": {
                 "tags": [
                     "Checkin"
@@ -3918,7 +3918,7 @@
                 }
             }
         },
-        "/privacy-policies/current": {
+        "/v1/privacy-policies/current": {
             "get": {
                 "tags": [
                     "Privacy Policy"
@@ -3948,7 +3948,7 @@
                 }
             }
         },
-        "/privacy-policies/{id}/acceptance": {
+        "/v1/privacy-policies/{id}/acceptance": {
             "put": {
                 "tags": [
                     "Privacy Policy"
@@ -3989,7 +3989,7 @@
                 ]
             }
         },
-        "/reports": {
+        "/v1/reports": {
             "get": {
                 "tags": [
                     "Report"
@@ -4118,7 +4118,7 @@
                 ]
             }
         },
-        "/reports/{id}": {
+        "/v1/reports/{id}": {
             "get": {
                 "tags": [
                     "Report"
@@ -4239,7 +4239,7 @@
                 ]
             }
         },
-        "/route-map": {
+        "/v1/route-map": {
             "get": {
                 "tags": [
                     "Statistics"
@@ -4375,7 +4375,7 @@
                 ]
             }
         },
-        "/route-segments": {
+        "/v1/route-segments": {
             "get": {
                 "tags": [
                     "Polyline"
@@ -4515,7 +4515,7 @@
                 }
             }
         },
-        "/route-segments/{id}": {
+        "/v1/route-segments/{id}": {
             "get": {
                 "tags": [
                     "Polyline"
@@ -4596,7 +4596,7 @@
                 }
             }
         },
-        "/route-segments/{id}/assign-stopovers": {
+        "/v1/route-segments/{id}/assign-stopovers": {
             "post": {
                 "tags": [
                     "Polyline"
@@ -4630,7 +4630,7 @@
                 }
             }
         },
-        "/route-segments/{id}/brouter-preview": {
+        "/v1/route-segments/{id}/brouter-preview": {
             "post": {
                 "tags": [
                     "Polyline"
@@ -4739,7 +4739,7 @@
                 }
             }
         },
-        "/route-segments/{id}/polyline": {
+        "/v1/route-segments/{id}/polyline": {
             "post": {
                 "tags": [
                     "Polyline"
@@ -4848,7 +4848,7 @@
                 }
             }
         },
-        "/security/sessions": {
+        "/v1/security/sessions": {
             "get": {
                 "tags": [
                     "Security"
@@ -4908,7 +4908,7 @@
                 ]
             }
         },
-        "/settings/profile": {
+        "/v1/settings/profile": {
             "get": {
                 "tags": [
                     "Settings"
@@ -5008,7 +5008,7 @@
                 ]
             }
         },
-        "/settings/email": {
+        "/v1/settings/email": {
             "put": {
                 "tags": [
                     "Settings"
@@ -5080,7 +5080,7 @@
                 ]
             }
         },
-        "/settings/email/verification": {
+        "/v1/settings/email/verification": {
             "post": {
                 "tags": [
                     "Settings"
@@ -5104,7 +5104,7 @@
                 ]
             }
         },
-        "/settings/password": {
+        "/v1/settings/password": {
             "put": {
                 "tags": [
                     "Settings"
@@ -5181,7 +5181,7 @@
                 ]
             }
         },
-        "/settings/profile-picture/{userUuid}": {
+        "/v1/settings/profile-picture/{userUuid}": {
             "delete": {
                 "tags": [
                     "Settings"
@@ -5245,7 +5245,7 @@
                 ]
             }
         },
-        "/settings/profile-picture": {
+        "/v1/settings/profile-picture": {
             "post": {
                 "tags": [
                     "Settings"
@@ -5308,7 +5308,7 @@
                 ]
             }
         },
-        "/settings/profile-picture/mastodon": {
+        "/v1/settings/profile-picture/mastodon": {
             "post": {
                 "tags": [
                     "Settings"
@@ -5338,7 +5338,7 @@
                 ]
             }
         },
-        "/security/social": {
+        "/v1/security/social": {
             "delete": {
                 "tags": [
                     "Security"
@@ -5392,7 +5392,7 @@
                 ]
             }
         },
-        "/stations/{id}/usages": {
+        "/v1/stations/{id}/usages": {
             "get": {
                 "tags": [
                     "Stations"
@@ -5449,7 +5449,7 @@
                 ]
             }
         },
-        "/stations/{id}/usages/move": {
+        "/v1/stations/{id}/usages/move": {
             "put": {
                 "tags": [
                     "Stations"
@@ -5543,7 +5543,7 @@
                 ]
             }
         },
-        "/stations/{id}": {
+        "/v1/stations/{id}": {
             "get": {
                 "tags": [
                     "Checkin"
@@ -5760,7 +5760,7 @@
                 ]
             }
         },
-        "/stations": {
+        "/v1/stations": {
             "get": {
                 "tags": [
                     "Checkin"
@@ -5906,7 +5906,7 @@
                 ]
             }
         },
-        "/stations/{stationId}/identifiers": {
+        "/v1/stations/{stationId}/identifiers": {
             "post": {
                 "tags": [
                     "Stations"
@@ -5975,7 +5975,7 @@
                 ]
             }
         },
-        "/stations/{stationId}/identifiers/{identifierId}": {
+        "/v1/stations/{stationId}/identifiers/{identifierId}": {
             "patch": {
                 "tags": [
                     "Stations"
@@ -6054,7 +6054,7 @@
                 ]
             }
         },
-        "/stations/{stationId}/identifiers/{identifierId}/move": {
+        "/v1/stations/{stationId}/identifiers/{identifierId}/move": {
             "put": {
                 "tags": [
                     "Stations"
@@ -6168,7 +6168,7 @@
                 ]
             }
         },
-        "/leaderboard": {
+        "/v1/leaderboard": {
             "get": {
                 "tags": [
                     "Leaderboard"
@@ -6216,7 +6216,7 @@
                 ]
             }
         },
-        "/leaderboard/distance": {
+        "/v1/leaderboard/distance": {
             "get": {
                 "tags": [
                     "Leaderboard"
@@ -6264,7 +6264,7 @@
                 ]
             }
         },
-        "/leaderboard/friends": {
+        "/v1/leaderboard/friends": {
             "get": {
                 "tags": [
                     "Leaderboard"
@@ -6312,7 +6312,7 @@
                 ]
             }
         },
-        "/leaderboard/{month}": {
+        "/v1/leaderboard/{month}": {
             "get": {
                 "tags": [
                     "Leaderboard"
@@ -6371,7 +6371,7 @@
                 ]
             }
         },
-        "/statistics": {
+        "/v1/statistics": {
             "get": {
                 "tags": [
                     "Statistics"
@@ -6517,7 +6517,7 @@
                 ]
             }
         },
-        "/statistics/daily/{date}": {
+        "/v1/statistics/daily/{date}": {
             "get": {
                 "tags": [
                     "Statistics"
@@ -6633,7 +6633,7 @@
                 ]
             }
         },
-        "/statistics/global": {
+        "/v1/statistics/global": {
             "get": {
                 "tags": [
                     "Statistics"
@@ -6688,7 +6688,7 @@
                 ]
             }
         },
-        "/statistics/overview": {
+        "/v1/statistics/overview": {
             "get": {
                 "tags": [
                     "Statistics"
@@ -6804,7 +6804,7 @@
                 ]
             }
         },
-        "/statistics/history": {
+        "/v1/statistics/history": {
             "get": {
                 "tags": [
                     "Statistics"
@@ -6881,7 +6881,7 @@
                 ]
             }
         },
-        "/statistics/favorites": {
+        "/v1/statistics/favorites": {
             "get": {
                 "tags": [
                     "Statistics"
@@ -6970,7 +6970,7 @@
                 ]
             }
         },
-        "/dashboard": {
+        "/v1/dashboard": {
             "get": {
                 "tags": [
                     "Dashboard"
@@ -7038,7 +7038,7 @@
                 ]
             }
         },
-        "/dashboard/future": {
+        "/v1/dashboard/future": {
             "get": {
                 "tags": [
                     "Dashboard"
@@ -7106,7 +7106,7 @@
                 ]
             }
         },
-        "/statuses": {
+        "/v1/statuses": {
             "get": {
                 "tags": [
                     "Status"
@@ -7152,7 +7152,7 @@
                 ]
             }
         },
-        "/positions": {
+        "/v1/positions": {
             "get": {
                 "tags": [
                     "Status"
@@ -7198,7 +7198,7 @@
                 ]
             }
         },
-        "/positions/{ids}": {
+        "/v1/positions/{ids}": {
             "get": {
                 "tags": [
                     "Status"
@@ -7255,7 +7255,7 @@
                 ]
             }
         },
-        "/status": {
+        "/v1/status": {
             "get": {
                 "tags": [
                     "Status"
@@ -7366,7 +7366,7 @@
                 }
             }
         },
-        "/status/{id}": {
+        "/v1/status/{id}": {
             "get": {
                 "tags": [
                     "Status"
@@ -7547,7 +7547,7 @@
                 ]
             }
         },
-        "/statuses/{id}/tickets": {
+        "/v1/statuses/{id}/tickets": {
             "put": {
                 "tags": [
                     "Tickets"
@@ -7611,7 +7611,7 @@
                 ]
             }
         },
-        "/polyline/{ids}": {
+        "/v1/polyline/{ids}": {
             "get": {
                 "tags": [
                     "Status"
@@ -7682,7 +7682,7 @@
                 ]
             }
         },
-        "/stopovers/{ids}": {
+        "/v1/stopovers/{ids}": {
             "get": {
                 "tags": [
                     "Status"
@@ -7751,7 +7751,7 @@
                 ]
             }
         },
-        "/user/statuses/active": {
+        "/v1/user/statuses/active": {
             "get": {
                 "tags": [
                     "Auth"
@@ -7797,7 +7797,7 @@
                 ]
             }
         },
-        "/tags/suggestions": {
+        "/v1/tags/suggestions": {
             "get": {
                 "tags": [
                     "Status"
@@ -7859,7 +7859,7 @@
                 ]
             }
         },
-        "/status/{statusId}/tags": {
+        "/v1/status/{statusId}/tags": {
             "get": {
                 "tags": [
                     "Status"
@@ -7993,7 +7993,7 @@
                 ]
             }
         },
-        "/statuses/{statusIds}/tags": {
+        "/v1/statuses/{statusIds}/tags": {
             "get": {
                 "tags": [
                     "Status"
@@ -8065,7 +8065,7 @@
                 ]
             }
         },
-        "/status/{statusId}/tags/{tagKey}": {
+        "/v1/status/{statusId}/tags/{tagKey}": {
             "put": {
                 "tags": [
                     "Status"
@@ -8217,7 +8217,7 @@
                 ]
             }
         },
-        "/tickets": {
+        "/v1/tickets": {
             "get": {
                 "tags": [
                     "Tickets"
@@ -8364,7 +8364,7 @@
                 ]
             }
         },
-        "/tickets/{id}": {
+        "/v1/tickets/{id}": {
             "get": {
                 "tags": [
                     "Tickets"
@@ -8564,7 +8564,7 @@
                 ]
             }
         },
-        "/tickets/{id}/statistics": {
+        "/v1/tickets/{id}/statistics": {
             "get": {
                 "tags": [
                     "Tickets"
@@ -8622,7 +8622,7 @@
                 ]
             }
         },
-        "/security/tokens": {
+        "/v1/security/tokens": {
             "get": {
                 "tags": [
                     "Security"
@@ -8725,7 +8725,7 @@
                 ]
             }
         },
-        "/security/tokens/{tokenId}": {
+        "/v1/security/tokens/{tokenId}": {
             "delete": {
                 "tags": [
                     "Security"
@@ -8764,7 +8764,7 @@
                 ]
             }
         },
-        "/station/{id}/departures": {
+        "/v1/station/{id}/departures": {
             "get": {
                 "tags": [
                     "Checkin"
@@ -8907,7 +8907,7 @@
                 ]
             }
         },
-        "/trains/trip": {
+        "/v1/trains/trip": {
             "get": {
                 "tags": [
                     "Checkin"
@@ -8974,7 +8974,7 @@
                 ]
             }
         },
-        "/trains/station/nearby": {
+        "/v1/trains/station/nearby": {
             "get": {
                 "tags": [
                     "Checkin"
@@ -9045,7 +9045,7 @@
                 ]
             }
         },
-        "/trains/checkin": {
+        "/v1/trains/checkin": {
             "post": {
                 "tags": [
                     "Checkin"
@@ -9178,7 +9178,7 @@
                 ]
             }
         },
-        "/trains/station/autocomplete/{query}": {
+        "/v1/trains/station/autocomplete/{query}": {
             "get": {
                 "tags": [
                     "Checkin"
@@ -9235,7 +9235,7 @@
                 ]
             }
         },
-        "/trains/station/history": {
+        "/v1/trains/station/history": {
             "get": {
                 "tags": [
                     "Checkin"
@@ -9281,7 +9281,7 @@
                 ]
             }
         },
-        "/trips/{id}/statuses": {
+        "/v1/trips/{id}/statuses": {
             "get": {
                 "tags": [
                     "Trips"
@@ -9339,7 +9339,7 @@
                 ]
             }
         },
-        "/trips/route-preview": {
+        "/v1/trips/route-preview": {
             "post": {
                 "tags": [
                     "Trips"
@@ -9411,7 +9411,7 @@
                 ]
             }
         },
-        "/trips": {
+        "/v1/trips": {
             "get": {
                 "tags": [
                     "Trips"
@@ -9588,7 +9588,7 @@
                 ]
             }
         },
-        "/trips/{tripUuid}/copy": {
+        "/v1/trips/{tripUuid}/copy": {
             "post": {
                 "tags": [
                     "Trips"
@@ -9646,7 +9646,7 @@
                 ]
             }
         },
-        "/trips/{tripUuid}": {
+        "/v1/trips/{tripUuid}": {
             "get": {
                 "tags": [
                     "Trips"
@@ -9823,7 +9823,7 @@
                 ]
             }
         },
-        "/trips/{tripUuid}/stopovers": {
+        "/v1/trips/{tripUuid}/stopovers": {
             "post": {
                 "tags": [
                     "Trips"
@@ -9934,7 +9934,7 @@
                 ]
             }
         },
-        "/trips/{tripUuid}/stopovers/{stopoverUuid}": {
+        "/v1/trips/{tripUuid}/stopovers/{stopoverUuid}": {
             "put": {
                 "tags": [
                     "Trips"
@@ -10109,7 +10109,7 @@
                 ]
             }
         },
-        "/trips/{tripUuid}/stopovers/shift": {
+        "/v1/trips/{tripUuid}/stopovers/shift": {
             "post": {
                 "tags": [
                     "Trips"
@@ -10177,7 +10177,7 @@
                 ]
             }
         },
-        "/user/{user}/trusted": {
+        "/v1/user/{user}/trusted": {
             "get": {
                 "tags": [
                     "User"
@@ -10298,7 +10298,7 @@
                 }
             }
         },
-        "/user/self/trusted-by": {
+        "/v1/user/self/trusted-by": {
             "get": {
                 "tags": [
                     "User"
@@ -10336,7 +10336,7 @@
                 }
             }
         },
-        "/user/{user}/trusted/{trusted}": {
+        "/v1/user/{user}/trusted/{trusted}": {
             "delete": {
                 "tags": [
                     "User"
@@ -10401,7 +10401,7 @@
                 }
             }
         },
-        "/settings/account": {
+        "/v1/settings/account": {
             "delete": {
                 "tags": [
                     "Settings"
@@ -10453,7 +10453,7 @@
                 ]
             }
         },
-        "/user/{username}/statuses": {
+        "/v1/user/{username}/statuses": {
             "get": {
                 "tags": [
                     "User",
@@ -10534,7 +10534,7 @@
                 ]
             }
         },
-        "/user/{username}": {
+        "/v1/user/{username}": {
             "get": {
                 "tags": [
                     "User"
@@ -10624,7 +10624,7 @@
                 ]
             }
         },
-        "/user/{id}/block": {
+        "/v1/user/{id}/block": {
             "post": {
                 "tags": [
                     "User/Hide and Block"
@@ -10770,7 +10770,7 @@
                 ]
             }
         },
-        "/user/{id}/mute": {
+        "/v1/user/{id}/mute": {
             "post": {
                 "tags": [
                     "User/Hide and Block"
@@ -10910,7 +10910,7 @@
                 ]
             }
         },
-        "/users/self/blocks": {
+        "/v1/users/self/blocks": {
             "get": {
                 "tags": [
                     "User/Hide and Block"
@@ -10956,7 +10956,7 @@
                 ]
             }
         },
-        "/users/self/mutes": {
+        "/v1/users/self/mutes": {
             "get": {
                 "tags": [
                     "User/Hide and Block"
@@ -11002,7 +11002,7 @@
                 ]
             }
         },
-        "/user/search/{query}": {
+        "/v1/user/search/{query}": {
             "get": {
                 "tags": [
                     "User"
@@ -11073,7 +11073,7 @@
                 ]
             }
         },
-        "/user/search": {
+        "/v1/user/search": {
             "get": {
                 "tags": [
                     "User"
@@ -11150,7 +11150,7 @@
                 ]
             }
         },
-        "/webhooks": {
+        "/v1/webhooks": {
             "get": {
                 "tags": [
                     "Webhooks"
@@ -11194,7 +11194,7 @@
                 ]
             }
         },
-        "/webhooks/{id}": {
+        "/v1/webhooks/{id}": {
             "get": {
                 "tags": [
                     "Webhooks"
@@ -11290,7 +11290,7 @@
                 ]
             }
         },
-        "/year-in-review": {
+        "/v1/year-in-review": {
             "get": {
                 "tags": [
                     "Statistics"
@@ -16577,18 +16577,6 @@
     },
     "tags": [
         {
-            "name": "Applications",
-            "description": "Manage OAuth applications"
-        },
-        {
-            "name": "Community",
-            "description": "Community contribution system endpoints"
-        },
-        {
-            "name": "Configuration Information",
-            "description": "Endpoints related to application configuration information."
-        },
-        {
             "name": "Auth",
             "description": "Logging in, creating Accounts, etc."
         },
@@ -16655,6 +16643,18 @@
         {
             "name": "Webhooks",
             "description": "Manage Webhooks for third party applications"
+        },
+        {
+            "name": "Applications",
+            "description": "Manage OAuth applications"
+        },
+        {
+            "name": "Community",
+            "description": "Community contribution system endpoints"
+        },
+        {
+            "name": "Configuration Information",
+            "description": "Endpoints related to application configuration information."
         },
         {
             "name": "Admin",

@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import type { StatusResource, StopoverResource } from '../../types/Api.gen';
 import { Api } from '../../types/Api.gen';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 export const useActiveCheckin = defineStore(
     'activeStatus',

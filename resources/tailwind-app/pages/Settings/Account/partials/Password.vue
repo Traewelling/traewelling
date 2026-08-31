@@ -13,7 +13,7 @@ const emits = defineEmits<{
 }>();
 
 const notyf = inject('notyf') as Notyf;
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const modal = ref<HTMLDialogElement>();
 
 const currentPassword = ref('');

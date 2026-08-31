@@ -27,7 +27,7 @@ class SettingsController extends Controller
     ) {}
 
     #[OA\Get(
-        path: '/settings/profile',
+        path: '/v1/settings/profile',
         operationId: 'getProfileSettings',
         description: 'Get the current user\'s profile settings',
         summary: 'Get the current user\'s profile settings',
@@ -60,7 +60,7 @@ class SettingsController extends Controller
      * @throws ValidationException
      */
     #[OA\Put(
-        path: '/settings/email',
+        path: '/v1/settings/email',
         operationId: 'updateEmail',
         description: 'Update the current user\'s email address',
         summary: 'Update the current user\'s email address',
@@ -133,7 +133,7 @@ class SettingsController extends Controller
     }
 
     #[OA\Put(
-        path: '/settings/profile',
+        path: '/v1/settings/profile',
         operationId: 'updateProfileSettings',
         description: 'Update the current user\'s profile settings',
         summary: 'Update the current user\'s profile settings',
@@ -173,7 +173,7 @@ class SettingsController extends Controller
     }
 
     #[OA\Post(
-        path: '/settings/email/verification',
+        path: '/v1/settings/email/verification',
         operationId: 'resendVerificationEmail',
         description: 'Resend verification email',
         summary: 'Resend verification email',
@@ -205,7 +205,7 @@ class SettingsController extends Controller
     }
 
     #[OA\Put(
-        path: '/settings/password',
+        path: '/v1/settings/password',
         operationId: 'updatePassword',
         description: 'Change the current user\'s password.',
         summary: 'Change password',
@@ -272,7 +272,7 @@ class SettingsController extends Controller
      *       old path around for the transition period.
      */
     #[OA\Delete(
-        path: '/settings/profile-picture/{userUuid}',
+        path: '/v1/settings/profile-picture/{userUuid}',
         operationId: 'deleteProfilePicture',
         description: 'Delete a profile picture. The userUuid may be omitted to delete the own picture, which answers with a message. Deleting the picture of another user requires the admin role, is meant for moderation and answers with 204.',
         summary: 'Delete a profile picture',
@@ -334,7 +334,7 @@ class SettingsController extends Controller
     }
 
     #[OA\Post(
-        path: '/settings/profile-picture',
+        path: '/v1/settings/profile-picture',
         operationId: 'uploadProfilePicture',
         description: 'Upload a new profile picture for the current user',
         summary: 'Upload a new profile picture for the current user',
@@ -391,7 +391,7 @@ class SettingsController extends Controller
     }
 
     #[OA\Post(
-        path: '/settings/profile-picture/mastodon',
+        path: '/v1/settings/profile-picture/mastodon',
         operationId: 'importProfilePictureFromMastodon',
         description: 'Import the profile picture from the connected Mastodon account',
         summary: 'Import profile picture from Mastodon',

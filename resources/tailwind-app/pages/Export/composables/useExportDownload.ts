@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import { Api, ExportableColumn } from '../../../../types/Api.gen';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 function triggerDownload(blob: Blob, disposition: string | null): void {
     const filename = new RegExp(/filename="?([^";\r\n]+)"?/).exec(disposition)?.[1] ?? 'export';

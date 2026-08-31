@@ -38,7 +38,7 @@ class StatisticsController extends Controller
     }
 
     #[OA\Get(
-        path: '/leaderboard',
+        path: '/v1/leaderboard',
         operationId: 'getLeaderboard',
         summary: '[Auth optional] Get array of 20 best users',
         security: [['passport' => ['read-statistics']], ['token' => []]],
@@ -68,7 +68,7 @@ class StatisticsController extends Controller
     }
 
     #[OA\Get(
-        path: '/leaderboard/distance',
+        path: '/v1/leaderboard/distance',
         operationId: 'getLeaderboardByDistance',
         summary: '[Auth optional] Get leaderboard array sorted by distance',
         security: [['passport' => ['read-statistics']], ['token' => []]],
@@ -98,7 +98,7 @@ class StatisticsController extends Controller
     }
 
     #[OA\Get(
-        path: '/leaderboard/friends',
+        path: '/v1/leaderboard/friends',
         operationId: 'getLeaderboardByFriends',
         summary: 'Get friends-leaderboard array sorted',
         security: [['passport' => ['read-statistics']], ['token' => []]],
@@ -128,7 +128,7 @@ class StatisticsController extends Controller
     }
 
     #[OA\Get(
-        path: '/leaderboard/{month}',
+        path: '/v1/leaderboard/{month}',
         operationId: 'getMonthlyLeaderboard',
         summary: '[Auth optional] Get leaderboard array for a specific month',
         security: [['passport' => ['read-statistics']], ['token' => []]],
@@ -173,7 +173,7 @@ class StatisticsController extends Controller
     }
 
     #[OA\Get(
-        path: '/statistics',
+        path: '/v1/statistics',
         operationId: 'getStatistics',
         summary: 'Get personal statistics',
         security: [['passport' => ['read-statistics']], ['token' => []]],
@@ -350,7 +350,7 @@ class StatisticsController extends Controller
     }
 
     #[OA\Get(
-        path: '/statistics/daily/{date}',
+        path: '/v1/statistics/daily/{date}',
         operationId: 'getDailyStatistics',
         description: 'Returns all statuses and statistics for the requested day',
         summary: 'Get statistics and statuses of one day',
@@ -476,7 +476,7 @@ class StatisticsController extends Controller
     }
 
     #[OA\Get(
-        path: '/statistics/global',
+        path: '/v1/statistics/global',
         operationId: 'getGlobalStatistics',
         summary: 'Get global statistics of the last 4 weeks',
         security: [['passport' => ['read-statistics']], ['token' => []]],
@@ -529,7 +529,7 @@ class StatisticsController extends Controller
     }
 
     #[OA\Get(
-        path: '/statistics/overview',
+        path: '/v1/statistics/overview',
         operationId: 'getStatisticsOverview',
         summary: 'Get a summary of personal statistics for a date range',
         security: [['passport' => ['read-statistics']], ['token' => []]],
@@ -628,7 +628,7 @@ class StatisticsController extends Controller
     }
 
     #[OA\Get(
-        path: '/statistics/history',
+        path: '/v1/statistics/history',
         operationId: 'getStatisticsHistory',
         summary: 'Get all-time checkin counts and distances grouped by year, month, and week',
         security: [['passport' => ['read-statistics']], ['token' => []]],
@@ -674,7 +674,7 @@ class StatisticsController extends Controller
     }
 
     #[OA\Get(
-        path: '/statistics/favorites',
+        path: '/v1/statistics/favorites',
         operationId: 'getStatisticsFavorites',
         summary: 'Get favorite stations, lines, and routes for a date range',
         security: [['passport' => ['read-statistics']], ['token' => []]],

@@ -11,7 +11,7 @@ import StatusCard from '../components/Status/StatusCard.vue';
 import { getDepartureForStatus } from '../helpers/DateTimeHelper';
 import { useUserStore } from '../stores/user';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const statuses = ref<StatusResource[]>([]);
 const loading = ref(true);
 const currentPage = ref(1);

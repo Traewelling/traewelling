@@ -21,7 +21,7 @@ class TrustedUserController extends Controller
      * @throws AuthorizationException
      */
     #[OA\Get(
-        path: '/user/{user}/trusted',
+        path: '/v1/user/{user}/trusted',
         operationId: 'trustedUserIndex',
         description: 'Get all trusted users for the current user or a specific user (admin only).',
         summary: 'Get all trusted users for a user',
@@ -68,7 +68,7 @@ class TrustedUserController extends Controller
      * @throws AuthorizationException
      */
     #[OA\Get(
-        path: '/user/self/trusted-by',
+        path: '/v1/user/self/trusted-by',
         operationId: 'trustedByUserIndex',
         summary: 'Get all users who trust the current user',
         tags: ['User'],
@@ -119,7 +119,7 @@ class TrustedUserController extends Controller
      * @throws AuthorizationException
      */
     #[OA\Post(
-        path: '/user/{user}/trusted',
+        path: '/v1/user/{user}/trusted',
         operationId: 'trustedUserStore',
         description: 'Add a user to the trusted users for the current user or a specific user (admin only).',
         summary: 'Add a user to the trusted users for a user',
@@ -184,7 +184,7 @@ class TrustedUserController extends Controller
      * @throws AuthorizationException
      */
     #[OA\Delete(
-        path: '/user/{user}/trusted/{trusted}',
+        path: '/v1/user/{user}/trusted/{trusted}',
         operationId: 'trustedUserDestroy',
         description: 'Remove a user from the trusted users for the current user or a specific user (admin only).',
         summary: 'Remove a user from the trusted users for a user',

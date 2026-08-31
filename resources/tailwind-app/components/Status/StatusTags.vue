@@ -13,7 +13,7 @@ const props = defineProps<{
     editable: boolean;
 }>();
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const localTags = ref<StatusTagResource[]>([...props.tags]);
 const notyf = inject('notyf') as Notyf;

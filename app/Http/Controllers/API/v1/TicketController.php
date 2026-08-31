@@ -22,7 +22,7 @@ use OpenApi\Attributes as OA;
 class TicketController extends Controller
 {
     #[OA\Get(
-        path: '/tickets',
+        path: '/v1/tickets',
         operationId: 'getTickets',
         description: 'Returns all tickets of the currently authenticated user. Only available to users with the closed-beta role. Optionally filter by validity date using the `validOn` parameter.',
         summary: 'List all tickets of the current user',
@@ -106,7 +106,7 @@ class TicketController extends Controller
     }
 
     #[OA\Post(
-        path: '/tickets',
+        path: '/v1/tickets',
         operationId: 'createTicket',
         description: 'Creates a new ticket for the currently authenticated user. Only available to users with the closed-beta role.',
         summary: 'Create a ticket',
@@ -160,7 +160,7 @@ class TicketController extends Controller
     }
 
     #[OA\Get(
-        path: '/tickets/{id}',
+        path: '/v1/tickets/{id}',
         operationId: 'getTicket',
         description: 'Returns a single ticket of the currently authenticated user.',
         summary: 'Get a ticket',
@@ -209,7 +209,7 @@ class TicketController extends Controller
     }
 
     #[OA\Put(
-        path: '/tickets/{id}',
+        path: '/v1/tickets/{id}',
         operationId: 'updateTicket',
         description: 'Updates a ticket of the currently authenticated user.',
         summary: 'Update a ticket',
@@ -271,7 +271,7 @@ class TicketController extends Controller
     }
 
     #[OA\Get(
-        path: '/tickets/{id}/statistics',
+        path: '/v1/tickets/{id}/statistics',
         operationId: 'getTicketStatistics',
         description: 'Returns usage statistics for a single ticket of the currently authenticated user.',
         summary: 'Get statistics for a ticket',
@@ -389,7 +389,7 @@ class TicketController extends Controller
     }
 
     #[OA\Delete(
-        path: '/tickets/{id}',
+        path: '/v1/tickets/{id}',
         operationId: 'deleteTicket',
         description: 'Deletes a ticket of the currently authenticated user. Associated statuses will have their ticket reference removed.',
         summary: 'Delete a ticket',

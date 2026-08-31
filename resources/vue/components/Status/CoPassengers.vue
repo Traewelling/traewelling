@@ -16,7 +16,7 @@ const emit = defineEmits<{
     hasCoPassengers: [value: boolean];
 }>();
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const passengers = ref<StatusResource[]>([]);
 
 onMounted(() => {

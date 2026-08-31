@@ -11,7 +11,7 @@ use OpenApi\Attributes as OA;
 class YearInReviewController extends Controller
 {
     #[OA\Get(
-        path: '/year-in-review',
+        path: '/v1/year-in-review',
         operationId: 'getYearInReview',
         description: 'Please note: This endpoint is only available when the year in review feature is enabled in the backend configuration. There is no full documentation - this endpoint may change every year.',
         summary: 'Returns the year in review for the given year and authenticated user',

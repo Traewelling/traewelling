@@ -18,7 +18,7 @@ const emit = defineEmits<{
     submitted: [];
 }>();
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const notyf = inject('notyf') as Notyf;
 
 const reasons: Reason[] = ['inappropriate', 'implausible', 'spam', 'illegal', 'other'];

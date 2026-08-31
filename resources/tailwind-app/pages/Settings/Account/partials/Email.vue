@@ -12,7 +12,7 @@ const emits = defineEmits(['profile-updated', 'error']);
 const notyf = inject('notyf') as Notyf;
 
 const modal = ref<HTMLDialogElement>();
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const input = ref<string>(props.profile.email ?? '');
 const password = ref<string>('');
 

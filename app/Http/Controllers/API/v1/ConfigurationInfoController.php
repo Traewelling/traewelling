@@ -20,7 +20,7 @@ class ConfigurationInfoController
     }
 
     #[OA\Get(
-        path: '/app/configuration',
+        path: '/v1/app/configuration',
         operationId: 'getConfigurationInfo',
         description: 'Retrieves configuration information about the application, including features and supported languages.',
         summary: 'Get Application Configuration Information',
