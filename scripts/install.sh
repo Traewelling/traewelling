@@ -21,6 +21,7 @@ ASCII_ART="\
 
 USER=${1:-www-data} # Default user is www-data
 REPO_ROOT=$(git rev-parse --show-toplevel)
+KEEP_INSTALL_LOGS=10 # How many installation logs to keep around
 
 # Colors for fancy output
 GREEN="\033[1;32m"
@@ -170,8 +171,12 @@ finish_application() {
 }
 
 remove_old_log() {
-  echo -e "${YELLOW}Removing old logs...${RESET}"
-  rm -f "${REPO_ROOT}/storage/logs/install-*.log"
+  echo -e "${YELLOW}Removing old installation logs...${RESET}"
+  local logs=("${REPO_ROOT}"/storage/logs/install-*.log)
+  [ -e "${logs[0]}" ] || return 0
+  if [ "${#logs[@]}" -gt "$KEEP_INSTALL_LOGS" ]; then
+    rm -f "${logs[@]:0:${#logs[@]} - KEEP_INSTALL_LOGS}"
+  fi
 }
 
 run_installation() {
