@@ -157,6 +157,8 @@ Route::middleware(['auth', 'privacy'])->group(function () {
 
     Route::get('/stationboard', [VueFrontendController::class, 'stationBoard'])->name('stationboard');
     Route::get('/embed/stationboard', [VueFrontendController::class, 'stationBoard'])->name('embed.stationboard');
+    Route::view('/line-run', 'vue.spa')->name('line-run');
+    Route::view('/checkin', 'vue.spa')->name('checkin');
 
     Route::redirect('/trains/stationboard', '/stationboard')->name('trains.stationboard');
 
