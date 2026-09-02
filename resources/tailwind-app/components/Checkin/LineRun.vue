@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { House } from '@lucide/vue';
+import { Check, House } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
 import { DateTime } from 'luxon';
 import { computed, onMounted, ref, watch } from 'vue';
@@ -18,6 +18,10 @@ const props = defineProps<{
     // instead of an exit.
     startId?: number | string | null;
     plannedWhen?: string | null;
+    // Highlights the stopover currently assigned as the checkin's exit, e.g.
+    // when changing the exit of an existing checkin.
+    selectedId?: number | string | null;
+    selectedArrival?: string | null;
 }>();
 
 const emit = defineEmits<{
@@ -73,6 +77,13 @@ function getPlannedTime(item: StopoverResource): string | null {
     const deviation = getDeviationInMinutes(item);
     if (deviation === null || deviation === 0) return null;
     return item.arrivalPlanned ?? item.departurePlanned ?? null;
+}
+
+function isSelected(item: StopoverResource): boolean {
+    if (props.selectedId == null) return false;
+    if (Number(item.id) !== Number(props.selectedId)) return false;
+    if (props.selectedArrival == null) return true;
+    return item.arrivalPlanned === props.selectedArrival;
 }
 
 function isHome(item: StopoverResource): boolean {
@@ -139,17 +150,21 @@ watch(() => props.tripId, fetchLineRun);
     </div>
 
     <div v-else-if="loading" class="flex flex-col gap-2 p-4">
-        <div v-for="n in 8" :key="n" class="skeleton h-9 w-full rounded" />
+        <div v-for="n in 30" :key="n" class="skeleton h-9 w-full rounded" />
     </div>
 
     <ul v-else class="divide-y divide-base-200">
         <li v-for="item in stopovers" :key="item.id">
             <button
                 class="w-full flex justify-between items-center px-4 py-3 hover:bg-base-200 text-left transition-colors cursor-pointer"
-                :class="{ 'opacity-60': item.cancelled, 'bg-primary/10 font-medium': isHome(item) }"
+                :class="{
+                    'opacity-60': item.cancelled,
+                    'bg-primary/10 font-medium': isHome(item) || isSelected(item),
+                }"
                 @click="emit('select', item)"
             >
                 <span class="flex-1 text-sm" :class="{ 'line-through text-error': item.cancelled }">
+                    <Check v-if="isSelected(item)" class="size-4 inline-block me-1 -mt-0.5 text-primary" />
                     {{ item.name }}
                     <House v-if="isHome(item)" class="size-4 inline-block ms-1 -mt-0.5 text-primary" />
                     <span v-if="item.cancelled" class="badge badge-error badge-xs align-middle ml-1">

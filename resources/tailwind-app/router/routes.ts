@@ -2,6 +2,7 @@ import { RouteRecordRaw } from 'vue-router';
 import ErrorPage from '../components/ErrorPage.vue';
 import ActiveJourneys from '../pages/ActiveJourneys/ActiveJourneys.vue';
 import Changelog from '../pages/Changelog/Changelog.vue';
+import ChangeExitPage from '../pages/Checkin/ChangeExitPage.vue';
 import CheckinPage from '../pages/Checkin/CheckinPage.vue';
 import LineRunPage from '../pages/Checkin/LineRunPage.vue';
 import Index from '../pages/Contribute/Index.vue';
@@ -248,6 +249,12 @@ const routes: Array<RouteRecordRaw> = [
         path: '/status/:id',
         name: 'single-status',
         component: SingleStatus,
+    },
+    {
+        path: '/status/:id/change-exit',
+        name: 'change-exit',
+        component: ChangeExitPage,
+        meta: { title: 'checkin.select-exit' },
     },
     {
         path: '/event/:slug',
