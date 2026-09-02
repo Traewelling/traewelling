@@ -106,71 +106,76 @@ onMounted(() => {
 <template>
     <AppLayout>
         <div class="max-w-lg mx-auto">
-            <!-- Back + step title -->
-            <div class="flex items-center gap-2 p-4 border-b border-base-300">
-                <button class="btn btn-ghost btn-sm btn-square" @click="handleBack">
-                    <ArrowLeft class="w-4 h-4" />
-                </button>
-                <span class="font-semibold text-sm">{{ stepTitle }}</span>
-            </div>
-
-            <!-- Trip summary -->
-            <div v-if="effectiveOriginName || lineName" class="flex items-center gap-3 px-4 py-3 bg-base-200 text-sm">
-                <TransportIcon :product="category" class="flex-shrink-0 opacity-70" />
-                <span v-if="lineName" class="badge badge-neutral badge-sm font-mono flex-shrink-0">
-                    {{ lineName }}
-                </span>
-                <span class="truncate text-base-content/70">{{ effectiveOriginName }}</span>
-                <template v-if="selectedDestination">
-                    <ArrowRight class="w-3 h-3 flex-shrink-0 text-base-content/40" />
-                    <span class="truncate text-base-content/70">{{ selectedDestination.name }}</span>
-                </template>
-            </div>
-
-            <!-- Step 1: Select start stop -->
-            <template v-if="showStartSelection">
-                <div v-if="loadingStops" class="flex flex-col gap-2 p-4">
-                    <div v-for="n in 6" :key="n" class="skeleton h-9 w-full rounded" />
+            <div class="card bg-base-100">
+                <!-- Back + step title -->
+                <div class="flex items-center gap-2 p-4 border-b border-base-300">
+                    <button class="btn btn-ghost btn-sm btn-square" @click="handleBack">
+                        <ArrowLeft class="w-4 h-4" />
+                    </button>
+                    <span class="font-semibold text-sm">{{ stepTitle }}</span>
                 </div>
-                <ul v-else class="divide-y divide-base-200">
-                    <li v-for="item in allStopovers" :key="item.id">
-                        <button
-                            class="w-full flex justify-between items-center px-4 py-3 hover:bg-base-200 text-left transition-colors"
-                            @click="selectedStart = item"
-                        >
-                            <span class="flex-1 text-sm">{{ item.name }}</span>
-                            <span class="text-right text-sm flex-shrink-0 ml-3 text-base-content/60">
-                                {{
-                                    item.departurePlanned
-                                        ? DateTime.fromISO(item.departurePlanned).toFormat('HH:mm')
-                                        : ''
-                                }}
-                            </span>
-                        </button>
-                    </li>
-                </ul>
-            </template>
 
-            <!-- Step 2: Select destination -->
-            <LineRun
-                v-else-if="showDestinationSelection"
-                :trip-id="tripId"
-                :line-name="lineName"
-                :start-id="effectiveStartId"
-                :planned-when="effectiveDeparture"
-                :fast-checkin-id="!fastCheckinUsed && destinationId ? Number(destinationId) : null"
-                @select="selectedDestination = $event"
-                @trip="tripUuid = $event.uuid ?? null"
-            />
+                <!-- Trip summary -->
+                <div
+                    v-if="effectiveOriginName || lineName"
+                    class="flex items-center gap-3 px-4 py-3 bg-base-200 text-sm"
+                >
+                    <TransportIcon :product="category" class="flex-shrink-0 opacity-70" />
+                    <span v-if="lineName" class="badge badge-neutral badge-sm font-mono flex-shrink-0">
+                        {{ lineName }}
+                    </span>
+                    <span class="truncate text-base-content/70">{{ effectiveOriginName }}</span>
+                    <template v-if="selectedDestination">
+                        <ArrowRight class="w-3 h-3 flex-shrink-0 text-base-content/40" />
+                        <span class="truncate text-base-content/70">{{ selectedDestination.name }}</span>
+                    </template>
+                </div>
 
-            <!-- Step 3: Checkin form -->
-            <CheckinForm
-                v-else
-                :key="selectedDestination?.id"
-                :departure="departure"
-                :destination="selectedDestination!"
-                :trip-uuid="tripUuid"
-            />
+                <!-- Step 1: Select start stop -->
+                <template v-if="showStartSelection">
+                    <div v-if="loadingStops" class="flex flex-col gap-2 p-4">
+                        <div v-for="n in 6" :key="n" class="skeleton h-9 w-full rounded" />
+                    </div>
+                    <ul v-else class="divide-y divide-base-200">
+                        <li v-for="item in allStopovers" :key="item.id">
+                            <button
+                                class="w-full flex justify-between items-center px-4 py-3 hover:bg-base-200 text-left transition-colors"
+                                @click="selectedStart = item"
+                            >
+                                <span class="flex-1 text-sm">{{ item.name }}</span>
+                                <span class="text-right text-sm flex-shrink-0 ml-3 text-base-content/60">
+                                    {{
+                                        item.departurePlanned
+                                            ? DateTime.fromISO(item.departurePlanned).toFormat('HH:mm')
+                                            : ''
+                                    }}
+                                </span>
+                            </button>
+                        </li>
+                    </ul>
+                </template>
+
+                <!-- Step 2: Select destination -->
+                <LineRun
+                    v-else-if="showDestinationSelection"
+                    :trip-id="tripId"
+                    :line-name="lineName"
+                    :start-id="effectiveStartId"
+                    :planned-when="effectiveDeparture"
+                    :fast-checkin-id="!fastCheckinUsed && destinationId ? Number(destinationId) : null"
+                    @select="selectedDestination = $event"
+                    @trip="tripUuid = $event.uuid ?? null"
+                />
+
+                <!-- Step 3: Checkin form -->
+                <CheckinForm
+                    v-else
+                    :key="selectedDestination?.id"
+                    :departure="departure"
+                    :destination="selectedDestination!"
+                    :trip-uuid="tripUuid"
+                />
+            </div>
         </div>
     </AppLayout>
 </template>

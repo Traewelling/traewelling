@@ -1,0 +1,90 @@
+<script setup lang="ts">
+import { ArrowLeft } from '@lucide/vue';
+import { computed, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { HafasTravelType, StopoverResource, TripResource } from '../../../types/Api.gen';
+import LineIndicator from '../../../vue/components/LineIndicator.vue';
+import LineRun from '../../components/Checkin/LineRun.vue';
+import TransportIcon from '../../components/TransportIcon.vue';
+import AppLayout from '../../layouts/AppLayout.vue';
+
+const route = useRoute();
+const router = useRouter();
+
+const tripId = computed(() => route.query.tripId as string);
+const lineName = computed(() => (route.query.lineName as string | undefined) ?? undefined);
+const startId = computed(() => route.query.startId as string);
+const plannedWhen = computed(() => route.query.plannedWhen as string);
+const direction = computed(() => (route.query.direction as string | undefined) ?? '');
+const originName = computed(() => (route.query.originName as string | undefined) ?? undefined);
+const product = computed(() => (route.query.product as string | undefined) ?? null);
+const mode = computed(() => (route.query.mode as string | undefined) ?? null);
+const color = computed(() => (route.query.color as string | undefined) ?? null);
+const textColor = computed(() => (route.query.textColor as string | undefined) ?? null);
+
+const displayLineName = computed(() => (lineName.value ?? '').replaceAll(/\(.*?\)/g, '').trim());
+
+const tripCategory = ref<HafasTravelType | null>(null);
+
+function handleBack(): void {
+    router.back();
+}
+
+function onTrip(trip: TripResource): void {
+    tripCategory.value = trip.category ?? null;
+}
+
+function selectDestination(stopover: StopoverResource): void {
+    router.push({
+        name: 'checkin',
+        query: {
+            tripId: tripId.value,
+            lineName: lineName.value,
+            start: startId.value,
+            destination: stopover.id,
+            departure: plannedWhen.value,
+            originName: originName.value,
+            destinationName: stopover.name,
+            category: tripCategory.value ?? undefined,
+        },
+    });
+}
+</script>
+
+<template>
+    <AppLayout>
+        <div class="max-w-2xl mx-auto">
+            <div class="card bg-base-100">
+                <!-- Header -->
+                <div class="flex items-center gap-3 px-4 py-3 border-b border-base-300">
+                    <button class="btn btn-ghost btn-sm btn-square" @click="handleBack">
+                        <ArrowLeft class="w-4 h-4" />
+                    </button>
+
+                    <div class="w-5 h-5 flex items-center justify-center text-base-content/60 flex-shrink-0">
+                        <TransportIcon :product="product" :mode="mode" />
+                    </div>
+                    <LineIndicator
+                        :mode="mode"
+                        :product-name="product ?? ''"
+                        :number="displayLineName"
+                        :background-color="color ?? undefined"
+                        :color="textColor ?? undefined"
+                    />
+                    <span class="font-medium text-sm truncate">{{ direction }}</span>
+                </div>
+
+                <!-- Line run -->
+                <LineRun
+                    v-if="tripId"
+                    :trip-id="tripId"
+                    :line-name="lineName"
+                    :start-id="startId"
+                    :planned-when="plannedWhen"
+                    @select="selectDestination"
+                    @trip="onTrip"
+                />
+            </div>
+        </div>
+    </AppLayout>
+</template>

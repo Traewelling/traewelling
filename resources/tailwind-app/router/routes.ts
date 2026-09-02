@@ -3,6 +3,7 @@ import ErrorPage from '../components/ErrorPage.vue';
 import ActiveJourneys from '../pages/ActiveJourneys/ActiveJourneys.vue';
 import Changelog from '../pages/Changelog/Changelog.vue';
 import CheckinPage from '../pages/Checkin/CheckinPage.vue';
+import LineRunPage from '../pages/Checkin/LineRunPage.vue';
 import Index from '../pages/Contribute/Index.vue';
 import Profile from '../pages/Contribute/Profile.vue';
 import SuggestEvent from '../pages/Contribute/SuggestEvent.vue';
@@ -190,6 +191,12 @@ const routes: Array<RouteRecordRaw> = [
         name: 'stationboard',
         component: Stationboard,
         meta: { title: 'stationboard' },
+    },
+    {
+        path: '/line-run',
+        name: 'line-run',
+        component: LineRunPage,
+        meta: { title: 'stationboard.destination' },
     },
     {
         path: '/checkin',

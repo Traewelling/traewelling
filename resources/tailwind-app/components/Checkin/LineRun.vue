@@ -139,7 +139,7 @@ watch(() => props.tripId, fetchLineRun);
     <ul v-else class="divide-y divide-base-200">
         <li v-for="item in stopovers" :key="item.id">
             <button
-                class="w-full flex justify-between items-center px-4 py-3 hover:bg-base-200 text-left transition-colors"
+                class="w-full flex justify-between items-center px-4 py-3 hover:bg-base-200 text-left transition-colors cursor-pointer"
                 :class="{ 'opacity-60': item.cancelled, 'bg-primary/10 font-medium': isHome(item) }"
                 @click="emit('select', item)"
             >
