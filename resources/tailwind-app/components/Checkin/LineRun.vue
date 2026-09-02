@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { House } from '@lucide/vue';
+import { Check, House } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
 import { DateTime } from 'luxon';
 import { computed, onMounted, ref, watch } from 'vue';
@@ -14,9 +14,14 @@ const homeStation = computed<StationResource | null>(() => userStore.getHome);
 const props = defineProps<{
     tripId: string;
     lineName?: string | null;
-    startId: number | string;
-    plannedWhen: string;
-    fastCheckinId?: number | null;
+    // Omit both to list every stop but the last, for picking a departure stop
+    // instead of an exit.
+    startId?: number | string | null;
+    plannedWhen?: string | null;
+    // Highlights the stopover currently assigned as the checkin's exit, e.g.
+    // when changing the exit of an existing checkin.
+    selectedId?: number | string | null;
+    selectedArrival?: string | null;
 }>();
 
 const emit = defineEmits<{
@@ -24,10 +29,32 @@ const emit = defineEmits<{
     (e: 'trip', trip: TripResource): void;
 }>();
 
-const stopovers = ref<StopoverResource[]>([]);
+const allStopovers = ref<StopoverResource[]>([]);
 const attribution = ref<string | null>(null);
 const loading = ref(false);
 const error = ref(false);
+
+// Derived from the fetched trip rather than baked into the fetch, so toggling
+// between "pick a departure" and "pick an exit" (startId present or not) on
+// an already-loaded trip doesn't require re-fetching it.
+const stopovers = computed<StopoverResource[]>(() => {
+    if (props.startId != null && props.plannedWhen) {
+        const givenDeparture = DateTime.fromISO(props.plannedWhen);
+        const startIndex = allStopovers.value.findIndex((item) => {
+            if (Number(item.id) !== Number(props.startId)) return false;
+            const dep = item.departurePlanned
+                ? DateTime.fromISO(item.departurePlanned)
+                : item.arrivalPlanned
+                  ? DateTime.fromISO(item.arrivalPlanned)
+                  : null;
+            return dep !== null && dep.toMillis() === givenDeparture.toMillis();
+        });
+        return startIndex !== -1 ? allStopovers.value.slice(startIndex + 1) : allStopovers.value;
+    }
+    // No start given: picking a departure stop, so every stop but the final
+    // one (you can't depart from the last stop) is selectable.
+    return allStopovers.value.slice(0, -1);
+});
 
 function formatTime(time: string | null | undefined): string {
     if (!time) return '';
@@ -50,6 +77,13 @@ function getPlannedTime(item: StopoverResource): string | null {
     const deviation = getDeviationInMinutes(item);
     if (deviation === null || deviation === 0) return null;
     return item.arrivalPlanned ?? item.departurePlanned ?? null;
+}
+
+function isSelected(item: StopoverResource): boolean {
+    if (props.selectedId == null) return false;
+    if (Number(item.id) !== Number(props.selectedId)) return false;
+    if (props.selectedArrival == null) return true;
+    return item.arrivalPlanned === props.selectedArrival;
 }
 
 function isHome(item: StopoverResource): boolean {
@@ -97,25 +131,8 @@ async function fetchLineRun(): Promise<void> {
         const trip: TripResource = res.data?.data as TripResource;
         emit('trip', trip);
 
-        const givenDeparture = DateTime.fromISO(props.plannedWhen);
-        const allStopovers = trip.stopovers ?? [];
-        const startIndex = allStopovers.findIndex((item) => {
-            if (Number(item.id) !== Number(props.startId)) return false;
-            const dep = item.departurePlanned
-                ? DateTime.fromISO(item.departurePlanned)
-                : item.arrivalPlanned
-                  ? DateTime.fromISO(item.arrivalPlanned)
-                  : null;
-            return dep !== null && dep.toMillis() === givenDeparture.toMillis();
-        });
-        stopovers.value = startIndex !== -1 ? allStopovers.slice(startIndex + 1) : allStopovers;
-
+        allStopovers.value = trip.stopovers ?? [];
         attribution.value = trip.dataSource?.attribution ?? null;
-
-        if (props.fastCheckinId) {
-            const dest = stopovers.value.find((s) => Number(s.id) === Number(props.fastCheckinId));
-            if (dest) emit('select', dest);
-        }
     } catch {
         error.value = true;
     } finally {
@@ -133,17 +150,21 @@ watch(() => props.tripId, fetchLineRun);
     </div>
 
     <div v-else-if="loading" class="flex flex-col gap-2 p-4">
-        <div v-for="n in 8" :key="n" class="skeleton h-9 w-full rounded" />
+        <div v-for="n in 30" :key="n" class="skeleton h-9 w-full rounded" />
     </div>
 
     <ul v-else class="divide-y divide-base-200">
         <li v-for="item in stopovers" :key="item.id">
             <button
-                class="w-full flex justify-between items-center px-4 py-3 hover:bg-base-200 text-left transition-colors"
-                :class="{ 'opacity-60': item.cancelled, 'bg-primary/10 font-medium': isHome(item) }"
+                class="w-full flex justify-between items-center px-4 py-3 hover:bg-base-200 text-left transition-colors cursor-pointer"
+                :class="{
+                    'opacity-60': item.cancelled,
+                    'bg-primary/10 font-medium': isHome(item) || isSelected(item),
+                }"
                 @click="emit('select', item)"
             >
                 <span class="flex-1 text-sm" :class="{ 'line-through text-error': item.cancelled }">
+                    <Check v-if="isSelected(item)" class="size-4 inline-block me-1 -mt-0.5 text-primary" />
                     {{ item.name }}
                     <House v-if="isHome(item)" class="size-4 inline-block ms-1 -mt-0.5 text-primary" />
                     <span v-if="item.cancelled" class="badge badge-error badge-xs align-middle ml-1">
