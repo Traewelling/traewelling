@@ -7972,7 +7972,9 @@ export class Api<
      */
     createCheckin: (data: CheckinRequestBody, params: RequestParams = {}) =>
       this.request<
-        CheckinSuccessResource,
+        {
+          data: CheckinSuccessResource;
+        },
         | void
         | {
             /** @example "You are not allowed to check in the following users: 1" */

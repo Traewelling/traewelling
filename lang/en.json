@@ -35,6 +35,7 @@
   "changelog": "Changelog",
   "changelog.view_on_github": "Änderungen auf GitHub ansehen",
   "checkin.select-departure": "Select departure stop",
+  "checkin.select-exit": "Select an exit",
   "checkin.conflict": "A parallel check-in already exists.",
   "checkin.conflict.question": "Do you still want to check in? You will not earn any points for this, but your personal statistic will still be updated.",
   "checkin.conflict.force": "Check in anyway (no points)",

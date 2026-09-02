@@ -14,9 +14,10 @@ const homeStation = computed<StationResource | null>(() => userStore.getHome);
 const props = defineProps<{
     tripId: string;
     lineName?: string | null;
-    startId: number | string;
-    plannedWhen: string;
-    fastCheckinId?: number | null;
+    // Omit both to list every stop but the last, for picking a departure stop
+    // instead of an exit.
+    startId?: number | string | null;
+    plannedWhen?: string | null;
 }>();
 
 const emit = defineEmits<{
@@ -24,10 +25,32 @@ const emit = defineEmits<{
     (e: 'trip', trip: TripResource): void;
 }>();
 
-const stopovers = ref<StopoverResource[]>([]);
+const allStopovers = ref<StopoverResource[]>([]);
 const attribution = ref<string | null>(null);
 const loading = ref(false);
 const error = ref(false);
+
+// Derived from the fetched trip rather than baked into the fetch, so toggling
+// between "pick a departure" and "pick an exit" (startId present or not) on
+// an already-loaded trip doesn't require re-fetching it.
+const stopovers = computed<StopoverResource[]>(() => {
+    if (props.startId != null && props.plannedWhen) {
+        const givenDeparture = DateTime.fromISO(props.plannedWhen);
+        const startIndex = allStopovers.value.findIndex((item) => {
+            if (Number(item.id) !== Number(props.startId)) return false;
+            const dep = item.departurePlanned
+                ? DateTime.fromISO(item.departurePlanned)
+                : item.arrivalPlanned
+                  ? DateTime.fromISO(item.arrivalPlanned)
+                  : null;
+            return dep !== null && dep.toMillis() === givenDeparture.toMillis();
+        });
+        return startIndex !== -1 ? allStopovers.value.slice(startIndex + 1) : allStopovers.value;
+    }
+    // No start given: picking a departure stop, so every stop but the final
+    // one (you can't depart from the last stop) is selectable.
+    return allStopovers.value.slice(0, -1);
+});
 
 function formatTime(time: string | null | undefined): string {
     if (!time) return '';
@@ -97,25 +120,8 @@ async function fetchLineRun(): Promise<void> {
         const trip: TripResource = res.data?.data as TripResource;
         emit('trip', trip);
 
-        const givenDeparture = DateTime.fromISO(props.plannedWhen);
-        const allStopovers = trip.stopovers ?? [];
-        const startIndex = allStopovers.findIndex((item) => {
-            if (Number(item.id) !== Number(props.startId)) return false;
-            const dep = item.departurePlanned
-                ? DateTime.fromISO(item.departurePlanned)
-                : item.arrivalPlanned
-                  ? DateTime.fromISO(item.arrivalPlanned)
-                  : null;
-            return dep !== null && dep.toMillis() === givenDeparture.toMillis();
-        });
-        stopovers.value = startIndex !== -1 ? allStopovers.slice(startIndex + 1) : allStopovers;
-
+        allStopovers.value = trip.stopovers ?? [];
         attribution.value = trip.dataSource?.attribution ?? null;
-
-        if (props.fastCheckinId) {
-            const dest = stopovers.value.find((s) => Number(s.id) === Number(props.fastCheckinId));
-            if (dest) emit('select', dest);
-        }
     } catch {
         error.value = true;
     } finally {
