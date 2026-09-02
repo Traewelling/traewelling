@@ -104,7 +104,10 @@ function rideAlongRoute() {
             departure: t.origin.departurePlanned ?? t.origin.departureReal ?? '',
             originName: t.origin.name,
             destinationName: t.destination.name,
+            destinationArrival: t.destination.arrivalPlanned ?? undefined,
+            destinationDeparture: t.destination.departurePlanned ?? undefined,
             category: t.category,
+            tripUuid: t.tripUuid ?? undefined,
         },
     };
 }
