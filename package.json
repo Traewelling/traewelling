@@ -45,7 +45,7 @@
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^7.1.0",
-        "@indoorequal/vue-maplibre-gl": "^8.4.2",
+        "@indoorequal/vue-maplibre-gl": "^9.0.0",
         "@lucide/vue": "^1.17.0",
         "@vuepic/vue-datepicker": "^14.0.0",
         "apexcharts": "^7.0.0",
