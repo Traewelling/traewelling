@@ -22,6 +22,11 @@ class ProviderPolylineService
 {
     private const int MAX_SNAP_DISTANCE_METERS = 1_000;
 
+    /**
+     * How many geometry points a pair of stops needs before it is worth storing as a segment.
+     */
+    private const int MIN_GEOMETRY_POINTS = 4;
+
     public function __construct(
         private readonly TripRepository $tripRepository,
         private readonly GeodesicService $geodesicService,
@@ -203,12 +208,14 @@ class ProviderPolylineService
             }
 
             $slice = array_slice($coordinates, $indices[$key], $indices[$key + 1] - $indices[$key] + 1);
-            if (count($slice) < 2) {
-                Log::debug('ProviderPolyline: Pair collapses to a single geometry point, skipping', [
+            if (count($slice) < self::MIN_GEOMETRY_POINTS) {
+                Log::debug('ProviderPolyline: Pair carries no shape beyond a straight line, skipping', [
                     'from' => $stopover->station->name,
                     'to' => $next->station->name,
                     'pair_index' => $key,
                     'geometry_index' => $indices[$key],
+                    'points' => count($slice),
+                    'minimum_points' => self::MIN_GEOMETRY_POINTS,
                     'beeline_m' => $beeline,
                     'duration_s' => $duration,
                 ]);
