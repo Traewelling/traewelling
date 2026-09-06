@@ -181,6 +181,20 @@ class ProviderPolylineService
             }
 
             $duration = $stopover->plannedSecondsUntil($next);
+            if ($duration < 0) {
+                Log::debug('ProviderPolyline: Pair has no usable travel time, skipping', [
+                    'from' => $stopover->station->name,
+                    'to' => $next->station->name,
+                    'pair_index' => $key,
+                    'departure' => $stopover->departure_planned?->toIso8601String(),
+                    'arrival' => $next->arrival_planned?->toIso8601String(),
+                    'duration_s' => $duration,
+                ]);
+                $skipped++;
+
+                continue;
+            }
+
             $beeline = $this->beelineDistance($stopover, $next);
 
             $existing = $this->tripRepository->getRouteSegmentBetweenStops($stopover, $next, $duration, $pathType);
