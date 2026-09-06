@@ -9068,7 +9068,15 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/CheckinSuccessResource"
+                                    "required": [
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/CheckinSuccessResource"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }

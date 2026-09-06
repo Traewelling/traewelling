@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import {
     CopyPlus,
-    Eye,
+    Edit,
     Flag,
     MoreVertical,
     PlaneLanding,
     PlaneTakeoff,
+    Route,
     Share2,
     ShieldCogCorner,
     Trash2,
@@ -104,7 +105,10 @@ function rideAlongRoute() {
             departure: t.origin.departurePlanned ?? t.origin.departureReal ?? '',
             originName: t.origin.name,
             destinationName: t.destination.name,
+            destinationArrival: t.destination.arrivalPlanned ?? undefined,
+            destinationDeparture: t.destination.departurePlanned ?? undefined,
             category: t.category,
+            tripUuid: t.tripUuid ?? undefined,
         },
     };
 }
@@ -191,9 +195,15 @@ async function handleBlock() {
                         </button>
                     </li>
                     <li>
+                        <router-link :to="{ name: 'change-exit', params: { id: status.id } }">
+                            <Route class="inline-block size-4" />
+                            {{ trans('menu.change-exit') }}
+                        </router-link>
+                    </li>
+                    <li>
                         <button @click="emit('edit')">
-                            <Eye class="inline-block size-4" />
-                            {{ trans('edit') }}
+                            <Edit class="inline-block size-4" />
+                            {{ trans('modals.editStatus-title') }}
                         </button>
                     </li>
                     <li v-if="canCopyTrip">

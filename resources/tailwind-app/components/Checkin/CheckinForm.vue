@@ -8,7 +8,6 @@ import {
     Api,
     CheckinRequestBody,
     CheckinSuccessResource,
-    DepartureResource,
     EventResource,
     StatusResource,
     StopoverResource,
@@ -24,7 +23,10 @@ import TagEditor from './TagEditor.vue';
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 
 const props = defineProps<{
-    departure: DepartureResource;
+    tripId: string;
+    plannedWhen: string;
+    lineName: string;
+    stopId: number;
     destination: StopoverResource;
     tripUuid?: string | null;
 }>();
@@ -58,9 +60,7 @@ const businessOptions = computed(() => [
 ]);
 
 const departureTimestamp = computed(() =>
-    props.departure.plannedWhen
-        ? (DateTime.fromISO(props.departure.plannedWhen).setZone('UTC').toISO() ?? undefined)
-        : undefined,
+    props.plannedWhen ? (DateTime.fromISO(props.plannedWhen).setZone('UTC').toISO() ?? undefined) : undefined,
 );
 
 onMounted(() => {
@@ -85,11 +85,11 @@ async function checkIn(): Promise<void> {
         chainPost: toot.value && chainPost.value ? true : undefined,
         visibility: visibility.value,
         business: business.value,
-        tripId: props.departure.tripId,
-        lineName: props.departure.line?.name ?? props.departure.line?.fahrtNr,
-        start: props.departure.stop?.id,
+        tripId: props.tripId,
+        lineName: props.lineName,
+        start: props.stopId,
         destination: props.destination.id,
-        departure: DateTime.fromISO(props.departure.plannedWhen).setZone('UTC').toISO() ?? undefined,
+        departure: DateTime.fromISO(props.plannedWhen).setZone('UTC').toISO() ?? undefined,
         arrival: arrival ? (DateTime.fromISO(arrival).setZone('UTC').toISO() ?? undefined) : undefined,
         force: collision.value || undefined,
         eventId: selectedEvent.value?.id ?? undefined,
@@ -98,7 +98,7 @@ async function checkIn(): Promise<void> {
 
     try {
         const res = await api.trains.createCheckin(data);
-        const json: CheckinSuccessResource = res.data;
+        const json: { data: CheckinSuccessResource } = res.data;
         activeCheckin.reset();
         checkinSuccess.setResponse(json.data);
         await tagEditor.value?.postTags(json.data.status.id);

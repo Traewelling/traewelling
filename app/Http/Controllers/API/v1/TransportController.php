@@ -371,7 +371,15 @@ class TransportController extends Controller
             new OA\Response(
                 response: 201,
                 description: 'successful operation',
-                content: new OA\JsonContent(ref: CheckinSuccessResource::class),
+                content: new OA\JsonContent(
+                    required: ['data'],
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            ref: CheckinSuccessResource::class,
+                        ),
+                    ],
+                ),
             ),
             new OA\Response(response: 400, description: 'Bad request'),
             new OA\Response(response: 401, description: 'Unauthorized'),

@@ -1,20 +1,16 @@
 <script setup lang="ts">
-import { ArrowLeft, ChevronDown, ChevronUp, Plus, RotateCcw, TriangleAlert } from '@lucide/vue';
+import { ChevronDown, ChevronUp, Plus, RotateCcw, TriangleAlert } from '@lucide/vue';
 import { getActiveLanguage, trans, transChoice } from 'laravel-vue-i18n';
 import { DateTime } from 'luxon';
 import { Notyf } from 'notyf';
 import { computed, inject, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { Api, DepartureResource, Station, StopoverResource, TravelType } from '../../../types/Api.gen';
-import LineIndicator from '../../../vue/components/LineIndicator.vue';
+import { Api, DepartureResource, Station, TravelType } from '../../../types/Api.gen';
 import { useUserStore } from '../../../vue/stores/user';
-import CheckinForm from '../../components/Checkin/CheckinForm.vue';
-import LineRun from '../../components/Checkin/LineRun.vue';
 import DepartureEntry from '../../components/Stationboard/DepartureEntry.vue';
 import HomeStationToggle from '../../components/Stationboard/HomeStationToggle.vue';
 import StationTechnicalDetails from '../../components/Stationboard/StationTechnicalDetails.vue';
 import StationSearch from '../../components/StationSearch.vue';
-import TransportIcon from '../../components/TransportIcon.vue';
 import AppLayout from '../../layouts/AppLayout.vue';
 
 const route = useRoute();
@@ -35,12 +31,6 @@ const fetchTime = ref<DateTime>(DateTime.now().setZone('UTC'));
 const loading = ref(false);
 const travelType = ref('');
 
-// Modal state
-const selectedTrain = ref<DepartureResource | null>(null);
-const tripUuid = ref<string | null>(null);
-const selectedDestination = ref<StopoverResource | null>(null);
-const modalRef = ref<HTMLDialogElement | null>(null);
-
 const stationId = computed(() => route.query.stationId as string | undefined);
 const stationName = computed(() => (meta.value.station?.name ?? route.query.stationName) as string | undefined);
 
@@ -48,12 +38,27 @@ const removedLicensesCount = computed(() => meta.value.removedLicenses?.length ?
 
 const isPastLimit = computed(() => fetchTime.value < DateTime.now().setZone('UTC').minus({ hours: 24 }));
 
-const selectedLineName = computed((): string => {
-    const line = selectedTrain.value?.line;
-    if (!line) return '';
-    const name = line.name ?? line.fahrtNr ?? '';
-    return name.replaceAll(/\(.*?\)/g, '').trim();
-});
+// Guards against the query-sync `router.replace` below re-triggering the
+// route watcher, which would otherwise cause a redundant re-fetch loop.
+let isSyncingQuery = false;
+
+function syncQuery(): void {
+    if (!stationId.value) return;
+    const whenIso = fetchTime.value.toISO() ?? '';
+    const currentWhen = (route.query.when as string) ?? '';
+    const currentTravelType = (route.query.travelType as string) ?? '';
+    if (whenIso === currentWhen && travelType.value === currentTravelType) return;
+
+    const query: Record<string, string> = {
+        stationId: stationId.value,
+        when: whenIso,
+    };
+    if (stationName.value) query.stationName = stationName.value;
+    if (travelType.value) query.travelType = travelType.value;
+
+    isSyncingQuery = true;
+    router.replace({ query }).catch(() => {});
+}
 
 async function fetchDepartures(time?: string): Promise<void> {
     if (!stationId.value) return;
@@ -79,6 +84,7 @@ async function fetchDepartures(time?: string): Promise<void> {
         else notyf.error(trans('messages.exception.general'));
     } finally {
         loading.value = false;
+        syncQuery();
     }
 }
 
@@ -92,27 +98,22 @@ function fetchNext(): void {
     fetchDepartures(next ?? fetchTime.value.plus({ minutes: 15 }).toISO() ?? undefined);
 }
 
-function openModal(train: DepartureResource): void {
-    selectedTrain.value = train;
-    selectedDestination.value = null;
-    modalRef.value?.showModal();
-}
-
-function closeModal(): void {
-    selectedTrain.value = null;
-    selectedDestination.value = null;
-}
-
-function handleBack(): void {
-    if (selectedDestination.value) {
-        selectedDestination.value = null;
-    } else {
-        modalRef.value?.close();
-    }
-}
-
-function selectDestination(stopover: StopoverResource): void {
-    selectedDestination.value = stopover;
+function openLineRun(train: DepartureResource): void {
+    router.push({
+        name: 'line-run',
+        query: {
+            tripId: train.tripId,
+            lineName: train.line?.name ?? train.line?.fahrtNr,
+            startId: train.stop?.id,
+            plannedWhen: train.plannedWhen,
+            direction: train.direction,
+            originName: train.stop?.name,
+            product: train.line?.product ?? undefined,
+            mode: train.line?.mode ?? undefined,
+            color: train.line?.color ?? undefined,
+            textColor: train.line?.textColor ?? undefined,
+        },
+    });
 }
 
 function toLocalInput(value: DateTime): string {
@@ -211,6 +212,10 @@ onMounted(() => {
 });
 
 watch(router.currentRoute, (to) => {
+    if (isSyncingQuery) {
+        isSyncingQuery = false;
+        return;
+    }
     if (to.query.stationId !== stationId.value) return;
     if (to.query.when) {
         const parsed = DateTime.fromISO(to.query.when as string).setZone('UTC');
@@ -319,10 +324,14 @@ watch(router.currentRoute, (to) => {
 
             <!-- Loading skeleton -->
             <template v-if="loading">
-                <div v-for="n in 8" :key="n" class="card bg-base-100 mb-1">
-                    <div class="card-body py-2 px-3 flex flex-row items-center gap-3">
+                <div class="flex justify-center gap-3 mb-2 mb:md-4">
+                    <div class="skeleton h-8 w-32 rounded" />
+                    <div class="skeleton h-8 w-32 rounded" />
+                </div>
+                <div v-for="n in 20" :key="n" class="card bg-base-100 mb-1">
+                    <div class="card-body py-2 px-3 flex flex-row items-center gap-3 h-[3.5rem]">
                         <div class="skeleton w-5 h-5 rounded-full flex-shrink-0" />
-                        <div class="skeleton h-5 w-12 rounded flex-shrink-0" />
+                        <div class="skeleton h-5 w-16 rounded flex-shrink-0" />
                         <div class="skeleton h-4 flex-1 rounded" />
                         <div class="skeleton h-4 w-10 rounded" />
                     </div>
@@ -350,7 +359,7 @@ watch(router.currentRoute, (to) => {
                         </span>
                         <div class="flex-1 h-px bg-base-300" />
                     </div>
-                    <DepartureEntry :item="item" :station-name="stationName" @click="openModal(item)" />
+                    <DepartureEntry :item="item" :station-name="stationName" @click="openLineRun(item)" />
                 </template>
             </template>
 
@@ -375,64 +384,5 @@ watch(router.currentRoute, (to) => {
                 </router-link>
             </div>
         </div>
-
-        <!-- Check-in modal -->
-        <dialog ref="modalRef" class="modal" @close="closeModal">
-            <div
-                class="modal-box p-0 max-w-2xl w-full flex flex-col h-full max-h-screen sm:max-h-[90vh] rounded-none sm:rounded-box"
-            >
-                <!-- Modal header -->
-                <div class="flex items-center gap-3 px-4 py-3 border-b border-base-200 flex-shrink-0">
-                    <button class="btn btn-ghost btn-sm btn-square" @click="handleBack">
-                        <ArrowLeft class="w-4 h-4" />
-                    </button>
-
-                    <template v-if="selectedTrain">
-                        <div class="w-5 h-5 flex items-center justify-center text-base-content/60 flex-shrink-0">
-                            <TransportIcon :product="selectedTrain.line?.product" :mode="selectedTrain.line?.mode" />
-                        </div>
-                        <LineIndicator
-                            :mode="selectedTrain.line?.mode ?? null"
-                            :product-name="selectedTrain.line?.product ?? ''"
-                            :number="selectedLineName"
-                            :background-color="selectedTrain.line?.color ?? null"
-                            :color="selectedTrain.line?.textColor ?? null"
-                        />
-                        <span class="font-medium text-sm truncate">{{ selectedTrain.direction }}</span>
-                        <template v-if="selectedDestination">
-                            <span class="text-base-content/40 text-sm flex-shrink-0">→</span>
-                            <span class="text-sm truncate text-base-content/70 flex-shrink-0">
-                                {{ selectedDestination.name }}
-                            </span>
-                        </template>
-                    </template>
-                </div>
-
-                <!-- Modal body -->
-                <div class="overflow-y-auto flex-1">
-                    <LineRun
-                        v-if="selectedTrain && !selectedDestination"
-                        :trip-id="selectedTrain.tripId"
-                        :line-name="selectedTrain.line?.name ?? selectedTrain.line?.fahrtNr"
-                        :start-id="selectedTrain.stop?.id ?? 0"
-                        :planned-when="selectedTrain.plannedWhen"
-                        @select="selectDestination"
-                        @trip="tripUuid = $event.uuid ?? null"
-                    />
-                    <CheckinForm
-                        v-else-if="selectedTrain && selectedDestination"
-                        :key="selectedDestination.id"
-                        :departure="selectedTrain"
-                        :destination="selectedDestination"
-                        :trip-uuid="tripUuid"
-                    />
-                </div>
-            </div>
-
-            <!-- Backdrop closes modal -->
-            <form method="dialog" class="modal-backdrop">
-                <button>close</button>
-            </form>
-        </dialog>
     </AppLayout>
 </template>
