@@ -163,7 +163,7 @@ class LocationController
 
     private function getDistanceFromGeoJson(stdClass|FeatureCollection $geoJson): int
     {
-        $fullDistance = 0;
+        $fullDistance = 0.0;
         $lastStopover = null;
         foreach ($geoJson->features as $stopover) {
             $stopover = Coordinate::fromGeoJson($stopover);
@@ -176,7 +176,7 @@ class LocationController
             $lastStopover = $stopover;
         }
 
-        return $fullDistance;
+        return (int) round($fullDistance);
     }
 
     private function emptyGeoJson(): stdClass
@@ -430,7 +430,7 @@ class LocationController
             return $this->calculateDistanceByStopovers();
         }
 
-        $distance = 0;
+        $distance = 0.0;
         try {
             $geoJson = $this->getPolylineBetween();
             $lastStopover = null;
@@ -455,11 +455,11 @@ class LocationController
             report($e);
         }
 
-        if ($distance === 0) {
-            $distance = $this->calculateDistanceByStopovers();
+        if ($distance === 0.0) {
+            return $this->calculateDistanceByStopovers();
         }
 
-        return $distance;
+        return (int) round($distance);
     }
 
     private function calculateDistanceByStopovers(): int
@@ -484,7 +484,7 @@ class LocationController
             'stopovers' => $stopovers->count(),
         ]);
 
-        $distance = 0;
+        $distance = 0.0;
         $fromSegments = 0;
         $fromStraightLine = 0;
         $lastStopover = null;
@@ -530,7 +530,7 @@ class LocationController
             'pairs_from_straight_line' => $fromStraightLine,
         ]);
 
-        return $distance;
+        return (int) round($distance);
     }
 
     public function mapStopoversToPolyline(mixed $geoJsonObj, EloquentCollection|Collection $stopovers): void

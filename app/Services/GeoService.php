@@ -20,8 +20,15 @@ class GeoService
         $latB = $end->latitude / 180 * M_PI;
         $lonB = $end->longitude / 180 * M_PI;
 
-        return round(acos(sin($latA) * sin($latB) + cos($latA) * cos($latB) * cos($lonB - $lonA))
-                     * self::EQUATORIAL_RADIUS_IN_METERS);
+        $cosineOfCentralAngle = sin($latA) * sin($latB) + cos($latA) * cos($latB) * cos($lonB - $lonA);
+
+        if ($cosineOfCentralAngle > 1.0) {
+            $cosineOfCentralAngle = 1.0;
+        } elseif ($cosineOfCentralAngle < -1.0) {
+            $cosineOfCentralAngle = -1.0;
+        }
+
+        return round(acos($cosineOfCentralAngle) * self::EQUATORIAL_RADIUS_IN_METERS);
     }
 
     public function getBoundingBox(Coordinate $center, int $radius, int $precision = 6): BoundingBox
