@@ -18,3 +18,8 @@
     -1px 1px 0 var(--color-primary),
     1px 1px 0 var(--color-primary);
 }
+
+.lucide {
+  color: rgb(from currentColor r g b) !important;
+  opacity: 100% !important;
+}
