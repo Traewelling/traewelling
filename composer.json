@@ -25,7 +25,7 @@
     "darkaonline/l5-swagger": "^11.0",
     "easyrdf/easyrdf": "^1.1",
     "elgigi/commonmark-emoji": "^2.0",
-    "guzzlehttp/guzzle": "^7.1",
+    "guzzlehttp/guzzle": "^8.0",
     "intervention/image": "^4.0",
     "laravel/framework": "^13.0",
     "laravel/passport": "^13.0",
