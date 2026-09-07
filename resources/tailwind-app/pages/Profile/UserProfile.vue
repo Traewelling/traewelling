@@ -11,6 +11,7 @@ import { getDepartureForStatus } from '../../../vue/helpers/DateTimeHelper';
 import { useUserStore } from '../../../vue/stores/user';
 import StatusCard from '../../components/Status/StatusCard.vue';
 import AppLayout from '../../layouts/AppLayout.vue';
+import { PageTitleService } from '../../services/PageTitleService';
 import BioCard from './partials/BioCard.vue';
 import Header from './partials/Header.vue';
 import InvisibleReasons from './partials/InvisibleReasons.vue';
@@ -111,6 +112,12 @@ watch(username, () => {
     currentPage.value = 1;
     fetchUser();
     fetchStatuses();
+});
+
+watch(userData, (data) => {
+    if (data?.displayName) {
+        PageTitleService.setRawTitle(data.displayName);
+    }
 });
 
 onMounted(() => {

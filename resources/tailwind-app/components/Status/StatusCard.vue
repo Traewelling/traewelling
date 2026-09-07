@@ -453,25 +453,34 @@ const inProgress = computed(() => progress.value > 0 && progress.value < 100);
             <!-- Footer: user info + actions -->
             <div class="px-4 py-2 flex items-center gap-2 text-sm border-t border-base-200">
                 <!-- User avatar -->
-                <a :href="`/@${statusObject.user.username}`" class="shrink-0">
+                <router-link
+                    :to="{ name: 'user-profile', params: { username: statusObject.user.username } }"
+                    class="shrink-0"
+                >
                     <img
                         :src="statusObject.user.profilePicture"
                         :alt="statusObject.user.username"
                         class="w-7 h-7 rounded-full object-cover"
                         loading="lazy"
                     />
-                </a>
+                </router-link>
 
                 <!-- Name + timestamp -->
                 <div class="min-w-0 flex-1 flex items-center gap-2">
-                    <a :href="`/@${statusObject.user.username}`" class="font-medium text-xs link link-hover">
+                    <router-link
+                        :to="{ name: 'user-profile', params: { username: statusObject.user.username } }"
+                        class="font-medium text-xs link link-hover"
+                    >
                         {{
                             userStore.user?.id === statusObject.user.id ? trans('user.you') : statusObject.user.username
                         }}
-                    </a>
-                    <a :href="`/status/${statusObject.id}`" class="text-xs text-base-content/40 link link-hover">
+                    </router-link>
+                    <router-link
+                        :to="{ name: 'single-status', params: { id: statusObject.id } }"
+                        class="text-xs text-base-content/40 link link-hover"
+                    >
                         {{ new Dtm(statusObject.createdAt).toRelative() }}
-                    </a>
+                    </router-link>
                 </div>
 
                 <!-- Like -->

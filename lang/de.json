@@ -843,7 +843,7 @@
     "status.locked-visibility": "Du kannst die Sichtbarkeit dieses Status nicht ändern.",
     "status.manual_journey_number": "Fahrtennummer manuell eingeben",
     "status.ogp-description": ":distancekm von :origin nach :destination in :linename.|:distancekm von :origin nach :destination in Linie :linename.",
-    "status.ogp-title": ":name's Reise mit Träwelling",
+    "status.ogp-title": ":names Reise mit Träwelling",
     "status.report": "Status melden",
     "status.show_more": "Mehr anzeigen",
     "status.update.success": "Dein Status wurde erfolgreich aktualisiert.",

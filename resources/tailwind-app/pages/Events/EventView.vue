@@ -4,7 +4,7 @@ import { trans } from 'laravel-vue-i18n';
 import { forEach } from 'lodash';
 import { DateTime } from 'luxon';
 import { LngLat, LngLatBounds } from 'maplibre-gl';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { Api, EventResource, LivePointDto, MapProvider, StatusResource } from '../../../types/Api.gen';
 import EventMarker from '../../../vue/components/Map/EventMarker.vue';
@@ -13,6 +13,7 @@ import { useUserStore } from '../../../vue/stores/user';
 import Loading from '../../components/Loading.vue';
 import StatusCard from '../../components/Status/StatusCard.vue';
 import AppLayout from '../../layouts/AppLayout.vue';
+import { PageTitleService } from '../../services/PageTitleService';
 import EventDetail from './partials/EventDetail.vue';
 
 const route = useRoute();
@@ -106,6 +107,12 @@ async function fetchPolyLines() {
 onMounted(() => {
     fetchEvent();
     fetchStatuses();
+});
+
+watch(event, (newEvent) => {
+    if (newEvent) {
+        PageTitleService.setRawTitle(newEvent.name);
+    }
 });
 </script>
 

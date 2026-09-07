@@ -155,7 +155,7 @@ const routes: Array<RouteRecordRaw> = [
         path: '/leaderboard',
         name: 'leaderboard',
         component: Leaderboard,
-        meta: { title: 'leaderboard' },
+        meta: { title: 'menu.leaderboard' },
     },
     {
         path: '/leaderboard/monthly/:month',
