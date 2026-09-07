@@ -96,7 +96,9 @@ onMounted(fetchEvents);
                 <p>{{ trans('stationboard.events-none') }}</p>
                 <p class="mt-1">
                     {{ trans('stationboard.events-propose') }}
-                    <a href="/events" target="_blank" class="link link-primary">traewelling.de/events</a>
+                    <router-link :to="{ name: 'event-list' }" target="_blank" class="link link-primary"
+                        >traewelling.de/events</router-link
+                    >
                 </p>
             </div>
         </div>

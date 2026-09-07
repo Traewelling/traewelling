@@ -51,19 +51,19 @@ const routes: Array<RouteRecordRaw> = [
     },
     {
         path: '/contribute',
-        name: 'index',
+        name: 'contribute-index',
         component: Index,
         meta: { title: 'contribute' },
     },
     {
         path: '/contribute/profile',
-        name: 'profile',
+        name: 'contribute-profile',
         component: Profile,
         meta: { title: 'profile.settings' },
     },
     {
         path: '/contribute/event-proposal',
-        name: 'events-suggest',
+        name: 'contribute-events-suggest',
         component: SuggestEvent,
         meta: { title: 'contribute.suggest_event.title' },
     },

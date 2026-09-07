@@ -345,9 +345,15 @@ const inProgress = computed(() => progress.value > 0 && progress.value < 100);
                                 </span>
                                 <span v-if="statusObject.event" class="flex items-center gap-0.5">
                                     <Calendar class="inline-block size-4" />
-                                    <a :href="`/event/${statusObject.event.slug}`" class="link link-hover">
+                                    <router-link
+                                        :to="{
+                                            name: 'event-view',
+                                            params: { slug: statusObject.event.slug },
+                                        }"
+                                        class="link link-hover"
+                                    >
                                         {{ statusObject.event.name }}
-                                    </a>
+                                    </router-link>
                                 </span>
                             </div>
                         </div>

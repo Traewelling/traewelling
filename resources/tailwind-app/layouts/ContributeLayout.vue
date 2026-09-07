@@ -65,10 +65,10 @@
                     </a>
                 </li>
                 <li v-for="link in links" :key="link.route">
-                    <a :href="link.route">
+                    <router-link :to="{ path: link.route }">
                         <component :is="link.icon" class="inline-block w-6 h-6 mr-2" />
                         {{ trans(link.name) }}
-                    </a>
+                    </router-link>
                 </li>
                 <li class="p-0 mt-auto">
                     <DarkModeSelector />
