@@ -93,9 +93,9 @@
         >
             <span class="text-sm">
                 {{ trans('beta.banner.text') }}
-                <a href="/settings/account" class="link link-hover font-semibold">{{
+                <router-link :to="{ name: 'settings' }" class="link link-hover font-semibold">{{
                     trans('beta.banner.settings')
-                }}</a>
+                }}</router-link>
             </span>
             <button class="btn btn-ghost btn-xs" @click="dismissBanner">
                 <X class="w-4 h-4" />

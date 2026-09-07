@@ -37,10 +37,10 @@ const pointsDisabled = computed(
                     {{ transChoice('controller.transport.also-in-connection', data.alsoOnThisConnection.length) }}
                 </p>
                 <div class="flex flex-col gap-1">
-                    <a
+                    <router-link
                         v-for="s in data.alsoOnThisConnection"
                         :key="s.id"
-                        :href="`/@${s.user.username}`"
+                        :to="{ name: 'user', params: { username: s.user.username } }"
                         class="flex items-center gap-2 hover:opacity-80 transition-opacity"
                     >
                         <img
@@ -52,7 +52,7 @@ const pointsDisabled = computed(
                             {{ s.user.displayName ?? s.user.username }}
                             <span class="opacity-60 font-normal">@{{ s.user.username }}</span>
                         </span>
-                    </a>
+                    </router-link>
                 </div>
             </div>
         </div>

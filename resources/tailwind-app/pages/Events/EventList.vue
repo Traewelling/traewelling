@@ -62,7 +62,7 @@ async function fetchEvents(date: Date) {
             </h1>
             <p class="mb-4">
                 {{ trans('events.suggest.card_description') }}
-                <RouterLink :to="{ name: 'events-suggest' }" class="link">
+                <RouterLink :to="{ name: 'contribute-events-suggest' }" class="link">
                     {{ trans('events.suggest.card_button') }}
                 </RouterLink>
             </p>

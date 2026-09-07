@@ -132,10 +132,10 @@ async function checkIn(): Promise<void> {
                     <p class="font-semibold">{{ trans('checkin.conflict') }}</p>
                     <ul v-if="collisionCheckins.length" class="flex flex-col gap-1">
                         <li v-for="conflict in collisionCheckins" :key="conflict.id">
-                            <a
-                                :href="'/status/' + conflict.id"
+                            <router-link
+                                :to="{ name: 'single-status', params: { id: conflict.id } }"
                                 target="_blank"
-                                rel="noopener"
+                                rel="noopener noreferrer"
                                 class="link link-hover flex flex-wrap items-baseline gap-x-1"
                             >
                                 <strong>{{ conflict.checkin?.lineName }}</strong>
@@ -152,7 +152,7 @@ async function checkIn(): Promise<void> {
                                     }}
                                 </span>
                                 <i class="fa-solid fa-arrow-up-right-from-square text-xs opacity-50" />
-                            </a>
+                            </router-link>
                         </li>
                     </ul>
                     <p>{{ trans('checkin.conflict.question') }}</p>

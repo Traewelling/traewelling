@@ -104,9 +104,9 @@ onMounted(fetchFriends);
                 <p>{{ trans('stationboard.friends-none') }}</p>
                 <p class="mt-1">
                     {{ trans('stationboard.friends-set') }}
-                    <a href="/settings/followers" target="_blank" class="link link-primary"
-                        >traewelling.de/settings/followers</a
-                    >
+                    <router-link :to="{ name: 'settings-followers' }" target="_blank" class="link link-primary">
+                        traewelling.de/settings/followers
+                    </router-link>
                 </p>
             </div>
         </div>

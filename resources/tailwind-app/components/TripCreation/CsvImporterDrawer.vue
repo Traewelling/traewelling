@@ -170,9 +170,9 @@ defineExpose({ open });
 34567,,1970-01-01 09:20
 </pre>
                 <div>{{ trans('trip_creation.csv_import.help.limit', { max: maxItems }) }}</div>
-                <a href="/debug/stations" target="_blank" rel="noopener" class="link link-hover">
+                <router-link :to="{ name: 'debug-stations' }" target="_blank" rel="noopener" class="link link-hover">
                     {{ trans('trip_creation.csv_import.help.station_list_link') }}
-                </a>
+                </router-link>
             </div>
 
             <div class="modal-action mt-0 gap-2">
