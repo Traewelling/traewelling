@@ -3,7 +3,7 @@
 - **Status**: proposed
 - **Date**: 2026-08-29
 - **Deciders**: Träwelling maintainers
-- **Related**: `API_CHANGELOG.md`
+- **Related**: `API_CHANGELOG.md`, [RFC 8594 (The Sunset HTTP Header Field)](https://www.rfc-editor.org/info/rfc8594/)
 
 ## Context and Problem Statement
 
@@ -50,11 +50,26 @@ The "Upcoming Breaking Changes" table keeps its job, with a narrower subject: it
 endpoint versions are being switched off and when. The field level deprecations already in it stay
 until their dates pass; no new ones are added.
 
+A switch-off is announced in two places: in `API_CHANGELOG.md`, for a human who reads it, and in
+the responses of the endpoint version itself, for a client that does not. An endpoint version with
+a fixed shutdown date carries a `Sunset` header (RFC 8594) holding that date, plus a `Link` header
+with the `sunset` relation type pointing at the changelog:
+
+```http
+Sunset: Wed, 30 Sep 2026 23:59:59 GMT
+Link: <https://github.com/Traewelling/traewelling/blob/develop/API_CHANGELOG.md>; rel="sunset"
+```
+
+The deadline then travels on the traffic a client already makes, instead of waiting in a document
+somebody has to remember to check.
+
 ### Consequences
 
 - Good: a response shows what it means. No field is correct only relative to a date
 - Good: migration is one url change per endpoint, at a moment the client picks
 - Good: an endpoint nobody had a problem with is never touched
+- Good: a client learns about a shutdown date from the responses it already receives, and can
+  surface it without polling the changelog
 - Bad: two code paths for as long as both versions are served. This is the price for not having
   two meanings in one code path, and it is bounded by the shutdown date
 - Bad: the version is repeated in all 178 operation annotations instead of standing once in the
