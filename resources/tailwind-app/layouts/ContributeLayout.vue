@@ -85,8 +85,8 @@
 import { ArrowLeft, CalendarPlus, House, Menu, PencilRuler, User } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
 import { FunctionalComponent } from 'vue';
-import DarkModeSelector from './Footer/DarkModeSelector.vue';
-import LanguageSelector from './Footer/LanguageSelector.vue';
+import DarkModeSelector from './partials/DarkModeSelector.vue';
+import LanguageSelector from './partials/LanguageSelector.vue';
 
 const links: { name: string; icon: FunctionalComponent; route: string }[] = [
     { name: 'contribute.nav.overview', icon: House, route: '/contribute' },

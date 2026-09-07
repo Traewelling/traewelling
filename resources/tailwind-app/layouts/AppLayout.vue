@@ -107,58 +107,7 @@
             <slot></slot>
         </main>
 
-        <footer class="footer sm:footer-horizontal bg-primary text-white p-10">
-            <aside>
-                <div class="flex items-center space-x-2 mb-4">
-                    <img src="/images/icons/logo.svg" class="h-12 w-12" alt="Träwelling Logo" />
-                    <h1 class="text-2xl text-bold">#Träwelling</h1>
-                </div>
-                <p>
-                    {{ trans('footer.developed') }}
-                    <br />
-                    <a href="https://github.com/Traewelling/traewelling" target="_blank" class="link link-hover">
-                        {{ trans('footer.sourcecode') }}
-                    </a>
-                    {{ trans('footer.licensed-under') }}
-                    <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank" class="link link-hover"
-                        >AGPLv3</a
-                    >.
-                    <br />
-
-                    Version
-                    <router-link :to="{ name: 'changelog' }" class="link link-hover">
-                        {{ config.appVersion }}
-                    </router-link>
-                </p>
-            </aside>
-            <nav>
-                <h6 class="footer-title">{{ trans('footer.services') }}</h6>
-                <router-link :to="{ name: 'event-list' }" class="link link-hover">{{ trans('events') }}</router-link>
-                <a href="https://help.traewelling.de/features/" target="_blank" class="link link-hover">
-                    {{ trans('menu.about') }}
-                </a>
-            </nav>
-            <nav>
-                <h6 class="footer-title">{{ trans('footer.elsewhere') }}</h6>
-                <a href="https://blog.traewelling.de" target="_blank" class="link link-hover">Blog</a>
-                <a href="https://chaos.social/@traewelling" target="_blank" class="link link-hover">Mastodon</a>
-                <a href="https://matrix.to/#/#space:traewelling.org" target="_blank" class="link link-hover">Matrix</a>
-                <a href="https://github.com/traewelling/traewelling" target="_blank" class="link link-hover">GitHub</a>
-            </nav>
-            <nav>
-                <h6 class="footer-title">{{ trans('footer.legal') }}</h6>
-                <a href="/legal/privacy-policy" class="link link-hover">
-                    {{ trans('menu.privacy') }}
-                </a>
-                <a href="/legal" class="link link-hover">
-                    {{ trans('menu.legal-notice') }}
-                </a>
-            </nav>
-            <nav>
-                <DarkModeSelector />
-                <LanguageSelector />
-            </nav>
-        </footer>
+        <Footer />
         <div class="drawer-side">
             <label for="my-drawer-5" aria-label="close sidebar" class="drawer-overlay"></label>
             <ul class="menu bg-base-200 min-h-full w-80 p-4">
@@ -238,8 +187,9 @@ import { useNotificationsStore } from '../../vue/stores/notifications';
 import { useUserStore } from '../../vue/stores/user';
 import ActiveStatusCard from '../components/ActiveStatusCard.vue';
 import NotificationsModal from '../components/Notifications/NotificationsModal.vue';
-import DarkModeSelector from './Footer/DarkModeSelector.vue';
-import LanguageSelector from './Footer/LanguageSelector.vue';
+import DarkModeSelector from './partials/DarkModeSelector.vue';
+import Footer from './partials/Footer.vue';
+import LanguageSelector from './partials/LanguageSelector.vue';
 
 defineProps({
     legacy: {
