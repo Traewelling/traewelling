@@ -21,6 +21,7 @@ import StatusCard from '../../components/Status/StatusCard.vue';
 import StatusTags from '../../components/Status/StatusTags.vue';
 import StatusTicket from '../../components/Status/StatusTicket.vue';
 import AppLayout from '../../layouts/AppLayout.vue';
+import { PageTitleService } from '../../services/PageTitleService';
 
 const route = useRoute();
 const router = useRouter();
@@ -134,6 +135,12 @@ watch(
     },
     { immediate: true },
 );
+
+watch(status, (data) => {
+    if (data?.user.displayName) {
+        PageTitleService.setRawTitle(trans('status.ogp-title', { name: data.user.displayName }));
+    }
+});
 </script>
 
 <template>
