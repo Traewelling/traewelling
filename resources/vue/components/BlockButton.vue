@@ -3,7 +3,7 @@ import { trans } from 'laravel-vue-i18n';
 import { ref, watch } from 'vue';
 import { Api, UserResource } from '../../types/Api.gen';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const props = defineProps<{
     userData: UserResource;

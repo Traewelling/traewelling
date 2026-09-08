@@ -5,7 +5,7 @@ import { Api, type Station } from '../../../types/Api.gen';
 import BackendLayout from '../../layouts/BackendLayout.vue';
 import StationMergeMap from './partials/StationMergeMap.vue';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const stations = ref<Station[]>([]);
 const loading = ref(false);

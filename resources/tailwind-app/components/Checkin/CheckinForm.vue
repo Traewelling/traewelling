@@ -21,7 +21,7 @@ import EventPicker from './EventPicker.vue';
 import FriendPicker from './FriendPicker.vue';
 import TagEditor from './TagEditor.vue';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const props = defineProps<{
     departure: DepartureResource;

@@ -12,7 +12,7 @@ const props = defineProps({
     },
 });
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const ticket = ref<TicketResource | null>(null);
 const stats = ref<TicketStatisticsResource | null>(null);

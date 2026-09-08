@@ -3,7 +3,7 @@ import L from 'leaflet';
 import { onMounted, onUnmounted, ref } from 'vue';
 import { Api, type RouteSegmentResource } from '../../../types/Api.gen';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 declare function setTilingLayer(provider: string, map: L.Map): void;
 

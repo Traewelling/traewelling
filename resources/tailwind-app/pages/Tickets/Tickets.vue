@@ -7,7 +7,7 @@ import { Api, TicketResource } from '../../../types/Api.gen';
 import TicketFormModal from '../../components/Tickets/TicketFormModal.vue';
 import AppLayout from '../../layouts/AppLayout.vue';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const notyf = inject('notyf') as Notyf;
 
 const tickets = ref<TicketResource[]>([]);

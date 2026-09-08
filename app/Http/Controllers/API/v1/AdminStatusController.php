@@ -22,7 +22,7 @@ use OpenApi\Attributes as OA;
 class AdminStatusController extends Controller
 {
     #[OA\Get(
-        path: '/admin/statuses',
+        path: '/v1/admin/statuses',
         operationId: 'getAdminStatuses',
         summary: 'List statuses for admin moderation. Admin only.',
         security: [['passport' => []], ['token' => []]],
@@ -74,7 +74,7 @@ class AdminStatusController extends Controller
     }
 
     #[OA\Get(
-        path: '/admin/statuses/{id}',
+        path: '/v1/admin/statuses/{id}',
         operationId: 'getAdminStatus',
         summary: 'Get a single status with all admin details. Admin only.',
         security: [['passport' => []], ['token' => []]],
@@ -114,7 +114,7 @@ class AdminStatusController extends Controller
     }
 
     #[OA\Put(
-        path: '/admin/statuses/{id}',
+        path: '/v1/admin/statuses/{id}',
         operationId: 'updateAdminStatus',
         summary: 'Update a status including moderation fields. Admin only.',
         security: [['passport' => []], ['token' => []]],

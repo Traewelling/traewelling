@@ -5,7 +5,7 @@ import RouteSegmentDetails from './RouteSegmentDetails.vue';
 import RouteSegmentEditor from './RouteSegmentEditor.vue';
 import RouteSegmentList from './RouteSegmentList.vue';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const props = defineProps<{ segmentId: string }>();
 

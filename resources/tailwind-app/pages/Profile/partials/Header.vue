@@ -24,7 +24,7 @@ const emit = defineEmits<{
     (e: 'update:userData', userData: UserResource): void;
 }>();
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const notyf = inject('notyf') as Notyf;
 const showReportModal = ref(false);
 const authUser = useUserStore();

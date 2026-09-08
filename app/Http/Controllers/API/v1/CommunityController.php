@@ -16,7 +16,7 @@ use OpenApi\Attributes as OA;
 class CommunityController extends Controller
 {
     #[OA\Get(
-        path: '/community/profile',
+        path: '/v1/community/profile',
         operationId: 'getCommunityProfile',
         description: 'Returns contribution XP, level, and progress information for the authenticated user',
         summary: 'Get your contribution profile',
@@ -47,7 +47,7 @@ class CommunityController extends Controller
     }
 
     #[OA\Get(
-        path: '/community/history',
+        path: '/v1/community/history',
         operationId: 'getCommunityHistory',
         description: 'Returns a cursor-paginated list of contribution history entries for the authenticated user',
         summary: 'Get your contribution history',

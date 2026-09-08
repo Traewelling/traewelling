@@ -13,7 +13,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{ close: []; confirm: [targetId: number] }>();
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const targetId = ref('');
 const searchQuery = ref('');

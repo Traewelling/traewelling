@@ -13,7 +13,7 @@ const props = defineProps<{
 const emits = defineEmits(['profile-updated', 'friends-updated', 'error']);
 
 const modal = ref<HTMLDialogElement>();
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const users = ref<UserResource[]>([]);
 const search = ref<string>('');
 const showResults = ref<boolean>(false);

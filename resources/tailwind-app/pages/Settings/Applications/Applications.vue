@@ -8,7 +8,7 @@ import SettingsLayout from '../../../layouts/SettingsLayout.vue';
 import ApplicationForm from './partials/ApplicationForm.vue';
 import PersonalAccessToken from './partials/PersonalAccessToken.vue';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const notyf = inject('notyf') as Notyf;
 
 const apps = ref<OAuthClientResource[]>([]);

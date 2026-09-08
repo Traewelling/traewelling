@@ -45,7 +45,7 @@ class StationController extends Controller
     }
 
     #[OA\Get(
-        path: '/stations/{id}/usages',
+        path: '/v1/stations/{id}/usages',
         operationId: 'getStationUsages',
         description: 'Admin only. Returns the number of records referencing this station. The station can only be deleted when all counts are zero.',
         summary: 'Get station usage counts',
@@ -78,7 +78,7 @@ class StationController extends Controller
     }
 
     #[OA\Put(
-        path: '/stations/{id}/usages/move',
+        path: '/v1/stations/{id}/usages/move',
         operationId: 'moveStationUsages',
         description: 'Admin only. Moves records referencing this station to another station, so the station can be emptied and deleted. '
                      . 'Stopovers already existing identically on the target station are merged into them. '
@@ -150,7 +150,7 @@ class StationController extends Controller
     }
 
     #[OA\Delete(
-        path: '/stations/{id}',
+        path: '/v1/stations/{id}',
         operationId: 'deleteStation',
         description: 'Admin only. Deletes a station. Only possible when no other records reference the station, see the usages endpoint.',
         summary: 'Delete a station',
@@ -240,7 +240,7 @@ class StationController extends Controller
     }
 
     #[OA\Patch(
-        path: '/stations/{id}',
+        path: '/v1/stations/{id}',
         operationId: 'updateStation',
         description: 'Admin only. Update a station\'s name, coordinates, or time offset.',
         summary: 'Update a station',
@@ -295,7 +295,7 @@ class StationController extends Controller
     }
 
     #[OA\Get(
-        path: '/stations',
+        path: '/v1/stations',
         operationId: 'indexStation',
         description: 'UNSTABLE: Returns stations by fuzzy text, exact identifier, or within a bounding box (BBOX). **CAUTION:** Slashes in {query} must be replaced (e.g. with %20).',
         summary: 'Search for stations',
@@ -495,7 +495,7 @@ class StationController extends Controller
     }
 
     #[OA\Get(
-        path: '/stations/{id}',
+        path: '/v1/stations/{id}',
         operationId: 'showStation',
         description: 'This request returns a single station object',
         summary: 'Show station',

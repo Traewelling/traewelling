@@ -24,7 +24,7 @@ class ApplicationController extends Controller
     ) {}
 
     #[OA\Get(
-        path: '/applications',
+        path: '/v1/applications',
         operationId: 'getApplications',
         description: 'Returns all OAuth applications owned by the authenticated user. Requires a personal access token, third-party OAuth application tokens are not accepted.',
         summary: 'List OAuth applications',
@@ -50,7 +50,7 @@ class ApplicationController extends Controller
     }
 
     #[OA\Post(
-        path: '/applications',
+        path: '/v1/applications',
         operationId: 'createApplication',
         description: 'Create a new OAuth application for the authenticated user. Requires a personal access token — third-party OAuth application tokens are not accepted.',
         summary: 'Create OAuth application',
@@ -87,7 +87,7 @@ class ApplicationController extends Controller
     }
 
     #[OA\Put(
-        path: '/applications/{clientId}',
+        path: '/v1/applications/{clientId}',
         operationId: 'updateApplication',
         description: 'Update an OAuth application owned by the authenticated user. Requires a personal access token, third-party OAuth application tokens are not accepted.',
         summary: 'Update OAuth application',
@@ -135,7 +135,7 @@ class ApplicationController extends Controller
     }
 
     #[OA\Delete(
-        path: '/applications/{clientId}',
+        path: '/v1/applications/{clientId}',
         operationId: 'deleteApplication',
         description: 'Delete an OAuth application owned by the authenticated user. Requires a personal access token, third-party OAuth application tokens are not accepted.',
         summary: 'Delete OAuth application',
@@ -163,7 +163,7 @@ class ApplicationController extends Controller
     }
 
     #[OA\Get(
-        path: '/applications/{clientId}/webhook-stats',
+        path: '/v1/applications/{clientId}/webhook-stats',
         operationId: 'getApplicationWebhookStats',
         description: 'Returns webhook call log statistics for the last 7 days for a given OAuth application. Only the application owner or admins can access it.',
         summary: 'Get webhook call statistics for an application',

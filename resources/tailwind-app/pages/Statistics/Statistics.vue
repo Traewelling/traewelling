@@ -10,7 +10,7 @@ import ChartHorizontalBar from '../../components/Stats/ChartHorizontalBar.vue';
 import ChartTimeline from '../../components/Stats/ChartTimeline.vue';
 import AppLayout from '../../layouts/AppLayout.vue';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const notyf = inject('notyf') as Notyf;
 

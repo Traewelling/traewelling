@@ -52,7 +52,7 @@ const emit = defineEmits<{
     'status-updated': [status: StatusResource];
 }>();
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const userStore = useUserStore();
 
 const statusObject = ref<StatusResource>(props.status);

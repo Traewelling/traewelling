@@ -23,7 +23,7 @@ class AuthController extends Controller
      * @api v1
      */
     #[OA\Post(
-        path: '/auth/logout',
+        path: '/v1/auth/logout',
         operationId: 'logoutUser',
         summary: 'Logout & invalidate current bearer token',
         security: [['passport' => []], ['token' => []]],
@@ -54,7 +54,7 @@ class AuthController extends Controller
      * @api v1
      */
     #[OA\Get(
-        path: '/auth/user',
+        path: '/v1/auth/user',
         operationId: 'getAuthenticatedUser',
         description: 'Get all profile information about the authenticated user',
         summary: 'Get authenticated user information',
@@ -89,7 +89,7 @@ class AuthController extends Controller
      * @api v1
      */
     #[OA\Post(
-        path: '/auth/refresh',
+        path: '/v1/auth/refresh',
         operationId: 'refreshToken',
         description: 'This request issues a new Bearer-Token with a new expiration date while also revoking the old token.',
         summary: 'Refresh Bearer Token',

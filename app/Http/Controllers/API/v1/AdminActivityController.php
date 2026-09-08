@@ -13,7 +13,7 @@ use Spatie\Activitylog\Models\Activity;
 class AdminActivityController extends Controller
 {
     #[OA\Get(
-        path: '/admin/activity',
+        path: '/v1/admin/activity',
         operationId: 'getAdminActivity',
         description: 'Requires "view activity" permission. Returns the last 3 months of activity log entries, excluding system entries.',
         summary: 'List activity log',

@@ -17,7 +17,7 @@ use OpenApi\Attributes as OA;
 class ReportController extends Controller
 {
     #[OA\Get(
-        path: '/reports',
+        path: '/v1/reports',
         operationId: 'listReports',
         summary: 'List all reports. Admin only.',
         security: [['passport' => []], ['token' => []]],
@@ -56,7 +56,7 @@ class ReportController extends Controller
     }
 
     #[OA\Get(
-        path: '/reports/{id}',
+        path: '/v1/reports/{id}',
         operationId: 'getReport',
         summary: 'Get a single report with activity log. Admin only.',
         security: [['passport' => []], ['token' => []]],
@@ -89,7 +89,7 @@ class ReportController extends Controller
     }
 
     #[OA\Post(
-        path: '/reports',
+        path: '/v1/reports',
         operationId: 'createReport',
         summary: 'Report a Status, Event or User to the admins.',
         security: [['passport' => []], ['token' => []]],
@@ -147,7 +147,7 @@ class ReportController extends Controller
     }
 
     #[OA\Put(
-        path: '/reports/{id}',
+        path: '/v1/reports/{id}',
         operationId: 'updateReport',
         summary: 'Update a report status. Admin only.',
         security: [['passport' => []], ['token' => []]],

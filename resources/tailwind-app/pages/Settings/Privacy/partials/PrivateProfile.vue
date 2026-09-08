@@ -8,7 +8,7 @@ defineProps<{
 }>();
 const emits = defineEmits(['profile-updated', 'error']);
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 function updatePrivate(value: boolean) {
     api.settings

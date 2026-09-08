@@ -26,7 +26,7 @@ const emit = defineEmits<{
 const modal = ref<ModalComponent | null>(null);
 const eventsDropdown = useTemplateRef('eventsDropdown');
 const stopovers = ref<StopoverResource[]>([]);
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const activeStatus = useActiveCheckin();
 const loading = ref(false);
 

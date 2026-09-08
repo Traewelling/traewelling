@@ -10,7 +10,7 @@ import GenericMap from '../components/Map/GenericMap.vue';
 import StatusCard from '../components/Status/StatusCard.vue';
 import { useUserStore } from '../stores/user';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const statuses = ref<StatusResource[]>([]);
 const livePositions = ref([] as LivePointDto[]);
 const bounds = ref(LngLatBounds.fromLngLat(new LngLat(9.902056, 49.843), 1000000) as LngLatBounds);

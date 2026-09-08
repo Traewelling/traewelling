@@ -14,7 +14,7 @@ use OpenApi\Attributes as OA;
 class IcsController extends Controller
 {
     #[OA\Post(
-        path: '/ics-tokens',
+        path: '/v1/ics-tokens',
         operationId: 'createIcsToken',
         description: 'Create a new ICS token for the authenticated user',
         summary: 'Create ICS token',
@@ -84,7 +84,7 @@ class IcsController extends Controller
     }
 
     #[OA\Delete(
-        path: '/ics-tokens/{tokenId}',
+        path: '/v1/ics-tokens/{tokenId}',
         operationId: 'revokeIcsToken',
         description: 'Revoke an ICS token of the authenticated user',
         summary: 'Revoke ICS token',
@@ -116,7 +116,7 @@ class IcsController extends Controller
     }
 
     #[OA\Get(
-        path: '/ics-tokens',
+        path: '/v1/ics-tokens',
         operationId: 'getIcsTokens',
         description: 'Get all ICS tokens of the authenticated user',
         summary: 'Get ICS tokens',

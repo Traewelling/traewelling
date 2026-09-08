@@ -15,7 +15,7 @@ const emit = defineEmits<{
     deleted: [id: number];
 }>();
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const notyf = inject('notyf') as Notyf;
 const activeCheckin = useActiveCheckin();
 const deleting = ref(false);

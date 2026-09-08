@@ -12,7 +12,7 @@ const emits = defineEmits(['image-updated']);
 
 const notyf = inject('notyf') as Notyf;
 const modal = ref<HTMLDialogElement>();
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const imageUpload = ref<File | null>(null);
 const imageUploadBase64 = ref<string>('');
 

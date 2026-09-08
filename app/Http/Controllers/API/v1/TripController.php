@@ -33,7 +33,7 @@ use OpenApi\Attributes as OA;
 class TripController extends Controller
 {
     #[OA\Get(
-        path: '/trips/{id}/statuses',
+        path: '/v1/trips/{id}/statuses',
         operationId: 'getTripStatuses',
         description: 'Returns all statuses visible to the (un)authenticated user for a given trip',
         summary: '[Auth optional] Get statuses for a trip',
@@ -90,7 +90,7 @@ class TripController extends Controller
     }
 
     #[OA\Post(
-        path: '/trips/route-preview',
+        path: '/v1/trips/route-preview',
         operationId: 'routePreviewTrip',
         description: 'Routes between the given stations using the appropriate BRouter profile for the category. Falls back to straight-line segments if BRouter cannot route a segment (e.g. no railway near that station). Returns a GeoJSON LineString feature.',
         summary: 'Preview the routing for a manual trip before creating it.',
@@ -149,7 +149,7 @@ class TripController extends Controller
     }
 
     #[OA\Post(
-        path: '/trips',
+        path: '/v1/trips',
         operationId: 'createTrip',
         description: 'Creates a trip from the given data, to check into journeys no data provider knows about. The trip is created with `source = user` and belongs to you, so you can change it afterwards through the trip and stopover endpoints.',
         summary: 'Create a trip',
@@ -260,7 +260,7 @@ class TripController extends Controller
     }
 
     #[OA\Get(
-        path: '/trips',
+        path: '/v1/trips',
         operationId: 'getOwnTrips',
         description: 'Returns a list of the manual trips the authenticated user created.',
         summary: 'List your own trips',
@@ -297,7 +297,7 @@ class TripController extends Controller
     }
 
     #[OA\Post(
-        path: '/trips/{tripUuid}/copy',
+        path: '/v1/trips/{tripUuid}/copy',
         operationId: 'copyTrip',
         description: 'Copies a trip including all its stopovers into a new trip with `source = user` that belongs to you, so you can correct data a provider got wrong. Manual trips of other users cannot be copied. Your own checkin on the original trip is moved to the copy, which drops its points to 0 because manual trips do not score. Checkins of other users stay on the original trip.',
         summary: 'Copy a trip',
@@ -331,7 +331,7 @@ class TripController extends Controller
     }
 
     #[OA\Get(
-        path: '/trips/{tripUuid}',
+        path: '/v1/trips/{tripUuid}',
         operationId: 'getTrip',
         description: 'Returns a trip including all stopovers. You can only access manual trips (`source = user`) that you created yourself; admins can access any trip.',
         summary: 'Get a trip',
@@ -365,7 +365,7 @@ class TripController extends Controller
     }
 
     #[OA\Put(
-        path: '/trips/{tripUuid}',
+        path: '/v1/trips/{tripUuid}',
         operationId: 'updateTrip',
         description: 'Updates the metadata of a trip. You can only edit manual trips (`source = user`) that you created yourself; admins can edit any trip. All fields are optional, only the given ones are changed. Changing the category recalculates distance and points of all checkins on this trip.',
         summary: 'Update a trip',
@@ -414,7 +414,7 @@ class TripController extends Controller
     }
 
     #[OA\Delete(
-        path: '/trips/{tripUuid}',
+        path: '/v1/trips/{tripUuid}',
         operationId: 'deleteTrip',
         description: 'Deletes a trip including all its stopovers. You can only delete manual trips (`source = user`) that you created yourself; admins can delete any trip. A trip can only be deleted while no checkin references it, which includes checkins of other users you cannot see. Check `checkinCount` beforehand to know whether deleting is possible.',
         summary: 'Delete a trip',

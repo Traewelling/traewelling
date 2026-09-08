@@ -7,7 +7,7 @@ import { Api, LightUser } from '../../../../types/Api.gen';
 import SettingsLayout from '../../../layouts/SettingsLayout.vue';
 import FollowersSubMenu from '../Followers/partials/FollowersSubMenu.vue';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const notyf = inject('notyf') as Notyf;
 
 const mutedUsers = ref<LightUser[]>([]);

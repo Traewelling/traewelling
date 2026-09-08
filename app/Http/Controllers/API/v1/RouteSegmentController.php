@@ -30,7 +30,7 @@ use Traewelling\GooglePolyline\PolylineTranscoder;
 class RouteSegmentController extends Controller
 {
     #[OA\Get(
-        path: '/route-segments',
+        path: '/v1/route-segments',
         operationId: 'listRouteSegments',
         summary: 'List route segments for a given station pair (admin only).',
         tags: ['Polyline'],
@@ -77,7 +77,7 @@ class RouteSegmentController extends Controller
     }
 
     #[OA\Get(
-        path: '/route-segments/{id}',
+        path: '/v1/route-segments/{id}',
         operationId: 'getRouteSegment',
         summary: 'Get a single route segment with station names and counts (admin only).',
         tags: ['Polyline'],
@@ -115,7 +115,7 @@ class RouteSegmentController extends Controller
      * @throws ValidationException
      */
     #[OA\Post(
-        path: '/route-segments',
+        path: '/v1/route-segments',
         operationId: 'createRouteSegment',
         summary: 'Create a straight-line route segment between two stations (admin only).',
         requestBody: new OA\RequestBody(
@@ -278,7 +278,7 @@ class RouteSegmentController extends Controller
     }
 
     #[OA\Post(
-        path: '/route-segments/{id}/assign-stopovers',
+        path: '/v1/route-segments/{id}/assign-stopovers',
         operationId: 'assignRouteSegmentToStopovers',
         summary: 'Dispatch a background job that assigns this segment to all matching unassigned stopovers (admin only).',
         tags: ['Polyline'],
@@ -293,7 +293,7 @@ class RouteSegmentController extends Controller
         ],
     )]
     #[OA\Delete(
-        path: '/route-segments/{id}',
+        path: '/v1/route-segments/{id}',
         operationId: 'deleteRouteSegment',
         summary: 'Delete a route segment (admin only). All stopovers using this segment are reassigned to another matching segment if available, otherwise their assignment is cleared.',
         tags: ['Polyline'],
@@ -328,7 +328,7 @@ class RouteSegmentController extends Controller
     }
 
     #[OA\Post(
-        path: '/route-segments/{id}/brouter-preview',
+        path: '/v1/route-segments/{id}/brouter-preview',
         operationId: 'brouterPreviewRouteSegment',
         summary: 'Request a BRouter route preview for the given waypoints (admin only).',
         requestBody: new OA\RequestBody(
@@ -421,7 +421,7 @@ class RouteSegmentController extends Controller
     }
 
     #[OA\Post(
-        path: '/route-segments/{id}/polyline',
+        path: '/v1/route-segments/{id}/polyline',
         operationId: 'applyPolylineToRouteSegment',
         summary: 'Save custom waypoints and regenerate the segment\'s polyline via BRouter (admin only).',
         requestBody: new OA\RequestBody(

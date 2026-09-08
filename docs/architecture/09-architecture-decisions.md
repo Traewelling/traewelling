@@ -31,3 +31,4 @@ description already explains adequately.
 | ADR                                                | Title                 | Status   | Date       |
 |----------------------------------------------------|-----------------------|----------|------------|
 | [ADR-0001](decisions/0001-uuid-as-primary-key.md)  | UUIDs as primary keys | accepted | 2026-08-08 |
+| [ADR-0002](decisions/0002-per-endpoint-api-versioning.md) | Break an endpoint by versioning it | proposed | 2026-08-29 |

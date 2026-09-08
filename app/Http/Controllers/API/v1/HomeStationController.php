@@ -18,7 +18,7 @@ class HomeStationController extends Controller
     }
 
     #[OA\Put(
-        path: '/station/{id}/home',
+        path: '/v1/station/{id}/home',
         operationId: 'setHomeStation',
         summary: 'Set a station as home station',
         security: [['passport' => ['create-statuses']], ['token' => []]],
@@ -71,7 +71,7 @@ class HomeStationController extends Controller
     }
 
     #[OA\Delete(
-        path: '/station/home',
+        path: '/v1/station/home',
         operationId: 'deleteHomeStation',
         summary: 'Remove the home station of the authenticated user',
         security: [['passport' => ['create-statuses']], ['token' => []]],

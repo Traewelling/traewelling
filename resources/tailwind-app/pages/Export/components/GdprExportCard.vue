@@ -8,7 +8,7 @@ import { Api } from '../../../../types/Api.gen';
 import { useConfigurationStore } from '../../../../vue/stores/configuration';
 import { useUserStore } from '../../../../vue/stores/user';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const notyf = inject('notyf') as Notyf;
 const loading = ref(false);
 const requested = ref(false);

@@ -32,7 +32,7 @@ class AdminEventSuggestionController extends Controller
     }
 
     #[OA\Get(
-        path: '/admin/event-suggestions',
+        path: '/v1/admin/event-suggestions',
         operationId: 'getAdminEventSuggestions',
         summary: 'List unprocessed event suggestions.',
         security: [['passport' => []], ['token' => []]],
@@ -61,7 +61,7 @@ class AdminEventSuggestionController extends Controller
     }
 
     #[OA\Get(
-        path: '/admin/event-suggestions/{id}',
+        path: '/v1/admin/event-suggestions/{id}',
         operationId: 'getAdminEventSuggestion',
         summary: 'Get a single suggestion with parallel events for the accept view.',
         security: [['passport' => []], ['token' => []]],
@@ -126,7 +126,7 @@ class AdminEventSuggestionController extends Controller
     }
 
     #[OA\Post(
-        path: '/admin/event-suggestions/{id}/accept',
+        path: '/v1/admin/event-suggestions/{id}/accept',
         operationId: 'acceptAdminEventSuggestion',
         summary: 'Accept an event suggestion and create the event.',
         security: [['passport' => []], ['token' => []]],
@@ -188,7 +188,7 @@ class AdminEventSuggestionController extends Controller
     }
 
     #[OA\Post(
-        path: '/admin/event-suggestions/{id}/deny',
+        path: '/v1/admin/event-suggestions/{id}/deny',
         operationId: 'denyAdminEventSuggestion',
         summary: 'Deny an event suggestion.',
         security: [['passport' => []], ['token' => []]],

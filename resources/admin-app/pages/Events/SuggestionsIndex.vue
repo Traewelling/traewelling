@@ -4,7 +4,7 @@ import { onMounted, ref } from 'vue';
 import { Api, type EventSuggestionResource } from '../../../types/Api.gen';
 import BackendLayout from '../../layouts/BackendLayout.vue';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const suggestions = ref<EventSuggestionResource[]>([]);
 const loading = ref(true);

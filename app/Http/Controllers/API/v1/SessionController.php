@@ -11,7 +11,7 @@ use OpenApi\Attributes as OA;
 class SessionController extends Controller
 {
     #[OA\Get(
-        path: '/security/sessions',
+        path: '/v1/security/sessions',
         operationId: 'getSessions',
         description: 'Get all active sessions for the authenticated user',
         summary: 'Get active sessions',
@@ -37,7 +37,7 @@ class SessionController extends Controller
     }
 
     #[OA\Delete(
-        path: '/security/sessions',
+        path: '/v1/security/sessions',
         operationId: 'deleteAllSessions',
         description: 'Delete all active sessions for the authenticated user',
         summary: 'Delete all sessions',

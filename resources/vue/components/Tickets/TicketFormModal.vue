@@ -9,7 +9,7 @@ const emit = defineEmits<{
     (e: 'updated', ticket: TicketResource): void;
 }>();
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const modal = ref<InstanceType<typeof ModalComponent> | null>(null);
 const editingTicket = ref<TicketResource | null>(null);
 const loading = ref(false);

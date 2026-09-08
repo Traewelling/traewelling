@@ -4,7 +4,7 @@ import { onMounted, ref } from 'vue';
 import { Api, TicketResource } from '../../types/Api.gen';
 import TicketFormModal from '../components/Tickets/TicketFormModal.vue';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const tickets = ref<TicketResource[]>([]);
 const formModal = ref<InstanceType<typeof TicketFormModal> | null>(null);

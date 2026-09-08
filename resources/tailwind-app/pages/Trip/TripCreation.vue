@@ -15,7 +15,7 @@ import { useStopoverDrag } from '../../composables/useStopoverDrag';
 import { TRANSPORT_CATEGORIES } from '../../composables/useTransportCategories';
 import AppLayout from '../../layouts/AppLayout.vue';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const notyf = inject('notyf') as Notyf;
 const router = useRouter();
 

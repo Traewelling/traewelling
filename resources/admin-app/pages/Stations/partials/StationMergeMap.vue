@@ -5,7 +5,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { Api, type StationResource } from '../../../../types/Api.gen';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const MIN_ZOOM = 11;
 const FETCH_LIMIT = 1000;

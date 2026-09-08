@@ -15,7 +15,7 @@ const props = defineProps({
     },
 });
 const emit = defineEmits(['status-liked', 'status-unliked', 'status-deleted', 'status-deleting', 'status-updated']);
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const user = useUserStore();
 const likes = ref(0);
 

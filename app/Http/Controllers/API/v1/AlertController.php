@@ -21,7 +21,7 @@ class AlertController extends Controller
     ) {}
 
     #[OA\Get(
-        path: '/alerts',
+        path: '/v1/alerts',
         operationId: 'getAlerts',
         summary: 'Get alerts. Without ?all returns only currently active alerts. With ?all=true (admin only) returns all alerts with cursor pagination.',
         tags: ['Notifications'],
@@ -115,7 +115,7 @@ class AlertController extends Controller
     }
 
     #[OA\Get(
-        path: '/alerts/{id}',
+        path: '/v1/alerts/{id}',
         operationId: 'getAlert',
         summary: 'Get a single alert. Admin only.',
         security: [['passport' => []], ['token' => []]],
@@ -144,7 +144,7 @@ class AlertController extends Controller
     }
 
     #[OA\Post(
-        path: '/alerts',
+        path: '/v1/alerts',
         operationId: 'createAlert',
         summary: 'Create a new alert. Admin only.',
         security: [['passport' => []], ['token' => []]],
@@ -190,7 +190,7 @@ class AlertController extends Controller
     }
 
     #[OA\Put(
-        path: '/alerts/{id}',
+        path: '/v1/alerts/{id}',
         operationId: 'updateAlert',
         summary: 'Update an alert. Admin only.',
         security: [['passport' => []], ['token' => []]],
@@ -240,7 +240,7 @@ class AlertController extends Controller
     }
 
     #[OA\Delete(
-        path: '/alerts/{id}',
+        path: '/v1/alerts/{id}',
         operationId: 'deleteAlert',
         summary: 'Delete an alert. Admin only.',
         security: [['passport' => []], ['token' => []]],

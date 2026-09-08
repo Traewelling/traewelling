@@ -4,7 +4,7 @@ import { onMounted, ref } from 'vue';
 import { type AlertResource, Api } from '../../../types/Api.gen';
 import BackendLayout from '../../layouts/BackendLayout.vue';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const alerts = ref<AlertResource[]>([]);
 const loading = ref(true);

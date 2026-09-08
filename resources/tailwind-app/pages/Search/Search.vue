@@ -99,7 +99,7 @@ import Loading from '../../components/Loading.vue';
 import AppLayout from '../../layouts/AppLayout.vue';
 import router from '../../router';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const route = useRoute();
 const query = ref('');
 const loading = ref(false);

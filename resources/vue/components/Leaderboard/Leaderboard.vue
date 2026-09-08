@@ -11,7 +11,7 @@ const distanceLeaderboard = ref<LeaderboardUserResource[]>([]);
 const friendsLeaderboard = ref<LeaderboardUserResource[]>([]);
 const loading = ref(0);
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const user = useUserStore();
 
 function fetchData() {

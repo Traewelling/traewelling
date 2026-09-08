@@ -10,7 +10,7 @@ import { useUserStore } from '../../../vue/stores/user';
 import StatusCard from '../../components/Status/StatusCard.vue';
 import AppLayout from '../../layouts/AppLayout.vue';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const route = useRoute();
 const router = useRouter();

@@ -26,7 +26,7 @@ const emit = defineEmits<{
     saved: [status: StatusResource];
 }>();
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const notyf = inject('notyf') as Notyf;
 
 const loading = ref(false);

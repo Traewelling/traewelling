@@ -11,7 +11,7 @@ const props = defineProps<{
 const emits = defineEmits(['ics-updated', 'error']);
 
 const modal = ref<HTMLDialogElement>();
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 function removeToken(tokenId: number) {
     api.icsTokens

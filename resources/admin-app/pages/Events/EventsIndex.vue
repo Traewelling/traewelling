@@ -9,7 +9,7 @@ const userStore = useUserStore();
 const isAdmin = userStore.user?.roles.includes('admin') ?? false;
 const canEdit = isAdmin || (userStore.user?.roles.includes('event-moderator') ?? false);
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const events = ref<EventAdminResource[]>([]);
 const loading = ref(true);

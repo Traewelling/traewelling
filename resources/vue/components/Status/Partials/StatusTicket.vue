@@ -34,7 +34,7 @@ const emit = defineEmits<{
 }>();
 
 const userStore = useUserStore();
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const availableTickets = ref<TicketResource[]>([]);
 const selectedTicketId = ref<string | null>(null);

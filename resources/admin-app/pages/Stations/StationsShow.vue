@@ -9,7 +9,7 @@ import StationDetailsCard from './partials/StationDetailsCard.vue';
 import StationIdentifiersCard from './partials/StationIdentifiersCard.vue';
 import StationUsageCard from './partials/StationUsageCard.vue';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const route = useRoute();
 const stationId = computed(() => Number(route.params.id));

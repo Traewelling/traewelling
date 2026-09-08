@@ -11,7 +11,7 @@ import RouteMapFilters from './partials/RouteMapFilters.vue';
 
 const DEBOUNCE_MS = 400;
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const filters = ref<RouteMapFilterState>(defaultFilterState());
 const entries = ref<RouteMapEntryResource[]>([]);

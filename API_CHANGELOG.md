@@ -1,4 +1,4 @@
-# APIv1 Changelog
+# API Changelog
 
 In this we try to keep track of changes to the API.
 Primarily this should document changes that are not backwards compatible or belongs to already documented endpoints.

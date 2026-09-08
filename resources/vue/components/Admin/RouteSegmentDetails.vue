@@ -5,7 +5,7 @@ import { Api, type RouteSegmentResource } from '../../../types/Api.gen';
 
 const router = useRouter();
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const props = defineProps<{ segment: RouteSegmentResource }>();
 

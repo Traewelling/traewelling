@@ -18,7 +18,7 @@ class SocialController extends Controller
     }
 
     #[OA\Delete(
-        path: '/security/social',
+        path: '/v1/security/social',
         operationId: 'deleteSocialProvider',
         description: 'Delete a connected social provider from the authenticated user',
         summary: 'Delete social provider',

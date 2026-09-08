@@ -11,7 +11,7 @@ use OpenApi\Attributes as OA;
 class NotificationsController extends Controller
 {
     #[OA\Get(
-        path: '/notifications/unread/count',
+        path: '/v1/notifications/unread/count',
         operationId: 'getUnreadCount',
         description: 'Returns count of unread notifications of a authenticated user',
         summary: 'Get count of unread notifications for authenticated user',
@@ -40,7 +40,7 @@ class NotificationsController extends Controller
     }
 
     #[OA\Get(
-        path: '/notifications',
+        path: '/v1/notifications',
         operationId: 'listNotifications',
         description: 'Returns paginated notifications of a authenticated',
         summary: 'Get paginated notifications for authenticated user',
@@ -80,7 +80,7 @@ class NotificationsController extends Controller
     }
 
     #[OA\Put(
-        path: '/notifications/read/{id}',
+        path: '/v1/notifications/read/{id}',
         operationId: 'markAsRead',
         summary: 'Mark notification as read',
         security: [['passport' => ['write-notifications']], ['token' => []]],
@@ -127,7 +127,7 @@ class NotificationsController extends Controller
     }
 
     #[OA\Put(
-        path: '/notifications/unread/{id}',
+        path: '/v1/notifications/unread/{id}',
         operationId: 'markAsUnread',
         summary: 'Mark notification as unread',
         security: [['passport' => ['write-notifications']], ['token' => []]],
@@ -174,7 +174,7 @@ class NotificationsController extends Controller
     }
 
     #[OA\Put(
-        path: '/notifications/read/all',
+        path: '/v1/notifications/read/all',
         operationId: 'markAllAsRead',
         summary: 'Mark all notification as read',
         security: [['passport' => ['write-notifications']], ['token' => []]],

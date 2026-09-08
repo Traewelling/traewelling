@@ -17,7 +17,7 @@ const emit = defineEmits<{
     copied: [trip: TripResource];
 }>();
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const notyf = inject('notyf') as Notyf;
 const userStore = useUserStore();
 

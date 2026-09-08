@@ -42,7 +42,7 @@ class EventController extends Controller
     }
 
     #[OA\Get(
-        path: '/event/{slug}',
+        path: '/v1/event/{slug}',
         operationId: 'getEvent',
         description: 'Returns slug, name and duration for an event',
         summary: '[Auth optional] Get basic information for event',
@@ -82,7 +82,7 @@ class EventController extends Controller
     }
 
     #[OA\Get(
-        path: '/event/{slug}/details',
+        path: '/v1/event/{slug}/details',
         operationId: 'getEventDetails',
         description: 'Returns overall travelled distance and duration for an event',
         summary: '[Auth optional] Get additional information for event',
@@ -122,7 +122,7 @@ class EventController extends Controller
     }
 
     #[OA\Get(
-        path: '/event/{slug}/statuses',
+        path: '/v1/event/{slug}/statuses',
         operationId: 'getEventStatuses',
         description: 'Returns all for user visible statuses for an event',
         summary: '[Auth optional] Get paginated statuses for event',
@@ -174,7 +174,7 @@ class EventController extends Controller
     }
 
     #[OA\Get(
-        path: '/events',
+        path: '/v1/events',
         operationId: 'getEvents',
         description: 'Returns all active or upcoming events for the given timestamp. Default timestamp is now. If upcoming is set to true, all events ending after the timestamp are returned.',
         summary: '[Auth optional] Show active or upcoming events for the given timestamp',
@@ -258,7 +258,7 @@ class EventController extends Controller
     }
 
     #[OA\Post(
-        path: '/event',
+        path: '/v1/event',
         operationId: 'suggestEvent',
         description: 'Submit a possible event for our administrators to publish',
         summary: 'Suggest a event',

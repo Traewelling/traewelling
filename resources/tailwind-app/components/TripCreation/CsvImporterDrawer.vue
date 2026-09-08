@@ -6,7 +6,7 @@ import Papa from 'papaparse';
 import { inject, ref, useTemplateRef } from 'vue';
 import { Api, StationResource } from '../../../types/Api.gen';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 export type ImportedStop = {
     station: StationResource;

@@ -8,7 +8,7 @@ const emit = defineEmits<{
     (e: 'update:modelValue', ids: number[]): void;
 }>();
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const friends = ref<TrustedUserResource[]>([]);
 const selected = ref<number[]>([]);
 const search = ref('');

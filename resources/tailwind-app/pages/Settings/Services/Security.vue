@@ -10,7 +10,7 @@ import ManageWebhooks from './partials/ManageWebhooks.vue';
 import MastodonAccount from './partials/MastodonAccount.vue';
 import Sessions from './partials/Sessions.vue';
 
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const profile = ref<UserProfileSettingsResource | null>(null);
 const tokens = ref<IcsEntryResource[]>([]);

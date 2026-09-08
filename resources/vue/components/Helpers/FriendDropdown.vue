@@ -7,7 +7,7 @@ export default defineComponent({
     name: 'FriendDropdown',
     emits: ['select-user'],
     setup() {
-        const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+        const api = new Api({ baseUrl: window.location.origin + '/api' });
 
         return { api };
     },

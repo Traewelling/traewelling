@@ -14,7 +14,7 @@ use OpenApi\Attributes as OA;
 class OperatorController extends Controller
 {
     #[OA\Get(
-        path: '/operators',
+        path: '/v1/operators',
         operationId: 'getOperators',
         summary: 'Get a list of operators, optionally filtered by name.',
         tags: ['Checkin'],
@@ -60,7 +60,7 @@ class OperatorController extends Controller
     }
 
     #[OA\Put(
-        path: '/operators/{oldOperatorId}/merge/{newOperatorId}',
+        path: '/v1/operators/{oldOperatorId}/merge/{newOperatorId}',
         operationId: 'mergeOperators',
         summary: 'Merge two operators into one (admin only).',
         tags: ['Checkin'],

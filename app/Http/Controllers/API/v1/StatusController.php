@@ -84,7 +84,7 @@ use OpenApi\Attributes as OA;
 class StatusController extends Controller
 {
     #[OA\Get(
-        path: '/dashboard',
+        path: '/v1/dashboard',
         operationId: 'getDashboard',
         description: 'Returns paginated statuses of personal dashboard',
         summary: 'Get paginated statuses of personal dashboard',
@@ -129,7 +129,7 @@ class StatusController extends Controller
     }
 
     #[OA\Get(
-        path: '/dashboard/future',
+        path: '/v1/dashboard/future',
         operationId: 'getFutureDashboard',
         description: 'Returns paginated statuses of the authenticated user, that depart more than 20 minutes in the future',
         summary: 'Get paginated future statuses of current user',
@@ -171,7 +171,7 @@ class StatusController extends Controller
     }
 
     #[OA\Get(
-        path: '/statuses',
+        path: '/v1/statuses',
         operationId: 'getActiveStatuses',
         description: 'Returns all currently active statuses that are visible to the (un)authenticated user',
         summary: '[Auth optional] Get active statuses',
@@ -201,7 +201,7 @@ class StatusController extends Controller
     }
 
     #[OA\Get(
-        path: '/positions',
+        path: '/v1/positions',
         operationId: 'getLivePositionsForActiveStatuses',
         description: 'Returns an array of live position objects for active statuses',
         summary: '[Auth optional] get live positions for active statuses',
@@ -231,7 +231,7 @@ class StatusController extends Controller
     }
 
     #[OA\Get(
-        path: '/positions/{ids}',
+        path: '/v1/positions/{ids}',
         operationId: 'getLivePositionsForStatuses',
         description: 'Returns an array of live position objects for given status IDs',
         summary: '[Auth optional] get live positions for given statuses',
@@ -270,7 +270,7 @@ class StatusController extends Controller
     }
 
     #[OA\Get(
-        path: '/status',
+        path: '/v1/status',
         operationId: 'listStatuses',
         description: 'Returns cursor-paginated statuses filtered by given parameters. The departure window (from..to) defaults to the last 7 days and must not exceed 365 days.',
         summary: '[Auth optional] List and filter statuses',
@@ -440,7 +440,7 @@ class StatusController extends Controller
     }
 
     #[OA\Get(
-        path: '/status/{id}',
+        path: '/v1/status/{id}',
         operationId: 'getSingleStatus',
         description: 'Returns a single status Object, if user is authorized to see it',
         summary: '[Auth optional] Get single statuses',
@@ -495,7 +495,7 @@ class StatusController extends Controller
     }
 
     #[OA\Delete(
-        path: '/status/{id}',
+        path: '/v1/status/{id}',
         operationId: 'destroySingleStatus',
         description: 'Deletes a single status Object, if user is authorized to',
         summary: 'Destroy a status',
@@ -537,7 +537,7 @@ class StatusController extends Controller
      * @throws ValidationException
      */
     #[OA\Put(
-        path: '/status/{id}',
+        path: '/v1/status/{id}',
         operationId: 'updateSingleStatus',
         description: 'Updates a single status Object, if user is authorized to',
         summary: 'Update a status',
@@ -698,7 +698,7 @@ class StatusController extends Controller
     }
 
     #[OA\Put(
-        path: '/statuses/{id}/tickets',
+        path: '/v1/statuses/{id}/tickets',
         operationId: 'assignTicketToStatus',
         description: 'Assign or remove a ticket from a status. Only the status owner can perform this action.',
         summary: 'Assign or remove a ticket from a status',
@@ -766,7 +766,7 @@ class StatusController extends Controller
      * @todo does this conform to the private checkin-shit?
      */
     #[OA\Get(
-        path: '/polyline/{ids}',
+        path: '/v1/polyline/{ids}',
         operationId: 'getPolylines',
         description: 'Returns GeoJSON for all requested status IDs',
         summary: '[Auth optional] Get GeoJSON for statuses',
@@ -836,7 +836,7 @@ class StatusController extends Controller
     }
 
     #[OA\Get(
-        path: '/stopovers/{ids}',
+        path: '/v1/stopovers/{ids}',
         operationId: 'getStopOvers',
         description: 'Returns all underway-stops for stations',
         summary: '[Auth optional] Get stopovers for statuses',
@@ -889,7 +889,7 @@ class StatusController extends Controller
     }
 
     #[OA\Get(
-        path: '/user/statuses/active',
+        path: '/v1/user/statuses/active',
         operationId: 'userState',
         description: 'This request returns whether the currently logged-in user has an active check-in or not.',
         summary: 'User state',

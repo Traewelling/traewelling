@@ -10,7 +10,7 @@ const emits = defineEmits(['token-added', 'error']);
 const notyf = inject('notyf') as Notyf;
 
 const modal = ref<HTMLDialogElement>();
-const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const loading = ref(false);
 const token = ref<string>('');
 
