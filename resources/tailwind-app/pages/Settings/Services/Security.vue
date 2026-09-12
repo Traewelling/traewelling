@@ -2,9 +2,10 @@
 import { trans } from 'laravel-vue-i18n';
 import { Notyf } from 'notyf';
 import { inject, ref } from 'vue';
-import { Api, IcsEntryResource, UserProfileSettingsResource } from '../../../../types/Api.gen';
+import { Api, IcsEntryResource, TokenResource, UserProfileSettingsResource } from '../../../../types/Api.gen';
 import SettingsLayout from '../../../layouts/SettingsLayout.vue';
 import AddIcsToken from './partials/AddIcsToken.vue';
+import ManageApiTokens from './partials/ManageApiTokens.vue';
 import ManageIcsTokens from './partials/ManageIcsTokens.vue';
 import ManageWebhooks from './partials/ManageWebhooks.vue';
 import MastodonAccount from './partials/MastodonAccount.vue';
@@ -14,6 +15,7 @@ const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const profile = ref<UserProfileSettingsResource | null>(null);
 const tokens = ref<IcsEntryResource[]>([]);
+const apiTokens = ref<TokenResource[]>([]);
 const loading = ref(true);
 
 const notyf = inject('notyf') as Notyf;
@@ -45,12 +47,35 @@ function getIcsTokens() {
         });
 }
 
+function getApiTokens() {
+    api.security
+        .getTokens()
+        .then((response) => {
+            if (!response.ok) {
+                apiTokens.value = [];
+                return;
+            }
+            response.json().then((data) => {
+                apiTokens.value = data.data;
+            });
+        })
+        .catch((catched) => {
+            notyf.error(catched.error.message);
+            apiTokens.value = [];
+        });
+}
+
 function error(message: string): void {
     notyf.error(message);
 }
 
 function updateTokens(newTokens: IcsEntryResource[]): void {
     tokens.value = newTokens;
+    notyf.success(trans('settings.saved'));
+}
+
+function updateApiTokens(newTokens: TokenResource[]): void {
+    apiTokens.value = newTokens;
     notyf.success(trans('settings.saved'));
 }
 
@@ -65,6 +90,7 @@ function mastodonRemoved(): void {
 }
 
 getIcsTokens();
+getApiTokens();
 getUserProfile();
 </script>
 
@@ -84,6 +110,7 @@ getUserProfile();
         <h2 class="text-xl font-bold mt-4">{{ trans('settings.title-security') }}</h2>
         <ul class="list bg-base-100 rounded-box shadow-md mt-2">
             <Sessions />
+            <ManageApiTokens :tokens="apiTokens" @tokens-updated="updateApiTokens" @error="error" />
             <ManageWebhooks @error="error" />
         </ul>
     </SettingsLayout>

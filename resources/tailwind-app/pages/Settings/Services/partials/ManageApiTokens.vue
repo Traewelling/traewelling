@@ -28,6 +28,21 @@ function removeToken(tokenId: string) {
         });
 }
 
+function removeAllTokens() {
+    api.security
+        .revokeAllTokens()
+        .then(() => {
+            emits('tokens-updated', []);
+        })
+        .catch((error) => {
+            emits('error', error.error.message);
+        });
+}
+
+function scopeLabel(scope: string): string {
+    return scope === '*' ? trans('scopes.all') : trans('scopes.' + scope);
+}
+
 const groupedTokens = computed(() => {
     const map = new Map<string, TokenResource[]>();
 
@@ -42,20 +57,28 @@ const groupedTokens = computed(() => {
 </script>
 
 <template>
-    <SettingsListRow :title="trans('settings.title-tokens')" @click.prevent="modal?.showModal()" />
+    <SettingsListRow
+        :title="trans('settings.title-tokens')"
+        :description="trans('settings.tokens.description')"
+        @click.prevent="modal?.showModal()"
+    />
     <dialog ref="modal" class="modal">
         <div class="modal-box">
-            <h3 class="text-lg font-bold mb-4">{{ trans('settings.ics.modal') }}</h3>
+            <h3 class="text-lg font-bold mb-4">{{ trans('settings.title-tokens') }}</h3>
             <ul class="list">
+                <li v-if="tokens.length === 0">
+                    {{ trans('settings.no-tokens') }}
+                </li>
                 <!-- Render grouped tokens by client -->
                 <li v-for="group in groupedTokens" :key="group.client" class="mb-4">
                     <h6 class="mb-2 font-semibold">{{ group.client }}</h6>
                     <ul>
                         <li v-for="token in group.tokens" :key="token.id" class="list-row">
                             <div class="list-col-grow">
-                                <h6 class="mb-0">
-                                    {{ token.client }}
-                                </h6>
+                                <p class="mb-0 opacity-75">
+                                    {{ trans('settings.scopes') }}:
+                                    {{ token.scopes.map(scopeLabel).join(', ') }}
+                                </p>
                                 <p class="mb-0 opacity-75">
                                     {{ trans('settings.expires') }}:
                                     {{
@@ -76,7 +99,10 @@ const groupedTokens = computed(() => {
                     </ul>
                 </li>
             </ul>
-            <div class="modal-action">
+            <div class="modal-action w-full">
+                <button v-if="tokens.length > 0" class="btn btn-outline btn-error me-auto" @click="removeAllTokens()">
+                    {{ trans('settings.revoke-all-tokens') }}
+                </button>
                 <form method="dialog">
                     <button class="btn me-2">{{ trans('menu.close') }}</button>
                 </form>

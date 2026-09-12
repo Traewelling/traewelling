@@ -20,8 +20,6 @@ use OpenApi\Attributes as OA;
 )]
 class TokenResource extends JsonResource
 {
-    private User $user;
-
     /**
      * Transform the resource into an array.
      *
