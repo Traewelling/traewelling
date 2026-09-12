@@ -715,6 +715,7 @@
   "settings.password-mismatch": "Passwords do not match.",
   "settings.title-change-password": "Change password",
   "settings.title-set-password": "Set password",
+  "settings.tokens.access-until": "Access until",
   "settings.tokens.description": "Applications that are allowed to access your account.",
   "settings.warning-no-email": "Optional, but recommended. Without an email address you cannot recover your account if you lose access to your SSO provider.",
   "settings.warning-no-password": "Optional, but recommended. Without a password you will lose access to Träwelling if your SSO provider becomes unavailable.",

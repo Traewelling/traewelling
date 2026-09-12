@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Http\Resources\UserAuthResource;
 use App\Providers\AuthServiceProvider;
+use App\Services\OAuth\TokenService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
@@ -40,14 +41,16 @@ class AuthController extends Controller
             new OA\Response(response: 500, description: 'Error during revoke'),
         ],
     )]
-    public function logout(Request $request): JsonResponse
+    public function logout(Request $request, TokenService $tokenService): JsonResponse
     {
-        $isUser = $request->user()->token()->revoke();
-        if ($isUser) {
-            return $this->sendResponse();
+        $token = $tokenService->resolveCurrentToken($request->user());
+        if ($token === null) {
+            return $this->sendResponse('unknown', 500);
         }
 
-        return $this->sendResponse('unknown', 500);
+        $tokenService->revokeToken($token);
+
+        return $this->sendResponse();
     }
 
     /**
@@ -113,11 +116,13 @@ class AuthController extends Controller
             new OA\Response(response: 401, description: 'Unauthorized'),
         ],
     )]
-    public function refresh(Request $request): JsonResponse
+    public function refresh(Request $request, TokenService $tokenService): JsonResponse
     {
-        $oldToken = $request->user()->token();
+        $oldToken = $tokenService->resolveCurrentToken($request->user());
         $newToken = $request->user()->createToken('token', array_keys(AuthServiceProvider::$scopes));
-        $oldToken->revoke();
+        if ($oldToken !== null) {
+            $tokenService->revokeToken($oldToken);
+        }
 
         return $this->sendResponse([
             'token' => $newToken->accessToken,

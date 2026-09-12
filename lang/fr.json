@@ -728,6 +728,7 @@
     "settings.title-webhooks": "Webhooks",
     "settings.token": "Jeton",
     "settings.tokens-managed-in-applications": "Les jetons API et les jetons d'accès personnels sont gérés sous \"Applications\".",
+    "settings.tokens.access-until": "Accès jusqu'au",
     "settings.tokens.description": "Applications autorisées à accéder à ton compte.",
     "settings.upload-image": "Télécharger une photo de profil",
     "settings.upload-image.image-size": "Taille d'image recommandée: 400x400pixels.",

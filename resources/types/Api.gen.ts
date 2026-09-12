@@ -2535,6 +2535,12 @@ export interface TokenResource {
    * @example "2024-07-01T12:34:56Z"
    */
   expiresAt: string;
+  /**
+   * The timestamp until which the client can renew this token through its refresh token, in ISO 8601 format. Null when no valid refresh token exists, in which case access ends with expiresAt.
+   * @format date-time
+   * @example "2024-07-31T12:34:56Z"
+   */
+  refreshExpiresAt: string | null;
 }
 
 /** TransportResource */

@@ -43,6 +43,18 @@ function scopeLabel(scope: string): string {
     return scope === '*' ? trans('scopes.all') : trans('scopes.' + scope);
 }
 
+/**
+ * How long the application keeps its access without the user doing anything: the refresh token
+ * expiry whenever one is still valid, because the client renews the short lived access token on
+ * its own. The access token expiry itself is a technical detail that reads as already expired
+ * for most entries and only confuses.
+ */
+function accessUntil(token: TokenResource): string {
+    const until = token.refreshExpiresAt ?? token.expiresAt;
+
+    return until ? new Date(until).toLocaleString() : trans('settings.never');
+}
+
 const groupedTokens = computed(() => {
     const map = new Map<string, TokenResource[]>();
 
@@ -80,16 +92,8 @@ const groupedTokens = computed(() => {
                                     {{ token.scopes.map(scopeLabel).join(', ') }}
                                 </p>
                                 <p class="mb-0 opacity-75">
-                                    {{ trans('settings.expires') }}:
-                                    {{
-                                        token.expiresAt
-                                            ? new Date(token.expiresAt).toLocaleString()
-                                            : trans('settings.never')
-                                    }}
-                                </p>
-                                <p class="mb-0 opacity-75">
-                                    {{ trans('settings.created') }}
-                                    {{ token.createdAt ? new Date(token.createdAt).toLocaleString() : '' }}
+                                    {{ trans('settings.tokens.access-until') }}:
+                                    {{ accessUntil(token) }}
                                 </p>
                             </div>
                             <button role="button" class="btn btn-sm btn-error" @click="removeToken(token.id)">

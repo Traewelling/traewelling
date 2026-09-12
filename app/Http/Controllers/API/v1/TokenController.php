@@ -2,16 +2,22 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Http\Controllers\Backend\User\TokenController as BackendTokenController;
 use App\Http\Resources\TokenResource;
-use Illuminate\Auth\Access\AuthorizationException;
+use App\Services\OAuth\TokenService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Gate;
+use Laravel\Passport\Token;
 use OpenApi\Attributes as OA;
 
 class TokenController extends Controller
 {
+    public function __construct(private readonly TokenService $tokenService)
+    {
+        parent::__construct();
+    }
+
     #[OA\Get(
         path: '/v1/security/tokens',
         operationId: 'getTokens',
@@ -35,7 +41,7 @@ class TokenController extends Controller
     )]
     public function index(): AnonymousResourceCollection
     {
-        return TokenResource::collection(BackendTokenController::index(user: auth()->user()));
+        return TokenResource::collection($this->tokenService->getActiveTokens(auth()->user()));
     }
 
     #[OA\Post(
@@ -63,7 +69,7 @@ class TokenController extends Controller
     )]
     public function createToken(Request $request): JsonResponse
     {
-        $token = BackendTokenController::createPersonalAccessToken(auth()->user());
+        $token = $this->tokenService->createPersonalAccessToken(auth()->user());
 
         return $this->sendResponse(['token' => $token], 201);
     }
@@ -92,13 +98,15 @@ class TokenController extends Controller
     )]
     public function revokeToken(Request $request, string $tokenId): JsonResponse
     {
-        try {
-            BackendTokenController::revokeToken($tokenId, auth()->user());
+        $token = Token::findOrFail($tokenId);
 
-            return $this->sendResponse(null, 204);
-        } catch (AuthorizationException) {
+        if (Gate::forUser(auth()->user())->denies('delete', $token)) {
             return $this->sendError(null, 403);
         }
+
+        $this->tokenService->revokeTokenAndClientWebhooks($token);
+
+        return $this->sendResponse(null, 204);
     }
 
     #[OA\Delete(
@@ -112,7 +120,7 @@ class TokenController extends Controller
     )]
     public function revokeAllTokens(): JsonResponse
     {
-        BackendTokenController::revokeAllTokens(user: auth()->user());
+        $this->tokenService->revokeAllTokens(auth()->user());
 
         return $this->sendResponse(null, 204);
     }
