@@ -6,6 +6,9 @@ import { resolve } from 'path';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+    optimizeDeps: {
+        exclude: ['maplibre-gl'],
+    },
     plugins: [
         tailwindcss(),
         laravel({

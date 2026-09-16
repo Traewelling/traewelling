@@ -2,6 +2,8 @@
 import 'bootstrap';
 import { i18nVue } from 'laravel-vue-i18n';
 import 'leaflet/dist/leaflet.js';
+import { setWorkerUrl } from 'maplibre-gl';
+import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Notyf } from 'notyf';
 import { createPinia } from 'pinia';
@@ -25,6 +27,8 @@ import TicketDetail from '../vue/views/TicketDetail.vue';
 import Tickets from '../vue/views/Tickets.vue';
 import './api/api';
 import './components/maps';
+
+setWorkerUrl(maplibreWorkerUrl);
 
 window.notyf = new Notyf({
     duration: 5000,

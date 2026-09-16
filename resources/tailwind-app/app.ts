@@ -1,4 +1,6 @@
 import { i18nVue } from 'laravel-vue-i18n';
+import { setWorkerUrl } from 'maplibre-gl';
+import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { INotyfOptions, Notyf } from 'notyf';
 import { createPinia } from 'pinia';
@@ -7,6 +9,8 @@ import { createApp } from 'vue';
 import '../css/tailwind-app.css';
 import App from './App.vue';
 import router from './router';
+
+setWorkerUrl(maplibreWorkerUrl);
 
 // Notyf can be used like this in the options api:
 //
