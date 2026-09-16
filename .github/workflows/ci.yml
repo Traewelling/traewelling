@@ -212,7 +212,7 @@ jobs:
 
     services:
       mariadb:
-        image: mariadb:12
+        image: mariadb:13
         env:
           MYSQL_ROOT_PASSWORD: password
           MYSQL_DATABASE: traewelling_test
