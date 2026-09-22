@@ -73,7 +73,17 @@ class ReRoutingService
         }
 
         if ($count === 0) {
-            Log::error('RerouteStops: No stopovers found for trip', ['trip_id' => $trip->id]);
+            if ($stops->count() < 2) {
+                Log::warning('RerouteStops: Trip has too few stopovers to route', [
+                    'trip_id' => $trip->id,
+                    'stopovers' => $stops->count(),
+                ]);
+            } else {
+                Log::debug('RerouteStops: Nothing to route, every stopover pair already has a segment', [
+                    'trip_id' => $trip->id,
+                    'stopovers' => $stops->count(),
+                ]);
+            }
         }
 
         if ($this->stopovers < 1) {

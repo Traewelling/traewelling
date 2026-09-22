@@ -10,6 +10,7 @@ use App\Dto\Internal\ProviderPolylineImportResult;
 use App\Enum\SegmentPathType;
 use App\Enum\TripSource;
 use App\Exceptions\DataProviderException;
+use App\Jobs\RecalculateStatusesDistanceForTrip;
 use App\Models\Stopover;
 use App\Models\Trip;
 use App\Repositories\TripRepository;
@@ -122,6 +123,10 @@ class ProviderPolylineService
         }
 
         $result = $this->createSegments($stopovers, $geometry['coordinates'], $indices, $geometry['precision'], $pathType);
+
+        if ($result->created > 0 || $result->reused > 0) {
+            RecalculateStatusesDistanceForTrip::dispatch($trip->trip_id);
+        }
 
         Log::debug('ProviderPolyline: Finished import for trip', [
             'trip_id' => $trip->id,

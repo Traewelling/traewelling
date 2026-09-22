@@ -5,16 +5,18 @@ namespace App\Jobs;
 use App\Enum\Queue;
 use App\Models\Checkin;
 use App\Services\Checkin\CheckinService;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Contracts\Queue\ShouldBeUniqueUntilProcessing;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
-class RecalculateStatusesDistanceForTrip implements ShouldBeUnique, ShouldQueue
+class RecalculateStatusesDistanceForTrip implements ShouldBeUniqueUntilProcessing, ShouldQueue
 {
     use Queueable;
+
+    public int $uniqueFor = 3600;
 
     private string $tripId;
 
