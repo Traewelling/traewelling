@@ -1371,5 +1371,21 @@
     "stats.yearly-breakdown": "Roční rozpis",
     "tag.suggestion.trip": "Od ostatních účastníků této cesty",
     "tag.save": "Uložit štítek",
-    "time.amount": "Množství"
+    "time.amount": "Množství",
+    "scopes.all": "plný přístup k vašemu účtu",
+    "settings.no-tokens": "K vašemu účtu momentálně nemá přístup žádná aplikace.",
+    "settings.revoke-all-tokens": "Zrušit přístup pro všechny aplikace",
+    "settings.scopes": "Oprávnění",
+    "settings.tokens.access-until": "Přístup do",
+    "settings.tokens.description": "Aplikace, které mají povolen přístup k vašemu účtu.",
+    "time.arrival.short": "pří.",
+    "time.departure.short": "odj.",
+    "time.unit": "Časová jednotka",
+    "trip.delete.blocked": "Tuto cestu nelze odstranit, dokud na ni odkazují záznamy o odbavení.",
+    "trip.delete.deleted": "Cesta byla odstraněna.",
+    "trip.delete.description": "Cesta a všechny její zastávky jsou trvale odstraněny.",
+    "trip.copy.confirm": "Duplikovat a upravit",
+    "trip.copy.description": "Cesta i všechny její zastávky se zkopírují do vaší vlastní, ručně vytvořené cesty, kterou můžete libovolně upravovat. Vaše zápisy cest se přesunou do této kopie, zatímco zápisy cest ostatních uživatelů zůstanou u původní cesty.",
+    "trip.copy.creator-hint": "Každý, kdo zná ID této cesty, vidí, že jste ji vytvořil.",
+    "trip.copy.points-warning": "Za ručně zaznamenané cesty nezískáváte žádné body: počet bodů za váš zápis cesty bude nula."
 }
