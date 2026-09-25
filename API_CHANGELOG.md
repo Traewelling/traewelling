@@ -53,6 +53,12 @@ It appears in the `identifiers` array of stations like every other type.
 
 `GET /trains/station/autocomplete/{query}` now also finds stations by their local code, after exact RIL100 matches.
 
+`GET /station/{id}/departures`:
+
+- New field `meta.availableTravelTypes`: the travel types served at the station according to the data provider,
+  independent of the requested `travelType`. Empty if unknown.
+- A `travelType` filter without matching departures now returns `200` with an empty `data` array instead of `502`.
+
 ---
 
 # 2026-08-21

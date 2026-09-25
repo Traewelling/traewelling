@@ -8847,7 +8847,8 @@
                                                 "station",
                                                 "times",
                                                 "removedLicenses",
-                                                "removedCount"
+                                                "removedCount",
+                                                "availableTravelTypes"
                                             ],
                                             "properties": {
                                                 "station": {
@@ -8897,6 +8898,13 @@
                                                     "description": "Number of removed entries due to license filtering",
                                                     "type": "integer",
                                                     "example": 2
+                                                },
+                                                "availableTravelTypes": {
+                                                    "description": "Travel types served at this station according to the data provider, independent of the requested travelType. Empty if unknown.",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/TravelType"
+                                                    }
                                                 }
                                             },
                                             "type": "object"

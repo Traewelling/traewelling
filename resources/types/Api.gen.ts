@@ -5161,6 +5161,8 @@ export class Api<
              * @example 2
              */
             removedCount: number;
+            /** Travel types served at this station according to the data provider, independent of the requested travelType. Empty if unknown. */
+            availableTravelTypes: TravelType[];
           };
         },
         void

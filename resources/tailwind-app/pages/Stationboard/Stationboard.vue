@@ -27,6 +27,7 @@ type DepartureMeta = {
     station?: Station;
     times?: { prev: string; now: string; next: string };
     removedLicenses?: { licenseName?: string }[];
+    availableTravelTypes?: TravelType[];
 };
 
 const departures = ref<DepartureResource[]>([]);
@@ -74,6 +75,7 @@ async function fetchDepartures(time?: string): Promise<void> {
         departures.value = res.data?.data ?? [];
         meta.value = (res.data?.meta as DepartureMeta) ?? {};
     } catch (e) {
+        departures.value = [];
         if (typeof e === 'object' && e !== null && 'status' in e && e.status === 502)
             notyf.error(trans('messages.exception.motis.502'));
         else notyf.error(trans('messages.exception.general'));
@@ -176,6 +178,11 @@ function onTravelTypeChange(): void {
     fetchDepartures();
 }
 
+function selectTravelType(value: string): void {
+    travelType.value = value;
+    fetchDepartures();
+}
+
 const travelTypeOptions = computed(() => [
     { value: '', label: trans('stationboard.filter-all') },
     { value: 'express', label: trans('transport_types.express') },
@@ -187,6 +194,15 @@ const travelTypeOptions = computed(() => [
     { value: 'ferry', label: trans('transport_types.ferry') },
     { value: 'plane', label: trans('transport_types.plane') },
 ]);
+
+const selectedTravelTypeLabel = computed(
+    () => travelTypeOptions.value.find((opt) => opt.value === travelType.value)?.label ?? travelType.value,
+);
+
+const availableTravelTypeOptions = computed(() => {
+    const available = meta.value.availableTravelTypes ?? [];
+    return travelTypeOptions.value.filter((opt) => opt.value && available.includes(opt.value as TravelType));
+});
 
 onMounted(() => {
     if (route.query.when) {
@@ -332,7 +348,31 @@ watch(router.currentRoute, (to) => {
             <template v-else>
                 <!-- Empty state -->
                 <div v-if="!departures.length" class="card bg-base-100">
-                    <div class="card-body items-center text-center gap-2 py-10">
+                    <div v-if="travelType" class="card-body items-center text-center gap-3 py-10">
+                        <p class="text-base-content/60 text-sm">
+                            {{ trans('stationboard.no-departures-for-filter', { type: selectedTravelTypeLabel }) }}
+                        </p>
+                        <div v-if="availableTravelTypeOptions.length" class="flex flex-col items-center gap-2">
+                            <span class="text-xs text-base-content/50">
+                                {{ trans('stationboard.available-travel-types') }}
+                            </span>
+                            <div class="flex flex-wrap justify-center gap-2">
+                                <button
+                                    v-for="opt in availableTravelTypeOptions"
+                                    :key="opt.value"
+                                    class="btn btn-outline btn-xs"
+                                    @click="selectTravelType(opt.value)"
+                                >
+                                    {{ opt.label }}
+                                </button>
+                            </div>
+                        </div>
+                        <button class="btn btn-ghost btn-sm text-primary" @click="selectTravelType('')">
+                            <RotateCcw class="w-4 h-4" />
+                            {{ trans('filter.reset') }}
+                        </button>
+                    </div>
+                    <div v-else class="card-body items-center text-center gap-2 py-10">
                         <p class="text-base-content/60 text-sm">{{ trans('stationboard.no-departures') }}</p>
                     </div>
                 </div>
