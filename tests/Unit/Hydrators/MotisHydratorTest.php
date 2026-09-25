@@ -127,4 +127,53 @@ class MotisHydratorTest extends UnitTestCase
         $removedCount = count($this->getDepartures()) - $expected;
         $this->assertEquals($removedCount, $departures->removedCount);
     }
+
+    public function test_map_departures_strips_redundant_line_name_from_headsign(): void
+    {
+        Config::set('trwl.motis.filter_licenses', false);
+
+        $cases = [
+            // displayName, routeShortName, headsign, expected direction
+            ['S1', 'S1', 'S1 Hochstetten', 'Hochstetten'],
+            ['3', '3', '3 Daxlanden über Hbf', 'Daxlanden über Hbf'],
+            ['RB44 (15922)', 'RB44', 'RB44 Bühl (Baden)', 'Bühl (Baden)'],
+            ['S4', 'S4', 'Karlsruhe Albtalbahnhof', 'Karlsruhe Albtalbahnhof'],
+            ['S1', 'S1', 'S11 Ittersbach', 'S11 Ittersbach'],
+            ['S1', 'S1', 'S1', 'S1'],
+            ['ICE 9577', null, '', ''],
+        ];
+
+        $template = $this->getDepartures()[0];
+        $entries = array_map(static function (array $case) use ($template): array {
+            [$displayName, $routeShortName, $headsign] = $case;
+
+            return array_merge($template, array_filter([
+                'displayName' => $displayName,
+                'routeShortName' => $routeShortName,
+                'headsign' => $headsign,
+            ], static fn (?string $value): bool => $value !== null));
+        }, $cases);
+
+        $mockStationRepo = $this->getMockBuilder(StationRepository::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getStationsByIdentifiers'])
+            ->getMock();
+        $mockStationRepo->method('getStationsByIdentifiers')
+            ->willReturn($this->getStations());
+
+        $mockOperatorRepo = $this->getMockBuilder(OperatorService::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['parseTransitousOperator'])
+            ->getMock();
+        $mockOperatorRepo->method('parseTransitousOperator')
+            ->willReturn(null);
+
+        $hydrator = new MotisHydrator(stationRepository: $mockStationRepo, operatorService: $mockOperatorRepo);
+        $departures = $hydrator->mapDepartures($entries, Station::factory()->makeOne(), DataProviderEnum::TRANSITOUS);
+
+        $this->assertSame(
+            array_column($cases, 3),
+            $departures->departures->map(fn ($departure) => $departure->trip->direction)->all()
+        );
+    }
 }

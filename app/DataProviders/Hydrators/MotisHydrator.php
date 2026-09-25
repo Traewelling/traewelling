@@ -306,7 +306,10 @@ class MotisHydrator
                 realDeparture: !$isCancelled && !empty($rawDeparture['realTime']) ? Carbon::parse($rawDepartureStation['departure'])->utc() : null,
                 trip: new BahnTrip(
                     tripId: $tripId,
-                    direction: $rawDeparture['headsign'],
+                    direction: $this->stripLineNameFromHeadsign(
+                        $rawDeparture['headsign'] ?? '',
+                        [$rawDeparture['routeShortName'] ?? '', $tripLineName]
+                    ),
                     lineName: $tripLineName,
                     number: $tripShortName,
                     category: $hafasTravelType,
@@ -325,6 +328,30 @@ class MotisHydrator
         }
 
         return new FilteredDepartures($departures, collect(array_values($removedEntries)), $removedCount);
+    }
+
+    /**
+     * Some feeds repeat the line name at the start of the headsign ("S1 Hochstetten"),
+     * which is redundant next to the line badge. The line name is only removed when a space
+     * follows it, and never when nothing would remain.
+     *
+     * @param  array<int, string>  $lineNames
+     */
+    private function stripLineNameFromHeadsign(string $headsign, array $lineNames): string
+    {
+        foreach ($lineNames as $lineName) {
+            $prefix = trim($lineName) . ' ';
+            if ($prefix === ' ' || !str_starts_with($headsign, $prefix)) {
+                continue;
+            }
+
+            $destination = ltrim(substr($headsign, strlen($prefix)), ' :-');
+            if ($destination !== '') {
+                return $destination;
+            }
+        }
+
+        return $headsign;
     }
 
     private function ensureReadableTextColor(?string $bgHex, ?string $textHex): ?string
