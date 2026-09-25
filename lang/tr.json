@@ -1442,5 +1442,6 @@
     "settings.new-password": "",
     "events.url": "",
     "export.format": "",
-    "settings.lastactivity": ""
+    "settings.lastactivity": "",
+    "dashboard.empty.discover3": ""
 }
