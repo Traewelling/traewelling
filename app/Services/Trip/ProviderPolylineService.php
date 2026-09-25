@@ -339,7 +339,7 @@ class ProviderPolylineService
                 return null;
             }
 
-            $snapDistance = $this->geodesicService->haversineDistance($location, $coordinates[$bestIndex]);
+            $snapDistance = $this->distanceToGeometryAround($location, $coordinates, $bestIndex);
             if ($snapDistance > self::MAX_SNAP_DISTANCE_METERS) {
                 Log::debug('ProviderPolyline: Stopover too far away from geometry', [
                     'station' => $stopover->station?->name,
@@ -386,6 +386,28 @@ class ProviderPolylineService
         ]);
 
         return $indices;
+    }
+
+    /**
+     * Distance from a location to the line leading into and out of the given geometry point. On
+     * straight stretches the provider leaves kilometres between two points, so a stop right on the
+     * line can still be far away from the closest point itself.
+     *
+     * (Example: Long AMTRAK tracks in the US)
+     *
+     * @param  Coordinate[]  $coordinates
+     */
+    private function distanceToGeometryAround(Coordinate $location, array $coordinates, int $index): int
+    {
+        $distance = $this->geodesicService->haversineDistance($location, $coordinates[$index]);
+
+        foreach ([$index - 1, $index + 1] as $neighbour) {
+            if (isset($coordinates[$neighbour])) {
+                $distance = min($distance, $this->geodesicService->distanceToSegment($location, $coordinates[$index], $coordinates[$neighbour]));
+            }
+        }
+
+        return $distance;
     }
 
     /**
