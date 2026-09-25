@@ -125,10 +125,12 @@ class LocationController
             $meters = $this->getDistanceFromGeoJson($polyline) * $percentage;
             $recentPoint = null;
             $distance = 0;
+            $segmentLength = 0;
             foreach ($polyline->features as $key => $point) {
                 $point = Coordinate::fromGeoJson($point);
                 if ($recentPoint !== null && $point !== null) {
-                    $distance += $this->geoService->getDistance($recentPoint, $point);
+                    $segmentLength = $this->geoService->getDistance($recentPoint, $point);
+                    $distance += $segmentLength;
                     if ($distance >= $meters) {
                         break;
                     }
@@ -139,7 +141,7 @@ class LocationController
             $currentPosition = $this->geoService->interpolatePoint(
                 $recentPoint,
                 $point ?? $recentPoint,
-                $distance < 1 ? 0 : $meters / $distance
+                $segmentLength < 1 ? 0 : max(0, min(1, 1 - ($distance - $meters) / $segmentLength))
             );
             if ($currentPosition === null) {
                 return null;

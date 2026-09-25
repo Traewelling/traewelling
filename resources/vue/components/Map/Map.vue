@@ -53,12 +53,13 @@ function filterActiveStatuses() {
 }
 
 function fetchPositions() {
+    const activeStatusIds = filterActiveStatuses().map((s) => s.id.toString());
+    if (activeStatusIds.length === 0) {
+        livePositions.value = [];
+        return;
+    }
     api.positions
-        .getLivePositionsForStatuses(
-            filterActiveStatuses()
-                .map((s) => s.id.toString())
-                .join(','),
-        )
+        .getLivePositionsForStatuses(activeStatusIds.join(','))
         .then((response) => {
             livePositions.value = response.data.data || [];
         })
