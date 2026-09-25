@@ -204,13 +204,13 @@ class Stopover extends Model
      */
     public function getCoordinateAttribute(): ?Coordinate
     {
-        $location = $this->stationIdentifier?->location ?? $this->station?->location;
-
-        if ($location === null) {
-            return null;
+        foreach ([$this->stationIdentifier?->location, $this->station?->location] as $location) {
+            if ($location?->latitude !== null && $location->longitude !== null) {
+                return new Coordinate($location->latitude, $location->longitude);
+            }
         }
 
-        return new Coordinate($location->latitude, $location->longitude);
+        return null;
     }
 
     /**
