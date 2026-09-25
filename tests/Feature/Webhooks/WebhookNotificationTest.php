@@ -9,6 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
 use Laravel\Passport\Passport;
 
+use function PHPUnit\Framework\assertContainsOnlyString;
 use function PHPUnit\Framework\assertEquals;
 
 use Tests\FeatureTestCase;
@@ -33,6 +34,7 @@ class WebhookNotificationTest extends FeatureTestCase
 
         Bus::assertDispatched(function (MonitoredCallWebhookJob $job) {
             assertEquals(WebhookEvent::NOTIFICATION->value, $job->payload['event']);
+            assertContainsOnlyString($job->headers);
 
             return true;
         });
