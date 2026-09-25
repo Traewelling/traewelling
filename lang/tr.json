@@ -1443,5 +1443,6 @@
     "events.url": "",
     "export.format": "",
     "settings.lastactivity": "",
-    "dashboard.empty.discover3": ""
+    "dashboard.empty.discover3": "",
+    "transport_types.bus": ""
 }
