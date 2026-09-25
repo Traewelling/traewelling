@@ -4,9 +4,11 @@
         <!-- Navigation -->
         <div class="navbar bg-primary shadow-lg drawer-content">
             <div class="navbar-start">
-                <router-link :to="{ name: 'dashboard' }" class="btn btn-ghost text-xl text-white" :class="prideClass">
-                    <img src="/images/icons/logo.svg" alt="Träwelling Logo" class="w-8 h-8 mr-2" />
-                    {{ config.appName }}
+                <router-link v-slot="{ href, navigate }" :to="{ name: 'dashboard' }" custom>
+                    <a :href="href" class="btn btn-ghost text-xl text-white" :class="prideClass" @click="navigate">
+                        <img src="/images/icons/logo.svg" alt="Träwelling Logo" class="w-8 h-8 mr-2" />
+                        {{ config.appName }}
+                    </a>
                 </router-link>
             </div>
 
