@@ -170,7 +170,6 @@ export default {
         },
         showMap() {
             this.tripDataActive = false;
-            this.$refs.map.invalidateSize();
         },
         removeStopover(index) {
             if (this.stopovers[index].station.id) {

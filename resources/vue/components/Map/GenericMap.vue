@@ -224,11 +224,7 @@ const mapStyle = buildTransitBasemapStyle(isDarkMode ? 'dark' : 'light');
 
             <mgl-marker v-for="m in previewMarkers" :key="m.id" :coordinates="[m.lng, m.lat]">
                 <template #marker>
-                    <div
-                        class="w-3.5 h-3.5 rounded-full border-2 border-white shadow-md"
-                        :style="{ backgroundColor: m.color }"
-                        :title="m.title"
-                    />
+                    <div class="preview-marker" :style="{ backgroundColor: m.color }" :title="m.title" />
                 </template>
             </mgl-marker>
 
@@ -241,6 +237,17 @@ const mapStyle = buildTransitBasemapStyle(isDarkMode ? 'dark' : 'light');
 <style scoped>
 .generic-map-wrapper {
     position: relative;
+}
+
+/* Plain CSS instead of utility classes, because the legacy layout does not load Tailwind */
+.preview-marker {
+    width: 14px;
+    height: 14px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    box-shadow:
+        0 4px 6px -1px rgb(0 0 0 / 0.1),
+        0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
 
 /* Consent gate placeholder */

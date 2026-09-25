@@ -1,7 +1,3 @@
-.leaflet-tile-container img[src*='tiles.openrailwaymap.org'] {
-  filter: grayscale(80%) opacity(0.5);
-}
-
 // Dark mode overrides for MapLibre GL controls
 [data-bs-theme='dark'] {
   // Navigation / geolocate button groups
