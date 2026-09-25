@@ -72,9 +72,9 @@
 
                             <div v-if="entry.points" class="md:flex items-center">
                                 <div>
-                                    <Gem class="inline-block size-4 me-1">
+                                    <Star class="inline-block size-4 me-1">
                                         <title>{{ $t('leaderboard.points') }}</title>
-                                    </Gem>
+                                    </Star>
                                     {{ entry.points || 0 }}
                                 </div>
                             </div>
@@ -90,7 +90,7 @@
 </template>
 
 <script setup lang="ts">
-import { Gauge, Gem, Route, Search, Timer } from '@lucide/vue';
+import { Gauge, Route, Search, Star, Timer } from '@lucide/vue';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { Api, UserResource } from '../../../types/Api.gen';

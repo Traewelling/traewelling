@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ChevronLeft, ChevronRight, Clock, Dices, Map, Route, Train } from '@lucide/vue';
+import { ChevronLeft, ChevronRight, Clock, Map, Route, Star, Train } from '@lucide/vue';
 import { trans, transChoice } from 'laravel-vue-i18n';
 import { Notyf } from 'notyf';
 import { computed, inject, onMounted, onUnmounted, ref, watch } from 'vue';
@@ -169,7 +169,7 @@ onUnmounted(() => {
                 </div>
                 <div v-if="showPoints" class="card bg-base-100">
                     <div class="card-body items-center text-center py-3">
-                        <Dices class="w-5 h-5 text-primary mb-1" />
+                        <Star class="w-5 h-5 text-primary mb-1" />
                         <span class="text-2xl font-bold">{{ dayData.totalPoints }}</span>
                         <span class="text-xs text-base-content/60">{{ trans('profile.points-abbr') }}</span>
                     </div>

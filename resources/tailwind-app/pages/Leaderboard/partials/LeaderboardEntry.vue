@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Gauge, Gem, Route, Timer } from '@lucide/vue';
+import { Gauge, Route, Star, Timer } from '@lucide/vue';
 import { LeaderboardUserResource } from '../../../../types/Api.gen';
 import DurationSpan from '../../../../vue/components/Status/Partials/DurationSpan.vue';
 
@@ -90,9 +90,9 @@ const redirect = () => {
 
         <div class="md:flex items-center" :class="{ flex: showPoints, hidden: !showPoints }">
             <div>
-                <Gem class="inline-block size-4 me-1">
+                <Star class="inline-block size-4 me-1">
                     <title>{{ $t('leaderboard.points') }}</title>
-                </Gem>
+                </Star>
                 {{ entry.points || 0 }}
             </div>
         </div>
