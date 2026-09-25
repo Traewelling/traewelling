@@ -105,7 +105,7 @@ enum MotisCategory: string
     public static function fromTravelType(?TravelType $travelType): ?array
     {
         return match ($travelType) {
-            TravelType::EXPRESS => [MotisCategory::HIGHSPEED_RAIL, MotisCategory::LONG_DISTANCE, MotisCategory::NIGHT_RAIL, MotisCategory::REGIONAL_FAST_RAIL],
+            TravelType::EXPRESS => [MotisCategory::HIGHSPEED_RAIL, MotisCategory::LONG_DISTANCE, MotisCategory::NIGHT_RAIL],
             TravelType::REGIONAL => [MotisCategory::REGIONAL_FAST_RAIL, MotisCategory::REGIONAL_RAIL],
             TravelType::SUBURBAN => [MotisCategory::METRO],
             TravelType::BUS => [MotisCategory::BUS, MotisCategory::COACH, MotisCategory::ODM, MotisCategory::FLEX],
@@ -113,6 +113,7 @@ enum MotisCategory: string
             TravelType::SUBWAY => [MotisCategory::SUBWAY],
             TravelType::TRAM => [MotisCategory::TRAM],
             TravelType::TAXI => [MotisCategory::COACH],
+            TravelType::PLANE => [MotisCategory::AIRPLANE],
             default => null
         };
     }
