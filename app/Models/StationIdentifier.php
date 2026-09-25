@@ -47,6 +47,12 @@ class StationIdentifier extends Model
 {
     use HasFactory, HasUuids;
 
+    /**
+     * Appended to the identifier of a row whose stop id was reused for another stop by the data provider,
+     * followed by the unix timestamp of the retirement.
+     */
+    public const string RETIRED_MARKER = '#retired-';
+
     protected $fillable = ['relevance', 'station_id', 'identifier', 'type', 'origin', 'name', 'latitude', 'longitude'];
 
     protected $visible = [

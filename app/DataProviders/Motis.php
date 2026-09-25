@@ -13,6 +13,7 @@ use App\Enum\MotisCategory;
 use App\Enum\StationIdentifierType;
 use App\Enum\TravelType;
 use App\Exceptions\DataProviderException;
+use App\Exceptions\StaleStationIdentifierException;
 use App\Exceptions\TimetableLocationNotFoundException;
 use App\Helpers\CacheKey;
 use App\Helpers\HCK;
@@ -213,6 +214,8 @@ class Motis extends Controller implements DataProviderInterface
                 $identifier->save();
 
                 continue;
+            } catch (StaleStationIdentifierException) {
+                continue;
             }
 
             if ($filtered->departures->count() === 0 && $filtered->removedEntries->count() === 0) {
@@ -363,6 +366,8 @@ class Motis extends Controller implements DataProviderInterface
                 throw new DataProviderException(__('messages.exception.motis.unknown-error.departures'));
             }
 
+            $this->ensureIdentifierBelongsToStation($station, $transitousIdentifier, $response->json('place'));
+
             $entries = $response->json('stopTimes');
             CacheKey::increment(HCK::DEPARTURES_SUCCESS);
 
@@ -377,13 +382,37 @@ class Motis extends Controller implements DataProviderInterface
         } catch (JsonException $exception) {
             report($exception);
             throw new DataProviderException(__('messages.exception.motis.general'));
-        } catch (TimetableLocationNotFoundException $exception) {
-            throw $exception; // This exception is handled separately
+        } catch (TimetableLocationNotFoundException|StaleStationIdentifierException $exception) {
+            throw $exception; // These exceptions are handled separately
         } catch (Exception $exception) {
             CacheKey::increment(HCK::DEPARTURES_FAILURE);
             report($exception);
             throw new DataProviderException(__('messages.exception.motis.general'));
         }
+    }
+
+    /**
+     * Some feeds reuse a stop id for a different stop in a later export. When the stop the data provider
+     * answers for lies far away from the station, the identifier is retired, so that this station does not
+     * show departures of an unrelated stop.
+     *
+     * @param  array<string, mixed>|null  $place
+     *
+     * @throws StaleStationIdentifierException
+     */
+    private function ensureIdentifierBelongsToStation(Station $station, StationIdentifier $identifier, ?array $place): void
+    {
+        if (!$this->stationRepository->retireMotisIdentifierIfReused($station, $identifier->identifier, $this->source, $place['lat'] ?? null, $place['lon'] ?? null)) {
+            return;
+        }
+
+        Log::info('MOTIS stop id belongs to another stop now, retired identifier', [
+            'identifier' => $identifier->identifier,
+            'station_id' => $station->id,
+            'place' => $place['name'] ?? null,
+        ]);
+
+        throw new StaleStationIdentifierException();
     }
 
     /**
@@ -495,6 +524,9 @@ class Motis extends Controller implements DataProviderInterface
             $stationIdentifier = $stationIdentifiers->where('identifier', $rawStation[$identifier])->first();
             $station = $stationCache->where('id', $stationIdentifier?->station_id)->first();
             $areas = $rawStation['areas'] ?? [];
+            if ($station !== null && $this->stationRepository->retireMotisIdentifierIfReused($station, $rawStation[$identifier], $this->source, $rawStation['lat'] ?? null, $rawStation['lon'] ?? null)) {
+                $station = null;
+            }
 
             if ($station === null) {
                 $rawStation['stopId'] = $rawStation[$identifier];
