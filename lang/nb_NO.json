@@ -1461,5 +1461,6 @@
     "error.404": "",
     "notifications.eventSuggestionProcessed.duplicate": "",
     "settings.webhook_event.checkin_delete": "",
-    "export.format": ""
+    "export.format": "",
+    "dashboard.empty.discover3": ""
 }
