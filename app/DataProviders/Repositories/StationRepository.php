@@ -36,6 +36,52 @@ class StationRepository
             })->get();
     }
 
+    /**
+     * Some feeds reuse a stop id for a different stop in a later export. When the fresh coordinates are far
+     * away from the station the stop id is mapped to, the identifier row is retired, so that the stop id is
+     * treated as unknown and gets a new row. The retired row keeps its station and coordinates, because
+     * stopovers and route segments refer to it.
+     *
+     * @return bool whether the stop id belongs to another stop now
+     */
+    public function retireMotisIdentifierIfReused(Station $station, string $stopId, DataProvider $source, ?float $latitude, ?float $longitude): bool
+    {
+        if (!$this->isStationFarFrom($station, $latitude, $longitude)) {
+            return false;
+        }
+
+        // Guarded by the old identifier, so that concurrent requests retire the row only once
+        StationIdentifier::where('type', StationIdentifierType::MOTIS)
+            ->where('origin', $source->value)
+            ->where('identifier', $stopId)
+            ->where('station_id', $station->id)
+            ->update([
+                'identifier' => $stopId . StationIdentifier::RETIRED_MARKER . now()->timestamp,
+                'relevance' => -9_000,
+            ]);
+
+        return true;
+    }
+
+    /**
+     * Feeds with non-static stop ids (e.g. CZ, or the purely numeric DELFI ids) assign the
+     * same stop id to a different physical stop in a later export. A cached station farther away than the
+     * configured threshold from the fresh coordinates therefore belongs to another stop.
+     */
+    private function isStationFarFrom(Station $station, ?float $latitude, ?float $longitude): bool
+    {
+        if ($station->latitude === null || $station->longitude === null || $latitude === null || $longitude === null) {
+            return false;
+        }
+
+        $distance = $this->geoService->getDistance(
+            new Coordinate((float) $station->latitude, (float) $station->longitude),
+            new Coordinate($latitude, $longitude),
+        );
+
+        return $distance > config('trwl.motis.max_cache_distance');
+    }
+
     public function getStationByIfopt(string $ifopt): ?Station
     {
         // Check direct IFOPT identifier first

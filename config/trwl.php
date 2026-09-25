@@ -33,10 +33,11 @@ return [
         'excluded_sources' => [
             'de-amarillo-bw',
         ],
-        // Feeds with non-static stop IDs (e.g. CZ) reassign the same stopId to a different
-        // physical stop on every export. A cached identifier whose station is farther than this
-        // (in meters) from the fresh raw coordinates is treated as stale and re-resolved.
-        'max_cache_distance' => (int) env('MOTIS_MAX_CACHE_DISTANCE', 400),
+        // Feeds with non-static stop IDs (e.g. CZ, numeric DELFI ids) reassign the same stopId to a
+        // different physical stop in a later export. A cached identifier whose station is farther than
+        // this (in meters) from the fresh raw coordinates is treated as stale and re-resolved. Large
+        // stations legitimately have stops up to about 2 km away from their station coordinates.
+        'max_cache_distance' => (int) env('MOTIS_MAX_CACHE_DISTANCE', 2000),
     ],
 
     // Points

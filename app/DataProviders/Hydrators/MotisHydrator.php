@@ -7,7 +7,6 @@ namespace App\DataProviders\Hydrators;
 use App\DataProviders\Repositories\MotisLicenseRepository;
 use App\DataProviders\Repositories\StationRepository;
 use App\DataProviders\Repositories\TripRepository;
-use App\Dto\Coordinate;
 use App\Dto\Internal\BahnTrip;
 use App\Dto\Internal\Departure;
 use App\Dto\Internal\FilteredDepartures;
@@ -19,7 +18,6 @@ use App\Models\Station;
 use App\Models\StationIdentifier;
 use App\Models\Stopover;
 use App\Models\Trip;
-use App\Services\GeoService;
 use App\Services\LicenseService;
 use App\Services\OperatorService;
 use Carbon\Carbon;
@@ -37,8 +35,6 @@ class MotisHydrator
 
     private LicenseService $licenseService;
 
-    private GeoService $geoService;
-
     private TripRepository $tripRepository;
 
     public function __construct(
@@ -46,14 +42,12 @@ class MotisHydrator
         ?StationRepository $stationRepository = null,
         ?OperatorService $operatorService = null,
         ?LicenseService $licenseService = null,
-        ?GeoService $geoService = null,
         ?TripRepository $tripRepository = null
     ) {
         $this->motisRepository = $motisRepository ?? new MotisLicenseRepository();
         $this->stationRepository = $stationRepository ?? new StationRepository();
         $this->operatorService = $operatorService ?? new OperatorService();
         $this->licenseService = $licenseService ?? new LicenseService();
-        $this->geoService = $geoService ?? new GeoService();
         $this->tripRepository = $tripRepository ?? new TripRepository();
     }
 
@@ -109,35 +103,11 @@ class MotisHydrator
             )
         );
 
-        if ($station === null || $this->isCachedStationStale($station, $rawStop)) {
+        if ($station === null || $this->stationRepository->retireMotisIdentifierIfReused($station, $rawStop['stopId'], $source, $rawStop['lat'] ?? null, $rawStop['lon'] ?? null)) {
             return null;
         }
 
         return $station;
-    }
-
-    /**
-     * Feeds with non-static stop IDs (e.g. CZ) reassign the same stopId to a different physical
-     * stop on every export, so the cached identifier -> station mapping can be stale and would
-     * otherwise plot the trip at the wrong location. Reject a cache hit whose station is farther
-     * than the configured threshold from the fresh raw coordinates so the stopover is re-resolved
-     * and the identifier mapping gets updated.
-     *
-     * @param  array<string, mixed>  $rawStop
-     */
-    private function isCachedStationStale(Station $station, array $rawStop): bool
-    {
-        if ($station->latitude === null || $station->longitude === null
-            || !isset($rawStop['lat'], $rawStop['lon'])) {
-            return false;
-        }
-
-        $distance = $this->geoService->getDistance(
-            new Coordinate((float) $station->latitude, (float) $station->longitude),
-            new Coordinate((float) $rawStop['lat'], (float) $rawStop['lon']),
-        );
-
-        return $distance > config('trwl.motis.max_cache_distance');
     }
 
     private function getStopoverData($station, mixed $rawStop, DataProvider $source, bool $realTime = false): array
@@ -185,10 +155,10 @@ class MotisHydrator
 
     public function getTripData(mixed $leg, string $lineName, DataProvider $source): array
     {
-        $originStation = $this->stationRepository->getStationsByIdentifiers($leg['from']['stopId'], $source)->first()
+        $originStation = $this->findStationInCache($this->stationRepository->getStationsByIdentifiers($leg['from']['stopId'], $source), $leg['from'], $source)
                               ?? $this->stationRepository->updateOrCreateByIfopt($leg['from']['stopId'], $source)
                                  ?? $this->stationRepository->createMotisStationIdentifier($leg['from'], $source);
-        $destinationStation = $this->stationRepository->getStationsByIdentifiers($leg['to']['stopId'], $source)->first()
+        $destinationStation = $this->findStationInCache($this->stationRepository->getStationsByIdentifiers($leg['to']['stopId'], $source), $leg['to'], $source)
                               ?? $this->stationRepository->updateOrCreateByIfopt($leg['to']['stopId'], $source)
                                  ?? $this->stationRepository->createMotisStationIdentifier($leg['to'], $source);
         $departure = isset($leg['from']['departure']) ? Carbon::parse($leg['from']['departure'])->utc() : null;
@@ -286,6 +256,9 @@ class MotisHydrator
                     $departureStation = $station;
                 } else {
                     $departureStation = $this->stationRepository->getStationsByIdentifiers([$rawDepartureStation['stopId']], $source)->first();
+                    if ($departureStation !== null && $this->stationRepository->retireMotisIdentifierIfReused($departureStation, $rawDepartureStation['stopId'], $source, $rawDepartureStation['lat'] ?? null, $rawDepartureStation['lon'] ?? null)) {
+                        $departureStation = null;
+                    }
                     if ($departureStation === null) {
                         $stationId = $rawDepartureStation['stopId'];
                         $departureStation = $this->stationRepository->updateOrCreateByIfopt($stationId, $source, $rawDepartureStation['lat'], $rawDepartureStation['lon']);

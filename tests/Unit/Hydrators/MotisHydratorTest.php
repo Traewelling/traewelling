@@ -100,7 +100,7 @@ class MotisHydratorTest extends UnitTestCase
 
         $mockStationRepo = $this->getMockBuilder(StationRepository::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['getStationsByIdentifiers'])
+            ->onlyMethods(['getStationsByIdentifiers', 'retireMotisIdentifierIfReused'])
             ->getMock();
         $mockStationRepo->method('getStationsByIdentifiers')
             ->willReturn($this->getStations());
@@ -156,7 +156,7 @@ class MotisHydratorTest extends UnitTestCase
 
         $mockStationRepo = $this->getMockBuilder(StationRepository::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['getStationsByIdentifiers'])
+            ->onlyMethods(['getStationsByIdentifiers', 'retireMotisIdentifierIfReused'])
             ->getMock();
         $mockStationRepo->method('getStationsByIdentifiers')
             ->willReturn($this->getStations());
