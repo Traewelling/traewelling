@@ -5,6 +5,7 @@ namespace App\DataProviders\Repositories;
 use App\Enum\TripSource;
 use App\Models\Stopover;
 use App\Models\Trip;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
@@ -38,7 +39,7 @@ class TripRepository
         $claimedIds = [];
         $unmatched = [];
 
-        foreach ($stopoverData as $index => $data) {
+        foreach ($this->withoutRepeatedStops($stopoverData) as $index => $data) {
             try {
                 $existing = $this->queryStopoversByPlannedTimes($trip, $data, $claimedIds)
                     ->where('train_station_id', $data['train_station_id'])
@@ -77,6 +78,27 @@ class TripRepository
         }
 
         return $stopovers->sortKeys()->values();
+    }
+
+    private function withoutRepeatedStops(array $stopoverData): array
+    {
+        $seen = [];
+
+        return array_filter($stopoverData, function (array $data) use (&$seen): bool {
+            $key = implode('|', [
+                $data['train_station_id'],
+                Carbon::make($data['arrival_planned'])?->toDateTimeString(),
+                Carbon::make($data['departure_planned'])?->toDateTimeString(),
+            ]);
+
+            if (isset($seen[$key])) {
+                return false;
+            }
+
+            $seen[$key] = true;
+
+            return true;
+        });
     }
 
     /**
