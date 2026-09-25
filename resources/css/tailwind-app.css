@@ -19,6 +19,6 @@
 }
 
 .lucide {
-  color: rgb(from currentColor r g b) !important;
+  color: rgb(from currentColor r g b / 1) !important;
   opacity: 100% !important;
 }
