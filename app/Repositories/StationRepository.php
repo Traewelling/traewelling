@@ -36,16 +36,22 @@ class StationRepository
             ->get();
     }
 
-    public function getStationsByFuzzyRilIdentifier(string $rilIdentifier): Collection
+    /**
+     * Stations with an identifier of one of the given types that equals the code exactly,
+     * ordered by the position of the matching type in $types.
+     *
+     * @param  list<StationIdentifierType>  $types
+     */
+    public function getStationsByShortCode(string $shortCode, array $types): Collection
     {
-        $identifiers = StationIdentifier::with(['station.stationIdentifiers'])
-            ->where('type', StationIdentifierType::DE_DB_RIL100)
-            ->where('identifier', $rilIdentifier)
-            ->get();
-
-        return $identifiers->map(function (StationIdentifier $identifier) {
-            return $identifier->station;
-        });
+        return StationIdentifier::with(['station.stationIdentifiers'])
+            ->whereIn('type', $types)
+            ->where('identifier', $shortCode)
+            ->get()
+            ->sortBy(fn (StationIdentifier $identifier) => array_search($identifier->type, $types, true))
+            ->map(fn (StationIdentifier $identifier) => $identifier->station)
+            ->unique('id')
+            ->values();
     }
 
     public function getStationsByWikidataId(string $wikidataId): Collection
@@ -422,18 +428,26 @@ class StationRepository
         return $updated;
     }
 
-    public function createIdentifier(Station $station, StationIdentifierType $type, string $value): StationIdentifier
+    public function createIdentifier(Station $station, StationIdentifierType $type, string $value, ?string $origin = null): StationIdentifier
     {
         return StationIdentifier::create([
             'station_id' => $station->id,
             'type' => $type,
             'identifier' => $value,
-            'origin' => null,
+            'origin' => $origin,
         ]);
     }
 
-    public function updateIdentifierValues(StationIdentifier $identifier, StationIdentifierType $type, string $value): void
+    /**
+     * The origin is only set by hand for local codes. Other types keep the origin they were imported with,
+     * unless the identifier was a local code before, whose issuer means nothing for the new type.
+     */
+    public function updateIdentifierValues(StationIdentifier $identifier, StationIdentifierType $type, string $value, ?string $origin = null): void
     {
-        $identifier->update(['type' => $type, 'identifier' => $value]);
+        if ($type !== StationIdentifierType::LOCAL_CODE) {
+            $origin = $identifier->type === StationIdentifierType::LOCAL_CODE ? null : $identifier->origin;
+        }
+
+        $identifier->update(['type' => $type, 'identifier' => $value, 'origin' => $origin]);
     }
 }

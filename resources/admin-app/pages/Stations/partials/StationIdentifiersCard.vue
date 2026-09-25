@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ArrowRightLeft, Pencil, Plus } from '@lucide/vue';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { Api, type Station, type StationIdentifier, StationIdentifierType } from '../../../../types/Api.gen';
 import { IDENTIFIER_TYPES, type IdentifierType } from '../../../../types/StationIdentifier';
 import StationMoveTargetModal from './StationMoveTargetModal.vue';
@@ -55,6 +55,7 @@ const formMode = ref<FormMode>('create');
 const editingIdentifier = ref<StationIdentifier | null>(null);
 const formType = ref<IdentifierType>('motis');
 const formValue = ref('');
+const formOrigin = ref('');
 const formSaving = ref(false);
 const formError = ref<string | null>(null);
 
@@ -63,6 +64,7 @@ function openCreateModal(): void {
     editingIdentifier.value = null;
     formType.value = 'motis';
     formValue.value = '';
+    formOrigin.value = '';
     formError.value = null;
     formModalOpen.value = true;
 }
@@ -72,6 +74,7 @@ function openEditModal(ident: StationIdentifier): void {
     editingIdentifier.value = ident;
     formType.value = (ident.type ?? 'motis') as IdentifierType;
     formValue.value = ident.identifier ?? '';
+    formOrigin.value = ident.type === 'local_code' ? (ident.origin ?? '') : '';
     formError.value = null;
     formModalOpen.value = true;
 }
@@ -81,12 +84,21 @@ function closeFormModal(): void {
     editingIdentifier.value = null;
 }
 
+const needsOrigin = computed(() => formType.value === 'local_code');
+const canSubmit = computed(
+    () => formValue.value.trim() !== '' && (!needsOrigin.value || formOrigin.value.trim() !== ''),
+);
+
 async function submitForm(): Promise<void> {
-    if (!formValue.value.trim()) return;
+    if (!canSubmit.value) return;
     formSaving.value = true;
     formError.value = null;
     try {
-        const payload = { type: formType.value as StationIdentifierType, identifier: formValue.value.trim() };
+        const payload = {
+            type: formType.value as StationIdentifierType,
+            identifier: formValue.value.trim(),
+            ...(needsOrigin.value ? { origin: formOrigin.value.trim() } : {}),
+        };
         if (formMode.value === 'edit' && editingIdentifier.value) {
             await api.stations.updateStationIdentifier(props.stationId, editingIdentifier.value.id!, payload);
         } else {
@@ -210,13 +222,28 @@ function identifierLink(type: string | undefined, value: string | undefined): st
                 />
             </div>
 
+            <div v-if="needsOrigin" class="form-control mb-4">
+                <label class="label pb-1"><span class="label-text">Issued by</span></label>
+                <input
+                    v-model="formOrigin"
+                    type="text"
+                    placeholder="e.g. de_uestra"
+                    pattern="[a-z0-9]+(_[a-z0-9]+)*"
+                    class="input input-sm input-bordered font-mono"
+                    @keydown.enter="submitForm"
+                />
+                <span class="label-text-alt text-base-content/60 mt-1">
+                    Lowercase slug of the authority or operator that issued the code.
+                </span>
+            </div>
+
             <div v-if="formError" role="alert" class="alert alert-error alert-sm mb-3 py-2 text-sm">
                 {{ formError }}
             </div>
 
             <div class="modal-action mt-0">
                 <button class="btn btn-ghost btn-sm" :disabled="formSaving" @click="closeFormModal">Cancel</button>
-                <button class="btn btn-primary btn-sm" :disabled="!formValue.trim() || formSaving" @click="submitForm">
+                <button class="btn btn-primary btn-sm" :disabled="!canSubmit || formSaving" @click="submitForm">
                     <span v-if="formSaving" class="loading loading-spinner loading-xs" />
                     {{ formMode === 'create' ? 'Add' : 'Save' }}
                 </button>

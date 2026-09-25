@@ -29,11 +29,15 @@ class StationService
 
     public function search(string $search): Collection
     {
+        // Local codes have no common format, so they are always looked up. RIL100 codes only for short uppercase input.
+        $shortCodeTypes = [StationIdentifierType::LOCAL_CODE];
         if (!is_numeric($search) && strlen($search) <= 5 && ctype_upper($search)) {
-            $stations = $this->stationRepository->getStationsByFuzzyRilIdentifier($search);
-            if ($stations->isNotEmpty()) {
-                return $stations;
-            }
+            array_unshift($shortCodeTypes, StationIdentifierType::DE_DB_RIL100);
+        }
+
+        $stations = $this->stationRepository->getStationsByShortCode($search, $shortCodeTypes);
+        if ($stations->isNotEmpty()) {
+            return $stations;
         }
 
         if (preg_match('/^Q\d+$/', $search)) {
@@ -103,20 +107,20 @@ class StationService
         return $result;
     }
 
-    public function createIdentifier(Station $station, StationIdentifierType $type, string $value, User $actor): void
+    public function createIdentifier(Station $station, StationIdentifierType $type, string $value, ?string $origin, User $actor): void
     {
-        $identifier = $this->stationRepository->createIdentifier($station, $type, $value);
+        $identifier = $this->stationRepository->createIdentifier($station, $type, $value, $origin);
 
         activity()->causedBy($actor)
             ->performedOn($identifier)
             ->log("Added identifier {$value} ({$type->value}) to station {$station->name} ({$station->id})");
     }
 
-    public function updateIdentifierValues(StationIdentifier $identifier, StationIdentifierType $type, string $value, User $actor): void
+    public function updateIdentifierValues(StationIdentifier $identifier, StationIdentifierType $type, string $value, ?string $origin, User $actor): void
     {
         $old = "{$identifier->identifier} ({$identifier->type->value})";
 
-        $this->stationRepository->updateIdentifierValues($identifier, $type, $value);
+        $this->stationRepository->updateIdentifierValues($identifier, $type, $value, $origin);
 
         activity()->causedBy($actor)
             ->performedOn($identifier)

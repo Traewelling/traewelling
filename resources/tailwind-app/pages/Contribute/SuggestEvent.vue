@@ -154,18 +154,10 @@
                                                         <span>
                                                             {{ station.name }}
                                                             <span
-                                                                v-if="
-                                                                    station.identifiers?.find(
-                                                                        (i) => i.type === 'de_db_ril100',
-                                                                    )
-                                                                "
+                                                                v-if="stationShortCode(station)"
                                                                 class="badge badge-xs badge-ghost ml-1"
                                                             >
-                                                                {{
-                                                                    station.identifiers?.find(
-                                                                        (i) => i.type === 'de_db_ril100',
-                                                                    )?.identifier
-                                                                }}
+                                                                {{ stationShortCode(station) }}
                                                             </span>
                                                         </span>
                                                         <span v-if="getStationArea(station)" class="text-xs opacity-50">
@@ -212,6 +204,7 @@ import { ArrowLeft, CircleCheck, CircleX, MapPin, Search, TriangleAlert, X } fro
 import { trans } from 'laravel-vue-i18n';
 import { DateTime } from 'luxon';
 import { onBeforeUnmount, onMounted, reactive, ref } from 'vue';
+import { stationShortCode } from '../../helpers/stationCode';
 import ContributeLayout from '../../layouts/ContributeLayout.vue';
 
 interface StationArea {

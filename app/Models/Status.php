@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Enum\Business;
-use App\Enum\StationIdentifierType;
 use App\Enum\StatusVisibility;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -199,13 +198,13 @@ class Status extends Model
 
         $originStation = $this->checkin->originStopover->station;
         $destinationStation = $this->checkin->destinationStopover->station;
-        $originRil = $originStation->getIdentifier(StationIdentifierType::DE_DB_RIL100)?->identifier;
-        $destinationRil = $destinationStation->getIdentifier(StationIdentifierType::DE_DB_RIL100)?->identifier;
+        $originCode = $originStation->getShortCode();
+        $destinationCode = $destinationStation->getShortCode();
 
         return __('description.status', [
             'username' => $this->user->name,
-            'origin' => $originStation->name . ($originRil ? ' (' . $originRil . ')' : ''),
-            'destination' => $destinationStation->name . ($destinationRil ? ' (' . $destinationRil . ')' : ''),
+            'origin' => $originStation->name . ($originCode ? ' (' . $originCode . ')' : ''),
+            'destination' => $destinationStation->name . ($destinationCode ? ' (' . $destinationCode . ')' : ''),
             'date' => $this->checkin->departure->isoFormat(__('datetime-format')),
             'lineName' => $this->checkin->trip->linename,
         ]);

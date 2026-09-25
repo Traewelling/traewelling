@@ -135,6 +135,12 @@ class Station extends Model
         return $this->stationIdentifiers()->where('type', $type->value)->get();
     }
 
+    public function getShortCode(): ?string
+    {
+        return $this->getIdentifier(StationIdentifierType::DE_DB_RIL100)?->identifier
+            ?? $this->getIdentifiers(StationIdentifierType::LOCAL_CODE)->sortByDesc('relevance')->first()?->identifier;
+    }
+
     public function stopovers(): HasMany
     {
         return $this->hasMany(Stopover::class, 'station_id', 'id');

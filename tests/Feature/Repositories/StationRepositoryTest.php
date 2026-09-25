@@ -37,18 +37,33 @@ class StationRepositoryTest extends FeatureTestCase
         $this->assertTrue($results->contains('id', $station->id));
     }
 
-    public function test_get_stations_by_ril_identifier_finds_station(): void
+    public function test_get_stations_by_short_code_finds_ril100_and_local_codes(): void
     {
-        $station = Station::factory()->create();
+        [$ril100Station, $localCodeStation, $otherStation] = Station::factory()->count(3)->create();
         StationIdentifier::factory()->create([
-            'station_id' => $station->id,
+            'station_id' => $localCodeStation->id,
+            'type' => StationIdentifierType::LOCAL_CODE,
+            'origin' => 'de_uestra',
+            'identifier' => 'ZZZT',
+        ]);
+        StationIdentifier::factory()->create([
+            'station_id' => $ril100Station->id,
             'type' => StationIdentifierType::DE_DB_RIL100,
-            'identifier' => 'ZZZTEST',
+            'origin' => null,
+            'identifier' => 'ZZZT',
+        ]);
+        StationIdentifier::factory()->create([
+            'station_id' => $otherStation->id,
+            'type' => StationIdentifierType::IFOPT,
+            'origin' => null,
+            'identifier' => 'ZZZT',
         ]);
 
-        $results = $this->repository->getStationsByFuzzyRilIdentifier('ZZZTEST');
+        $types = [StationIdentifierType::DE_DB_RIL100, StationIdentifierType::LOCAL_CODE];
 
-        $this->assertTrue($results->contains('id', $station->id));
+        $this->assertSame([$ril100Station->id, $localCodeStation->id], $this->repository->getStationsByShortCode('ZZZT', $types)->pluck('id')->all());
+        $this->assertSame([$localCodeStation->id], $this->repository->getStationsByShortCode('ZZZT', [StationIdentifierType::LOCAL_CODE])->pluck('id')->all());
+        $this->assertTrue($this->repository->getStationsByShortCode('ZZZ', $types)->isEmpty(), 'codes must match exactly');
     }
 
     public function test_get_latest_arrivals_for_user_returns_destination_stations_in_order(): void

@@ -100,6 +100,7 @@ export enum StatusTagKey {
  *     * wikidata_id – ID of wikidata.org
  *     * de_db_ril100 – Germany: Deutsche Bahn Richtlinie 100 identifier (e.g. RK for Karlsruhe Hbf)
  *     * de_db_ibnr – Germany: internal train station ID of Deutsche Bahn (e.g. 8000191 for Karlsruhe Hbf)
+ *     * local_code – short code a local transport authority or operator uses for the station. `origin` names who issued it (e.g. de_uestra)
  *
  * @example 0
  */
@@ -109,6 +110,7 @@ export enum StationIdentifierType {
   IFOPT = "IFOPT",
   DE_DB_RIL100 = "DE_DB_RIL100",
   DE_DB_IBNR = "DE_DB_IBNR",
+  LOCAL_CODE = "LOCAL_CODE",
 }
 
 /**
@@ -828,6 +830,7 @@ export interface CheckinRequestBody {
    *     * wikidata_id – ID of wikidata.org
    *     * de_db_ril100 – Germany: Deutsche Bahn Richtlinie 100 identifier (e.g. RK for Karlsruhe Hbf)
    *     * de_db_ibnr – Germany: internal train station ID of Deutsche Bahn (e.g. 8000191 for Karlsruhe Hbf)
+   *     * local_code – short code a local transport authority or operator uses for the station. `origin` names who issued it (e.g. de_uestra)
    *
    */
   startIdentifierType?: StationIdentifierType;
@@ -847,6 +850,7 @@ export interface CheckinRequestBody {
    *     * wikidata_id – ID of wikidata.org
    *     * de_db_ril100 – Germany: Deutsche Bahn Richtlinie 100 identifier (e.g. RK for Karlsruhe Hbf)
    *     * de_db_ibnr – Germany: internal train station ID of Deutsche Bahn (e.g. 8000191 for Karlsruhe Hbf)
+   *     * local_code – short code a local transport authority or operator uses for the station. `origin` names who issued it (e.g. de_uestra)
    *
    */
   destinationIdentifierType?: StationIdentifierType;
@@ -6844,7 +6848,7 @@ export class Api<
       }),
 
     /**
-     * @description Admin only. Manually add an identifier to a station. The `origin` field will be set to `null`.
+     * @description Admin only. Manually add an identifier to a station. `origin` is required for `local_code` (the issuing authority, e.g. `de_uestra`) and must be omitted for every other type, which get `null`.
      *
      * @tags Stations
      * @name StoreStationIdentifier
@@ -6861,6 +6865,7 @@ export class Api<
          *     * wikidata_id – ID of wikidata.org
          *     * de_db_ril100 – Germany: Deutsche Bahn Richtlinie 100 identifier (e.g. RK for Karlsruhe Hbf)
          *     * de_db_ibnr – Germany: internal train station ID of Deutsche Bahn (e.g. 8000191 for Karlsruhe Hbf)
+         *     * local_code – short code a local transport authority or operator uses for the station. `origin` names who issued it (e.g. de_uestra)
          *
          */
         type: StationIdentifierType;
@@ -6869,6 +6874,12 @@ export class Api<
          * @example "de:08212:1"
          */
         identifier: string;
+        /**
+         * Issuer of a `local_code`, lowercase letters, digits and underscores
+         * @maxLength 64
+         * @example "de_uestra"
+         */
+        origin?: string | null;
       },
       params: RequestParams = {},
     ) =>
@@ -6882,7 +6893,7 @@ export class Api<
       }),
 
     /**
-     * @description Admin only. Update the type and value of an existing station identifier.
+     * @description Admin only. Update the type and value of an existing station identifier. `origin` is required for `local_code` and must be omitted for every other type, which keep their imported origin.
      *
      * @tags Stations
      * @name UpdateStationIdentifier
@@ -6900,6 +6911,7 @@ export class Api<
          *     * wikidata_id – ID of wikidata.org
          *     * de_db_ril100 – Germany: Deutsche Bahn Richtlinie 100 identifier (e.g. RK for Karlsruhe Hbf)
          *     * de_db_ibnr – Germany: internal train station ID of Deutsche Bahn (e.g. 8000191 for Karlsruhe Hbf)
+         *     * local_code – short code a local transport authority or operator uses for the station. `origin` names who issued it (e.g. de_uestra)
          *
          */
         type: StationIdentifierType;
@@ -6908,6 +6920,12 @@ export class Api<
          * @example "de:08212:1"
          */
         identifier: string;
+        /**
+         * Issuer of a `local_code`, lowercase letters, digits and underscores
+         * @maxLength 64
+         * @example "de_uestra"
+         */
+        origin?: string | null;
       },
       params: RequestParams = {},
     ) =>
