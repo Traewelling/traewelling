@@ -1438,5 +1438,9 @@
     "privacy.upcoming.public-notice-link": "",
     "route-map.title": "",
     "user.home-station.set": "",
-    "go-to-settings": ""
+    "go-to-settings": "",
+    "events.host": "",
+    "dates.-on-": "",
+    "export.title.departure_real": "",
+    "export.title.arrival_real": ""
 }
