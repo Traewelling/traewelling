@@ -1446,5 +1446,14 @@
     "route-map.description": "Tous les tronçons que tu as parcourus au moins une fois.",
     "route-map.approximated.hint": "Les tronçons sans itinéraire enregistré sont tracés en ligne droite entre les deux gares.",
     "route-map.include-approximated": "Afficher les tronçons estimés",
-    "route-map.empty": "Aucun trajet ne correspond à ces filtres."
+    "route-map.empty": "Aucun trajet ne correspond à ces filtres.",
+    "distance.meters": "",
+    "validation.tag.format": "",
+    "distance.kilometers.short": "",
+    "distance.kilometers": "",
+    "distance.meters.short": "",
+    "export.requested": "",
+    "validation.tag": "",
+    "user.has-account": "",
+    "stationboard.station-info": ""
 }
