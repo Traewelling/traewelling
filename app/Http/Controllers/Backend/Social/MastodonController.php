@@ -83,6 +83,11 @@ abstract class MastodonController extends Controller
                 website: config('app.url')
             );
 
+            // Servers that are no Mastodon instance answer without app credentials.
+            if (!isset($info['client_id'], $info['client_secret'])) {
+                throw new InvalidMastodonException();
+            }
+
             return MastodonServer::updateOrCreate([
                 'domain' => $domain,
             ], [
