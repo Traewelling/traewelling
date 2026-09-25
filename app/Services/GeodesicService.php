@@ -73,6 +73,30 @@ class GeodesicService
     }
 
     /**
+     * Distance in meters from a coordinate to the closest place on the straight line between two
+     * others. Projects onto a local flat plane, which is exact enough for lines of a few dozen
+     * kilometres.
+     */
+    public function distanceToSegment(Coordinate $needle, Coordinate $from, Coordinate $to): int
+    {
+        $metersPerDegree = self::EARTH_RADIUS_METERS * M_PI / 180;
+        $metersPerDegreeLongitude = $metersPerDegree * cos(deg2rad($needle->latitude));
+
+        $fromX = ($from->longitude - $needle->longitude) * $metersPerDegreeLongitude;
+        $fromY = ($from->latitude - $needle->latitude) * $metersPerDegree;
+        $deltaX = ($to->longitude - $from->longitude) * $metersPerDegreeLongitude;
+        $deltaY = ($to->latitude - $from->latitude) * $metersPerDegree;
+
+        $lengthSquared = $deltaX * $deltaX + $deltaY * $deltaY;
+        // Share of the way from $from to $to where the perpendicular from $needle hits the line
+        $share = $lengthSquared > 0.0
+            ? max(0.0, min(1.0, -($fromX * $deltaX + $fromY * $deltaY) / $lengthSquared))
+            : 0.0;
+
+        return (int) round(hypot($fromX + $share * $deltaX, $fromY + $share * $deltaY));
+    }
+
+    /**
      * Find the index of the path point closest to the given coordinate.
      *
      * The search starts at $fromIndex, so a caller walking a path in order can pass the previously
