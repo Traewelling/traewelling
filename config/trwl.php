@@ -25,6 +25,8 @@ return [
 
     'motis' => [
         'radius' => (int) env('MOTIS_RADIUS', 200),
+        // Upper limit (in meters) for the radius a client may request for departures
+        'max_radius' => (int) env('MOTIS_MAX_RADIUS', 1000),
         'nearby_radius' => (int) env('MOTIS_NEARBY_RADIUS', 200),
         'results' => (int) env('MOTIS_RESULTS', 50),
         'filter_licenses' => (bool) env('MOTIS_FILTER_LICENSES', false),

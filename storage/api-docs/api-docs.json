@@ -8798,6 +8798,17 @@
                         "schema": {
                             "$ref": "#/components/schemas/TravelType"
                         }
+                    },
+                    {
+                        "name": "radius",
+                        "in": "query",
+                        "description": "Radius in meters around the station in which departures are searched.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 500,
+                            "minimum": 0
+                        }
                     }
                 ],
                 "responses": {

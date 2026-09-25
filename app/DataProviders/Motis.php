@@ -129,9 +129,9 @@ class Motis extends Controller implements DataProviderInterface
     /**
      * @throws DataProviderException
      */
-    public function getDepartures(Station $station, Carbon $when, int $duration = 15, ?TravelType $type = null, bool $localtime = false): array|Collection
+    public function getDepartures(Station $station, Carbon $when, int $duration = 15, ?TravelType $type = null, bool $localtime = false, ?int $radius = null): array|Collection
     {
-        return $this->getFilteredDepartures($station, $when, $duration, $type, $localtime)->departures;
+        return $this->getFilteredDepartures($station, $when, $duration, $type, $localtime, $radius)->departures;
     }
 
     /**
@@ -142,7 +142,8 @@ class Motis extends Controller implements DataProviderInterface
         Carbon $when,
         int $duration = 15,
         ?TravelType $type = null,
-        bool $localtime = false
+        bool $localtime = false,
+        ?int $radius = null
     ): FilteredDepartures {
         $station->loadMissing('stationIdentifiers');
 
@@ -180,7 +181,7 @@ class Motis extends Controller implements DataProviderInterface
         foreach ($transitousIdentifiers as $identifier) {
             $count++;
             try {
-                $filtered = $this->getDeparturesFromApi($station, $identifier, $when, $type);
+                $filtered = $this->getDeparturesFromApi($station, $identifier, $when, $type, $radius);
                 $filtered = $this->dedupeDeparturesByStation($filtered, $station->id); // remove duplicates by tripId, keep the one that stops at the requested station (if any)
             } catch (DataProviderException $exception) {
                 // If we get an exception, we can try the next identifier
@@ -304,12 +305,13 @@ class Motis extends Controller implements DataProviderInterface
         Station $station,
         StationIdentifier $transitousIdentifier,
         Carbon $when,
-        ?TravelType $type
+        ?TravelType $type,
+        ?int $radius = null
     ): FilteredDepartures {
         try {
             $params = [
                 'stopId' => $transitousIdentifier->identifier,
-                'radius' => config('trwl.motis.radius'),
+                'radius' => $radius ?? config('trwl.motis.radius'),
                 'time' => $when->toIso8601String(),
                 'n' => config('trwl.motis.results'),
             ];

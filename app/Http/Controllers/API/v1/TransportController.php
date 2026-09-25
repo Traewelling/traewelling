@@ -80,6 +80,13 @@ class TransportController extends Controller
                 required: false,
                 schema: new OA\Schema(ref: TravelType::class),
             ),
+            new OA\Parameter(
+                name: 'radius',
+                description: 'Radius in meters around the station in which departures are searched.',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'integer', minimum: 0, example: 500),
+            ),
         ],
         responses: [
             new OA\Response(
@@ -164,6 +171,7 @@ class TransportController extends Controller
         $validated = $request->validate([
             'when' => ['nullable', 'date'],
             'travelType' => ['nullable', new Enum(TravelType::class)],
+            'radius' => ['nullable', 'integer', 'min:0', 'max:' . config('trwl.motis.max_radius')],
         ]);
 
         $timestamp = isset($validated['when']) ? Carbon::parse($validated['when']) : now();
@@ -175,7 +183,8 @@ class TransportController extends Controller
                 station: $station,
                 when: $timestamp,
                 type: TravelType::tryFrom($validated['travelType'] ?? null),
-                localtime: isset($validated['when']) && !preg_match('(\+|Z)', $validated['when'])
+                localtime: isset($validated['when']) && !preg_match('(\+|Z)', $validated['when']),
+                radius: isset($validated['radius']) ? (int) $validated['radius'] : null,
             );
 
             $departures = $filtered->departures->sortBy(function (Departure $departure) {

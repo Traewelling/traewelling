@@ -51,12 +51,12 @@ class CachedDataProvider implements DataProviderInterface
         );
     }
 
-    public function getDepartures(Station $station, Carbon $when, int $duration = 15, ?TravelType $type = null, bool $localtime = false): Collection
+    public function getDepartures(Station $station, Carbon $when, int $duration = 15, ?TravelType $type = null, bool $localtime = false, ?int $radius = null): Collection
     {
-        return $this->getFilteredDepartures($station, $when, $duration, $type, $localtime)->departures;
+        return $this->getFilteredDepartures($station, $when, $duration, $type, $localtime, $radius)->departures;
     }
 
-    public function getFilteredDepartures(Station $station, Carbon $when, int $duration = 15, ?TravelType $type = null, bool $localtime = false): FilteredDepartures
+    public function getFilteredDepartures(Station $station, Carbon $when, int $duration = 15, ?TravelType $type = null, bool $localtime = false, ?int $radius = null): FilteredDepartures
     {
         $filterWhen = clone $when;
         $when = clone $when;
@@ -68,13 +68,13 @@ class CachedDataProvider implements DataProviderInterface
         // set duration longer than 15 minutes
         $duration = $duration < 15 ? 30 : $duration;
 
-        $key = CacheKey::getHafasDeparturesKey($station->id, $when, $localtime, $type);
+        $key = CacheKey::getHafasDeparturesKey($station->id, $when, $localtime, $type, $radius);
 
         $departures = $this->remember(
             $key,
             now()->addMinutes(15),
-            function () use ($station, $when, $duration, $type, $localtime) {
-                return $this->dataProvider->getDepartures($station, $when, $duration, $type, $localtime);
+            function () use ($station, $when, $duration, $type, $localtime, $radius) {
+                return $this->dataProvider->getDepartures($station, $when, $duration, $type, $localtime, $radius);
             },
             HCK::DEPARTURES_SUCCESS
         );

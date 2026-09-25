@@ -5118,6 +5118,12 @@ export class Api<
         when?: string;
         /** Means of transport (default: all) */
         travelType?: TravelType;
+        /**
+         * Radius in meters around the station in which departures are searched.
+         * @min 0
+         * @example 500
+         */
+        radius?: number;
       },
       params: RequestParams = {},
     ) =>
