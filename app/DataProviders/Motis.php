@@ -420,6 +420,8 @@ class Motis extends Controller implements DataProviderInterface
      */
     private function fetchJourney(string $tripId): ?array
     {
+        $response = null;
+
         try {
             $response = Http::withUserAgent(VersionController::getUserAgent())->get(self::API_URL . '/v6/trip', [
                 'tripId' => $tripId,
@@ -441,8 +443,8 @@ class Motis extends Controller implements DataProviderInterface
         } catch (Exception $exception) {
             CacheKey::increment(HCK::TRIPS_FAILURE);
             Log::warning('Unknown MOTIS Error (fetchJourney)', [
-                'status' => $response->status(),
-                'body' => $response->body(),
+                'status' => $response?->status(),
+                'body' => $response?->body(),
             ]);
             report($exception);
         }
