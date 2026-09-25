@@ -54,7 +54,6 @@
 
 <script>
     var token = '{{ csrf_token() }}';
-    var mapprovider = '{{ Auth::user()->mapprovider ?? "default" }}';
 
     // Report content height to parent frame for auto-sizing
     (function() {

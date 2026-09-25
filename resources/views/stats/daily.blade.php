@@ -25,38 +25,7 @@
                 @endif
             </div>
 
-            <div class="col-md-6 mb-4">
-                <div id="map" style="min-height: 600px;"></div>
-                <script>
-                    window.addEventListener("load", () => {
-                        let map = L.map(document.getElementById('map'), {
-                            center: [50.3, 10.47],
-                            zoom: 5
-                        });
-
-                        let featureGroup = L.featureGroup().addTo(map);
-
-                        setTilingLayer(mapprovider, map);
-
-                        @foreach($statuses as $status)
-                        try {
-                        let coordinates = {{json_encode($status->mapLines)}};
-                            L.polyline(coordinates)
-                                .setStyle({color: "rgb(192, 57, 43)", weight: 5})
-                                .addTo(featureGroup);
-                        } catch (e) {
-                            console.error(e);
-                        }
-
-                    @endforeach
-
-                    map.fitBounds(featureGroup.getBounds());
-                });
-
-                </script>
-            </div>
-
-            <div id="vue-stats-daily" class="col-md-6">
+            <div id="vue-stats-daily" class="col-12">
                 <stats-daily :date="'{{ $date->format('Y-m-d') }}'"></stats-daily>
             </div>
         </div>

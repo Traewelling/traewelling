@@ -1,6 +1,5 @@
 @import 'tailwindcss';
 @import 'notyf/notyf.min.css';
-@import 'leaflet/dist/leaflet.css';
 @import 'lgbtq.css';
 
 @plugin "@tailwindcss/typography";

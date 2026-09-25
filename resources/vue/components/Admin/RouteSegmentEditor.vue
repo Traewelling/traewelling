@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import L from 'leaflet';
+import type { Feature, FeatureCollection, LineString } from 'geojson';
+import * as maplibregl from 'maplibre-gl';
 import { onMounted, onUnmounted, ref } from 'vue';
+import '../../../js/maplibre';
 import { Api, type RouteSegmentResource } from '../../../types/Api.gen';
+import { buildTransitBasemapStyle } from '../Map/transitBasemapStyle';
 
 const api = new Api({ baseUrl: window.location.origin + '/api' });
-
-declare function setTilingLayer(provider: string, map: L.Map): void;
 
 const props = defineProps<{
     segment: RouteSegmentResource;
@@ -15,26 +16,28 @@ const emit = defineEmits<{
     saved: [polyline: string, distance: number];
 }>();
 
+type LngLatPair = [number, number];
+
+const CONNECTOR_THRESHOLD = 0.0001;
+const EDITABLE_LAYERS = ['existing-line', 'preview-line'];
+
 const mapEl = ref<HTMLDivElement | null>(null);
 const status = ref('');
 const statusCls = ref<'muted' | 'warning' | 'success' | 'danger'>('muted');
 const saveEnabled = ref(false);
 const previewDistance = ref<number | null>(null);
 
-let map: L.Map | null = null;
-let markerA: L.Marker | null = null;
-let markerB: L.Marker | null = null;
-let intermediates: L.Marker[] = [];
-let existingPolyline: L.Polyline | null = null;
-let connectorA: L.Polyline | null = null;
-let connectorB: L.Polyline | null = null;
-let previewPolyline: L.Polyline | null = null;
+let map: maplibregl.Map | null = null;
+let markerA: maplibregl.Marker | null = null;
+let markerB: maplibregl.Marker | null = null;
+let intermediates: maplibregl.Marker[] = [];
+let existingPts: LngLatPair[] = [];
+let previewPts: LngLatPair[] | null = null;
 let pendingController: AbortController | null = null;
 
-// The library encodes [lon, lat] pairs; decoded as [lat, lng] for Leaflet.
-function decodePolyline(encoded: string, precision: number = 5): [number, number][] {
+function decodePolyline(encoded: string, precision: number = 5): LngLatPair[] {
     const factor = Math.pow(10, precision);
-    const coords: [number, number][] = [];
+    const coords: LngLatPair[] = [];
     let lat = 0,
         lng = 0,
         i = 0;
@@ -56,18 +59,30 @@ function decodePolyline(encoded: string, precision: number = 5): [number, number
             shift += 5;
         } while (b >= 32);
         lng += result & 1 ? ~(result >> 1) : result >> 1;
-        coords.push([lat / factor, lng / factor]);
+        coords.push([lng / factor, lat / factor]);
     }
     return coords;
 }
 
-function makeIcon(label: string, color: string): L.DivIcon {
-    return L.divIcon({
-        className: '',
-        html: `<div style="background:${color};color:#fff;font-weight:bold;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.5);font-size:13px;">${label}</div>`,
-        iconSize: [28, 28],
-        iconAnchor: [14, 14],
-    });
+function stationCoordinates(): { from: LngLatPair; to: LngLatPair } {
+    return {
+        from: [
+            props.segment.fromIdentifier?.longitude ?? props.segment.fromStation?.longitude ?? 0,
+            props.segment.fromIdentifier?.latitude ?? props.segment.fromStation?.latitude ?? 0,
+        ],
+        to: [
+            props.segment.toIdentifier?.longitude ?? props.segment.toStation?.longitude ?? 0,
+            props.segment.toIdentifier?.latitude ?? props.segment.toStation?.latitude ?? 0,
+        ],
+    };
+}
+
+function makeMarkerElement(label: string, color: string, title: string): HTMLElement {
+    const el = document.createElement('div');
+    el.style.cssText = `background:${color};color:#fff;font-weight:bold;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.5);font-size:13px;cursor:grab;`;
+    el.textContent = label;
+    el.title = title;
+    return el;
 }
 
 function setStatus(msg: string, cls: 'muted' | 'warning' | 'success' | 'danger' = 'muted'): void {
@@ -75,21 +90,69 @@ function setStatus(msg: string, cls: 'muted' | 'warning' | 'success' | 'danger' 
     statusCls.value = cls;
 }
 
-function pointToSegDist(p: L.LatLng, a: L.LatLng, b: L.LatLng): number {
-    const dx = b.lat - a.lat,
-        dy = b.lng - a.lng;
-    const lenSq = dx * dx + dy * dy;
-    if (lenSq === 0) return Math.hypot(p.lat - a.lat, p.lng - a.lng);
-    const t = Math.max(0, Math.min(1, ((p.lat - a.lat) * dx + (p.lng - a.lng) * dy) / lenSq));
-    return Math.hypot(p.lat - (a.lat + t * dx), p.lng - (a.lng + t * dy));
+function lineFeature(coordinates: LngLatPair[]): Feature<LineString> {
+    return { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates } };
 }
 
-function nearestSegmentIndex(latlng: L.LatLng): number {
-    const wps = collectWaypoints();
+function lineCollection(...lines: LngLatPair[][]): FeatureCollection<LineString> {
+    return { type: 'FeatureCollection', features: lines.filter((line) => line.length >= 2).map(lineFeature) };
+}
+
+function setSourceData(sourceId: string, data: FeatureCollection<LineString>): void {
+    map?.getSource<maplibregl.GeoJSONSource>(sourceId)?.setData(data);
+}
+
+function toPair(lngLat: maplibregl.LngLat): LngLatPair {
+    return [lngLat.lng, lngLat.lat];
+}
+
+function isOffset(a: LngLatPair, b: LngLatPair): boolean {
+    return Math.abs(a[0] - b[0]) > CONNECTOR_THRESHOLD || Math.abs(a[1] - b[1]) > CONNECTOR_THRESHOLD;
+}
+
+function renderLines(): void {
+    if (!map || !markerA || !markerB) return;
+
+    if (previewPts) {
+        setSourceData('existing', lineCollection());
+        setSourceData('connector-a', lineCollection());
+        setSourceData('connector-b', lineCollection());
+        setSourceData('preview', lineCollection(previewPts));
+        return;
+    }
+
+    setSourceData('preview', lineCollection());
+    setSourceData('existing', lineCollection(existingPts));
+
+    if (existingPts.length < 2) {
+        setSourceData('connector-a', lineCollection());
+        setSourceData('connector-b', lineCollection());
+        return;
+    }
+
+    const posA = toPair(markerA.getLngLat());
+    const posB = toPair(markerB.getLngLat());
+    const first = existingPts[0];
+    const last = existingPts[existingPts.length - 1];
+    setSourceData('connector-a', isOffset(posA, first) ? lineCollection([posA, first]) : lineCollection());
+    setSourceData('connector-b', isOffset(posB, last) ? lineCollection([posB, last]) : lineCollection());
+}
+
+function pointToSegDist(p: LngLatPair, a: LngLatPair, b: LngLatPair): number {
+    const dx = b[0] - a[0],
+        dy = b[1] - a[1];
+    const lenSq = dx * dx + dy * dy;
+    if (lenSq === 0) return Math.hypot(p[0] - a[0], p[1] - a[1]);
+    const t = Math.max(0, Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / lenSq));
+    return Math.hypot(p[0] - (a[0] + t * dx), p[1] - (a[1] + t * dy));
+}
+
+function nearestSegmentIndex(point: LngLatPair): number {
+    const wps = collectWaypoints().map((wp): LngLatPair => [wp.lng, wp.lat]);
     let best = 0,
         bestDist = Infinity;
     for (let i = 0; i < wps.length - 1; i++) {
-        const d = pointToSegDist(latlng, L.latLng(wps[i]), L.latLng(wps[i + 1]));
+        const d = pointToSegDist(point, wps[i], wps[i + 1]);
         if (d < bestDist) {
             bestDist = d;
             best = i;
@@ -99,16 +162,18 @@ function nearestSegmentIndex(latlng: L.LatLng): number {
 }
 
 function renumberIntermediates(): void {
-    intermediates.forEach((m, i) => m.setIcon(makeIcon(String(i + 1), '#ff8800')));
+    intermediates.forEach((m, i) => {
+        m.getElement().textContent = String(i + 1);
+    });
 }
 
-function addIntermediateMarker(lat: number, lng: number, insertAt: number = intermediates.length): L.Marker {
-    const marker = L.marker([lat, lng], {
+function addIntermediateMarker(lngLat: LngLatPair, insertAt: number = intermediates.length): maplibregl.Marker {
+    const marker = new maplibregl.Marker({
+        element: makeMarkerElement('?', '#ff8800', 'Intermediate: click to remove'),
         draggable: true,
-        icon: makeIcon('?', '#ff8800'),
     })
-        .addTo(map!)
-        .bindTooltip('Intermediate – click to remove');
+        .setLngLat(lngLat)
+        .addTo(map!);
 
     marker.on('dragend', () => requestPreview());
     marker.on('click', () => removeIntermediate(marker));
@@ -118,87 +183,46 @@ function addIntermediateMarker(lat: number, lng: number, insertAt: number = inte
     return marker;
 }
 
-function removeIntermediate(marker: L.Marker): void {
+function removeIntermediate(marker: maplibregl.Marker): void {
     intermediates = intermediates.filter((m) => m !== marker);
-    map!.removeLayer(marker);
+    marker.remove();
     renumberIntermediates();
     requestPreview();
 }
 
 function clearIntermediates(): void {
-    intermediates.forEach((m) => map!.removeLayer(m));
+    intermediates.forEach((m) => m.remove());
     intermediates = [];
 }
 
 function collectWaypoints(): { lat: number; lng: number }[] {
-    const pts: { lat: number; lng: number }[] = [];
-    pts.push({ lat: markerA!.getLatLng().lat, lng: markerA!.getLatLng().lng });
-    intermediates.forEach((m) => pts.push({ lat: m.getLatLng().lat, lng: m.getLatLng().lng }));
-    pts.push({ lat: markerB!.getLatLng().lat, lng: markerB!.getLatLng().lng });
-    return pts;
+    return [markerA!, ...intermediates, markerB!].map((m) => ({ lat: m.getLngLat().lat, lng: m.getLngLat().lng }));
 }
 
-function drawExistingPolyline(pts: [number, number][]): void {
-    if (existingPolyline) {
-        map!.removeLayer(existingPolyline);
-        existingPolyline = null;
-    }
-    if (connectorA) {
-        map!.removeLayer(connectorA);
-        connectorA = null;
-    }
-    if (connectorB) {
-        map!.removeLayer(connectorB);
-        connectorB = null;
-    }
-    if (pts.length < 2) return;
-
-    existingPolyline = L.polyline(pts, { color: '#3388ff', weight: 8, opacity: 0.5 }).addTo(map!);
-    addPolylineDragBehavior(existingPolyline);
-
-    const threshold = 0.0001;
-    const posA = markerA!.getLatLng();
-    const posB = markerB!.getLatLng();
-    const first = pts[0];
-    const last = pts[pts.length - 1];
-
-    if (Math.abs(posA.lat - first[0]) > threshold || Math.abs(posA.lng - first[1]) > threshold) {
-        connectorA = L.polyline([posA, first], { color: '#28a745', weight: 2, opacity: 0.8, dashArray: '5 5' }).addTo(
-            map!,
-        );
-    }
-    if (Math.abs(posB.lat - last[0]) > threshold || Math.abs(posB.lng - last[1]) > threshold) {
-        connectorB = L.polyline([posB, last], { color: '#dc3545', weight: 2, opacity: 0.8, dashArray: '5 5' }).addTo(
-            map!,
-        );
-    }
-}
-
-function clearPreview(existingPts: [number, number][]): void {
-    if (previewPolyline) {
-        map!.removeLayer(previewPolyline);
-        previewPolyline = null;
-        drawExistingPolyline(existingPts);
-    }
+function clearPreview(): void {
+    previewPts = null;
+    renderLines();
     saveEnabled.value = false;
     previewDistance.value = null;
 }
 
-function addPolylineDragBehavior(polyline: L.Polyline): void {
-    polyline.options.interactive = true;
-    const el = polyline.getElement();
-    if (el) (el as HTMLElement).style.cursor = 'crosshair';
+function enableLineDragging(): void {
+    for (const layerId of EDITABLE_LAYERS) {
+        map!.on('mouseenter', layerId, () => (map!.getCanvas().style.cursor = 'crosshair'));
+        map!.on('mouseleave', layerId, () => (map!.getCanvas().style.cursor = ''));
+        map!.on('mousedown', layerId, (e) => {
+            e.preventDefault();
+            const point = toPair(e.lngLat);
+            const marker = addIntermediateMarker(point, nearestSegmentIndex(point));
 
-    polyline.on('mousedown', function (e: L.LeafletMouseEvent) {
-        L.DomEvent.stop(e);
-        map!.dragging.disable();
-        const insertAt = nearestSegmentIndex(e.latlng);
-        const marker = addIntermediateMarker(e.latlng.lat, e.latlng.lng, insertAt);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const draggable = (marker as unknown as Record<string, any>).dragging?._draggable;
-        if (draggable) draggable._onDown(e.originalEvent);
-        marker.once('dragend', () => map!.dragging.enable());
-    });
+            const onMove = (moveEvent: maplibregl.MapMouseEvent) => marker.setLngLat(moveEvent.lngLat);
+            map!.on('mousemove', onMove);
+            map!.once('mouseup', () => {
+                map!.off('mousemove', onMove);
+                requestPreview();
+            });
+        });
+    }
 }
 
 async function requestPreview(): Promise<void> {
@@ -220,14 +244,8 @@ async function requestPreview(): Promise<void> {
 
         const data = res.data;
 
-        if (previewPolyline) map!.removeLayer(previewPolyline);
-        if (existingPolyline) map!.removeLayer(existingPolyline);
-        if (connectorA) map!.removeLayer(connectorA);
-        if (connectorB) map!.removeLayer(connectorB);
-
-        const latLngs: [number, number][] = (data.coordinates ?? []).map((c) => [c.lat!, c.lng!]);
-        previewPolyline = L.polyline(latLngs, { color: '#ff6600', weight: 8, opacity: 0.7 }).addTo(map!);
-        addPolylineDragBehavior(previewPolyline);
+        previewPts = (data.coordinates ?? []).map((c): LngLatPair => [c.lng!, c.lat!]);
+        renderLines();
 
         previewDistance.value = data.distance ?? null;
         saveEnabled.value = true;
@@ -260,62 +278,101 @@ async function save(): Promise<void> {
     }
 }
 
+function addLineLayers(): void {
+    for (const sourceId of ['existing', 'connector-a', 'connector-b', 'preview']) {
+        map!.addSource(sourceId, { type: 'geojson', data: lineCollection() });
+    }
+
+    const lineLayout = { 'line-cap': 'round', 'line-join': 'round' } as const;
+    map!.addLayer({
+        id: 'existing-line',
+        type: 'line',
+        source: 'existing',
+        layout: lineLayout,
+        paint: { 'line-color': '#3388ff', 'line-width': 8, 'line-opacity': 0.5 },
+    });
+    map!.addLayer({
+        id: 'connector-a-line',
+        type: 'line',
+        source: 'connector-a',
+        paint: { 'line-color': '#28a745', 'line-width': 2, 'line-opacity': 0.8, 'line-dasharray': [2.5, 2.5] },
+    });
+    map!.addLayer({
+        id: 'connector-b-line',
+        type: 'line',
+        source: 'connector-b',
+        paint: { 'line-color': '#dc3545', 'line-width': 2, 'line-opacity': 0.8, 'line-dasharray': [2.5, 2.5] },
+    });
+    map!.addLayer({
+        id: 'preview-line',
+        type: 'line',
+        source: 'preview',
+        layout: lineLayout,
+        paint: { 'line-color': '#ff6600', 'line-width': 8, 'line-opacity': 0.7 },
+    });
+}
+
 onMounted(() => {
     if (!mapEl.value) return;
 
-    const existingPts = decodePolyline(props.segment.polyline ?? '', props.segment.polylinePrecision ?? 5);
+    existingPts = decodePolyline(props.segment.polyline ?? '', props.segment.polylinePrecision ?? 5);
+    const { from, to } = stationCoordinates();
 
-    const fromLat = props.segment.fromIdentifier?.latitude ?? props.segment.fromStation?.latitude ?? 0;
-    const fromLng = props.segment.fromIdentifier?.longitude ?? props.segment.fromStation?.longitude ?? 0;
-    const toLat = props.segment.toIdentifier?.latitude ?? props.segment.toStation?.latitude ?? 0;
-    const toLng = props.segment.toIdentifier?.longitude ?? props.segment.toStation?.longitude ?? 0;
+    const isDark = document.documentElement.dataset.bsTheme === 'dark';
+    map = new maplibregl.Map({
+        container: mapEl.value,
+        style: buildTransitBasemapStyle(isDark ? 'dark' : 'light'),
+        center: from,
+        zoom: 12,
+        attributionControl: { compact: true },
+    });
+    map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
 
-    map = L.map(mapEl.value);
-    setTilingLayer('open-railway-map', map);
+    if (existingPts.length > 1) {
+        const bounds = new maplibregl.LngLatBounds(from, from);
+        [...existingPts, to].forEach((point) => bounds.extend(point));
+        map.fitBounds(bounds, { padding: 40, duration: 0 });
+    }
 
-    markerA = L.marker([fromLat, fromLng], { draggable: true, icon: makeIcon('A', '#28a745') })
-        .addTo(map)
-        .bindTooltip('Origin (A)');
-    markerB = L.marker([toLat, toLng], { draggable: true, icon: makeIcon('B', '#dc3545') })
-        .addTo(map)
-        .bindTooltip('Destination (B)');
+    markerA = new maplibregl.Marker({ element: makeMarkerElement('A', '#28a745', 'Origin (A)'), draggable: true })
+        .setLngLat(from)
+        .addTo(map);
+    markerB = new maplibregl.Marker({ element: makeMarkerElement('B', '#dc3545', 'Destination (B)'), draggable: true })
+        .setLngLat(to)
+        .addTo(map);
 
     // Restore saved custom waypoints if present
     const saved = props.segment.customWaypoints;
-    if (saved && saved.length >= 2) {
+    const hasSavedWaypoints = !!saved && saved.length >= 2;
+    if (hasSavedWaypoints) {
         const a = saved[0];
         const b = saved[saved.length - 1];
-        markerA.setLatLng([a.lat!, a.lng!]);
-        markerB.setLatLng([b.lat!, b.lng!]);
+        markerA.setLngLat([a.lng!, a.lat!]);
+        markerB.setLngLat([b.lng!, b.lat!]);
         for (let i = 1; i < saved.length - 1; i++) {
-            addIntermediateMarker(saved[i].lat!, saved[i].lng!);
+            addIntermediateMarker([saved[i].lng!, saved[i].lat!]);
         }
     }
 
-    drawExistingPolyline(existingPts);
-
-    if (existingPts.length > 1) {
-        map.fitBounds(L.latLngBounds([...existingPts, [fromLat, fromLng], [toLat, toLng]]));
-    } else {
-        map.setView([fromLat, fromLng], 12);
+    for (const marker of [markerA, markerB]) {
+        marker.on('drag', renderLines);
+        marker.on('dragend', () => requestPreview());
     }
 
-    markerA.on('dragend', () => {
-        drawExistingPolyline(existingPts);
-        requestPreview();
-    });
-    markerB.on('dragend', () => {
-        drawExistingPolyline(existingPts);
-        requestPreview();
-    });
+    map.on('load', () => {
+        addLineLayers();
+        enableLineDragging();
+        renderLines();
 
-    // Trigger initial preview if custom waypoints exist
-    if (saved && saved.length >= 2) {
-        requestPreview();
-    }
+        // Trigger initial preview if custom waypoints exist
+        if (hasSavedWaypoints) {
+            requestPreview();
+        }
+    });
 });
 
 onUnmounted(() => {
+    pendingController?.abort();
     if (map) {
         map.remove();
         map = null;
@@ -324,16 +381,11 @@ onUnmounted(() => {
 
 function reset(): void {
     if (!map) return;
-    const fromLat = props.segment.fromIdentifier?.latitude ?? props.segment.fromStation?.latitude ?? 0;
-    const fromLng = props.segment.fromIdentifier?.longitude ?? props.segment.fromStation?.longitude ?? 0;
-    const toLat = props.segment.toIdentifier?.latitude ?? props.segment.toStation?.latitude ?? 0;
-    const toLng = props.segment.toIdentifier?.longitude ?? props.segment.toStation?.longitude ?? 0;
-    markerA!.setLatLng([fromLat, fromLng]);
-    markerB!.setLatLng([toLat, toLng]);
+    const { from, to } = stationCoordinates();
+    markerA!.setLngLat(from);
+    markerB!.setLngLat(to);
     clearIntermediates();
-    const existingPts = decodePolyline(props.segment.polyline ?? '', props.segment.polylinePrecision ?? 5);
-    clearPreview(existingPts);
-    drawExistingPolyline(existingPts);
+    clearPreview();
     requestPreview();
 }
 </script>

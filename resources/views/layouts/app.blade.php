@@ -55,7 +55,6 @@
 
 <script>
     var token = '{{ csrf_token() }}';
-    var mapprovider = '{{ Auth::user()->mapprovider ?? "default" }}';
 </script>
 @stack('scripts')
 @yield('footer')

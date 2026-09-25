@@ -1,137 +1,80 @@
-<script>
-import { trans } from 'laravel-vue-i18n';
-import 'leaflet';
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+import { LngLat, LngLatBounds } from 'maplibre-gl';
+import { computed, ref } from 'vue';
+import GenericMap from '../Map/GenericMap.vue';
 
-const trainIcon = L.divIcon({
-    className: 'custom-div-icon',
-    html: '<div style="background-color:#c30b82;" class="marker-pin">&nbsp;</div>',
-    iconSize: [20, 20],
-    iconAnchor: [9, 18],
+type MapStation = { id?: string | number; name: string; latitude: number; longitude: number };
+type MapPoint = { lat: number; lng: number; title: string };
+
+const MARKER_COLOR = '#c30b82';
+
+const origin = ref<MapPoint | null>(null);
+const destination = ref<MapPoint | null>(null);
+const stopovers = ref<MapPoint[]>([]);
+
+const orderedPoints = computed<MapPoint[]>(() =>
+    [origin.value, ...stopovers.value, destination.value].filter((point): point is MapPoint => point !== null),
+);
+
+const markers = computed(() =>
+    orderedPoints.value.map((point, index) => ({
+        id: `${index}-${point.lat}-${point.lng}`,
+        lat: point.lat,
+        lng: point.lng,
+        color: MARKER_COLOR,
+        title: point.title,
+    })),
+);
+
+const bounds = computed<LngLatBounds>(() => {
+    const points = orderedPoints.value;
+    if (!points.length) {
+        return LngLatBounds.fromLngLat(new LngLat(10.47, 50.3), 500000);
+    }
+    const result = LngLatBounds.fromLngLat(new LngLat(points[0].lng, points[0].lat), 2000);
+    for (const point of points) {
+        result.extend([point.lng, point.lat]);
+    }
+    return result;
 });
 
-export default defineComponent({
-    name: 'TripCreationMap',
-    props: {
-        mapProvider: {
-            type: String,
-            default: 'default',
-        },
-    },
-    data() {
-        return {
-            map: null,
-            points: [],
-            origin: null,
-            destination: null,
-        };
-    },
-    computed: {
-        mapStyle() {
-            return '';
-        },
-    },
-    mounted() {
-        this.renderMap();
-        this.initializeMap();
-    },
-    methods: {
-        trans,
-        invalidateSize() {
-            setTimeout(() => {
-                this.map.invalidateSize();
-            }, 100);
-        },
-        renderMap() {
-            this.map = L.map(this.$refs.map, {
-                center: [50.3, 10.47],
-                zoom: 5,
-            });
-            setTilingLayer(this.$props.mapProvider, this.map);
-        },
-        clearAllElements() {
-            this.points.forEach((point) => {
-                if (point.marker) {
-                    point.marker.remove();
-                }
-            });
-            this.points = [];
-        },
-        addMarker(data, index, length) {
-            const marker = L.marker([data.latitude, data.longitude], { icon: trainIcon }).addTo(this.map);
+function toPoint(station: MapStation): MapPoint {
+    return { lat: station.latitude, lng: station.longitude, title: station.name };
+}
 
-            marker.bindPopup(`<strong>${data.name}</strong>`);
+/**
+ * Places the marker for the origin, the destination or the stopover at the given index.
+ * A stopover marker replaces the existing one at that index once every stopover has a marker.
+ */
+function addMarker(station: MapStation, index: 'origin' | 'destination' | number, length: number): void {
+    const point = toPoint(station);
 
-            if (index === 'origin') {
-                if (this.origin) {
-                    this.origin.marker.remove();
-                }
-                this.origin = this.createPointObject(data, marker);
-            } else if (index === 'destination') {
-                if (this.destination) {
-                    this.destination.marker.remove();
-                }
-                this.destination = this.createPointObject(data, marker);
-            } else {
-                if (length === this.points.length) {
-                    this.removeMarker(index);
-                }
+    if (index === 'origin') {
+        origin.value = point;
+        return;
+    }
+    if (index === 'destination') {
+        destination.value = point;
+        return;
+    }
 
-                if (index === 0 || index === this.points.length) {
-                    this.points.push(this.createPointObject(data, marker));
-                } else {
-                    this.points.splice(index, 0, this.createPointObject(data, marker));
-                }
-            }
+    if (length === stopovers.value.length) {
+        removeMarker(index);
+    }
+    if (index === 0 || index === stopovers.value.length) {
+        stopovers.value.push(point);
+    } else {
+        stopovers.value.splice(index, 0, point);
+    }
+}
 
-            this.zoomToMarkers();
-        },
-        zoomToMarkers() {
-            let points = this.points;
+function removeMarker(index: number): void {
+    stopovers.value.splice(index, 1);
+}
 
-            if (this.origin) {
-                points = [this.origin, ...points];
-            }
-
-            if (this.destination) {
-                points = [...points, this.destination];
-            }
-
-            const bounds = new L.featureGroup(points.map((point) => point.marker));
-            this.map.fitBounds(bounds.getBounds());
-        },
-        removeMarker(index) {
-            this.points[index].marker.remove();
-            this.points.splice(index, 1);
-        },
-        initializeMap() {
-            this.clearAllElements();
-        },
-        createPointObject(point, marker = null) {
-            return {
-                marker: marker ?? null,
-            };
-        },
-    },
-});
+defineExpose({ addMarker, removeMarker });
 </script>
 
 <template>
-    <div ref="map" class="map h-100" />
+    <GenericMap :bounds="bounds" :preview-markers="markers" :cooperative-gestures="false" height="100%" />
 </template>
-
-<style>
-.marker-pin {
-    width: 20px;
-    height: 20px;
-    border-radius: 50% 50% 50% 0;
-    border-color: #830b62;
-    border-width: 1px;
-    background: #c30b82;
-    position: absolute;
-    transform: rotate(-45deg);
-    left: 50%;
-    top: 50%;
-    margin: -15px 0 0 -15px;
-}
-</style>

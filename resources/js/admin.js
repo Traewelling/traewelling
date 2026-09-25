@@ -1,9 +1,6 @@
 import * as Popper from '@popperjs/core';
 import 'bootstrap';
-import 'leaflet';
-import 'leaflet/dist/leaflet.js';
 import { Notyf } from 'notyf';
-import './components/maps';
 
 window.Popper = Popper;
 

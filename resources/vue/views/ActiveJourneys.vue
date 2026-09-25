@@ -4,7 +4,6 @@ import { LngLat, LngLatBounds } from 'maplibre-gl';
 import { Notyf } from 'notyf';
 import { ref } from 'vue';
 import { Api, EventResource, LivePointDto, MapProvider, StatusResource } from '../../types/Api.gen';
-import ActiveJourneyMap from '../components/ActiveJourneyMap.vue';
 import EventMarker from '../components/Map/EventMarker.vue';
 import GenericMap from '../components/Map/GenericMap.vue';
 import StatusCard from '../components/Status/StatusCard.vue';
@@ -36,8 +35,6 @@ function fetchStatuses() {
 }
 
 function fetchStatusPositions(initialize: boolean = true) {
-    if (!user.hasBeta) return;
-
     api.positions
         .getLivePositionsForActiveStatuses()
         .then((response) => {
@@ -61,7 +58,6 @@ function fetchStatusPositions(initialize: boolean = true) {
 }
 
 function fetchEvents() {
-    if (!user.hasBeta) return;
     api.events.getEvents().then((response) => {
         events.value = response.data.data || [];
     });
@@ -69,7 +65,6 @@ function fetchEvents() {
 
 fetchStatuses();
 fetchEvents();
-fetchStatusPositions();
 fetchStatusPositions();
 
 setInterval(() => {
@@ -90,14 +85,12 @@ setInterval(() => {
         </div>
         <div id="activeJourneys" class="col-md-6 mb-4">
             <GenericMap
-                v-if="user.hasBeta"
                 :live-positions="livePositions"
                 :bounds="bounds"
                 :map-provider="user.user?.mapProvider ?? MapProvider.OpenFreeMap"
             >
                 <EventMarker v-for="trwlEvent in events" :key="trwlEvent.id" :event="trwlEvent" />
             </GenericMap>
-            <ActiveJourneyMap v-else ref="map" :map-provider="user.user?.mapProvider || 'default'" />
 
             <div class="row text-center fs-5 mt-3">
                 <div class="col mb-3">
