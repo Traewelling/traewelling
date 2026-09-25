@@ -163,7 +163,7 @@ onMounted(() => {
                 </div>
 
                 <!-- End of feed -->
-                <div v-if="!showMore && statuses.length" class="text-center py-8 text-base-content/30 text-sm">
+                <div v-if="!showMore && statuses.length" class="text-center py-8 text-base-content text-sm">
                     <p>Final stop. All change, please!</p>
                     <p>{{ trans('dashboard-end-seven-days') }}</p>
                 </div>
