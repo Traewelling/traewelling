@@ -117,4 +117,25 @@ enum MotisCategory: string
             default => null
         };
     }
+
+    /**
+     * Travel types whose filter would match at least one of the given modes.
+     *
+     * @param  MotisCategory[]  $modes
+     * @return TravelType[]
+     */
+    public static function toTravelTypes(array $modes): array
+    {
+        $travelTypes = [];
+        foreach (TravelType::cases() as $travelType) {
+            foreach (self::fromTravelType($travelType) ?? [] as $filteredMode) {
+                if (in_array($filteredMode, $modes, true)) {
+                    $travelTypes[] = $travelType;
+                    break;
+                }
+            }
+        }
+
+        return $travelTypes;
+    }
 }

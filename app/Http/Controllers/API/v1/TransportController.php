@@ -6,6 +6,7 @@ use App\Dto\Coordinate;
 use App\Dto\Internal\Departure;
 use App\Dto\LicenseDto;
 use App\Dto\Transport\Station as StationDto;
+use App\Enum\MotisCategory;
 use App\Enum\StationIdentifierType;
 use App\Enum\TravelType;
 use App\Exceptions\Checkin\AlreadyCheckedInException;
@@ -102,7 +103,7 @@ class TransportController extends Controller
                         ),
                         new OA\Property(
                             property: 'meta',
-                            required: ['station', 'times', 'removedLicenses', 'removedCount'],
+                            required: ['station', 'times', 'removedLicenses', 'removedCount', 'availableTravelTypes'],
                             properties: [
                                 new OA\Property(
                                     property: 'station',
@@ -152,6 +153,12 @@ class TransportController extends Controller
                                     description: 'Number of removed entries due to license filtering',
                                     type: 'integer',
                                     example: 2,
+                                ),
+                                new OA\Property(
+                                    property: 'availableTravelTypes',
+                                    description: 'Travel types served at this station according to the data provider, independent of the requested travelType. Empty if unknown.',
+                                    type: 'array',
+                                    items: new OA\Items(ref: TravelType::class),
                                 ),
                             ],
                             type: 'object',
@@ -207,6 +214,7 @@ class TransportController extends Controller
                         ],
                         'removedLicenses' => $filtered->removedEntries,
                         'removedCount' => $filtered->removedCount,
+                        'availableTravelTypes' => MotisCategory::toTravelTypes($filtered->availableModes),
                     ],
                 ]
             );

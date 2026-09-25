@@ -29,6 +29,7 @@ use Illuminate\Http\Client\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use JsonException;
 
 class Motis extends Controller implements DataProviderInterface
@@ -46,6 +47,16 @@ class Motis extends Controller implements DataProviderInterface
     private ExcludedSourceService $excludedSourceService;
 
     private const string API_URL = 'https://api.transitous.org/api';
+
+    /**
+     * Error messages with which MOTIS rejects a stop id that will never work again,
+     * e.g. because its feed was removed or the stop no longer exists.
+     */
+    private const array UNKNOWN_STOP_ERRORS = [
+        'could not find timetable location',
+        'unknown feed id',
+        'stop_found=false',
+    ];
 
     public function __construct(
         DataProvider $source,
@@ -178,6 +189,7 @@ class Motis extends Controller implements DataProviderInterface
 
         $count = 0;
         $exceptions = 0;
+        $emptyResult = null;
         foreach ($transitousIdentifiers as $identifier) {
             $count++;
             try {
@@ -194,7 +206,8 @@ class Motis extends Controller implements DataProviderInterface
                     'station_id' => $station->id,
                 ]);
                 $exceptions++;
-                $filtered = new FilteredDepartures(collect(), collect());
+
+                continue;
             } catch (TimetableLocationNotFoundException $exception) {
                 $identifier->relevance = -9_000; // Set relevance OVER 9000 (to a very low value) to avoid future queries
                 $identifier->save();
@@ -203,8 +216,11 @@ class Motis extends Controller implements DataProviderInterface
             }
 
             if ($filtered->departures->count() === 0 && $filtered->removedEntries->count() === 0) {
-                $identifier->decrement('relevance');
-                $identifier->save();
+                // An empty result for a travel type filter says nothing about the quality of the identifier
+                if ($type === null) {
+                    $identifier->decrement('relevance');
+                }
+                $emptyResult ??= $filtered;
 
                 continue;
             }
@@ -218,6 +234,11 @@ class Motis extends Controller implements DataProviderInterface
             return $filtered;
         }
 
+        // The data provider answered, there are just no departures (e.g. because of the travel type filter)
+        if ($emptyResult !== null) {
+            return $emptyResult;
+        }
+
         if ($exceptions > 0) {
             throw new DataProviderException(__('messages.exception.motis.station-not-found'));
         }
@@ -225,7 +246,7 @@ class Motis extends Controller implements DataProviderInterface
         // No departures found for any identifier
         Log::debug('No departures found for station', ['station' => $station->only(['id', 'name'])]);
 
-        return new FilteredDepartures(collect(), $filtered->removedEntries ?? collect());
+        return new FilteredDepartures(collect(), collect());
     }
 
     /**
@@ -269,7 +290,7 @@ class Motis extends Controller implements DataProviderInterface
             ->sortBy($timeKey)
             ->values();
 
-        return new FilteredDepartures($kept, $filtered->removedEntries);
+        return new FilteredDepartures($kept, $filtered->removedEntries, $filtered->removedCount, $filtered->availableModes);
     }
 
     public function fetchStationFromApi(
@@ -335,7 +356,7 @@ class Motis extends Controller implements DataProviderInterface
                     'body' => $response->body(),
                 ]);
 
-                if (str_contains(strtolower($response->body()), 'could not find timetable location')) {
+                if (Str::contains(strtolower($response->body()), self::UNKNOWN_STOP_ERRORS)) {
                     throw new TimetableLocationNotFoundException();
                 }
 
@@ -345,7 +366,14 @@ class Motis extends Controller implements DataProviderInterface
             $entries = $response->json('stopTimes');
             CacheKey::increment(HCK::DEPARTURES_SUCCESS);
 
-            return $this->hydrator->mapDepartures($entries, $station, $this->source, $transitousIdentifier->identifier);
+            $availableModes = array_values(array_filter(array_map(
+                static fn (mixed $mode): ?MotisCategory => is_string($mode) ? MotisCategory::tryFrom($mode) : null,
+                $response->json('place.modes') ?? [],
+            )));
+
+            return $this->hydrator
+                ->mapDepartures($entries, $station, $this->source, $transitousIdentifier->identifier)
+                ->withAvailableModes($availableModes);
         } catch (JsonException $exception) {
             report($exception);
             throw new DataProviderException(__('messages.exception.motis.general'));
