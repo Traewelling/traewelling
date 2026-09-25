@@ -4,6 +4,7 @@ import { trans } from 'laravel-vue-i18n';
 import { computed, ref, watch } from 'vue';
 import { Api, StationResource } from '../../types/Api.gen';
 import { useUserStore } from '../../vue/stores/user';
+import { stationShortCode } from '../helpers/stationCode';
 
 const props = withDefaults(
     defineProps<{
@@ -45,10 +46,6 @@ watch(
         query.value = station?.name ?? '';
     },
 );
-
-function ril100(station: StationResource): string | undefined {
-    return station.identifiers?.find((i) => i.type === 'de_db_ril100')?.identifier ?? undefined;
-}
 
 /** The area a station sits in, so that identically named stations stay distinguishable. */
 function area(station: StationResource): string {
@@ -187,8 +184,8 @@ function pickFirst(): void {
                 >
                     <House v-if="isHome(station)" class="size-4 inline-block me-1 -mt-0.5 text-primary" />
                     {{ station.name }}
-                    <span v-if="ril100(station)" class="badge badge-soft badge-accent badge-sm ml-1">
-                        {{ ril100(station) }}
+                    <span v-if="stationShortCode(station)" class="badge badge-soft badge-accent badge-sm ml-1">
+                        {{ stationShortCode(station) }}
                     </span>
                     <span v-if="area(station)" class="opacity-65 text-xs">
                         <br />

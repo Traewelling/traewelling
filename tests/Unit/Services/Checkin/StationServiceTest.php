@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Services\Checkin;
 
 use App\DataProviders\DataProviderInterface;
+use App\Enum\StationIdentifierType;
 use App\Models\Station;
 use App\Repositories\StationRepository;
 use App\Services\Checkin\StationService;
@@ -26,6 +27,7 @@ class StationServiceTest extends UnitTestCase
         $this->repo = Mockery::mock(StationRepository::class);
         $this->dataProvider = Mockery::mock(DataProviderInterface::class);
         $this->service = new StationService($this->repo, $this->dataProvider);
+        $this->repo->shouldReceive('getStationsByShortCode')->andReturn(collect())->byDefault();
     }
 
     protected function tearDown(): void
@@ -38,7 +40,10 @@ class StationServiceTest extends UnitTestCase
     {
         $stations = collect([$this->makeStation(1, 'Hannover Hbf')]);
 
-        $this->repo->shouldReceive('getStationsByFuzzyRilIdentifier')->once()->with('HH')->andReturn($stations);
+        $this->repo->shouldReceive('getStationsByShortCode')
+            ->once()
+            ->with('HH', [StationIdentifierType::DE_DB_RIL100, StationIdentifierType::LOCAL_CODE])
+            ->andReturn($stations);
         $this->dataProvider->shouldNotReceive('getStations');
 
         $result = $this->service->search('HH');
@@ -49,13 +54,26 @@ class StationServiceTest extends UnitTestCase
 
     public function test_search_with_ril100_falls_through_to_provider_when_empty(): void
     {
-        $this->repo->shouldReceive('getStationsByFuzzyRilIdentifier')->once()->andReturn(collect());
+        $this->repo->shouldReceive('getStationsByShortCode')->once()->andReturn(collect());
         $this->dataProvider->shouldReceive('getStations')->once()->with('HH')->andReturn(collect());
         $this->repo->shouldReceive('getStationByName')->once()->andReturn(collect());
 
         $result = $this->service->search('HH');
 
         $this->assertCount(0, $result);
+    }
+
+    public function test_search_looks_up_local_codes_for_any_input(): void
+    {
+        $stations = collect([$this->makeStation(1, 'Hannover Herrenhäuser Gärten')]);
+
+        $this->repo->shouldReceive('getStationsByShortCode')
+            ->once()
+            ->with('Hg-3', [StationIdentifierType::LOCAL_CODE])
+            ->andReturn($stations);
+        $this->dataProvider->shouldNotReceive('getStations');
+
+        $this->assertSame($stations, $this->service->search('Hg-3'));
     }
 
     public function test_search_with_wikidata_id_delegates_to_repository(): void

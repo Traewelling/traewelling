@@ -5912,7 +5912,7 @@
                     "Stations"
                 ],
                 "summary": "Add a station identifier",
-                "description": "Admin only. Manually add an identifier to a station. The `origin` field will be set to `null`.",
+                "description": "Admin only. Manually add an identifier to a station. `origin` is required for `local_code` (the issuing authority, e.g. `de_uestra`) and must be omitted for every other type, which get `null`.",
                 "operationId": "storeStationIdentifier",
                 "parameters": [
                     {
@@ -5942,6 +5942,13 @@
                                         "type": "string",
                                         "example": "de:08212:1",
                                         "maxLength": 255
+                                    },
+                                    "origin": {
+                                        "description": "Issuer of a `local_code`, lowercase letters, digits and underscores",
+                                        "type": "string",
+                                        "example": "de_uestra",
+                                        "nullable": true,
+                                        "maxLength": 64
                                     }
                                 },
                                 "type": "object"
@@ -5981,7 +5988,7 @@
                     "Stations"
                 ],
                 "summary": "Update a station identifier",
-                "description": "Admin only. Update the type and value of an existing station identifier.",
+                "description": "Admin only. Update the type and value of an existing station identifier. `origin` is required for `local_code` and must be omitted for every other type, which keep their imported origin.",
                 "operationId": "updateStationIdentifier",
                 "parameters": [
                     {
@@ -6021,6 +6028,13 @@
                                         "type": "string",
                                         "example": "de:08212:1",
                                         "maxLength": 255
+                                    },
+                                    "origin": {
+                                        "description": "Issuer of a `local_code`, lowercase letters, digits and underscores",
+                                        "type": "string",
+                                        "example": "de_uestra",
+                                        "nullable": true,
+                                        "maxLength": 64
                                     }
                                 },
                                 "type": "object"
@@ -12026,7 +12040,7 @@
             },
             "StationIdentifierType": {
                 "title": "StationIdentifierType",
-                "description": "The type of the station identifier to look up. Not all types are available for every station. Subject to unannounced change.\n    * motis – all transitous.org/motis supplied identifiers\n    * wikidata_id – ID of wikidata.org\n    * de_db_ril100 – Germany: Deutsche Bahn Richtlinie 100 identifier (e.g. RK for Karlsruhe Hbf)\n    * de_db_ibnr – Germany: internal train station ID of Deutsche Bahn (e.g. 8000191 for Karlsruhe Hbf)\n    ",
+                "description": "The type of the station identifier to look up. Not all types are available for every station. Subject to unannounced change.\n    * motis – all transitous.org/motis supplied identifiers\n    * wikidata_id – ID of wikidata.org\n    * de_db_ril100 – Germany: Deutsche Bahn Richtlinie 100 identifier (e.g. RK for Karlsruhe Hbf)\n    * de_db_ibnr – Germany: internal train station ID of Deutsche Bahn (e.g. 8000191 for Karlsruhe Hbf)\n    * local_code – short code a local transport authority or operator uses for the station. `origin` names who issued it (e.g. de_uestra)\n    ",
                 "type": "integer",
                 "example": 0,
                 "enum": [
@@ -12034,7 +12048,8 @@
                     "WIKIDATA_ID",
                     "IFOPT",
                     "DE_DB_RIL100",
-                    "DE_DB_IBNR"
+                    "DE_DB_IBNR",
+                    "LOCAL_CODE"
                 ]
             },
             "StatusTagKey": {

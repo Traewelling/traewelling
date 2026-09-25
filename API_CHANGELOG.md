@@ -45,6 +45,16 @@ Check back here regularly to stay ahead of removals.
 
 ---
 
+# 2026-09-25
+
+New station identifier type `local_code`: a short code a local transport authority or operator uses for a station.
+`origin` names who issued it (e.g. `de_uestra`), since the same code can exist in several networks.
+It appears in the `identifiers` array of stations like every other type.
+
+`GET /trains/station/autocomplete/{query}` now also finds stations by their local code, after exact RIL100 matches.
+
+---
+
 # 2026-08-21
 
 New endpoint:

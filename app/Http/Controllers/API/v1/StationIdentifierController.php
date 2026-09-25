@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Enum\StationIdentifierType;
+use App\Http\Requests\StationIdentifierRequest;
 use App\Models\Station;
 use App\Repositories\StationRepository;
 use App\Services\Checkin\StationService;
@@ -12,7 +12,6 @@ use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Validation\Rules\Enum;
 use OpenApi\Attributes as OA;
 
 class StationIdentifierController extends Controller
@@ -25,7 +24,7 @@ class StationIdentifierController extends Controller
     #[OA\Post(
         path: '/v1/stations/{stationId}/identifiers',
         operationId: 'storeStationIdentifier',
-        description: 'Admin only. Manually add an identifier to a station. The `origin` field will be set to `null`.',
+        description: 'Admin only. Manually add an identifier to a station. `origin` is required for `local_code` (the issuing authority, e.g. `de_uestra`) and must be omitted for every other type, which get `null`.',
         summary: 'Add a station identifier',
         security: [['passport' => ['*']], ['token' => []]],
         requestBody: new OA\RequestBody(
@@ -35,6 +34,7 @@ class StationIdentifierController extends Controller
                 properties: [
                     new OA\Property(property: 'type', ref: '#/components/schemas/StationIdentifierType'),
                     new OA\Property(property: 'identifier', type: 'string', maxLength: 255, example: 'de:08212:1'),
+                    new OA\Property(property: 'origin', description: 'Issuer of a `local_code`, lowercase letters, digits and underscores', type: 'string', maxLength: 64, example: 'de_uestra', nullable: true),
                 ],
             ),
         ),
@@ -49,21 +49,17 @@ class StationIdentifierController extends Controller
             new OA\Response(response: 422, description: 'Validation error'),
         ],
     )]
-    public function store(Request $request, int $stationId): Response|JsonResponse
+    public function store(StationIdentifierRequest $request, int $stationId): Response|JsonResponse
     {
         $station = Station::findOrFail($stationId);
         $this->authorize('update', $station);
 
-        $validated = $request->validate([
-            'type' => ['required', new Enum(StationIdentifierType::class)],
-            'identifier' => ['required', 'string', 'max:255'],
-        ]);
-
         try {
             $this->stationService->createIdentifier(
                 $station,
-                StationIdentifierType::from($validated['type']),
-                $validated['identifier'],
+                $request->identifierType(),
+                $request->validated('identifier'),
+                $request->validated('origin'),
                 $request->user(),
             );
         } catch (UniqueConstraintViolationException) {
@@ -76,7 +72,7 @@ class StationIdentifierController extends Controller
     #[OA\Patch(
         path: '/v1/stations/{stationId}/identifiers/{identifierId}',
         operationId: 'updateStationIdentifier',
-        description: 'Admin only. Update the type and value of an existing station identifier.',
+        description: 'Admin only. Update the type and value of an existing station identifier. `origin` is required for `local_code` and must be omitted for every other type, which keep their imported origin.',
         summary: 'Update a station identifier',
         security: [['passport' => ['*']], ['token' => []]],
         requestBody: new OA\RequestBody(
@@ -86,6 +82,7 @@ class StationIdentifierController extends Controller
                 properties: [
                     new OA\Property(property: 'type', ref: '#/components/schemas/StationIdentifierType'),
                     new OA\Property(property: 'identifier', type: 'string', example: 'de:08212:1', maxLength: 255),
+                    new OA\Property(property: 'origin', description: 'Issuer of a `local_code`, lowercase letters, digits and underscores', type: 'string', maxLength: 64, example: 'de_uestra', nullable: true),
                 ],
             ),
         ),
@@ -101,15 +98,10 @@ class StationIdentifierController extends Controller
             new OA\Response(response: 422, description: 'Validation error'),
         ],
     )]
-    public function update(Request $request, int $stationId, string $identifierId): Response|JsonResponse
+    public function update(StationIdentifierRequest $request, int $stationId, string $identifierId): Response|JsonResponse
     {
         $station = Station::findOrFail($stationId);
         $this->authorize('update', $station);
-
-        $validated = $request->validate([
-            'type' => ['required', new Enum(StationIdentifierType::class)],
-            'identifier' => ['required', 'string', 'max:255'],
-        ]);
 
         $identifier = $this->stationRepository->getIdentifierForStation($identifierId, $stationId);
         if ($identifier === null) {
@@ -119,8 +111,9 @@ class StationIdentifierController extends Controller
         try {
             $this->stationService->updateIdentifierValues(
                 $identifier,
-                StationIdentifierType::from($validated['type']),
-                $validated['identifier'],
+                $request->identifierType(),
+                $request->validated('identifier'),
+                $request->validated('origin'),
                 $request->user(),
             );
         } catch (UniqueConstraintViolationException) {
