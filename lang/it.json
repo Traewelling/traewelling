@@ -1457,5 +1457,13 @@
     "user.home-station.set": "",
     "user.login.mastodon": "",
     "export.title.departure_real": "",
-    "export.title.arrival_real": ""
+    "export.title.arrival_real": "",
+    "error.429": "",
+    "error.500": "",
+    "tag.title.trwl:locomotive_class": "",
+    "missing-journey": "",
+    "settings.experimental.description": "",
+    "error.419": "",
+    "error.404": "",
+    "export.format": ""
 }
