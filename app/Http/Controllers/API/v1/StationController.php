@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Repositories\StationRepository;
 use App\Services\Checkin\StationService;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -450,7 +451,7 @@ class StationController extends Controller
 
         // fuzzy search
         if (array_key_exists('query', $validated)) {
-            $stations = $this->stationService->search($validated['query']);
+            $stations = new EloquentCollection($this->stationService->search($validated['query']));
 
             if ($withIdentifiers) {
                 $stations->loadMissing('stationIdentifiers');
