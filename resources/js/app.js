@@ -2,7 +2,6 @@
 import 'bootstrap';
 import { i18nVue } from 'laravel-vue-i18n';
 import 'leaflet/dist/leaflet.js';
-import 'maplibre-gl/dist/maplibre-gl.css';
 import { Notyf } from 'notyf';
 import { createPinia } from 'pinia';
 import piniaPluginPersistedsState from 'pinia-plugin-persistedstate';
@@ -25,6 +24,7 @@ import TicketDetail from '../vue/views/TicketDetail.vue';
 import Tickets from '../vue/views/Tickets.vue';
 import './api/api';
 import './components/maps';
+import './maplibre';
 
 window.notyf = new Notyf({
     duration: 5000,

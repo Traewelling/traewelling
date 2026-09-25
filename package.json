@@ -45,7 +45,7 @@
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^7.1.0",
-        "@indoorequal/vue-maplibre-gl": "^8.4.2",
+        "@indoorequal/vue-maplibre-gl": "^9.0.1",
         "@lucide/vue": "^1.17.0",
         "@vuepic/vue-datepicker": "^14.0.0",
         "apexcharts": "^7.0.0",
@@ -61,7 +61,7 @@
         "Leaflet-MovingMaker": "^0.0.1",
         "lgbtq.css": "^2.0.7",
         "luxon": "^3.4.4",
-        "maplibre-gl": "^5.11.0",
+        "maplibre-gl": "^6.11.2",
         "marked": "^18.0.0",
         "notyf": "^3.10.0",
         "papaparse": "^5.5.3",

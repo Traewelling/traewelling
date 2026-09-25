@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import maplibregl from 'maplibre-gl';
-import 'maplibre-gl/dist/maplibre-gl.css';
+import * as maplibregl from 'maplibre-gl';
 import { onMounted, onUnmounted, ref, watch } from 'vue';
+import '../../../../js/maplibre';
 import type { Station, StationIdentifier } from '../../../../types/Api.gen';
 
 const props = defineProps<{

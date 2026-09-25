@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { Check, ExternalLink, GitMerge, X } from '@lucide/vue';
-import maplibregl, { type GeoJSONSource, type MapLayerMouseEvent } from 'maplibre-gl';
-import 'maplibre-gl/dist/maplibre-gl.css';
+import type { GeoJSONSource, MapLayerMouseEvent } from 'maplibre-gl';
+import * as maplibregl from 'maplibre-gl';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
+import '../../../../js/maplibre';
 import { Api, type StationResource } from '../../../../types/Api.gen';
 
 const api = new Api({ baseUrl: window.location.origin + '/api' });
