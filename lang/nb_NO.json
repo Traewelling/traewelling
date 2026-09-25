@@ -1444,5 +1444,22 @@
     "user.home-station.set": "",
     "user.login.mastodon": "",
     "export.title.departure_real": "",
-    "export.title.arrival_real": ""
+    "export.title.arrival_real": "",
+    "menu.oauth_authorize.application_information.privacy_policy": "",
+    "error.429": "",
+    "error.500": "",
+    "tag.title.trwl:locomotive_class": "",
+    "missing-journey": "",
+    "settings.experimental.description": "",
+    "year-review.teaser": "",
+    "settings.webhook_event.checkin_create": "",
+    "settings.webhook_event.checkin_update": "",
+    "support.go-to-github": "",
+    "settings.webhook-description": "",
+    "menu.oauth_authorize.request_title": "",
+    "error.419": "",
+    "error.404": "",
+    "notifications.eventSuggestionProcessed.duplicate": "",
+    "settings.webhook_event.checkin_delete": "",
+    "export.format": ""
 }
