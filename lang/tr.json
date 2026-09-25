@@ -1387,5 +1387,8 @@
     "events.host": "",
     "user.login.mastodon": "",
     "export.title.departure_real": "",
-    "export.title.arrival_real": ""
+    "export.title.arrival_real": "",
+    "transport_types.regionalExp": "",
+    "export.duration": "",
+    "maintenance.title": ""
 }
