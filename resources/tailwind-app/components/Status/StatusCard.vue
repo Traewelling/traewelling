@@ -193,7 +193,7 @@ const enrichedBody = computed(() => {
         const user = userMap.get(match[1].toLowerCase());
         if (!user) continue;
         result += escapeHtml(body.slice(lastIndex, match.index));
-        result += `<a href="/@${encodeURIComponent(user.username)}" class="link link-primary">${escapeHtml(match[0])}</a>`;
+        result += `<a href="/@${encodeURIComponent(user.username)}" class="link text-primary [[data-theme=dark]_&]:text-red-400">${escapeHtml(match[0])}</a>`;
         lastIndex = match.index + match[0].length;
     }
     result += escapeHtml(body.slice(lastIndex));
