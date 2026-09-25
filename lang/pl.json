@@ -1461,5 +1461,13 @@
     "trip.delete.description": "",
     "privacy.upcoming.public-notice-link": "",
     "route-map.title": "",
-    "user.home-station.set": ""
+    "user.home-station.set": "",
+    "error.429": "",
+    "error.500": "",
+    "missing-journey": "",
+    "year-review.teaser": "",
+    "support.go-to-github": "",
+    "settings.webhook-description": "",
+    "error.419": "",
+    "error.404": ""
 }
