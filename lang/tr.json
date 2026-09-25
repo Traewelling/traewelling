@@ -1383,5 +1383,9 @@
     "trip.delete.description": "",
     "privacy.upcoming.public-notice-link": "",
     "route-map.title": "",
-    "user.home-station.set": ""
+    "user.home-station.set": "",
+    "events.host": "",
+    "user.login.mastodon": "",
+    "export.title.departure_real": "",
+    "export.title.arrival_real": ""
 }
