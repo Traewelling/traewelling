@@ -80,6 +80,10 @@ const props = defineProps({
         type: Boolean,
         default: true,
     },
+    height: {
+        type: String,
+        default: '45vh',
+    },
 });
 
 const userStore = useUserStore();
@@ -116,7 +120,7 @@ const mapStyle = buildTransitBasemapStyle(isDarkMode ? 'dark' : 'light');
 
 <template>
     <!-- Consent gate: shown to non-authenticated users who haven't yet activated the map -->
-    <div v-if="!showMap" class="map-consent-gate">
+    <div v-if="!showMap" class="map-consent-gate" :style="{ height }">
         <div class="map-consent-content">
             <p class="map-consent-text">
                 {{ trans('map.consent.notice') }}
@@ -130,13 +134,13 @@ const mapStyle = buildTransitBasemapStyle(isDarkMode ? 'dark' : 'light');
             </button>
         </div>
     </div>
-    <div v-else class="generic-map-wrapper">
+    <div v-else class="generic-map-wrapper" :style="{ height }">
         <!-- Map -->
         <mgl-map
             :map-style="mapStyle"
             :max-zoom="18"
             :bounds="effectiveBounds"
-            height="45vh"
+            height="100%"
             :attribution-control="{ compact: true }"
             :cooperative-gestures="cooperativeGestures"
         >
@@ -244,7 +248,6 @@ const mapStyle = buildTransitBasemapStyle(isDarkMode ? 'dark' : 'light');
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 45vh;
     background-color: #e8e8e8;
     color: #333;
 }

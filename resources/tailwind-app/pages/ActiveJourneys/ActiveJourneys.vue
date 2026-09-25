@@ -91,6 +91,7 @@ onUnmounted(() => {
                 <div class="flex flex-col gap-2">
                     <div class="rounded-box overflow-hidden h-80 md:h-[500px] isolate">
                         <GenericMap
+                            height="100%"
                             :live-positions="livePositions"
                             :bounds="bounds"
                             :map-provider="
