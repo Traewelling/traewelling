@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
 import { useConfigurationStore } from '../../../vue/stores/configuration';
+import DarkModeSelector from './DarkModeSelector.vue';
+import LanguageSelector from './LanguageSelector.vue';
 
 const config = useConfigurationStore();
 config.fetchData();
