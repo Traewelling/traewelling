@@ -16,7 +16,7 @@ const elsewhereLinks = [
 </script>
 
 <template>
-    <footer class="footer max-md:footer-center footer-horizontal bg-primary text-white p-10">
+    <footer class="footer max-md:footer-center footer-horizontal bg-primary text-white p-10 max-md:pb-44">
         <aside>
             <div class="flex items-center space-x-2 mb-4">
                 <img src="/images/icons/logo.svg" class="h-12 w-12" alt="Träwelling Logo" />
