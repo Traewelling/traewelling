@@ -97,7 +97,7 @@ class ProviderPolylineService
         }
 
         try {
-            $geometry = $this->fetchGeometry($trip);
+            $geometry = $this->fetchGeometry($trip, $stopovers);
         } catch (DataProviderException $exception) {
             Log::warning('ProviderPolyline: Could not load journey from provider', [
                 'trip_id' => $trip->id,
@@ -405,9 +405,62 @@ class ProviderPolylineService
     }
 
     /**
+     * Picks the leg that describes this trip (ignoring not matching trip id)
+     *
+     * @param  Collection<int, Stopover>  $stopovers
+     * @param  array<int, array<string, mixed>>  $legs
+     * @return array<string, mixed>|null
+     */
+    private function findLegOfTrip(Trip $trip, Collection $stopovers, array $legs): ?array
+    {
+        foreach ($legs as $leg) {
+            if (($leg['tripId'] ?? null) === $trip->trip_id) {
+                return $leg;
+            }
+        }
+
+        if (count($legs) !== 1) {
+            return null;
+        }
+
+        $leg = $legs[0];
+        if (!$this->legEndpointMatches($leg['from'] ?? null, $stopovers->first())
+            || !$this->legEndpointMatches($leg['to'] ?? null, $stopovers->last())) {
+            return null;
+        }
+
+        Log::debug('ProviderPolyline: Using the only returned leg although its trip id differs', [
+            'trip_id' => $trip->id,
+            'provider_trip_id' => $trip->trip_id,
+            'leg_trip_id' => $leg['tripId'] ?? null,
+        ]);
+
+        return $leg;
+    }
+
+    /**
+     * @param  array<string, mixed>|null  $place
+     */
+    private function legEndpointMatches(?array $place, ?Stopover $stopover): bool
+    {
+        $location = $stopover?->coordinate;
+        if ($location === null || !isset($place['lat'], $place['lon'])) {
+            return false;
+        }
+
+        $distance = $this->geodesicService->haversineDistance(
+            new Coordinate((float) $place['lat'], (float) $place['lon']),
+            $location,
+        );
+
+        return $distance <= self::MAX_SNAP_DISTANCE_METERS;
+    }
+
+    /**
+     * @param  Collection<int, Stopover>  $stopovers
      * @return array{coordinates: Coordinate[], precision: int}|null
      */
-    private function fetchGeometry(Trip $trip): ?array
+    private function fetchGeometry(Trip $trip, Collection $stopovers): ?array
     {
         Log::debug('ProviderPolyline: Requesting raw journey from provider', [
             'trip_id' => $trip->id,
@@ -419,14 +472,8 @@ class ProviderPolylineService
             ->fetchRawHafasTrip($trip->trip_id, $trip->linename);
 
         $legs = $rawJourney['legs'] ?? [];
-        $geometry = null;
-        foreach ($legs as $leg) {
-            // Match strictly: a leg of a neighbouring trip would describe the wrong line.
-            if (($leg['tripId'] ?? null) === $trip->trip_id) {
-                $geometry = $leg['legGeometry'] ?? null;
-                break;
-            }
-        }
+        $leg = $this->findLegOfTrip($trip, $stopovers, $legs);
+        $geometry = $leg['legGeometry'] ?? null;
 
         if (empty($geometry['points'])) {
             Log::debug('ProviderPolyline: No leg geometry in provider response', [
