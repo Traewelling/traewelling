@@ -1447,5 +1447,6 @@
     "notifications.eventSuggestionProcessed.duplicate": "",
     "settings.title-change-password": "",
     "settings.webhook_event.checkin_delete": "",
-    "export.format": ""
+    "export.format": "",
+    "dashboard.empty.discover3": ""
 }
