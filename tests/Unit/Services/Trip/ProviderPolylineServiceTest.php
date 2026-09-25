@@ -8,6 +8,7 @@ use App\Dto\Coordinate;
 use App\Enum\HafasTravelType;
 use App\Enum\SegmentPathType;
 use App\Enum\TripSource;
+use App\Jobs\RecalculateStatusesDistanceForTrip;
 use App\Models\RouteSegment;
 use App\Models\Station;
 use App\Models\Stopover;
@@ -18,6 +19,7 @@ use App\Services\Trip\ProviderPolylineService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Queue;
 use Mockery;
 use Tests\Unit\UnitTestCase;
 use Traewelling\GooglePolyline\PolylineTranscoder;
@@ -48,6 +50,7 @@ class ProviderPolylineServiceTest extends UnitTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        Queue::fake();
 
         $this->repository = Mockery::mock(TripRepository::class);
         $this->service = new ProviderPolylineService($this->repository, new GeodesicService());
@@ -188,6 +191,7 @@ class ProviderPolylineServiceTest extends UnitTestCase
         $this->assertSame(0, $result->reused);
         $this->assertNull($result->abortReason);
         $this->assertCount(2, $captured);
+        Queue::assertPushed(RecalculateStatusesDistanceForTrip::class);
 
         // Mockery hands named arguments over positionally, in createRouteSegment's parameter order
         [$fromStation, $toStation, $encodedPolyline, $precision, $duration, $pathType, $distance] = $captured[0];
@@ -228,6 +232,7 @@ class ProviderPolylineServiceTest extends UnitTestCase
 
         $this->assertSame(0, $result->created);
         $this->assertSame(1, $result->reused);
+        Queue::assertPushed(RecalculateStatusesDistanceForTrip::class);
     }
 
     public function test_stopovers_that_already_have_a_segment_are_left_untouched(): void
@@ -271,6 +276,7 @@ class ProviderPolylineServiceTest extends UnitTestCase
         $this->assertSame(0, $result->created);
         $this->assertNull($result->abortReason);
         Http::assertNothingSent();
+        Queue::assertNotPushed(RecalculateStatusesDistanceForTrip::class);
     }
 
     public function test_aborts_when_the_stopovers_do_not_lie_on_the_geometry(): void
