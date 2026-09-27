@@ -19,6 +19,7 @@ import { Notyf } from 'notyf';
 import { computed, inject, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { Api, StatusResource, TripResource } from '../../../types/Api.gen';
+import { useActiveCheckin } from '../../../vue/stores/activeCheckin';
 import { useUserStore } from '../../../vue/stores/user';
 import ReportModal from '../ReportModal.vue';
 import TripCopyModal from '../Trip/TripCopyModal.vue';
@@ -36,6 +37,7 @@ const emit = defineEmits<{
 const api = new Api({ baseUrl: window.location.origin + '/api' });
 const notyf = inject('notyf') as Notyf;
 const userStore = useUserStore();
+const activeCheckin = useActiveCheckin();
 const router = useRouter();
 
 const busyDepartureNow = ref(false);
@@ -113,6 +115,7 @@ async function departureNow() {
     busyDepartureNow.value = true;
     try {
         const res = await api.status.updateSingleStatus({ manualDeparture: getNowIso() } as never, props.status.id);
+        activeCheckin.updateStatus(res.data.data as StatusResource);
         emit('status-updated', res.data.data as StatusResource);
     } finally {
         busyDepartureNow.value = false;
@@ -123,6 +126,7 @@ async function arrivalNow() {
     busyArrivalNow.value = true;
     try {
         const res = await api.status.updateSingleStatus({ manualArrival: getNowIso() } as never, props.status.id);
+        activeCheckin.updateStatus(res.data.data as StatusResource);
         emit('status-updated', res.data.data as StatusResource);
     } finally {
         busyArrivalNow.value = false;
