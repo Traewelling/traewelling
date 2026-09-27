@@ -49,14 +49,14 @@ class StatusTest extends ApiTestCase
             'data' => [
                 'id',
                 'body',
-                'userDetails' => [
+                'user' => [
                     'id',
                     'displayName',
                     'username',
                     'profilePicture',
                     'preventIndex',
                 ],
-                'train' => [
+                'checkin' => [
                     'trip',
                     'hafasId',
                     'category',
@@ -74,8 +74,8 @@ class StatusTest extends ApiTestCase
             ],
         ]);
 
-        $this->assertEquals($checkin->originStopover->station->id, $response->json('data.train.origin.id'));
-        $this->assertEquals($checkin->destinationStopover->station->id, $response->json('data.train.destination.id'));
+        $this->assertEquals($checkin->originStopover->station->id, $response->json('data.checkin.origin.id'));
+        $this->assertEquals($checkin->destinationStopover->station->id, $response->json('data.checkin.destination.id'));
     }
 
     public function test_status_contains_the_uuid_of_its_trip(): void

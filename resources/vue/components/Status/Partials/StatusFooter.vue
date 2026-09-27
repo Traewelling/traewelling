@@ -79,7 +79,7 @@ likes.value = props.status.likes || 0;
                         :class="{
                             'fas fa-heart': status.liked,
                             'far fa-heart': !status.liked,
-                            peach: status.userDetails.id === 18574,
+                            peach: status.user.id === 18574,
                         }"
                         @click.prevent="like()"
                     >
@@ -113,18 +113,18 @@ likes.value = props.status.likes || 0;
 
         <ul class="list-inline">
             <li class="d-lg-none list-inline-item">
-                <a :href="`/@${status.userDetails.username}`">
+                <a :href="`/@${status.user.username}`">
                     <img
                         loading="lazy"
-                        :src="status.userDetails.profilePicture"
+                        :src="status.user.profilePicture"
                         class="profile-image"
-                        :alt="status.userDetails.username"
+                        :alt="status.user.username"
                     />
                 </a>
             </li>
             <li class="list-inline-item me-1">
-                <a :href="`/@${status.userDetails.username}`" class="username">
-                    {{ user.user?.id !== status.userDetails.id ? status.userDetails.username : trans('user.you') }}
+                <a :href="`/@${status.user.username}`" class="username">
+                    {{ user.user?.id !== status.user.id ? status.user.username : trans('user.you') }}
                 </a>
             </li>
             <li class="list-inline-item">

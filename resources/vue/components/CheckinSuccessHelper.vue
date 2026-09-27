@@ -60,10 +60,10 @@ export default {
             <p>
                 {{
                     trans('checkin.success.body2', {
-                        lineName: status?.train?.lineName ?? '',
-                        distance: ((status?.train?.distance ?? 0) / 1000).toFixed(2).toString(),
-                        origin: status?.train?.origin?.name ?? '',
-                        destination: status?.train?.destination?.name ?? '',
+                        lineName: status?.checkin?.lineName ?? '',
+                        distance: ((status?.checkin?.distance ?? 0) / 1000).toFixed(2).toString(),
+                        origin: status?.checkin?.origin?.name ?? '',
+                        destination: status?.checkin?.destination?.name ?? '',
                     })
                 }}
             </p>
@@ -99,7 +99,7 @@ export default {
                         aria-current="true"
                     >
                         <img
-                            :src="connectionStatus.userDetails.profilePicture"
+                            :src="connectionStatus.user.profilePicture"
                             alt="Profilbild"
                             class="rounded-circle flex-shrink-0"
                             style="width: 40px; height: 40px; object-fit: cover"
@@ -107,20 +107,17 @@ export default {
 
                         <div class="d-flex flex-column flex-grow-1">
                             <h6 class="mb-1 fw-bold opacity-75 text-truncate">
-                                {{ connectionStatus.userDetails.displayName }}
+                                {{ connectionStatus.user.displayName }}
                                 <span
-                                    v-if="
-                                        connectionStatus.userDetails.displayName !==
-                                        connectionStatus.userDetails.username
-                                    "
+                                    v-if="connectionStatus.user.displayName !== connectionStatus.user.username"
                                     class="text-muted"
                                 >
-                                    (@{{ connectionStatus.userDetails.username }})
+                                    (@{{ connectionStatus.user.username }})
                                 </span>
                             </h6>
                             <p class="mb-0 text-truncate">
-                                {{ connectionStatus?.train?.origin?.name }} ➜
-                                {{ connectionStatus?.train?.destination?.name }}
+                                {{ connectionStatus?.checkin?.origin?.name }} ➜
+                                {{ connectionStatus?.checkin?.destination?.name }}
                             </p>
                         </div>
                     </a>

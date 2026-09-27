@@ -63,15 +63,15 @@ watch(
             body: newStatus.body,
             business: newStatus.business,
             visibility: newStatus.visibility,
-            manualDeparture: newStatus.train.manualDeparture,
-            manualArrival: newStatus.train.manualArrival,
-            destinationId: newStatus.train.destination.id,
+            manualDeparture: newStatus.checkin.manualDeparture,
+            manualArrival: newStatus.checkin.manualArrival,
+            destinationId: newStatus.checkin.destination.id,
             // destinationArrivalPlanned: will be set while summiting
             eventId: newStatus.event?.id || null,
         };
 
-        manualDeparture.value = newStatus.train.manualDeparture ? new Date(newStatus.train.manualDeparture) : null;
-        manualArrival.value = newStatus.train.manualArrival ? new Date(newStatus.train.manualArrival) : null;
+        manualDeparture.value = newStatus.checkin.manualDeparture ? new Date(newStatus.checkin.manualDeparture) : null;
+        manualArrival.value = newStatus.checkin.manualArrival ? new Date(newStatus.checkin.manualArrival) : null;
 
         destinationSelection.value = null;
     },
@@ -81,8 +81,8 @@ watch(
 function show() {
     fetchDestinations().then(() => {
         eventsDropdown.value?.fetchEvents(getDepartureForStatus(props.status).toISO());
-        const currentDestStationId = props.status.train.destination.id;
-        const currentDestArrivalPlanned = props.status.train.destination.arrivalPlanned;
+        const currentDestStationId = props.status.checkin.destination.id;
+        const currentDestArrivalPlanned = props.status.checkin.destination.arrivalPlanned;
         const found = stopovers.value.find((so) => {
             return so.id === currentDestStationId && so.arrivalPlanned === currentDestArrivalPlanned;
         });
@@ -101,13 +101,13 @@ function show() {
 async function fetchDestinations() {
     try {
         const response = await api.trains.getTrainTrip({
-            hafasTripId: props.status.train.trip,
-            lineName: props.status.train.lineName,
-            start: props.status.train.origin.id,
+            hafasTripId: props.status.checkin.trip,
+            lineName: props.status.checkin.lineName,
+            start: props.status.checkin.origin.id,
         });
 
         const all = response.data?.data?.stopovers || [];
-        const departurePlanned = DateTime.fromISO(props.status.train.origin.departurePlanned || '');
+        const departurePlanned = DateTime.fromISO(props.status.checkin.origin.departurePlanned || '');
         stopovers.value = all.filter((stopover: StopoverResource) => {
             const arrival = DateTime.fromISO(
                 stopover.arrivalPlanned || stopover.arrival || stopover.departurePlanned || stopover.departure,

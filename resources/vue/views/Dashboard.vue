@@ -51,7 +51,7 @@ function fetchStopovers(append: boolean = false) {
         return;
     }
 
-    const tripIds = statuses.value.map((status) => status.train.trip.toString());
+    const tripIds = statuses.value.map((status) => status.checkin.trip.toString());
     api.stopovers
         .getStopOvers(tripIds.join(','))
         .then((response) => {
@@ -140,8 +140,8 @@ fetchFutureStatuses();
                 <h2
                     v-if="
                         index === 0 ||
-                        !DateTime.fromISO(status.train.origin.departure || '').hasSame(
-                            DateTime.fromISO(statuses[index - 1].train.origin.departure || ''),
+                        !DateTime.fromISO(status.checkin.origin.departure || '').hasSame(
+                            DateTime.fromISO(statuses[index - 1].checkin.origin.departure || ''),
                             'day',
                         )
                     "
@@ -152,7 +152,7 @@ fetchFutureStatuses();
                 <StatusCard
                     :status="status"
                     :authenticated-user="user.user"
-                    :stopovers="getStopoverForTrip(status.train.trip.toString())"
+                    :stopovers="getStopoverForTrip(status.checkin.trip.toString())"
                 />
             </template>
 
