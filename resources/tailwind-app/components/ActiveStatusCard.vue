@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
 import { DateTime } from 'luxon';
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { StopoverResource } from '../../types/Api.gen';
 import LineIndicator from '../../vue/components/LineIndicator.vue';
@@ -49,6 +49,8 @@ function getNextStation() {
         nextStation.value = NextStation.getNextStation(state.stopovers);
     }
 }
+
+watch(() => state.status, getNextStation);
 
 function format(dateTime: DateTime | null): string {
     return dateTime ? dateTime.toFormat('HH:mm') : '';

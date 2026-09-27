@@ -14,6 +14,7 @@ import {
     StopoverResource,
 } from '../../../types/Api.gen';
 import { getDepartureForStatus } from '../../../vue/helpers/DateTimeHelper';
+import { useActiveCheckin } from '../../../vue/stores/activeCheckin';
 import { ALL_VISIBILITIES, VISIBILITY_ICONS } from '../../helpers/visibility';
 
 const props = defineProps<{
@@ -28,6 +29,7 @@ const emit = defineEmits<{
 
 const api = new Api({ baseUrl: window.location.origin + '/api' });
 const notyf = inject('notyf') as Notyf;
+const activeCheckin = useActiveCheckin();
 
 const loading = ref(false);
 const stopovers = ref<StopoverResource[]>([]);
@@ -120,6 +122,7 @@ async function save() {
         }
 
         const res = await api.status.updateSingleStatus(updateBody, props.status.id);
+        activeCheckin.updateStatus(res.data.data as StatusResource);
         emit('saved', res.data.data as StatusResource);
     } catch {
         notyf?.error(trans('generic.error'));

@@ -20,6 +20,12 @@ export const useActiveCheckin = defineStore(
             stopovers.value = null;
         }
 
+        function updateStatus(updated: StatusResource): void {
+            if (status.value?.id === updated.id) {
+                status.value = updated;
+            }
+        }
+
         async function fetchStopovers(trip: number): Promise<void> {
             const response = await api.stopovers.getStopOvers(trip.toString());
             if (Object.prototype.hasOwnProperty.call(response.data.data, trip)) {
@@ -70,6 +76,7 @@ export const useActiveCheckin = defineStore(
             error,
             refreshed,
             reset,
+            updateStatus,
             fetchStopovers,
             fetchActiveStatus,
         };
