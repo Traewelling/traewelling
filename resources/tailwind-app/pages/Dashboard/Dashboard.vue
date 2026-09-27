@@ -3,7 +3,8 @@ import { ChevronDown, ChevronUp, Train } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
 import { DateTime } from 'luxon';
 import { Notyf } from 'notyf';
-import { inject, onMounted, ref } from 'vue';
+import { inject, onMounted, onUnmounted, ref } from 'vue';
+import { isNavigationFailure, NavigationFailureType, useRouter } from 'vue-router';
 import { Api, StatusResource, StopoverResource } from '../../../types/Api.gen';
 import { getDepartureForStatus } from '../../../vue/helpers/DateTimeHelper';
 import AlertBanner from '../../components/AlertBanner.vue';
@@ -87,10 +88,19 @@ function getStopoverForTrip(tripId: string): StopoverResource[] | undefined {
     return stopovers.value[tripId];
 }
 
-onMounted(() => {
+function refresh(): void {
     fetchStatuses();
     fetchFutureStatuses();
+}
+
+onMounted(refresh);
+
+const removeReselectHook = useRouter().afterEach((_to, _from, failure) => {
+    if (isNavigationFailure(failure, NavigationFailureType.duplicated)) {
+        refresh();
+    }
 });
+onUnmounted(removeReselectHook);
 </script>
 
 <template>
