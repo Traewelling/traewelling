@@ -58,7 +58,7 @@ const stationboardWhen = computed(() => {
 <template>
     <li>
         <i class="trwl-bulletpoint" aria-hidden="true" />
-        <span class="text-trwl float-end" :class="{ 'cancelled-time': status.train.origin.cancelled }">
+        <span class="text-trwl float-end" :class="{ 'cancelled-time': status.checkin.origin.cancelled }">
             <s v-show="arrival.originalTime" class="text-muted me-1">
                 {{ arrival.originalTime?.toLocaleString(DateTime.TIME_SIMPLE) }}
             </s>
@@ -68,51 +68,51 @@ const stationboardWhen = computed(() => {
         </span>
 
         <a
-            :href="`/stationboard?stationId=${status.train.origin.id}&stationName=${status.train.origin.name}&when=${encodeURIComponent(stationboardWhen)}`"
+            :href="`/stationboard?stationId=${status.checkin.origin.id}&stationName=${status.checkin.origin.name}&when=${encodeURIComponent(stationboardWhen)}`"
             class="text-trwl clearfix"
-            :class="{ 'cancelled-name': status.train.origin.cancelled }"
+            :class="{ 'cancelled-name': status.checkin.origin.cancelled }"
         >
-            {{ status.train.origin.name }}
-            <small v-if="status.train.origin.cancelled" class="badge cancelled-badge ms-1">{{
+            {{ status.checkin.origin.name }}
+            <small v-if="status.checkin.origin.cancelled" class="badge cancelled-badge ms-1">{{
                 $t('stationboard.stop-cancelled')
             }}</small>
         </a>
 
         <p class="train-status text-muted m-0">
             <span class="align-middle">
-                <ProductIcon :mode="status.train.mode" :product="status.train.category" />
+                <ProductIcon :mode="status.checkin.mode" :product="status.checkin.category" />
 
                 <LineIndicator
                     class-name="line-badge align-middle line-indicator"
-                    :product-name="status.train.category"
-                    :number="status.train.lineName"
-                    :mode="status.train.mode"
-                    :color="status.train.routeTextColor"
-                    :background-color="status.train.routeColor"
+                    :product-name="status.checkin.category"
+                    :number="status.checkin.lineName"
+                    :mode="status.checkin.mode"
+                    :color="status.checkin.routeTextColor"
+                    :background-color="status.checkin.routeColor"
                 />
 
                 <small
-                    v-if="status.train.manualJourneyNumber"
+                    v-if="status.checkin.manualJourneyNumber"
                     data-bs-toggle="tooltip"
                     data-bs-placement="top"
                     :title="trans('status.manual_journey_number')"
                 >
-                    ({{ status.train.manualJourneyNumber }})
+                    ({{ status.checkin.manualJourneyNumber }})
                 </small>
                 <small
                     v-else-if="
-                        status.train.journeyNumber &&
-                        !status.train.lineName.includes(status.train.journeyNumber.toString())
+                        status.checkin.journeyNumber &&
+                        !status.checkin.lineName.includes(status.checkin.journeyNumber.toString())
                     "
                 >
-                    ({{ status.train.journeyNumber }})
+                    ({{ status.checkin.journeyNumber }})
                 </small>
             </span>
 
             <span class="ps-2">
                 <i class="fa fa-route d-inline" aria-hidden="true" />&nbsp;
-                <span v-if="status.train.distance < 1000">{{ status.train.distance }} <small>m</small></span>
-                <span v-else>{{ (status.train.distance / 1000).toFixed(0) }} <small>km</small></span>
+                <span v-if="status.checkin.distance < 1000">{{ status.checkin.distance }} <small>m</small></span>
+                <span v-else>{{ (status.checkin.distance / 1000).toFixed(0) }} <small>km</small></span>
             </span>
 
             <span class="ps-2">

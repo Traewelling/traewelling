@@ -23,8 +23,7 @@ const user = useUserStore();
 
 function share() {
     const helper = new StatusHelper(props.status);
-    const shareText =
-        props.status?.userDetails.id === user.user?.id ? helper.generateSocialText() : helper.getDescription();
+    const shareText = props.status?.user.id === user.user?.id ? helper.generateSocialText() : helper.getDescription();
     const shareUrl = helper.getShareUrl();
 
     if (navigator.share) {
@@ -46,15 +45,15 @@ function share() {
 
 function rideAlongUrl() {
     const queryParams = new URLSearchParams({
-        tripId: props.status?.train.trip.toString(),
-        lineName: props.status?.train.lineName,
-        start: props.status?.train.origin.id.toString(),
-        destination: props.status?.train.destination.id.toString(),
-        departure: props.status?.train.origin.departurePlanned
-            ? props.status?.train.origin.departurePlanned.toString()
+        tripId: props.status?.checkin.trip.toString(),
+        lineName: props.status?.checkin.lineName,
+        start: props.status?.checkin.origin.id.toString(),
+        destination: props.status?.checkin.destination.id.toString(),
+        departure: props.status?.checkin.origin.departurePlanned
+            ? props.status?.checkin.origin.departurePlanned.toString()
             : '',
         idType: 'trwl',
-        category: props.status?.train.category,
+        category: props.status?.checkin.category,
     });
 
     return `/stationboard/?${queryParams.toString()}`;
@@ -69,11 +68,11 @@ function showModal() {
 }
 
 const showDepartureNowButton = computed(() => {
-    const train = props.status?.train;
-    if (!train || !train.origin || !train.destination) return false;
+    const checkin = props.status?.checkin;
+    if (!checkin || !checkin.origin || !checkin.destination) return false;
 
-    const plannedDeparture = DateTime.fromISO(train.origin.departurePlanned || train.origin.departure || '');
-    const plannedArrival = DateTime.fromISO(train.destination.arrivalPlanned || train.destination.arrival || '');
+    const plannedDeparture = DateTime.fromISO(checkin.origin.departurePlanned || checkin.origin.departure || '');
+    const plannedArrival = DateTime.fromISO(checkin.destination.arrivalPlanned || checkin.destination.arrival || '');
     if (!plannedDeparture.isValid || !plannedArrival.isValid) return false;
 
     const now = DateTime.now();
@@ -81,11 +80,11 @@ const showDepartureNowButton = computed(() => {
 });
 
 const showArrivalNowButton = computed(() => {
-    const train = props.status?.train;
-    if (!train || !train.origin || !train.destination) return false;
+    const checkin = props.status?.checkin;
+    if (!checkin || !checkin.origin || !checkin.destination) return false;
 
-    const plannedDeparture = DateTime.fromISO(train.origin.departurePlanned || train.origin.departure || '');
-    const plannedArrival = DateTime.fromISO(train.destination.arrivalPlanned || train.destination.arrival || '');
+    const plannedDeparture = DateTime.fromISO(checkin.origin.departurePlanned || checkin.origin.departure || '');
+    const plannedArrival = DateTime.fromISO(checkin.destination.arrivalPlanned || checkin.destination.arrival || '');
     if (!plannedDeparture.isValid || !plannedArrival.isValid) return false;
 
     const now = DateTime.now();
@@ -122,7 +121,7 @@ function arrivalNow() {
         });
 }
 
-const canModerateTarget = computed(() => !!user.user && user.user.id !== props.status.userDetails.id);
+const canModerateTarget = computed(() => !!user.user && user.user.id !== props.status.user.id);
 
 const busyMute = ref(false);
 const busyBlock = ref(false);
@@ -131,8 +130,8 @@ async function handleMute() {
     if (!canModerateTarget.value) return;
     busyMute.value = true;
     try {
-        await api.user.createMute(props.status.userDetails.id as unknown as number);
-        notyf.success(trans('user.muted', { username: props.status.userDetails.username }));
+        await api.user.createMute(props.status.user.id as unknown as number);
+        notyf.success(trans('user.muted', { username: props.status.user.username }));
     } catch (e) {
         console.error('Mute failed:', e);
         notyf.error(trans('generic.error'));
@@ -145,9 +144,9 @@ async function handleBlock() {
     if (!canModerateTarget.value) return;
     busyBlock.value = true;
     try {
-        const targetId = props.status.userDetails.id;
+        const targetId = props.status.user.id;
         await api.user.createBlock(String(targetId), { userId: targetId });
-        notyf.success(trans('user.blocked', { username: props.status.userDetails.username }));
+        notyf.success(trans('user.blocked', { username: props.status.user.username }));
     } catch (e) {
         console.error('Block failed:', e);
         notyf.error(trans('generic.error'));
@@ -174,7 +173,7 @@ async function handleBlock() {
                 </button>
             </li>
             <template v-if="user.user">
-                <template v-if="user.user.id == status.userDetails.id">
+                <template v-if="user.user.id == status.user.id">
                     <template v-if="showArrivalNowButton || showDepartureNowButton">
                         <li>
                             <hr class="dropdown-divider" />

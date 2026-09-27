@@ -134,12 +134,12 @@ function statusUpdated(status: StatusResource) {
             <div class="card-body row">
                 <!-- Big profile picture -->
                 <div class="col-2 image-box pe-0 d-none d-lg-flex">
-                    <a :href="`/@${statusObject.userDetails.username}`">
+                    <a :href="`/@${statusObject.user.username}`">
                         <img
                             loading="lazy"
                             decoding="async"
-                            :src="statusObject.userDetails.profilePicture"
-                            :alt="statusObject.userDetails.username"
+                            :src="statusObject.user.profilePicture"
+                            :alt="statusObject.user.username"
                         />
                     </a>
                 </div>

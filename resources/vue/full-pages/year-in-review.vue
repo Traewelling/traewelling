@@ -917,10 +917,10 @@ onUnmounted(() => {
                             class="liked-item"
                         >
                             <span class="liked-count">{{ statusObj.status.likes }}x ❤️&nbsp;</span>
-                            <span class="liked-line">{{ statusObj.status.train?.lineName }}&nbsp;</span>
+                            <span class="liked-line">{{ statusObj.status.checkin?.lineName }}&nbsp;</span>
                             <span class="liked-route"
-                                >{{ statusObj.status.train?.origin?.name }} →
-                                {{ statusObj.status.train?.destination?.name }}</span
+                                >{{ statusObj.status.checkin?.origin?.name }} →
+                                {{ statusObj.status.checkin?.destination?.name }}</span
                             >
                         </div>
                     </div>

@@ -26,18 +26,18 @@ export default defineComponent({
     },
     computed: {
         departure() {
-            const manual = this.state.status?.train?.manualDeparture ?? null;
+            const manual = this.state.status?.checkin?.manualDeparture ?? null;
             if (manual) return DateTime.fromISO(manual);
             const dep =
-                this.state.status?.train?.origin?.departure ?? this.state.status?.train?.origin?.arrival ?? null;
+                this.state.status?.checkin?.origin?.departure ?? this.state.status?.checkin?.origin?.arrival ?? null;
             return DateTime.fromISO(dep);
         },
         arrival() {
-            const manual = this.state.status?.train?.manualArrival ?? null;
+            const manual = this.state.status?.checkin?.manualArrival ?? null;
             if (manual) return DateTime.fromISO(manual);
             const arr =
-                this.state.status?.train?.destination?.arrival ??
-                this.state.status?.train?.destination?.departure ??
+                this.state.status?.checkin?.destination?.arrival ??
+                this.state.status?.checkin?.destination?.departure ??
                 null;
             return DateTime.fromISO(arr);
         },
@@ -107,21 +107,21 @@ export default defineComponent({
         <div class="card hover-card w-100 shadow-sm" @click="goToStatus">
             <div class="card-body py-2 px-3">
                 <p class="mb-0">
-                    {{ state.status?.train?.origin?.name }}
+                    {{ state.status?.checkin?.origin?.name }}
                     <small class="float-end text-muted">{{ format(departure) }}</small>
                 </p>
 
-                <p v-show="state.status?.train?.lineName" class="ms-2 col-auto align-items-center d-flex my-0">
+                <p v-show="state.status?.checkin?.lineName" class="ms-2 col-auto align-items-center d-flex my-0">
                     <LineIndicator
-                        :product-name="state.status?.train?.category"
-                        :number="state.status?.train?.lineName ?? ''"
-                        :color="state.status?.train?.routeTextColor"
-                        :background-color="state.status?.train?.routeColor"
+                        :product-name="state.status?.checkin?.category"
+                        :number="state.status?.checkin?.lineName ?? ''"
+                        :color="state.status?.checkin?.routeTextColor"
+                        :background-color="state.status?.checkin?.routeColor"
                     />
                     <span v-show="nextStation" class="ms-1">next: {{ nextStation?.name }}</span>
                 </p>
                 <p class="mb-0">
-                    {{ state.status?.train?.destination?.name }}
+                    {{ state.status?.checkin?.destination?.name }}
                     <small class="float-end text-muted">{{ format(arrival) }}</small>
                 </p>
 

@@ -23,9 +23,7 @@ use OpenApi\Attributes as OA;
         'isLikable',
         'client',
         'createdAt',
-        'train',
         'event',
-        'userDetails',
         'tags',
         'checkin',
         'user',
@@ -161,8 +159,6 @@ class StatusResource extends JsonResource
             ),
             'createdAt' => $this->created_at->toIso8601String(),
 
-            'train' => new TransportResource($this->checkin), // TODO: delete after 2026-07 (replaced by 'checkin')
-            'userDetails' => new LightUserResource($this->user), // TODO: delete after 2026-07 (replaced by 'user')
         ];
     }
 }

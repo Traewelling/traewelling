@@ -46,9 +46,9 @@ function fetchStopovers() {
         return;
     }
     api.stopovers
-        .getStopOvers(status.value!.train.trip.toString())
+        .getStopOvers(status.value!.checkin.trip.toString())
         .then((response) => {
-            stopovers.value = response.data.data?.[status.value!.train.trip] ?? [];
+            stopovers.value = response.data.data?.[status.value!.checkin.trip] ?? [];
         })
         .catch((error) => {
             console.error('Error fetching stopovers:', error);
@@ -122,7 +122,7 @@ fetchLikes();
     <template v-else-if="status">
         <div class="row justify-content-center">
             <div :class="hasRightColumn ? 'col-md-8 col-lg-7' : 'col-md-8'">
-                <CheckinSuccessHelper v-if="user.user && status.userDetails.id === user.user.id" />
+                <CheckinSuccessHelper v-if="user.user && status.user.id === user.user.id" />
                 <h2 class="fs-5">
                     {{ getDepartureForStatus(status).toLocaleString(DateTime.DATE_HUGE) }}
                 </h2>
@@ -144,7 +144,7 @@ fetchLikes();
                 <TagHelper
                     :status-id="status.id"
                     :status-object="status"
-                    :editable="status.userDetails.id === user.user?.id"
+                    :editable="status.user.id === user.user?.id"
                     class="mb-3"
                 />
 
@@ -162,7 +162,7 @@ fetchLikes();
                             <a :href="`/@${like.username}`">
                                 {{ like.username }}
                             </a>
-                            <span v-if="like.id === status.userDetails.id">
+                            <span v-if="like.id === status.user.id">
                                 &thinsp;{{ trans('user.liked-own-status') }}
                             </span>
                             <span v-else> &thinsp;{{ trans('user.liked-status') }} </span>

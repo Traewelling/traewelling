@@ -55,7 +55,6 @@ class LightUserResource extends JsonResource
                 'server' => $mastodonServer?->domain,
                 'user_id' => $socialProfile?->mastodon_id,
             ],
-            'mastodonUrl' => null, // TODO: remove after 2026-07 (this is not lightweight enough for a LightResource)
             'preventIndex' => (bool) $user->prevent_index,
         ];
     }

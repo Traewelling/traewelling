@@ -29,9 +29,6 @@ Check back here regularly to stay ahead of removals.
 | 2026-03-07 | `StopoverResource.departure` is deprecated → use `departureReal` (if not null) or `departurePlanned` instead                                                                                                               | 2026-09-30 | [#4551](https://github.com/Traewelling/traewelling/pull/4551) |
 | 2026-03-05 | `StopoverResource.rilIdentifier` is always `null` → use the station identifiers endpoint instead                                                                                                                           | 2026-09-30 | [#4502](https://github.com/Traewelling/traewelling/pull/4502) |
 | 2026-03-05 | `StopoverResource.evaIdentifier` is always `null` → use the station identifiers endpoint instead                                                                                                                           | 2026-09-30 | [#4502](https://github.com/Traewelling/traewelling/pull/4502) |
-| 2026-01-20 | `StatusResource.train` is deprecated → use `checkin` instead                                                                                                                                                               | 2026-07-31 | [#4313](https://github.com/Traewelling/traewelling/pull/4313) |
-| 2026-01-20 | `StatusResource.userDetails` is deprecated → use `user` instead                                                                                                                                                            | 2026-07-31 | [#4313](https://github.com/Traewelling/traewelling/pull/4313) |
-| 2026-01-20 | `LightUserResource.mastodonUrl` is always `null` → use `mastodon.server` instead                                                                                                                                           | 2026-07-31 | [#4313](https://github.com/Traewelling/traewelling/pull/4313) |
 | 2026-03-20 | `POST /api/v1/report` is deprecated → use `POST /api/v1/reports` instead                                                                                                                                                   | 2026-09-30 | [#4602](https://github.com/Traewelling/traewelling/pull/4602) |
 | 2026-03-30 | `GET /api/v1/static/privacy` is deprecated -> use `GET /api/v1/privacy-policies/current` instead                                                                                                                           | 2026-09-30 | [#4650](https://github.com/Traewelling/traewelling/pull/4650) |
 | 2026-03-30 | `PUT /api/v1/settings/acceptPrivacy` is deprecated -> use `PUT /api/v1/privacy-policies/accept` instead                                                                                                                    | 2026-09-30 | [#4650](https://github.com/Traewelling/traewelling/pull/4650) |
@@ -42,6 +39,16 @@ Check back here regularly to stay ahead of removals.
 | 2026-07-19 | `StopoverResource.id` is deprecated as station ID: it currently holds the station ID (not unique within a trip). Use `station` for station details. After the safe-until date `id` is repurposed to the unique stopover ID | 2026-11-30 | [#4959](https://github.com/Traewelling/traewelling/pull/4959) |
 | 2026-07-19 | `StopoverResource.name` is deprecated → use `station.name` instead                                                                                                                                                         | 2026-11-30 | [#4959](https://github.com/Traewelling/traewelling/pull/4959) |
 | 2026-07-19 | `StopoverResource.identifiers` (only present with `withIdentifiers=true`) is deprecated → use `station.identifiers` instead                                                                                                | 2026-11-30 | [#4959](https://github.com/Traewelling/traewelling/pull/4959) |
+
+---
+
+# 2026-09-27
+
+Removed the following deprecated fields, announced on 2026-01-20:
+
+- `StatusResource.train`: use `checkin` instead, it contains the same data
+- `StatusResource.userDetails`: use `user` instead, it contains the same data
+- `LightUserResource.mastodonUrl`: was always `null`, use `mastodon.server` instead
 
 ---
 
