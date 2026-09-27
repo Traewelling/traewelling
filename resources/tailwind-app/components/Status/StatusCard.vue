@@ -165,42 +165,34 @@ watch(
     { immediate: true },
 );
 
-function escapeHtml(s: string): string {
-    return s
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#039;');
-}
+type BodySegment = { text: string; username?: string };
 
-const enrichedBody = computed(() => {
+const bodySegments = computed<BodySegment[]>(() => {
     const body = statusObject.value.body ?? '';
     const mentions: MentionDto[] =
         (statusObject.value as unknown as { bodyMentions?: MentionDto[] }).bodyMentions ?? [];
 
-    if (!body) return '';
-    if (!mentions.length) return escapeHtml(body);
+    if (!body) return [];
 
     const userMap = new Map<string, UserResource>();
     for (const m of mentions) {
         if (m.user?.username) userMap.set(m.user.username.toLowerCase(), m.user);
     }
-    if (!userMap.size) return escapeHtml(body);
+    if (!userMap.size) return [{ text: body }];
 
     const mentionRegex = /@(\w+)/g;
-    let result = '';
+    const segments: BodySegment[] = [];
     let lastIndex = 0;
     let match: RegExpExecArray | null;
     while ((match = mentionRegex.exec(body)) !== null) {
         const user = userMap.get(match[1].toLowerCase());
         if (!user) continue;
-        result += escapeHtml(body.slice(lastIndex, match.index));
-        result += `<a href="/@${encodeURIComponent(user.username)}" class="link text-primary [[data-theme=dark]_&]:text-red-400">${escapeHtml(match[0])}</a>`;
+        if (match.index > lastIndex) segments.push({ text: body.slice(lastIndex, match.index) });
+        segments.push({ text: match[0], username: user.username });
         lastIndex = match.index + match[0].length;
     }
-    result += escapeHtml(body.slice(lastIndex));
-    return result;
+    if (lastIndex < body.length) segments.push({ text: body.slice(lastIndex) });
+    return segments;
 });
 
 function toggleLike() {
@@ -366,12 +358,19 @@ const inProgress = computed(() => progress.value > 0 && progress.value < 100);
                         </div>
 
                         <!-- Status body -->
-                        <!-- eslint-disable-next-line vue/no-v-html -->
                         <p
                             v-if="statusObject.body"
                             class="text-base text-base-content/80 italic whitespace-pre-wrap break-words [font-synthesis:none]"
-                            v-html="enrichedBody"
-                        />
+                        >
+                            <template v-for="(segment, index) in bodySegments" :key="index">
+                                <router-link
+                                    v-if="segment.username"
+                                    :to="{ name: 'user-profile', params: { username: segment.username } }"
+                                    class="link text-primary [[data-theme=dark]_&]:text-red-400"
+                                    >{{ segment.text }}</router-link
+                                ><template v-else>{{ segment.text }}</template>
+                            </template>
+                        </p>
 
                         <!-- Moderation notices -->
                         <div

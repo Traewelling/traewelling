@@ -55,16 +55,16 @@ fetchBlockedUsers();
                 <li v-for="user in blockedUsers" :key="user.id" class="list-row items-center">
                     <div class="avatar">
                         <div class="rounded-full w-12 h-12">
-                            <a :href="`/@${user.username}`">
+                            <router-link :to="{ name: 'user-profile', params: { username: user.username } }">
                                 <img :src="user.profilePicture" :alt="user.displayName" />
-                            </a>
+                            </router-link>
                         </div>
                     </div>
                     <div class="list-col-grow">
-                        <a :href="`/@${user.username}`">
+                        <router-link :to="{ name: 'user-profile', params: { username: user.username } }">
                             <p class="font-semibold mb-0">{{ user.displayName }}</p>
                             <p class="text-sm opacity-75 mb-0">@{{ user.username }}</p>
-                        </a>
+                        </router-link>
                     </div>
                     <button class="btn btn-sm btn-primary" @click="unblock(user)">
                         <UserRoundCheck class="size-4" />
