@@ -33,7 +33,7 @@ const loadingStatuses = ref(true);
 const showMore = ref(false);
 const currentPage = ref(1);
 
-const showPoints = computed(() => !!(userData.value?.pointsEnabled || authUser.user?.pointsEnabled));
+const showPoints = computed(() => !!userData.value?.pointsEnabled && (authUser.user?.pointsEnabled ?? true));
 
 const isOwnProfile = computed(() => authUser.authenticated && authUser.getId === userData.value?.id);
 
