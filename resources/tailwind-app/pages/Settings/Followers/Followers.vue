@@ -67,16 +67,16 @@ getFollowers();
                 <li v-for="follower in followers" :key="follower.id" class="list-row items-center">
                     <div class="avatar">
                         <div class="rounded-full w-12 h-12">
-                            <a :href="`/@${follower.username}`">
+                            <router-link :to="{ name: 'user-profile', params: { username: follower.username } }">
                                 <img :src="follower.profilePicture" :alt="follower.displayName" />
-                            </a>
+                            </router-link>
                         </div>
                     </div>
                     <div class="list-col-grow">
-                        <a :href="`/@${follower.username}`">
+                        <router-link :to="{ name: 'user-profile', params: { username: follower.username } }">
                             <h6 class="mb-0">{{ follower.displayName }}</h6>
                             <p class="mb-0 opacity-75">@{{ follower.username }}</p>
-                        </a>
+                        </router-link>
                     </div>
                     <button role="button" class="btn btn-sm btn-error" @click="removeUser(follower)">
                         <UserMinus class="w-4 h-4" />
