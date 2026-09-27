@@ -14,7 +14,8 @@ import {
 } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
 import { DateTime } from 'luxon';
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { Notyf } from 'notyf';
+import { computed, inject, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { Api, Business, MentionDto, StatusResource, StopoverResource, UserResource } from '../../../types/Api.gen';
 import LineIndicator from '../../../vue/components/LineIndicator.vue';
 import TrwMap from '../../../vue/components/Map/Map.vue';
@@ -54,6 +55,7 @@ const emit = defineEmits<{
 
 const api = new Api({ baseUrl: window.location.origin + '/api' });
 const userStore = useUserStore();
+const notyf = inject('notyf') as Notyf;
 
 const statusObject = ref<StatusResource>(props.status);
 const deleted = ref(false);
@@ -62,6 +64,7 @@ const showEditModal = ref(false);
 const progress = ref(0);
 const interval = ref<number | null>(null);
 const likes = ref(props.status.likes ?? 0);
+const likePending = ref(false);
 
 // next stop logic
 const nextStop = ref<StopoverResource | null>(null);
@@ -201,20 +204,24 @@ const enrichedBody = computed(() => {
 });
 
 function toggleLike() {
-    if (!userStore.user) return;
-    if (statusObject.value.liked) {
-        api.status.removeLikeFromStatus(statusObject.value.id).then(() => {
-            statusObject.value.liked = false;
-            likes.value--;
-            emit('status-unliked');
-        });
-    } else {
-        api.status.addLikeToStatus(statusObject.value.id).then(() => {
-            statusObject.value.liked = true;
-            likes.value++;
-            emit('status-liked');
-        });
-    }
+    if (!userStore.user || likePending.value) return;
+    likePending.value = true;
+    const wasLiked = statusObject.value.liked;
+    const request = wasLiked
+        ? api.status.removeLikeFromStatus(statusObject.value.id)
+        : api.status.addLikeToStatus(statusObject.value.id);
+    request
+        .then(() => {
+            statusObject.value.liked = !wasLiked;
+            likes.value += wasLiked ? -1 : 1;
+            if (wasLiked) {
+                emit('status-unliked');
+            } else {
+                emit('status-liked');
+            }
+        })
+        .catch(() => notyf?.error(trans('generic.error')))
+        .finally(() => (likePending.value = false));
 }
 
 function onStatusUpdated(s: StatusResource) {
@@ -493,10 +500,14 @@ const inProgress = computed(() => progress.value > 0 && progress.value < 100);
                 <button
                     v-if="statusObject.isLikable"
                     class="flex items-center gap-1 text-xs text-base-content/40 hover:text-error transition-colors"
-                    :class="{ 'text-error': statusObject.liked }"
+                    :class="{ 'text-error': statusObject.liked || likePending }"
+                    :aria-busy="likePending"
+                    :disabled="likePending"
                     @click="toggleLike"
                 >
+                    <span v-if="likePending" class="loading loading-spinner size-4" />
                     <Heart
+                        v-else
                         class="inline-block size-4"
                         :class="statusObject.liked ? 'fill-error stroke-error' : 'stroke-current'"
                     />
