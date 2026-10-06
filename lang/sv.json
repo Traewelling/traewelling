@@ -1465,5 +1465,7 @@
     "settings.revoke-all-tokens": "Återkalla åtkomst för alla appar",
     "settings.scopes": "Behörigheter",
     "settings.tokens.description": "Appar som har tillåtelse att komma åt ditt konto.",
-    "settings.tokens.access-until": "Åtkomst till"
+    "settings.tokens.access-until": "Åtkomst till",
+    "stationboard.no-departures-for-filter": "Inga avgångar för ”:type” från denna hållplats.",
+    "stationboard.available-travel-types": "Serveras här:"
 }
