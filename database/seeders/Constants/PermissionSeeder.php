@@ -21,6 +21,7 @@ class PermissionSeeder extends Seeder
         $roleClosedBeta = Role::updateOrCreate(['name' => 'closed-beta']);
         $roleDisallowManualTrips = Role::updateOrCreate(['name' => 'disallow-manual-trips']);
         $roleDeactivateAccountUsage = Role::updateOrCreate(['name' => 'deactivate-account-usage']);
+        $roleDisallowEvents = Role::updateOrCreate(['name' => 'disallow-events']);
         Role::updateOrCreate(['name' => 'test-gdpr-export']);                                                    // TODO: remove this permission when GDPR export is no longer in testing
 
         // Create permissions
@@ -41,6 +42,7 @@ class PermissionSeeder extends Seeder
         $permissionDisallowStatusCreation = Permission::updateOrCreate(['name' => 'disallow-status-creation']);
         $permissionDisallowStatusVisibilityChange = Permission::updateOrCreate(['name' => 'disallow-status-visibility-change']);
         $permissionDisallowSocialInteraction = Permission::updateOrCreate(['name' => 'disallow-social-interaction']);
+        $permissionDisallowEvents = Permission::updateOrCreate(['name' => 'disallow-events']);
         $permissionUseTransitous = Permission::updateOrCreate(['name' => 'use-transitous']);
         $permissionAlertManage = Permission::updateOrCreate(['name' => 'alerts.manage']);
 
@@ -68,6 +70,9 @@ class PermissionSeeder extends Seeder
         $roleDeactivateAccountUsage->givePermissionTo($permissionDisallowStatusCreation);
         $roleDeactivateAccountUsage->givePermissionTo($permissionDisallowStatusVisibilityChange);
         $roleDeactivateAccountUsage->givePermissionTo($permissionDisallowSocialInteraction);
+
+        // Assign permissions to disallow-events role
+        $roleDisallowEvents->givePermissionTo($permissionDisallowEvents);
 
         // Assign permissions to event-moderator role
         $roleEventModerator->givePermissionTo($permissionViewBackend);
