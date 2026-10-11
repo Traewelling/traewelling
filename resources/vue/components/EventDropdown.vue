@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
 import { trans } from 'laravel-vue-i18n';
+import { ref, watch } from 'vue';
 import { Api, EventResource } from '../../types/Api.gen';
 
 const props = defineProps({
