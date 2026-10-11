@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import { trans } from 'laravel-vue-i18n';
+import { ref } from 'vue';
 import { minutesToDuration, TimeDuration } from '../../../vue/helpers/DateTimeHelper';
 
 const props = defineProps({

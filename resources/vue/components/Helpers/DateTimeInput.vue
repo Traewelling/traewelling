@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { PropType } from 'vue';
 import { DateTime } from 'luxon';
+import { PropType } from 'vue';
 
 defineProps({
     class: {
