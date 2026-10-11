@@ -64,10 +64,7 @@ class SettingsController extends Controller
         operationId: 'updateEmail',
         description: 'Update the current user\'s email address',
         summary: 'Update the current user\'s email address',
-        security: [new OA\SecurityScheme(
-            securityScheme: 'passport',
-            type: 'oauth2',
-        )],
+        security: [['passport' => ['write-settings-mail']], ['token' => []]],
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
@@ -177,10 +174,7 @@ class SettingsController extends Controller
         operationId: 'resendVerificationEmail',
         description: 'Resend verification email',
         summary: 'Resend verification email',
-        security: [new OA\SecurityScheme(
-            securityScheme: 'passport',
-            type: 'oauth2',
-        )],
+        security: [['passport' => ['write-settings-mail']], ['token' => []]],
         tags: ['Settings'],
         responses: [
             new OA\Response(
@@ -276,10 +270,7 @@ class SettingsController extends Controller
         operationId: 'deleteProfilePicture',
         description: 'Delete a profile picture. The userUuid may be omitted to delete the own picture, which answers with a message. Deleting the picture of another user requires the admin role, is meant for moderation and answers with 204.',
         summary: 'Delete a profile picture',
-        security: [new OA\SecurityScheme(
-            securityScheme: 'passport',
-            type: 'oauth2',
-        )],
+        security: [['passport' => ['write-settings-profile-picture']], ['token' => []]],
         tags: ['Settings'],
         parameters: [
             new OA\Parameter(
@@ -338,10 +329,7 @@ class SettingsController extends Controller
         operationId: 'uploadProfilePicture',
         description: 'Upload a new profile picture for the current user',
         summary: 'Upload a new profile picture for the current user',
-        security: [new OA\SecurityScheme(
-            securityScheme: 'passport',
-            type: 'oauth2',
-        )],
+        security: [['passport' => ['write-settings-profile-picture']], ['token' => []]],
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
@@ -395,10 +383,7 @@ class SettingsController extends Controller
         operationId: 'importProfilePictureFromMastodon',
         description: 'Import the profile picture from the connected Mastodon account',
         summary: 'Import profile picture from Mastodon',
-        security: [new OA\SecurityScheme(
-            securityScheme: 'passport',
-            type: 'oauth2',
-        )],
+        security: [['passport' => ['write-settings-profile-picture']], ['token' => []]],
         tags: ['Settings'],
         responses: [
             new OA\Response(response: 204, description: Controller::OA_DESC_NO_CONTENT),

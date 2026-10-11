@@ -5074,8 +5074,12 @@
                 },
                 "security": [
                     {
-                        "securityScheme": "passport",
-                        "type": "oauth2"
+                        "passport": [
+                            "write-settings-mail"
+                        ]
+                    },
+                    {
+                        "token": []
                     }
                 ]
             }
@@ -5098,8 +5102,12 @@
                 },
                 "security": [
                     {
-                        "securityScheme": "passport",
-                        "type": "oauth2"
+                        "passport": [
+                            "write-settings-mail"
+                        ]
+                    },
+                    {
+                        "token": []
                     }
                 ]
             }
@@ -5239,8 +5247,12 @@
                 },
                 "security": [
                     {
-                        "securityScheme": "passport",
-                        "type": "oauth2"
+                        "passport": [
+                            "write-settings-profile-picture"
+                        ]
+                    },
+                    {
+                        "token": []
                     }
                 ]
             }
@@ -5302,8 +5314,12 @@
                 },
                 "security": [
                     {
-                        "securityScheme": "passport",
-                        "type": "oauth2"
+                        "passport": [
+                            "write-settings-profile-picture"
+                        ]
+                    },
+                    {
+                        "token": []
                     }
                 ]
             }
@@ -5332,8 +5348,12 @@
                 },
                 "security": [
                     {
-                        "securityScheme": "passport",
-                        "type": "oauth2"
+                        "passport": [
+                            "write-settings-profile-picture"
+                        ]
+                    },
+                    {
+                        "token": []
                     }
                 ]
             }
