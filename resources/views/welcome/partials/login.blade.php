@@ -18,14 +18,25 @@
 
     <div class="divider">{{ __('user.login.or') }}</div>
 
+    @error('login_error')
+    <div class="alert alert-error" role="alert">
+        <span>{{ $message }}</span>
+    </div>
+    @enderror
+
     <fieldset class="fieldset">
         <label class="label" for="login">
             <span class="label-text">{{ __('user.login-credentials') }}</span>
         </label>
 
-        <input type="text" class="input w-full input-bordered" id="login" name="login"
+        <input type="text" class="input w-full input-bordered @error('login') input-error @enderror" id="login"
+               name="login" value="{{ old('login') }}"
                required autocomplete="username" autocapitalize="none" autofocus
         />
+
+        @error('login')
+        <p class="validator-hint visible text-error" role="alert">{{ $message }}</p>
+        @enderror
     </fieldset>
 
     <fieldset class="fieldset">
@@ -33,9 +44,14 @@
             <span class="label-text">{{ __('user.password') }}</span>
         </label>
 
-        <input type="password" id="password" name="password" class="input w-full input-bordered"
+        <input type="password" id="password" name="password"
+               class="input w-full input-bordered @error('password') input-error @enderror"
                required autocomplete="current-password"
         />
+
+        @error('password')
+        <p class="validator-hint visible text-error" role="alert">{{ $message }}</p>
+        @enderror
 
         <a class="label-text link link-secondary self-end" href="{{ route('password.request') }}">
             {{ __('user.forgot-password') }}
@@ -44,7 +60,7 @@
 
     <div class="fieldset">
         <label class="cursor-pointer label self-start gap-2" for="remember">
-            <input type="checkbox" class="checkbox" id="remember" name="remember"/>
+            <input type="checkbox" class="checkbox" id="remember" name="remember" @checked(old('remember'))/>
             <span class="label-text">{{ __('user.remember-me') }}</span>
         </label>
     </div>
