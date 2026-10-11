@@ -642,7 +642,10 @@ class StatusController extends Controller
             }
 
             if (array_key_exists('eventId', $validated)) { // don't use isset here as it would return false if eventId is null
-                $updatePayload['event_id'] = $validated['eventId'];
+                // Users excluded from events can still remove an event, but never assign one
+                if ($validated['eventId'] === null || $status->user->cannot('disallow-events')) {
+                    $updatePayload['event_id'] = $validated['eventId'];
+                }
             }
 
             $status->update($updatePayload);

@@ -326,6 +326,10 @@ class StatusController extends Controller
             $event = null;
         }
 
+        if ($user->can('disallow-events')) {
+            $event = null;
+        }
+
         return Status::create([
             'user_id' => $user->id,
             'created_by_user_id' => $createdByUser?->id,
