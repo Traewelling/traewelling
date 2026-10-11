@@ -5,6 +5,7 @@ namespace App\Console;
 use App\Console\Commands\CacheLeaderboard;
 use App\Console\Commands\CacheYearInReview;
 use App\Console\Commands\CleanUpProfilePictures;
+use App\Console\Commands\CloseStaleReports;
 use App\Console\Commands\DatabaseCleaner\DatabaseCleaner;
 use App\Console\Commands\DatabaseCleaner\MastodonServers;
 use App\Console\Commands\FetchTransitousLicenses;
@@ -44,6 +45,7 @@ class Kernel extends ConsoleKernel
         });
         $schedule->command(ReduceRelevance::class)->daily();
         $schedule->job(CleanMailChanges::class)->daily();
+        $schedule->command(CloseStaleReports::class)->daily();
 
         // weekly tasks
         $schedule->command(MastodonServers::class)->weekly();
