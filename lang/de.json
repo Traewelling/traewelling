@@ -35,6 +35,7 @@
   "changelog": "Changelog",
   "changelog.view_on_github": "Änderungen auf GitHub ansehen",
   "checkin.select-departure": "Einstieg wählen",
+  "checkin.select-exit": "Ausstieg wählen",
   "checkin.conflict": "Es existiert bereits ein paralleler Check-in.",
   "checkin.conflict.question": "Möchtest du trotzdem einchecken? Hierfür bekommst du keine Punkte, aber deine persönliche Statistik wird dennoch aktualisiert.",
   "checkin.conflict.force": "Trotzdem einchecken (keine Punkte)",
