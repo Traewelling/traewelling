@@ -1368,6 +1368,7 @@ export interface DepartureResource {
    */
   cancelled: boolean;
   station: StationResource;
+  operator: OperatorResource | null;
 }
 
 /**

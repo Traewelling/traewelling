@@ -13715,7 +13715,8 @@
                     "direction",
                     "line",
                     "cancelled",
-                    "station"
+                    "station",
+                    "operator"
                 ],
                 "properties": {
                     "tripId": {
@@ -13806,6 +13807,20 @@
                     },
                     "station": {
                         "$ref": "#/components/schemas/StationResource"
+                    },
+                    "operator": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/OperatorResource"
+                            },
+                            {
+                                "type": "object",
+                                "nullable": true,
+                                "enum": [
+                                    null
+                                ]
+                            }
+                        ]
                     }
                 },
                 "type": "object"

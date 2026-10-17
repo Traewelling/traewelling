@@ -25,6 +25,8 @@ Check back here regularly to stay ahead of removals.
 
 # 2026-10-17
 
+New field `operator` in `DepartureResource` (`GET /station/{id}/departures`): the operator of the trip, `null` if unknown.
+
 Removed the following deprecated fields, announced in 2026-03 and 2026-04:
 
 - `EventDetailsResource.trainDistance`: use `totalDistance` instead

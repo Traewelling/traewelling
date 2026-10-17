@@ -36,6 +36,7 @@ const displayLineName = computed(() => (lineName.value ?? '').replaceAll(/\(.*?\
 
 const tripCategory = ref<HafasTravelType | null>(initialCategory.value);
 const tripUuid = ref<string | null>(null);
+const operatorName = ref<string | null>(null);
 
 function handleBack(): void {
     router.back();
@@ -44,6 +45,7 @@ function handleBack(): void {
 function onTrip(trip: TripResource): void {
     tripCategory.value = trip.category ?? initialCategory.value;
     tripUuid.value = trip.uuid ?? tripUuid.value;
+    operatorName.value = trip.operator?.name ?? null;
 }
 
 function selectStart(stopover: StopoverResource): void {
@@ -112,7 +114,12 @@ function selectDestination(stopover: StopoverResource): void {
                         :background-color="color"
                         :color="textColor"
                     />
-                    <span class="font-medium text-sm truncate">{{ direction }}</span>
+                    <div class="flex flex-col min-w-0">
+                        <span class="font-medium text-sm truncate">{{ direction }}</span>
+                        <span v-if="operatorName" class="text-xs text-base-content/60 truncate">
+                            {{ operatorName }}
+                        </span>
+                    </div>
                 </div>
 
                 <!-- Stop list: no startId yet lists every stop but the last for
