@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { Briefcase, Building2, Calendar, User } from '@lucide/vue';
+import { Briefcase, Building2, User } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
 import { DateTime as LuxonDateTime } from 'luxon';
 import { Notyf } from 'notyf';
-import { inject, ref, watch } from 'vue';
+import { computed, inject, ref, watch } from 'vue';
 import {
     Api,
     Business,
@@ -15,6 +15,7 @@ import {
 import { getDepartureForStatus } from '../../../vue/helpers/DateTimeHelper';
 import { useActiveCheckin } from '../../../vue/stores/activeCheckin';
 import { ALL_VISIBILITIES, VISIBILITY_ICONS } from '../../helpers/visibility';
+import EventPicker from '../Checkin/EventPicker.vue';
 
 const props = defineProps<{
     open: boolean;
@@ -36,8 +37,9 @@ const manualArrival = ref('');
 const body = ref('');
 const business = ref<Business>(Business.Value0);
 const visibility = ref<StatusVisibility>(StatusVisibility.Value0);
-const eventId = ref<number | null>(null);
-const events = ref<EventResource[]>([]);
+const selectedEvent = ref<EventResource | null>(null);
+
+const departureTimestamp = computed(() => getDepartureForStatus(props.status).toISO() ?? undefined);
 
 function isoToDatetimeLocal(iso: string | null | undefined): string {
     if (!iso) return '';
@@ -48,21 +50,13 @@ function closeDropdown() {
     (document.activeElement as HTMLElement)?.blur();
 }
 
-async function loadData() {
+function loadData() {
     body.value = props.status.body ?? '';
     business.value = props.status.business ?? Business.Value0;
     visibility.value = props.status.visibility ?? StatusVisibility.Value0;
-    eventId.value = props.status.event?.id ?? null;
+    selectedEvent.value = props.status.event ?? null;
     manualDeparture.value = isoToDatetimeLocal(props.status.checkin.manualDeparture);
     manualArrival.value = isoToDatetimeLocal(props.status.checkin.manualArrival);
-
-    try {
-        const dep = getDepartureForStatus(props.status).toISO() ?? '';
-        const evRes = await api.events.getEvents({ timestamp: dep });
-        events.value = evRes.data.data ?? [];
-    } catch {
-        events.value = [];
-    }
 }
 
 watch(
@@ -80,7 +74,7 @@ async function save() {
             body: body.value || null,
             business: business.value,
             visibility: visibility.value,
-            eventId: eventId.value,
+            eventId: selectedEvent.value?.id ?? null,
             manualDeparture: manualDeparture.value ? LuxonDateTime.fromISO(manualDeparture.value).toISO() : null,
             manualArrival: manualArrival.value ? LuxonDateTime.fromISO(manualArrival.value).toISO() : null,
         } as StatusUpdateBody;
@@ -131,8 +125,10 @@ async function save() {
                 </div>
             </div>
 
-            <!-- Business, Visibility, Event -->
+            <!-- Event, Business, Visibility -->
             <div class="flex flex-wrap gap-2 mb-4">
+                <EventPicker v-if="open" v-model="selectedEvent" :timestamp="departureTimestamp" outline />
+
                 <!-- Business dropdown -->
                 <div class="dropdown">
                     <button tabindex="0" class="btn btn-sm btn-outline gap-1">
@@ -222,52 +218,6 @@ async function save() {
                                     <span class="block text-xs text-base-content/50">{{
                                         trans('status.visibility.' + v + '.detail')
                                     }}</span>
-                                </span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Event dropdown -->
-                <div class="dropdown">
-                    <button tabindex="0" class="btn btn-sm btn-outline gap-1">
-                        <Calendar class="inline-block size-4" />
-                        {{
-                            eventId
-                                ? (events.find((e) => e.id === eventId)?.name ?? '…')
-                                : trans('events.no-event-dropdown')
-                        }}
-                    </button>
-                    <ul
-                        tabindex="0"
-                        class="dropdown-content menu bg-base-100 rounded-box z-10 w-72 p-2 shadow-lg border border-base-200 max-h-60 overflow-y-auto"
-                    >
-                        <li
-                            @click="
-                                eventId = null;
-                                closeDropdown();
-                            "
-                        >
-                            <a :class="eventId === null ? 'active' : ''">
-                                <Calendar class="w-4 h-4 shrink-0" />
-                                {{ trans('events.no-event-dropdown') }}
-                            </a>
-                        </li>
-                        <li
-                            v-for="e in events"
-                            :key="e.id"
-                            @click="
-                                eventId = e.id;
-                                closeDropdown();
-                            "
-                        >
-                            <a :class="eventId === e.id ? 'active' : ''">
-                                <Calendar class="w-4 h-4 shrink-0" />
-                                <span>
-                                    {{ e.name }}
-                                    <span v-if="e.hashtag" class="block text-xs text-base-content/50"
-                                        >#{{ e.hashtag }}</span
-                                    >
                                 </span>
                             </a>
                         </li>

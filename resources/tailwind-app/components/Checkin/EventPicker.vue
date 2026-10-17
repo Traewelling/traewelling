@@ -7,6 +7,7 @@ import { Api, EventResource } from '../../../types/Api.gen';
 const props = defineProps<{
     modelValue?: EventResource | null;
     timestamp?: string;
+    outline?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -49,11 +50,14 @@ onMounted(fetchEvents);
         <button
             type="button"
             class="btn btn-sm gap-1"
-            :class="modelValue ? 'btn-primary' : 'btn-ghost'"
+            :class="outline ? 'btn-outline' : modelValue ? 'btn-primary' : 'btn-ghost'"
             @click="open = !open"
         >
             <Calendar class="w-4 h-4" />
-            <span v-if="modelValue" class="max-w-[10rem] truncate text-xs">{{ modelValue.name }}</span>
+            <span v-if="outline" class="max-w-[10rem] truncate">
+                {{ modelValue?.name ?? trans('events.no-event-dropdown') }}
+            </span>
+            <span v-else-if="modelValue" class="max-w-[10rem] truncate text-xs">{{ modelValue.name }}</span>
         </button>
 
         <div
@@ -96,9 +100,9 @@ onMounted(fetchEvents);
                 <p>{{ trans('stationboard.events-none') }}</p>
                 <p class="mt-1">
                     {{ trans('stationboard.events-propose') }}
-                    <router-link :to="{ name: 'event-list' }" target="_blank" class="link link-primary"
-                        >traewelling.de/events</router-link
-                    >
+                    <router-link :to="{ name: 'contribute-events-suggest' }" target="_blank" class="link link-primary">
+                        {{ trans('events.suggest.card_button') }}
+                    </router-link>
                 </p>
             </div>
         </div>
