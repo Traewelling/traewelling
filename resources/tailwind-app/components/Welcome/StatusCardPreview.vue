@@ -33,8 +33,6 @@ function stopover(id: number, name: string, times: Partial<StopoverResource>): S
             name,
             latitude: 0,
             longitude: 0,
-            ibnr: null,
-            rilIdentifier: null,
             areas: [],
             identifiers: [],
             time_offset: null,

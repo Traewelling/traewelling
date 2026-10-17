@@ -15072,8 +15072,6 @@
                     "name",
                     "latitude",
                     "longitude",
-                    "ibnr",
-                    "rilIdentifier",
                     "areas",
                     "identifiers",
                     "time_offset",
@@ -15102,20 +15100,6 @@
                     "longitude": {
                         "type": "number",
                         "example": "8.400977"
-                    },
-                    "ibnr": {
-                        "description": "Deprecated. Always null. Use identifiers with type \"de_db_ibnr\" instead.",
-                        "type": "integer",
-                        "example": null,
-                        "nullable": true,
-                        "deprecated": true
-                    },
-                    "rilIdentifier": {
-                        "description": "Deprecated. Always null. Use identifiers with type \"de_db_ril100\" instead.",
-                        "type": "string",
-                        "example": null,
-                        "nullable": true,
-                        "deprecated": true
                     },
                     "areas": {
                         "type": "array",
