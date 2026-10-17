@@ -12,6 +12,12 @@ const pointsDisabled = computed(
         props.data.points?.calculation?.reason === PointReason.Value3 ||
         props.data.points?.calculation?.reason === PointReason.Value4,
 );
+
+const reducedPoints = computed(
+    () =>
+        props.data.points?.calculation?.reason === PointReason.Value1 ||
+        props.data.points?.calculation?.reason === PointReason.Value2,
+);
 </script>
 
 <template>
@@ -29,6 +35,17 @@ const pointsDisabled = computed(
                         })
                     }}
                 </template>
+            </span>
+            <span v-if="reducedPoints" class="text-sm opacity-80">
+                {{ trans('checkin.points.could-have') }}
+                {{
+                    trans('checkin.points.full', {
+                        points: (data.points.calculation.base + data.points.calculation.distance).toString(),
+                    })
+                }}
+            </span>
+            <span v-if="data.points?.calculation?.reason === PointReason.Value3" class="text-sm opacity-80">
+                {{ trans('checkin.points.forced') }}
             </span>
 
             <!-- Also on this connection -->
