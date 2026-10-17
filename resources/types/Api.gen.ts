@@ -1204,11 +1204,6 @@ export interface Points {
    */
   points: number;
   calculation: PointsCalculation;
-  /**
-   * Deprecated. Always null.
-   * @deprecated
-   */
-  additional: any[] | null;
 }
 
 /** CheckinResponse */

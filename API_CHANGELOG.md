@@ -15,7 +15,6 @@ Check back here regularly to stay ahead of removals.
 
 | Announced  | What?                                                                                                                                                                                                                      | Safe until | PR                                                            |
 |------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------|---------------------------------------------------------------|
-| 2026-03-07 | `CheckinSuccessResource.points.additional` is always `null` and deprecated                                                                                                                                                 | 2026-09-30 | [#4553](https://github.com/Traewelling/traewelling/pull/4553) |
 | 2026-03-07 | `WebhookResource.clientId` is deprecated → use `client.id` instead                                                                                                                                                         | 2026-09-30 | [#4550](https://github.com/Traewelling/traewelling/pull/4550) |
 | 2026-03-07 | `WebhookResource.userId` is deprecated → use `user.id` instead                                                                                                                                                             | 2026-09-30 | [#4550](https://github.com/Traewelling/traewelling/pull/4550) |
 | 2026-03-05 | `StationResource.ibnr` is always `null` → use `identifiers` array with type `de_db_ibnr` instead                                                                                                                           | 2026-09-30 | [#4500](https://github.com/Traewelling/traewelling/pull/4500) |
@@ -48,6 +47,7 @@ Removed the following deprecated fields, announced on 2026-03-07:
 - `DepartureResource.line.productName`: use `line.name` instead
 - `DepartureResource.provenance`, `remarks`, `origin`, `currentTripPosition`, `loadFactor` and `line.operator`: were always `null`
 - `DepartureResource.stop.products`, `line.public` and `line.adminCode`: were always placeholder values
+- `CheckinSuccessResource.points.additional` (`POST /trains/checkin`): was always `null`
 
 ---
 

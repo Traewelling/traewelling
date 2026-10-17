@@ -23,11 +23,10 @@ use OpenApi\Attributes as OA;
     schema: 'Points',
     title: 'Points',
     description: 'Points model',
-    required: ['points', 'calculation', 'additional'],
+    required: ['points', 'calculation'],
     properties: [
         new OA\Property(property: 'points', description: 'points', type: 'integer', example: 1),
         new OA\Property(property: 'calculation', ref: '#/components/schemas/PointsCalculation'),
-        new OA\Property(property: 'additional', description: 'Deprecated. Always null.', type: 'array', items: new OA\Items(), nullable: true, deprecated: true),
     ],
 )]
 #[OA\Schema(
@@ -67,7 +66,6 @@ class CheckinSuccessResource extends JsonResource
                     'factor' => $this->pointCalculation->factor,
                     'reason' => $this->pointCalculation->reason->value,
                 ],
-                'additional' => null, // @deprecated - remove after 2026-09-30
             ],
             'alsoOnThisConnection' => StatusResource::collection($this->alsoOnThisConnection),
         ];

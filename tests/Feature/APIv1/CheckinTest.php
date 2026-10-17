@@ -31,5 +31,6 @@ class CheckinTest extends ApiTestCase
             headers: ['Authorization' => 'Bearer ' . $token->accessToken],
         );
         $this->assertEquals(1, $response->json('data.status.client.id'));
+        $this->assertSame(['points', 'calculation'], array_keys($response->json('data.points')));
     }
 }
