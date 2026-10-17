@@ -11,7 +11,7 @@ use OpenApi\Attributes as OA;
 #[OA\Schema(
     title: 'Departure',
     description: 'A single departure at a station',
-    required: ['tripId', 'when', 'plannedWhen', 'platform', 'plannedPlatform', 'direction', 'line', 'cancelled', 'station'],
+    required: ['tripId', 'when', 'plannedWhen', 'platform', 'plannedPlatform', 'direction', 'line', 'cancelled', 'station', 'operator'],
     properties: [
         new OA\Property(property: 'tripId', description: 'Unique trip identifier', type: 'string', example: '1|200513|0|81|6012023'),
         new OA\Property(property: 'when', description: 'Actual departure time (null if no realtime data)', type: 'string', format: 'date-time', example: '2023-01-06T13:49:00+01:00', nullable: true),
@@ -35,6 +35,7 @@ use OpenApi\Attributes as OA;
         ),
         new OA\Property(property: 'cancelled', description: 'Whether this departure is cancelled', type: 'boolean', example: false),
         new OA\Property(property: 'station', ref: '#/components/schemas/StationResource'),
+        new OA\Property(property: 'operator', ref: OperatorResource::class, nullable: true),
     ],
 )]
 class DepartureResource extends JsonResource
@@ -63,6 +64,7 @@ class DepartureResource extends JsonResource
             ],
             'cancelled' => $this->resource->cancelled,
             'station' => new StationResource($this->resource->station),
+            'operator' => $this->resource->trip->operator ? new OperatorResource($this->resource->trip->operator) : null,
         ];
     }
 }
