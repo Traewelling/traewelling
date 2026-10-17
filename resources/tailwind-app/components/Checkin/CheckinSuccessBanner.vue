@@ -40,7 +40,7 @@ const pointsDisabled = computed(
                     <router-link
                         v-for="s in data.alsoOnThisConnection"
                         :key="s.id"
-                        :to="{ name: 'user', params: { username: s.user.username } }"
+                        :to="{ name: 'user-profile', params: { username: s.user.username } }"
                         class="flex items-center gap-2 hover:opacity-80 transition-opacity"
                     >
                         <img
