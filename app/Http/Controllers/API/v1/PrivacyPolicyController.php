@@ -94,28 +94,4 @@ class PrivacyPolicyController extends Controller
 
         return $this->sendResponse(code: 204);
     }
-
-    public function acceptPrivacyPolicy(Request $request): JsonResponse
-    {
-        try {
-            $policy = $this->privacyPolicyService->getPrivacyPolicy();
-            $this->privacyPolicyService->acceptPrivacyPolicy(user: auth()->user(), policy: $policy);
-        } catch (AlreadyAcceptedException $exception) {
-            $error = strtr('User already accepted privacy policy (valid from ptime) at utime', [
-                'ptime' => $exception->getPrivacyValidity(),
-                'utime' => $exception->getUserAccepted(),
-            ]);
-
-            return $this->sendError(error: $error, code: 409);
-        } catch (AcceptingOldPrivacyPolicyException $e) {
-            $error = strtr('Trying to accept an obsolete privacy policy (old: otime, current: ntime)', [
-                'otime' => $e->oldValidAt->toIso8601String(),
-                'ntime' => $e->oldValidAt->toIso8601String(),
-            ]);
-
-            return $this->sendError(error: $error, code: 409);
-        }
-
-        return $this->sendResponse(code: 204);
-    }
 }

@@ -72,8 +72,6 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
 
     Route::get('motis-sources', [MotisSourceController::class, 'index']);
 
-    Route::get('static/privacy', [PrivacyPolicyController::class, 'getPrivacyPolicy']); // todo: delete after 2026-09-30
-
     Route::prefix('privacy-policies')->group(static function () {
         Route::get('current', [PrivacyPolicyController::class, 'getPrivacyPolicy'])->name('api.v1.getPrivacyPolicy');
         Route::put('{id}/acceptance', [PrivacyPolicyController::class, 'accept'])
@@ -163,8 +161,6 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
                 ->middleware(['scope:read-statuses']);
         });
         Route::group(['prefix' => 'settings'], static function () {
-            Route::put('acceptPrivacy', [PrivacyPolicyController::class, 'acceptPrivacyPolicy'])
-                ->withoutMiddleware('privacy-policy'); // TODO: Remove after 2026-09-30
             Route::get('profile', [SettingsController::class, 'getProfileSettings'])
                 ->middleware(['scope:read-settings']);
             Route::put('profile', [SettingsController::class, 'updateSettings'])
@@ -252,7 +248,6 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
 
         Route::apiResource('user.trusted', TrustedUserController::class)->only(['index', 'store', 'destroy']);
         Route::apiResource('reports', ReportController::class);
-        Route::apiResource('report', ReportController::class); // deprecated, use /reports: safe to remove after 2026-09-30
         Route::apiResource('operators', OperatorController::class)->only(['index']);
         Route::apiResource('alerts', AlertController::class);
         Route::put('/operators/{oldOperatorId}/merge/{newOperatorId}', [OperatorController::class, 'merge']); // currently admin/backend only

@@ -5,6 +5,7 @@ namespace Tests\Feature\Privacy;
 use App\Models\PrivacyPolicy;
 use App\Models\PrivacyPolicyAcceptance;
 use App\Models\User;
+use App\Services\PrivacyPolicyService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Passport\Passport;
 use Tests\ApiTestCase;
@@ -17,13 +18,14 @@ class PrivacyPolicyServiceTest extends ApiTestCase
     {
         $user = User::factory()->create();
         PrivacyPolicyAcceptance::where('user_id', $user->uuid)->delete();
+        $policy = app(PrivacyPolicyService::class)->getPrivacyPolicy();
 
         Passport::actingAs($user, ['*']);
 
-        $this->putJson('/api/v1/settings/acceptPrivacy')
+        $this->putJson('/api/v1/privacy-policies/' . $policy->id . '/acceptance')
             ->assertNoContent();
 
-        $this->putJson('/api/v1/settings/acceptPrivacy')
+        $this->putJson('/api/v1/privacy-policies/' . $policy->id . '/acceptance')
             ->assertStatus(409);
     }
 
@@ -31,7 +33,7 @@ class PrivacyPolicyServiceTest extends ApiTestCase
     {
         $future = now()->addDays(7)->startOfDay();
         $user = User::factory()->create();
-        PrivacyPolicy::factory()->create(['valid_at' => $future->toIso8601ZuluString()]);
+        $policy = PrivacyPolicy::factory()->create(['valid_at' => $future->toIso8601ZuluString()]);
         Passport::actingAs($user, ['*']);
 
         $this->getJson('/api/v1/dashboard')
@@ -46,7 +48,7 @@ class PrivacyPolicyServiceTest extends ApiTestCase
         $this->getJson('/api/v1/dashboard')
             ->assertStatus(406);
 
-        $this->putJson('/api/v1/settings/acceptPrivacy')
+        $this->putJson('/api/v1/privacy-policies/' . $policy->id . '/acceptance')
             ->assertNoContent();
 
         $this->getJson('/api/v1/dashboard')

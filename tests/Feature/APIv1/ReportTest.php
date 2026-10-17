@@ -18,7 +18,7 @@ class ReportTest extends ApiTestCase
 
         $status = Status::factory()->create();
 
-        $response = $this->actingAs($user)->postJson('/api/v1/report', [
+        $response = $this->actingAs($user)->postJson('/api/v1/reports', [
             'subjectType' => 'Status',
             'subjectId' => $status->id,
             'reason' => 'inappropriate',
@@ -35,7 +35,7 @@ class ReportTest extends ApiTestCase
 
         $status = Status::factory()->create();
 
-        $response = $this->actingAs($user)->postJson('/api/v1/report', [
+        $response = $this->actingAs($user)->postJson('/api/v1/reports', [
             'subjectType' => 'Status',
             'subjectId' => $status->id,
             'reason' => 'inappropriate',
@@ -50,7 +50,7 @@ class ReportTest extends ApiTestCase
 
         $status = Status::factory()->create();
 
-        $response = $this->actingAs($user)->postJson('/api/v1/report', [
+        $response = $this->actingAs($user)->postJson('/api/v1/reports', [
             'subjectType' => 'Status',
             'subjectId' => $status->id,
             'reason' => 'inappropriate',
