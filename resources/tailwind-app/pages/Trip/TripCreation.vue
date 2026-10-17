@@ -300,13 +300,12 @@ function submit(): void {
         .then((response) => {
             const result = response.data?.data;
             router.push({
-                name: 'checkin',
+                name: 'line-run',
                 query: {
                     tripId: result.tripId,
                     lineName: result.lineName,
-                    departure: formData.originDeparturePlanned,
                     category: result.category,
-                    originName: result.origin?.name,
+                    direction: result.destination?.name,
                 },
             });
         })

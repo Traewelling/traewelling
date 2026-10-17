@@ -11,7 +11,6 @@ import {
     StatusResource,
     StatusUpdateBody,
     StatusVisibility,
-    StopoverResource,
 } from '../../../types/Api.gen';
 import { getDepartureForStatus } from '../../../vue/helpers/DateTimeHelper';
 import { useActiveCheckin } from '../../../vue/stores/activeCheckin';
@@ -32,8 +31,6 @@ const notyf = inject('notyf') as Notyf;
 const activeCheckin = useActiveCheckin();
 
 const loading = ref(false);
-const stopovers = ref<StopoverResource[]>([]);
-const destinationValue = ref<string | null>(null);
 const manualDeparture = ref('');
 const manualArrival = ref('');
 const body = ref('');
@@ -58,33 +55,6 @@ async function loadData() {
     eventId.value = props.status.event?.id ?? null;
     manualDeparture.value = isoToDatetimeLocal(props.status.checkin.manualDeparture);
     manualArrival.value = isoToDatetimeLocal(props.status.checkin.manualArrival);
-    destinationValue.value = null;
-    stopovers.value = [];
-
-    try {
-        const res = await api.trains.getTrainTrip({
-            hafasTripId: props.status.checkin.trip,
-            lineName: props.status.checkin.lineName,
-        });
-        const all: StopoverResource[] = res.data?.data?.stopovers ?? [];
-        const depPlanned = LuxonDateTime.fromISO(props.status.checkin.origin.departurePlanned ?? '');
-        stopovers.value = all.filter((s) => {
-            const arr = LuxonDateTime.fromISO(
-                s.arrivalPlanned ?? s.arrivalReal ?? s.departurePlanned ?? s.departureReal ?? '',
-            );
-            return arr.isValid && depPlanned.isValid && arr.diff(depPlanned).as('minutes') >= 0;
-        });
-        const cur = stopovers.value.find(
-            (s) =>
-                s.id === props.status.checkin.destination.id &&
-                s.arrivalPlanned === props.status.checkin.destination.arrivalPlanned,
-        );
-        if (cur?.arrivalPlanned) {
-            destinationValue.value = `${cur.id}|${cur.arrivalPlanned}`;
-        }
-    } catch {
-        // stopovers best-effort
-    }
 
     try {
         const dep = getDepartureForStatus(props.status).toISO() ?? '';
@@ -115,12 +85,6 @@ async function save() {
             manualArrival: manualArrival.value ? LuxonDateTime.fromISO(manualArrival.value).toISO() : null,
         } as StatusUpdateBody;
 
-        if (destinationValue.value) {
-            const idx = destinationValue.value.indexOf('|');
-            updateBody.destinationId = Number(destinationValue.value.slice(0, idx)).toString();
-            updateBody.destinationArrivalPlanned = destinationValue.value.slice(idx + 1);
-        }
-
         const res = await api.status.updateSingleStatus(updateBody, props.status.id);
         activeCheckin.updateStatus(res.data.data as StatusResource);
         emit('saved', res.data.data as StatusResource);
@@ -136,23 +100,6 @@ async function save() {
     <dialog class="modal" :class="{ 'modal-open': open }">
         <div class="modal-box w-11/12 max-w-xl overflow-visible">
             <h3 class="font-bold text-lg mb-4">{{ trans('modals.editStatus-title') }}</h3>
-
-            <!-- Destination -->
-            <div class="form-control mb-3">
-                <label class="label"
-                    ><span class="label-text">{{ trans('exit') }}</span></label
-                >
-                <select v-model="destinationValue" class="select select-bordered w-full">
-                    <option
-                        v-for="s in stopovers"
-                        :key="`${s.id}-${s.arrivalPlanned}`"
-                        :value="`${s.id}|${s.arrivalPlanned}`"
-                    >
-                        {{ LuxonDateTime.fromISO(s.arrivalPlanned ?? s.arrivalReal ?? '').toFormat('HH:mm') }}:
-                        {{ s.name }}
-                    </option>
-                </select>
-            </div>
 
             <!-- Manual times -->
             <div class="grid grid-cols-2 gap-3 mb-3">
