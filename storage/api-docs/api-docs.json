@@ -13532,8 +13532,7 @@
                 "description": "Points model",
                 "required": [
                     "points",
-                    "calculation",
-                    "additional"
+                    "calculation"
                 ],
                 "properties": {
                     "points": {
@@ -13543,13 +13542,6 @@
                     },
                     "calculation": {
                         "$ref": "#/components/schemas/PointsCalculation"
-                    },
-                    "additional": {
-                        "description": "Deprecated. Always null.",
-                        "type": "array",
-                        "items": {},
-                        "nullable": true,
-                        "deprecated": true
                     }
                 },
                 "type": "object"
