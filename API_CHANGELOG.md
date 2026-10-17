@@ -15,8 +15,6 @@ Check back here regularly to stay ahead of removals.
 
 | Announced  | What?                                                                                                                                                                                                                      | Safe until | PR                                                            |
 |------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------|---------------------------------------------------------------|
-| 2026-03-07 | `EventDetailsResource.trainDistance` is deprecated → use `totalDistance` instead                                                                                                                                           | 2026-09-30 | [#4554](https://github.com/Traewelling/traewelling/pull/4554) |
-| 2026-03-07 | `EventDetailsResource.trainDuration` is deprecated → use `totalDuration` instead                                                                                                                                           | 2026-09-30 | [#4554](https://github.com/Traewelling/traewelling/pull/4554) |
 | 2026-03-07 | `CheckinSuccessResource.points.additional` is always `null` and deprecated                                                                                                                                                 | 2026-09-30 | [#4553](https://github.com/Traewelling/traewelling/pull/4553) |
 | 2026-03-07 | `WebhookResource.clientId` is deprecated → use `client.id` instead                                                                                                                                                         | 2026-09-30 | [#4550](https://github.com/Traewelling/traewelling/pull/4550) |
 | 2026-03-07 | `WebhookResource.userId` is deprecated → use `user.id` instead                                                                                                                                                             | 2026-09-30 | [#4550](https://github.com/Traewelling/traewelling/pull/4550) |
@@ -41,14 +39,15 @@ Check back here regularly to stay ahead of removals.
 
 # 2026-10-17
 
-Removed the following deprecated fields from `DepartureResource` (`GET /station/{id}/departures`), announced on 2026-03-07:
+Removed the following deprecated fields, announced on 2026-03-07:
 
-- `delay`: use the difference between `when` and `plannedWhen` instead
-- `provenance`, `remarks`, `origin`, `currentTripPosition`, `loadFactor`: were always `null`
-- `stop.products`, `line.public`, `line.adminCode`: were always placeholder values
-- `line.productName`: use `line.name` instead
-- `line.operator`: was always `null`
-- `destination`: use `direction` instead
+- `EventDetailsResource.trainDistance`: use `totalDistance` instead
+- `EventDetailsResource.trainDuration`: use `totalDuration` instead
+- `DepartureResource.delay` (`GET /station/{id}/departures`): use the difference between `when` and `plannedWhen` instead
+- `DepartureResource.destination`: use `direction` instead
+- `DepartureResource.line.productName`: use `line.name` instead
+- `DepartureResource.provenance`, `remarks`, `origin`, `currentTripPosition`, `loadFactor` and `line.operator`: were always `null`
+- `DepartureResource.stop.products`, `line.public` and `line.adminCode`: were always placeholder values
 
 ---
 

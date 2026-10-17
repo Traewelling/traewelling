@@ -6779,33 +6779,57 @@
                                                             "oneOf": [
                                                                 {
                                                                     "$ref": "#/components/schemas/StatusResource"
+                                                                },
+                                                                {
+                                                                    "type": "object",
+                                                                    "nullable": true,
+                                                                    "enum": [
+                                                                        null
+                                                                    ]
                                                                 }
-                                                            ],
-                                                            "nullable": true
+                                                            ]
                                                         },
                                                         "shortest_checkin_by_distance": {
                                                             "oneOf": [
                                                                 {
                                                                     "$ref": "#/components/schemas/StatusResource"
+                                                                },
+                                                                {
+                                                                    "type": "object",
+                                                                    "nullable": true,
+                                                                    "enum": [
+                                                                        null
+                                                                    ]
                                                                 }
-                                                            ],
-                                                            "nullable": true
+                                                            ]
                                                         },
                                                         "longest_checkin_by_duration": {
                                                             "oneOf": [
                                                                 {
                                                                     "$ref": "#/components/schemas/StatusResource"
+                                                                },
+                                                                {
+                                                                    "type": "object",
+                                                                    "nullable": true,
+                                                                    "enum": [
+                                                                        null
+                                                                    ]
                                                                 }
-                                                            ],
-                                                            "nullable": true
+                                                            ]
                                                         },
                                                         "shortest_checkin_by_duration": {
                                                             "oneOf": [
                                                                 {
                                                                     "$ref": "#/components/schemas/StatusResource"
+                                                                },
+                                                                {
+                                                                    "type": "object",
+                                                                    "nullable": true,
+                                                                    "enum": [
+                                                                        null
+                                                                    ]
                                                                 }
-                                                            ],
-                                                            "nullable": true
+                                                            ]
                                                         }
                                                     },
                                                     "type": "object"
@@ -11597,9 +11621,15 @@
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/Coordinate"
+                            },
+                            {
+                                "type": "object",
+                                "nullable": true,
+                                "enum": [
+                                    null
+                                ]
                             }
                         ],
-                        "nullable": true,
                         "title": "point",
                         "description": "current point, if stopping at a station"
                     },
@@ -11607,9 +11637,15 @@
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/FeatureCollection"
+                            },
+                            {
+                                "type": "object",
+                                "nullable": true,
+                                "enum": [
+                                    null
+                                ]
                             }
                         ],
-                        "nullable": true,
                         "title": "polyline",
                         "description": "geojson point collection of the next line segment"
                     },
@@ -11661,9 +11697,15 @@
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/UserResource"
+                            },
+                            {
+                                "type": "object",
+                                "nullable": true,
+                                "enum": [
+                                    null
+                                ]
                             }
                         ],
-                        "nullable": true,
                         "title": "user"
                     },
                     "position": {
@@ -12615,33 +12657,57 @@
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/StatusVisibility"
+                            },
+                            {
+                                "type": "object",
+                                "nullable": true,
+                                "enum": [
+                                    null
+                                ]
                             }
-                        ],
-                        "nullable": true
+                        ]
                     },
                     "mastodonVisibility": {
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/MastodonVisibility"
+                            },
+                            {
+                                "type": "object",
+                                "nullable": true,
+                                "enum": [
+                                    null
+                                ]
                             }
-                        ],
-                        "nullable": true
+                        ]
                     },
                     "mapProvider": {
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/MapProvider"
+                            },
+                            {
+                                "type": "object",
+                                "nullable": true,
+                                "enum": [
+                                    null
+                                ]
                             }
-                        ],
-                        "nullable": true
+                        ]
                     },
                     "friendCheckin": {
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/FriendCheckinSetting"
+                            },
+                            {
+                                "type": "object",
+                                "nullable": true,
+                                "enum": [
+                                    null
+                                ]
                             }
-                        ],
-                        "nullable": true
+                        ]
                     },
                     "likesEnabled": {
                         "type": "boolean",
@@ -12737,15 +12803,11 @@
                         "properties": {
                             "old": {
                                 "type": "object",
-                                "additionalProperties": {
-                                    "nullable": true
-                                }
+                                "additionalProperties": {}
                             },
                             "attributes": {
                                 "type": "object",
-                                "additionalProperties": {
-                                    "nullable": true
-                                }
+                                "additionalProperties": {}
                             }
                         },
                         "type": "object"
@@ -12814,9 +12876,15 @@
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/TransportResource"
+                            },
+                            {
+                                "type": "object",
+                                "nullable": true,
+                                "enum": [
+                                    null
+                                ]
                             }
-                        ],
-                        "nullable": true
+                        ]
                     },
                     "stopovers": {
                         "type": "array",
@@ -12836,17 +12904,29 @@
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/ClientResource"
+                            },
+                            {
+                                "type": "object",
+                                "nullable": true,
+                                "enum": [
+                                    null
+                                ]
                             }
-                        ],
-                        "nullable": true
+                        ]
                     },
                     "createdBy": {
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/LightUserResource"
+                            },
+                            {
+                                "type": "object",
+                                "nullable": true,
+                                "enum": [
+                                    null
+                                ]
                             }
-                        ],
-                        "nullable": true
+                        ]
                     }
                 },
                 "type": "object"
@@ -12999,9 +13079,15 @@
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/LightUserResource"
+                            },
+                            {
+                                "type": "object",
+                                "nullable": true,
+                                "enum": [
+                                    null
+                                ]
                             }
-                        ],
-                        "nullable": true
+                        ]
                     },
                     "lastRefreshed": {
                         "type": "string",
@@ -13863,9 +13949,15 @@
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/Station"
+                            },
+                            {
+                                "type": "object",
+                                "nullable": true,
+                                "enum": [
+                                    null
+                                ]
                             }
-                        ],
-                        "nullable": true
+                        ]
                     }
                 },
                 "type": "object"
@@ -13876,9 +13968,7 @@
                     "id",
                     "slug",
                     "totalDistance",
-                    "totalDuration",
-                    "trainDistance",
-                    "trainDuration"
+                    "totalDuration"
                 ],
                 "properties": {
                     "id": {
@@ -13898,18 +13988,6 @@
                         "description": "duration travelled in minutes",
                         "type": "integer",
                         "example": 12345
-                    },
-                    "trainDistance": {
-                        "description": "Deprecated. Use totalDistance instead.",
-                        "type": "integer",
-                        "example": 12345,
-                        "deprecated": true
-                    },
-                    "trainDuration": {
-                        "description": "Deprecated. Use totalDuration instead.",
-                        "type": "integer",
-                        "example": 12345,
-                        "deprecated": true
                     }
                 },
                 "type": "object"
@@ -13976,9 +14054,15 @@
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/StationResource"
+                            },
+                            {
+                                "type": "object",
+                                "nullable": true,
+                                "enum": [
+                                    null
+                                ]
                             }
-                        ],
-                        "nullable": true
+                        ]
                     },
                     "totalDistance": {
                         "type": "integer",
@@ -14635,9 +14719,15 @@
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/LightUserResource"
+                            },
+                            {
+                                "type": "object",
+                                "nullable": true,
+                                "enum": [
+                                    null
+                                ]
                             }
-                        ],
-                        "nullable": true
+                        ]
                     },
                     "created_at": {
                         "type": "string",
@@ -14657,9 +14747,15 @@
                                     "oneOf": [
                                         {
                                             "$ref": "#/components/schemas/LightUserResource"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "nullable": true,
+                                            "enum": [
+                                                null
+                                            ]
                                         }
-                                    ],
-                                    "nullable": true
+                                    ]
                                 },
                                 "properties": {
                                     "type": "object",
@@ -14773,33 +14869,57 @@
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/StationResource"
+                            },
+                            {
+                                "type": "object",
+                                "nullable": true,
+                                "enum": [
+                                    null
+                                ]
                             }
-                        ],
-                        "nullable": true
+                        ]
                     },
                     "toStation": {
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/StationResource"
+                            },
+                            {
+                                "type": "object",
+                                "nullable": true,
+                                "enum": [
+                                    null
+                                ]
                             }
-                        ],
-                        "nullable": true
+                        ]
                     },
                     "fromIdentifier": {
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/StationIdentifierResource"
+                            },
+                            {
+                                "type": "object",
+                                "nullable": true,
+                                "enum": [
+                                    null
+                                ]
                             }
-                        ],
-                        "nullable": true
+                        ]
                     },
                     "toIdentifier": {
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/StationIdentifierResource"
+                            },
+                            {
+                                "type": "object",
+                                "nullable": true,
+                                "enum": [
+                                    null
+                                ]
                             }
-                        ],
-                        "nullable": true
+                        ]
                     },
                     "distance": {
                         "description": "Distance in meters",
@@ -15121,9 +15241,15 @@
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/ClientResource"
+                            },
+                            {
+                                "type": "object",
+                                "nullable": true,
+                                "enum": [
+                                    null
+                                ]
                             }
-                        ],
-                        "nullable": true
+                        ]
                     },
                     "checkin": {
                         "$ref": "#/components/schemas/TransportResource"
@@ -15132,9 +15258,15 @@
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/EventResource"
+                            },
+                            {
+                                "type": "object",
+                                "nullable": true,
+                                "enum": [
+                                    null
+                                ]
                             }
-                        ],
-                        "nullable": true
+                        ]
                     },
                     "user": {
                         "$ref": "#/components/schemas/LightUserResource"
@@ -15143,9 +15275,15 @@
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/LightUserResource"
+                            },
+                            {
+                                "type": "object",
+                                "nullable": true,
+                                "enum": [
+                                    null
+                                ]
                             }
                         ],
-                        "nullable": true,
                         "description": "User who created this check-in on behalf of the status owner (null if self-checkin)"
                     },
                     "tags": {
@@ -15158,9 +15296,15 @@
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/TicketResource"
+                            },
+                            {
+                                "type": "object",
+                                "nullable": true,
+                                "enum": [
+                                    null
+                                ]
                             }
                         ],
-                        "nullable": true,
                         "description": "The ticket assigned to this status. Only present for the status owner."
                     },
                     "moderation_notes": {
@@ -15745,9 +15889,15 @@
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/MotisCategory"
+                            },
+                            {
+                                "type": "object",
+                                "nullable": true,
+                                "enum": [
+                                    null
+                                ]
                             }
-                        ],
-                        "nullable": true
+                        ]
                     },
                     "number": {
                         "description": "Internal number of the journey",
@@ -15815,17 +15965,29 @@
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/OperatorResource"
+                            },
+                            {
+                                "type": "object",
+                                "nullable": true,
+                                "enum": [
+                                    null
+                                ]
                             }
-                        ],
-                        "nullable": true
+                        ]
                     },
                     "dataSource": {
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/DataSourceResource"
+                            },
+                            {
+                                "type": "object",
+                                "nullable": true,
+                                "enum": [
+                                    null
+                                ]
                             }
-                        ],
-                        "nullable": true
+                        ]
                     }
                 },
                 "type": "object"
@@ -15872,9 +16034,15 @@
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/MotisCategory"
+                            },
+                            {
+                                "type": "object",
+                                "nullable": true,
+                                "enum": [
+                                    null
+                                ]
                             }
-                        ],
-                        "nullable": true
+                        ]
                     },
                     "number": {
                         "type": "string",
@@ -15898,9 +16066,15 @@
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/OperatorResource"
+                            },
+                            {
+                                "type": "object",
+                                "nullable": true,
+                                "enum": [
+                                    null
+                                ]
                             }
-                        ],
-                        "nullable": true
+                        ]
                     },
                     "stopovers": {
                         "type": "array",
@@ -15917,9 +16091,15 @@
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/DataSourceResource"
+                            },
+                            {
+                                "type": "object",
+                                "nullable": true,
+                                "enum": [
+                                    null
+                                ]
                             }
-                        ],
-                        "nullable": true
+                        ]
                     }
                 },
                 "type": "object"
@@ -16030,10 +16210,17 @@
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/StationResource"
+                            },
+                            {
+                                "type": "object",
+                                "nullable": true,
+                                "enum": [
+                                    null
+                                ]
                             }
                         ],
-                        "nullable": true,
-                        "type": "object"
+                        "type": "object",
+                        "nullable": true
                     },
                     "language": {
                         "type": "string",
@@ -16316,8 +16503,7 @@
                     },
                     "mastodonUrl": {
                         "description": "URL to the Mastodon profile of the user",
-                        "example": "https://chaos.social/@traewelling",
-                        "nullable": true
+                        "example": "https://chaos.social/@traewelling"
                     },
                     "privateProfile": {
                         "description": "is this profile set to private?",

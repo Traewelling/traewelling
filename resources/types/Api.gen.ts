@@ -1474,18 +1474,6 @@ export interface EventDetailsResource {
    * @example 12345
    */
   totalDuration: number;
-  /**
-   * Deprecated. Use totalDistance instead.
-   * @deprecated
-   * @example 12345
-   */
-  trainDistance: number;
-  /**
-   * Deprecated. Use totalDuration instead.
-   * @deprecated
-   * @example 12345
-   */
-  trainDuration: number;
 }
 
 /** Event */
@@ -2784,7 +2772,7 @@ export interface UserResource {
    * URL to the Mastodon profile of the user
    * @example "https://chaos.social/@traewelling"
    */
-  mastodonUrl: any | null;
+  mastodonUrl: any;
   /**
    * is this profile set to private?
    * @example false
