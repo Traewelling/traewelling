@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ChartLine, Medal } from '@lucide/vue';
 import { DateTime } from 'luxon';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { Api, LeaderboardUserResource } from '../../../types/Api.gen';
 import { useUserStore } from '../../../vue/stores/user';
 import Loading from '../../components/Loading.vue';
@@ -11,10 +11,20 @@ import LeaderboardEntry from './partials/LeaderboardEntry.vue';
 const usersLeaderboard = ref<LeaderboardUserResource[]>([]);
 const distanceLeaderboard = ref<LeaderboardUserResource[]>([]);
 const friendsLeaderboard = ref<LeaderboardUserResource[]>([]);
-const selectedData = ref<LeaderboardUserResource[]>([]);
-const selected = ref('users');
+const selected = ref<'users' | 'distance' | 'friends'>('users');
 const focusData = ref<'points' | 'distance' | 'duration' | 'speed'>('points');
 const loading = ref(0);
+
+const selectedData = computed(() => {
+    switch (selected.value) {
+        case 'distance':
+            return distanceLeaderboard.value;
+        case 'friends':
+            return friendsLeaderboard.value;
+        default:
+            return usersLeaderboard.value;
+    }
+});
 
 const api = new Api({ baseUrl: window.location.origin + '/api' });
 const user = useUserStore();
@@ -28,7 +38,6 @@ function fetchData() {
                 usersLeaderboard.value = data.data;
                 loading.value--;
             });
-            select(selected.value);
         })
         .catch(() => {
             loading.value--;
@@ -39,7 +48,6 @@ function fetchData() {
         .then((data) => {
             data.json().then((data) => {
                 distanceLeaderboard.value = data.data;
-                select('users');
                 loading.value--;
             });
         })
@@ -63,22 +71,9 @@ function fetchData() {
         });
 }
 
-function select(type: string) {
+function select(type: 'users' | 'distance' | 'friends') {
     selected.value = type;
-    switch (type) {
-        case 'users':
-            selectedData.value = usersLeaderboard.value;
-            focusData.value = 'points';
-            break;
-        case 'distance':
-            selectedData.value = distanceLeaderboard.value;
-            focusData.value = 'distance';
-            break;
-        case 'friends':
-            selectedData.value = friendsLeaderboard.value;
-            focusData.value = 'points';
-            break;
-    }
+    focusData.value = type === 'distance' ? 'distance' : 'points';
 }
 
 onMounted(fetchData);
