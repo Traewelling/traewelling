@@ -7,7 +7,7 @@ export default {
     name: 'CheckinLineRun',
     components: { LoadingSkeletonRows },
     props: {
-        selectedTrain: {
+        selectedDeparture: {
             type: Object,
             required: true,
         },
@@ -32,7 +32,7 @@ export default {
         };
     },
     watch: {
-        selectedTrain() {
+        selectedDeparture() {
             this.getLineRun();
         },
     },
@@ -48,9 +48,9 @@ export default {
             this.loading = true;
 
             const params = new URLSearchParams({
-                hafasTripId: this.$props.selectedTrain.tripId,
-                lineName: this.$props.selectedTrain.line.name,
-                start: this.$props.selectedTrain.stop.id,
+                hafasTripId: this.$props.selectedDeparture.tripId,
+                lineName: this.$props.selectedDeparture.line.name,
+                start: this.$props.selectedDeparture.station.id,
             });
             fetch(`/api/v1/trains/trip?${params.toString()}`)
                 .then((response) => {
@@ -61,9 +61,9 @@ export default {
                     }
                     response.json().then((result) => {
                         this.lineRun = result.data;
-                        const givenDeparture = DateTime.fromISO(this.$props.selectedTrain.plannedWhen);
+                        const givenDeparture = DateTime.fromISO(this.$props.selectedDeparture.plannedWhen);
                         const startIndex = this.lineRun.stopovers.findIndex((item) => {
-                            if (Number(item.id) !== Number(this.$props.selectedTrain.stop.id)) {
+                            if (Number(item.id) !== Number(this.$props.selectedDeparture.station.id)) {
                                 return false;
                             }
                             const dep = item.departurePlanned

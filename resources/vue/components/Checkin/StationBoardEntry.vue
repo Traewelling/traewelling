@@ -93,8 +93,8 @@ function normalizeLineName(name: string | null): string {
                 <div>
                     <span class="fw-bold fs-6">{{ item.direction }}</span
                     ><br />
-                    <span v-if="item.stop.name !== station.name" class="text-muted small font-italic">
-                        {{ trans('stationboard.dep') }} {{ item.stop.name }}
+                    <span v-if="item.station.name !== station.name" class="text-muted small font-italic">
+                        {{ trans('stationboard.dep') }} {{ item.station.name }}
                     </span>
                 </div>
             </div>

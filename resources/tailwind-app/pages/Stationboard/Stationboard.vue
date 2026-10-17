@@ -100,20 +100,20 @@ function fetchNext(): void {
     fetchDepartures(next ?? fetchTime.value.plus({ minutes: 15 }).toISO() ?? undefined);
 }
 
-function openLineRun(train: DepartureResource): void {
+function openLineRun(departure: DepartureResource): void {
     router.push({
         name: 'line-run',
         query: {
-            tripId: train.tripId,
-            lineName: train.line?.name ?? train.line?.fahrtNr,
-            startId: train.stop?.id,
-            plannedWhen: train.plannedWhen,
-            direction: train.direction,
-            originName: train.stop?.name,
-            product: train.line?.product ?? undefined,
-            mode: train.line?.mode ?? undefined,
-            color: train.line?.color ?? undefined,
-            textColor: train.line?.textColor ?? undefined,
+            tripId: departure.tripId,
+            lineName: departure.line?.name ?? departure.line?.fahrtNr,
+            startId: departure.station?.id,
+            plannedWhen: departure.plannedWhen,
+            direction: departure.direction,
+            originName: departure.station?.name,
+            product: departure.line?.product ?? undefined,
+            mode: departure.line?.mode ?? undefined,
+            color: departure.line?.color ?? undefined,
+            textColor: departure.line?.textColor ?? undefined,
         },
     });
 }

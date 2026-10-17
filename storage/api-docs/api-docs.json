@@ -13708,7 +13708,6 @@
                 "description": "A single departure at a station",
                 "required": [
                     "tripId",
-                    "stop",
                     "when",
                     "plannedWhen",
                     "platform",
@@ -13723,59 +13722,6 @@
                         "description": "Unique trip identifier",
                         "type": "string",
                         "example": "1|200513|0|81|6012023"
-                    },
-                    "stop": {
-                        "description": "The stop at which this departure occurs",
-                        "properties": {
-                            "type": {
-                                "type": "string",
-                                "example": "stop",
-                                "deprecated": true
-                            },
-                            "id": {
-                                "description": "Träwelling internal station ID",
-                                "type": "integer",
-                                "example": 5181,
-                                "deprecated": true
-                            },
-                            "name": {
-                                "type": "string",
-                                "example": "Karlsruhe Hbf",
-                                "deprecated": true
-                            },
-                            "location": {
-                                "properties": {
-                                    "type": {
-                                        "type": "string",
-                                        "example": "location",
-                                        "deprecated": true
-                                    },
-                                    "id": {
-                                        "description": "IBNR identifier (if available)",
-                                        "type": "string",
-                                        "example": "8000191",
-                                        "nullable": true,
-                                        "deprecated": true
-                                    },
-                                    "latitude": {
-                                        "type": "number",
-                                        "format": "float",
-                                        "example": 48.993207,
-                                        "deprecated": true
-                                    },
-                                    "longitude": {
-                                        "type": "number",
-                                        "format": "float",
-                                        "example": 8.400977,
-                                        "deprecated": true
-                                    }
-                                },
-                                "type": "object",
-                                "deprecated": true
-                            }
-                        },
-                        "type": "object",
-                        "deprecated": true
                     },
                     "when": {
                         "description": "Actual departure time (null if no realtime data)",

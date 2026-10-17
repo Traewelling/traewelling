@@ -1,6 +1,5 @@
 export type departureEntry = {
     tripId: string;
-    stop: HafasStop;
     when: string | null;
     plannedWhen: string | null;
     platform: string | null;
@@ -30,28 +29,4 @@ export type HafasLine = {
     name: string;
     mode: any; // eslint-disable-line @typescript-eslint/no-explicit-any
     product: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-};
-
-export type HafasStop = {
-    type: string;
-    id: string;
-    name: string;
-    location: HafasLocation;
-    station: HafasStation;
-};
-export type HafasStation = {
-    type: string;
-    id: string;
-    name: string;
-    location: HafasLocation;
-    products: {
-        [key: string]: boolean;
-    };
-};
-
-export type HafasLocation = {
-    type: string;
-    id: string;
-    latitude: number;
-    longitude: number;
 };

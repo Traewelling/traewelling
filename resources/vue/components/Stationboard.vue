@@ -28,9 +28,9 @@ export default {
             travelType: null,
             fetchTime: null,
             show: false,
-            selectedTrain: null,
-            selectedTrainBackgroundColor: null,
-            selectedTrainTextColor: null,
+            selectedDeparture: null,
+            selectedDepartureBackgroundColor: null,
+            selectedDepartureTextColor: null,
             selectedDestination: null,
             loading: false,
             stationName: null,
@@ -49,7 +49,7 @@ export default {
                 : DateTime.now().setZone('UTC');
         },
         showLineRun() {
-            return !!this.selectedTrain && !this.selectedDestination;
+            return !!this.selectedDeparture && !this.selectedDestination;
         },
         showCheckinInterface() {
             return !!this.selectedDestination;
@@ -81,19 +81,19 @@ export default {
                 this.pushHistory(params);
             }
         },
-        selectedTrain(value) {
+        selectedDeparture(value) {
             if (value !== null) {
-                this.selectedTrainBackgroundColor = this.selectedTrain?.line?.color || null;
+                this.selectedDepartureBackgroundColor = this.selectedDeparture?.line?.color || null;
 
-                if (this.selectedTrainBackgroundColor) {
-                    this.selectedTrainTextColor = this.selectedTrain?.line?.textColor || null;
+                if (this.selectedDepartureBackgroundColor) {
+                    this.selectedDepartureTextColor = this.selectedDeparture?.line?.textColor || null;
                 }
             }
         },
     },
     mounted() {
         this.analyzeUrlParams().then(() => {
-            if (!this.selectedTrain) {
+            if (!this.selectedDeparture) {
                 this.fetchData();
             }
         });
@@ -108,14 +108,14 @@ export default {
         trans,
         showModal(selectedItem) {
             this.selectedDestination = null;
-            this.selectedTrain = selectedItem;
+            this.selectedDeparture = selectedItem;
             this.show = true;
             this.$refs.modal.show();
 
             const data = new URLSearchParams({
                 tripId: selectedItem.tripId,
                 lineName: selectedItem.line.name,
-                start: this.selectedTrain.stop.id,
+                start: this.selectedDeparture.station.id,
                 departure: selectedItem.when,
                 category: selectedItem.line.product,
             });
@@ -216,13 +216,13 @@ export default {
                 if (!urlParams.has('destination')) {
                     this.selectedDestination = null;
                 }
-                this.selectedTrain = {
+                this.selectedDeparture = {
                     tripId: urlParams.get('tripId'),
                     line: {
                         name: urlParams.get('lineName'),
                         product: urlParams.get('category') || null,
                     },
-                    stop: {
+                    station: {
                         id: urlParams.get('start'),
                     },
                     plannedWhen: urlParams.get('departure'),
@@ -252,7 +252,7 @@ export default {
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.toString() !== this.pushState.toString()) {
                 this.analyzeUrlParams().then(() => {
-                    if (!this.selectedTrain) {
+                    if (!this.selectedDeparture) {
                         this.fetchData();
                     }
                 });
@@ -275,7 +275,7 @@ export default {
             // triggering the selectedDestination watcher's history.back()
             this.suppressDestinationWatcher = true;
             this.selectedDestination = null;
-            this.selectedTrain = null;
+            this.selectedDeparture = null;
             this.fastCheckinIbnr = null;
             this.show = false;
             this.suppressDestinationWatcher = false;
@@ -362,16 +362,20 @@ export default {
     </div>
 
     <FullScreenModal ref="modal" body-class="{{ showCheckinInterface ? 'p-0' : ''}}" @hidden="onModalHidden">
-        <template v-if="selectedTrain" #header>
+        <template v-if="selectedDeparture" #header>
             <div class="col-1 align-items-center d-flex">
-                <ProductIcon :product="selectedTrain.line.product" />
+                <ProductIcon :product="selectedDeparture.line.product" />
             </div>
             <div class="col-auto align-items-center d-flex me-3">
                 <LineIndicator
-                    :product-name="selectedTrain.line.product"
-                    :number="selectedTrain.line.name !== null ? selectedTrain.line.name : selectedTrain.line.fahrtNr"
-                    :background-color="selectedTrainBackgroundColor"
-                    :color="selectedTrainTextColor"
+                    :product-name="selectedDeparture.line.product"
+                    :number="
+                        selectedDeparture.line.name !== null
+                            ? selectedDeparture.line.name
+                            : selectedDeparture.line.fahrtNr
+                    "
+                    :background-color="selectedDepartureBackgroundColor"
+                    :color="selectedDepartureTextColor"
                 />
             </div>
             <template v-if="selectedDestination">
@@ -387,12 +391,12 @@ export default {
             <CheckinLineRun
                 v-if="showLineRun"
                 v-model:destination="selectedDestination"
-                :selected-train="selectedTrain"
+                :selected-departure="selectedDeparture"
                 :fast-checkin-id="fastCheckinIbnr"
             />
             <CheckinInterface
                 v-if="showCheckinInterface"
-                :selected-train="selectedTrain"
+                :selected-departure="selectedDeparture"
                 :selected-destination="selectedDestination"
             />
         </template>
