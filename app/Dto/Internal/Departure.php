@@ -31,13 +31,4 @@ readonly class Departure
         $this->realPlatform = $realPlatform;
         $this->cancelled = $cancelled;
     }
-
-    public function getDelay(): ?int
-    {
-        if ($this->realDeparture === null) {
-            return null;
-        }
-
-        return $this->plannedDeparture->diffInMinutes($this->realDeparture);
-    }
 }

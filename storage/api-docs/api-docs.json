@@ -13633,17 +13633,10 @@
                     "stop",
                     "when",
                     "plannedWhen",
-                    "delay",
                     "platform",
                     "plannedPlatform",
                     "direction",
                     "line",
-                    "provenance",
-                    "remarks",
-                    "origin",
-                    "destination",
-                    "currentTripPosition",
-                    "loadFactor",
                     "cancelled",
                     "station"
                 ],
@@ -13701,11 +13694,6 @@
                                 },
                                 "type": "object",
                                 "deprecated": true
-                            },
-                            "products": {
-                                "description": "Deprecated. Always true for all modes.",
-                                "type": "object",
-                                "deprecated": true
                             }
                         },
                         "type": "object",
@@ -13724,13 +13712,6 @@
                         "format": "date-time",
                         "example": "2023-01-06T13:49:00+01:00"
                     },
-                    "delay": {
-                        "description": "Deprecated. Use the difference between when and plannedWhen instead.",
-                        "type": "integer",
-                        "example": 2,
-                        "nullable": true,
-                        "deprecated": true
-                    },
                     "platform": {
                         "description": "Actual platform (null if no realtime data)",
                         "type": "string",
@@ -13747,13 +13728,6 @@
                         "description": "Final destination of the trip",
                         "type": "string",
                         "example": "Zürich HB"
-                    },
-                    "provenance": {
-                        "description": "Deprecated. Always null.",
-                        "type": "string",
-                        "example": null,
-                        "nullable": true,
-                        "deprecated": true
                     },
                     "line": {
                         "properties": {
@@ -13786,18 +13760,6 @@
                                 "example": "ffffff",
                                 "nullable": true
                             },
-                            "public": {
-                                "description": "Deprecated. Always true.",
-                                "type": "boolean",
-                                "example": true,
-                                "deprecated": true
-                            },
-                            "productName": {
-                                "description": "Deprecated. Use name.",
-                                "type": "string",
-                                "example": "EC 9",
-                                "deprecated": true
-                            },
                             "mode": {
                                 "description": "Transit mode",
                                 "type": "string",
@@ -13809,51 +13771,9 @@
                                 "type": "string",
                                 "example": "national",
                                 "nullable": true
-                            },
-                            "adminCode": {
-                                "description": "Deprecated. Always \"80____\".",
-                                "type": "string",
-                                "example": "80____",
-                                "deprecated": true
-                            },
-                            "operator": {
-                                "description": "Deprecated. Always null.",
-                                "type": "object",
-                                "nullable": true,
-                                "deprecated": true
                             }
                         },
                         "type": "object"
-                    },
-                    "remarks": {
-                        "description": "Deprecated. Always null.",
-                        "type": "array",
-                        "items": {},
-                        "nullable": true,
-                        "deprecated": true
-                    },
-                    "origin": {
-                        "description": "Deprecated. Always null.",
-                        "type": "object",
-                        "nullable": true,
-                        "deprecated": true
-                    },
-                    "destination": {
-                        "description": "Deprecated. Use direction instead.",
-                        "type": "object",
-                        "deprecated": true
-                    },
-                    "currentTripPosition": {
-                        "description": "Deprecated. Always null.",
-                        "type": "object",
-                        "nullable": true,
-                        "deprecated": true
-                    },
-                    "loadFactor": {
-                        "description": "Deprecated. Always null.",
-                        "type": "string",
-                        "nullable": true,
-                        "deprecated": true
                     },
                     "cancelled": {
                         "description": "Whether this departure is cancelled",

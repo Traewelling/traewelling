@@ -18,9 +18,6 @@ Check back here regularly to stay ahead of removals.
 | 2026-03-07 | `EventDetailsResource.trainDistance` is deprecated → use `totalDistance` instead                                                                                                                                           | 2026-09-30 | [#4554](https://github.com/Traewelling/traewelling/pull/4554) |
 | 2026-03-07 | `EventDetailsResource.trainDuration` is deprecated → use `totalDuration` instead                                                                                                                                           | 2026-09-30 | [#4554](https://github.com/Traewelling/traewelling/pull/4554) |
 | 2026-03-07 | `CheckinSuccessResource.points.additional` is always `null` and deprecated                                                                                                                                                 | 2026-09-30 | [#4553](https://github.com/Traewelling/traewelling/pull/4553) |
-| 2026-03-07 | `DepartureResource.destination` is deprecated → use `direction` instead                                                                                                                                                    | 2026-09-30 | [#4552](https://github.com/Traewelling/traewelling/pull/4552) |
-| 2026-03-07 | `DepartureResource.delay` is deprecated → use `when`/`plannedWhen` difference instead                                                                                                                                      | 2026-09-30 | [#4552](https://github.com/Traewelling/traewelling/pull/4552) |
-| 2026-03-07 | `DepartureResource` HAFAS-compat fields deprecated: `provenance`, `remarks`, `origin`, `currentTripPosition`, `loadFactor`, `stop.products`, `line.public`, `line.adminCode`, `line.productName`, `line.operator`          | 2026-09-30 | [#4552](https://github.com/Traewelling/traewelling/pull/4552) |
 | 2026-03-07 | `WebhookResource.clientId` is deprecated → use `client.id` instead                                                                                                                                                         | 2026-09-30 | [#4550](https://github.com/Traewelling/traewelling/pull/4550) |
 | 2026-03-07 | `WebhookResource.userId` is deprecated → use `user.id` instead                                                                                                                                                             | 2026-09-30 | [#4550](https://github.com/Traewelling/traewelling/pull/4550) |
 | 2026-03-05 | `StationResource.ibnr` is always `null` → use `identifiers` array with type `de_db_ibnr` instead                                                                                                                           | 2026-09-30 | [#4500](https://github.com/Traewelling/traewelling/pull/4500) |
@@ -39,6 +36,19 @@ Check back here regularly to stay ahead of removals.
 | 2026-07-19 | `StopoverResource.id` is deprecated as station ID: it currently holds the station ID (not unique within a trip). Use `station` for station details. After the safe-until date `id` is repurposed to the unique stopover ID | 2026-11-30 | [#4959](https://github.com/Traewelling/traewelling/pull/4959) |
 | 2026-07-19 | `StopoverResource.name` is deprecated → use `station.name` instead                                                                                                                                                         | 2026-11-30 | [#4959](https://github.com/Traewelling/traewelling/pull/4959) |
 | 2026-07-19 | `StopoverResource.identifiers` (only present with `withIdentifiers=true`) is deprecated → use `station.identifiers` instead                                                                                                | 2026-11-30 | [#4959](https://github.com/Traewelling/traewelling/pull/4959) |
+
+---
+
+# 2026-10-17
+
+Removed the following deprecated fields from `DepartureResource` (`GET /station/{id}/departures`), announced on 2026-03-07:
+
+- `delay`: use the difference between `when` and `plannedWhen` instead
+- `provenance`, `remarks`, `origin`, `currentTripPosition`, `loadFactor`: were always `null`
+- `stop.products`, `line.public`, `line.adminCode`: were always placeholder values
+- `line.productName`: use `line.name` instead
+- `line.operator`: was always `null`
+- `destination`: use `direction` instead
 
 ---
 

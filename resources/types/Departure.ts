@@ -3,20 +3,10 @@ export type departureEntry = {
     stop: HafasStop;
     when: string | null;
     plannedWhen: string | null;
-    delay: number | null;
     platform: string | null;
     prognosisType: string;
     direction: string;
-    provenance: any | null; // eslint-disable-line @typescript-eslint/no-explicit-any
     line: HafasLine;
-    remarks: any[]; // eslint-disable-line @typescript-eslint/no-explicit-any
-    origin: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-    destination: HafasDestination;
-    currentTripPosition: {
-        type: string;
-        latitude: number;
-        longitude: number;
-    };
     cancelled: boolean | null | undefined;
     station: {
         id: number;
@@ -35,28 +25,13 @@ export type departureEntry = {
     };
 };
 
-export type HafasDestination = {
-    type: string;
-    id: string;
-    name: string;
-    location: HafasLocation;
-    products: {
-        [key: string]: boolean;
-    };
-    station: HafasStation;
-};
-
 export type HafasLine = {
     type: string;
     id: string;
     fahrtNr: string;
     name: string;
-    public: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-    adminCode: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-    productName: any; // eslint-disable-line @typescript-eslint/no-explicit-any
     mode: any; // eslint-disable-line @typescript-eslint/no-explicit-any
     product: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-    operator: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 };
 
 export type HafasStop = {
@@ -64,9 +39,6 @@ export type HafasStop = {
     id: string;
     name: string;
     location: HafasLocation;
-    products: {
-        [key: string]: boolean;
-    };
     station: HafasStation;
 };
 export type HafasStation = {
