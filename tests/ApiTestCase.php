@@ -136,8 +136,8 @@ abstract class ApiTestCase extends FeatureTestCase
             'data' => [
                 'id',
                 'slug',
-                'trainDistance',
-                'trainDuration',
+                'totalDistance',
+                'totalDuration',
             ],
         ]);
     }

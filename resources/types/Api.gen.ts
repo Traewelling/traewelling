@@ -1539,18 +1539,6 @@ export interface EventDetailsResource {
    * @example 12345
    */
   totalDuration: number;
-  /**
-   * Deprecated. Use totalDistance instead.
-   * @deprecated
-   * @example 12345
-   */
-  trainDistance: number;
-  /**
-   * Deprecated. Use totalDuration instead.
-   * @deprecated
-   * @example 12345
-   */
-  trainDuration: number;
 }
 
 /** Event */
