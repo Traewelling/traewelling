@@ -2856,22 +2856,8 @@ export interface WebhookResource {
    */
   id: any;
   client: ClientResource;
-  /**
-   * Deprecated. Use client.id instead.
-   * @deprecated
-   * @format int
-   * @example 12345
-   */
-  clientId: any;
   /** User model with just basic information */
   user: LightUserResource;
-  /**
-   * Deprecated. Use user.id instead.
-   * @deprecated
-   * @format int
-   * @example 12345
-   */
-  userId: any;
   /**
    * URL where the webhook gets sent to
    * @example "https://example.com/webhook"

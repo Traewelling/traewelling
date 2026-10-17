@@ -9,7 +9,7 @@ use OpenApi\Attributes as OA;
 #[OA\Schema(
     title: 'WebhookResource',
     description: 'Webhook model',
-    required: ['id', 'clientId', 'client', 'userId', 'user', 'url', 'createdAt', 'events', 'disabledAt'],
+    required: ['id', 'client', 'user', 'url', 'createdAt', 'events', 'disabledAt'],
     properties: [
         new OA\Property(
             property: 'id',
@@ -23,23 +23,9 @@ use OpenApi\Attributes as OA;
             description: 'Client which created this webhook'
         ),
         new OA\Property(
-            property: 'clientId',
-            description: 'Deprecated. Use client.id instead.',
-            format: 'int',
-            example: 12345,
-            deprecated: true,
-        ),
-        new OA\Property(
             property: 'user',
             ref: '#/components/schemas/LightUserResource',
             description: 'User who created this webhook'
-        ),
-        new OA\Property(
-            property: 'userId',
-            description: 'Deprecated. Use user.id instead.',
-            format: 'int',
-            example: 12345,
-            deprecated: true,
         ),
         new OA\Property(
             property: 'url',
@@ -81,9 +67,7 @@ class WebhookResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'clientId' => $this->oauth_client_id, // @deprecated - remove after 2026-09-30
             'client' => new ClientResource($this->client),
-            'userId' => $this->user_id, // @deprecated - remove after 2026-09-30
             'user' => new LightUserResource($this->user),
             'url' => $this->url,
             'createdAt' => $this->created_at->toIso8601String(),

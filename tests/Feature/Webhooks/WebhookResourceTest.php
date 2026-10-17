@@ -17,9 +17,7 @@ class WebhookResourceTest extends ApiTestCase
     {
         return [
             'id',
-            'clientId',
             'client',
-            'userId',
             'user',
             'url',
             'createdAt',
@@ -38,7 +36,9 @@ class WebhookResourceTest extends ApiTestCase
         $response = $this->getJson('/api/v1/webhooks');
 
         $response->assertOk();
-        $response->assertJsonStructure(['data' => [['id', 'clientId', 'client', 'userId', 'user', 'url', 'createdAt', 'events', 'disabledAt']]]);
+        $response->assertJsonStructure(['data' => [$this->webhookStructure()]]);
+        $response->assertJsonMissingPath('data.0.clientId');
+        $response->assertJsonMissingPath('data.0.userId');
         $response->assertJsonPath('data.0.disabledAt', null);
     }
 

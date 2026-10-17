@@ -16587,9 +16587,7 @@
                 "description": "Webhook model",
                 "required": [
                     "id",
-                    "clientId",
                     "client",
-                    "userId",
                     "user",
                     "url",
                     "createdAt",
@@ -16605,20 +16603,8 @@
                     "client": {
                         "$ref": "#/components/schemas/ClientResource"
                     },
-                    "clientId": {
-                        "description": "Deprecated. Use client.id instead.",
-                        "format": "int",
-                        "example": 12345,
-                        "deprecated": true
-                    },
                     "user": {
                         "$ref": "#/components/schemas/LightUserResource"
-                    },
-                    "userId": {
-                        "description": "Deprecated. Use user.id instead.",
-                        "format": "int",
-                        "example": 12345,
-                        "deprecated": true
                     },
                     "url": {
                         "description": "URL where the webhook gets sent to",
