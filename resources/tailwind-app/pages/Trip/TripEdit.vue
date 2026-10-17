@@ -16,7 +16,7 @@ import { trans } from 'laravel-vue-i18n';
 import { DateTime } from 'luxon';
 import { Notyf } from 'notyf';
 import { computed, inject, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { Api, HafasTravelType, StationResource, TripResource } from '../../../types/Api.gen';
 import StationAutocomplete from '../../components/StationAutocomplete.vue';
 import StopoverEditor from '../../components/Trip/StopoverEditor.vue';
@@ -27,6 +27,7 @@ import AppLayout from '../../layouts/AppLayout.vue';
 const api = new Api({ baseUrl: window.location.origin + '/api' });
 const notyf = inject('notyf') as Notyf;
 const route = useRoute();
+const router = useRouter();
 
 const tripUuid = computed(() => route.params.uuid as string);
 
@@ -160,6 +161,19 @@ async function addStopover(): Promise<void> {
     }
 }
 
+function checkIn(): void {
+    if (!trip.value) return;
+    router.push({
+        name: 'line-run',
+        query: {
+            tripId: trip.value.tripId,
+            lineName: trip.value.lineName,
+            category: trip.value.category,
+            direction: trip.value.destination?.name,
+        },
+    });
+}
+
 fetchTrip(true);
 </script>
 
@@ -171,6 +185,9 @@ fetchTrip(true);
             </router-link>
             <h1 class="text-2xl font-bold">{{ trans('trip.edit.title') }}</h1>
             <span v-if="refreshing && trip" class="loading loading-spinner loading-xs opacity-50" />
+            <button v-if="trip" type="button" class="btn btn-primary btn-sm ml-auto" @click="checkIn">
+                {{ trans('stationboard.btn-checkin') }}
+            </button>
         </div>
 
         <div v-if="notFound" role="alert" class="alert alert-error">

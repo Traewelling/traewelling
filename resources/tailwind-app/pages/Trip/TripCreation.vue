@@ -297,8 +297,11 @@ function submit(): void {
 
     api.trips
         .createTrip(formData)
-        .then((response) => {
+        .then(async (response) => {
             const result = response.data?.data;
+            if (result.uuid) {
+                await router.replace({ name: 'trip-edit', params: { uuid: result.uuid } });
+            }
             router.push({
                 name: 'line-run',
                 query: {
