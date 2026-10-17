@@ -4,8 +4,9 @@ import { trans } from 'laravel-vue-i18n';
 import { Notyf } from 'notyf';
 import { computed, inject, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { Api, StatusResource, StopoverResource } from '../../../types/Api.gen';
+import { Api, StatusResource, StopoverResource, TripResource } from '../../../types/Api.gen';
 import LineIndicator from '../../../vue/components/LineIndicator.vue';
+import { useActiveCheckin } from '../../../vue/stores/activeCheckin';
 import LineRun from '../../components/Checkin/LineRun.vue';
 import TransportIcon from '../../components/TransportIcon.vue';
 import AppLayout from '../../layouts/AppLayout.vue';
@@ -14,12 +15,16 @@ const route = useRoute();
 const router = useRouter();
 const api = new Api({ baseUrl: window.location.origin + '/api' });
 const notyf = inject('notyf') as Notyf;
+const activeCheckin = useActiveCheckin();
 
 const statusId = computed(() => Number(route.params.id));
 
 const status = ref<StatusResource | null>(null);
 const loading = ref(true);
 const saving = ref(false);
+const direction = ref('');
+
+const displayLineName = computed(() => (status.value?.checkin.lineName ?? '').replaceAll(/\(.*?\)/g, '').trim());
 
 async function loadStatus(): Promise<void> {
     loading.value = true;
@@ -39,17 +44,22 @@ function handleBack(): void {
     router.back();
 }
 
+function onTrip(trip: TripResource): void {
+    direction.value = trip.destination?.name ?? '';
+}
+
 async function selectExit(stopover: StopoverResource): Promise<void> {
     if (saving.value) return;
     saving.value = true;
     try {
-        await api.status.updateSingleStatus(
+        const res = await api.status.updateSingleStatus(
             {
                 destinationId: stopover.id.toString(),
                 destinationArrivalPlanned: stopover.arrivalPlanned ?? undefined,
             } as never,
             statusId.value,
         );
+        activeCheckin.updateStatus(res.data.data as StatusResource);
         await router.push({ name: 'single-status', params: { id: statusId.value } });
     } catch {
         notyf?.error(trans('generic.error'));
@@ -76,11 +86,11 @@ async function selectExit(stopover: StopoverResource): Promise<void> {
                     <LineIndicator
                         :mode="status.checkin.mode"
                         :product-name="status.checkin.category"
-                        :number="status.checkin.lineName"
+                        :number="displayLineName"
                         :background-color="status.checkin.routeColor || undefined"
                         :color="status.checkin.routeTextColor || undefined"
                     />
-                    <span class="font-medium text-sm truncate">{{ status.checkin.origin.name }}</span>
+                    <span class="font-medium text-sm truncate">{{ direction }}</span>
                 </div>
 
                 <!-- Stop list -->
@@ -96,6 +106,7 @@ async function selectExit(stopover: StopoverResource): Promise<void> {
                     :selected-id="status.checkin.destination.id"
                     :selected-arrival="status.checkin.destination.arrivalPlanned"
                     @select="selectExit"
+                    @trip="onTrip"
                 />
             </div>
         </div>

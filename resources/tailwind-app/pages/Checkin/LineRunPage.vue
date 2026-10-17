@@ -3,7 +3,7 @@ import { ArrowLeft } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
 import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { HafasTravelType, StopoverResource, TripResource } from '../../../types/Api.gen';
+import { HafasTravelType, MotisCategory, StopoverResource, TripResource } from '../../../types/Api.gen';
 import LineIndicator from '../../../vue/components/LineIndicator.vue';
 import LineRun from '../../components/Checkin/LineRun.vue';
 import TransportIcon from '../../components/TransportIcon.vue';
@@ -19,9 +19,9 @@ const plannedWhen = computed(() => (route.query.plannedWhen as string | undefine
 const direction = computed(() => (route.query.direction as string | undefined) ?? '');
 const originName = computed(() => (route.query.originName as string | undefined) ?? undefined);
 const product = computed(() => (route.query.product as string | undefined) ?? null);
-const mode = computed(() => (route.query.mode as string | undefined) ?? null);
-const color = computed(() => (route.query.color as string | undefined) ?? null);
-const textColor = computed(() => (route.query.textColor as string | undefined) ?? null);
+const mode = computed(() => (route.query.mode as MotisCategory | undefined) ?? null);
+const color = computed(() => route.query.color as string | undefined);
+const textColor = computed(() => route.query.textColor as string | undefined);
 const initialCategory = computed(() => (route.query.category as HafasTravelType | undefined) ?? null);
 
 // No startId yet means the trip was entered manually and the exact departure
@@ -78,6 +78,10 @@ function selectDestination(stopover: StopoverResource): void {
             destinationDeparture: stopover.departurePlanned ?? undefined,
             category: tripCategory.value ?? undefined,
             tripUuid: tripUuid.value ?? undefined,
+            product: product.value ?? undefined,
+            mode: mode.value ?? undefined,
+            color: color.value ?? undefined,
+            textColor: textColor.value ?? undefined,
         },
     });
 }

@@ -327,7 +327,7 @@ watch(router.currentRoute, (to) => {
             </div>
 
             <!-- Top nav -->
-            <div v-if="!loading" class="flex justify-center gap-3 mb-2 mb:md-4">
+            <div v-if="!loading" class="flex justify-center gap-3 mb-2 md:mb-4">
                 <button class="btn btn-ghost btn-sm" :disabled="isPastLimit" @click="fetchPrevious">
                     <ChevronUp class="w-4 h-4" />
                     {{ trans('time.earlier') }}
@@ -340,7 +340,7 @@ watch(router.currentRoute, (to) => {
 
             <!-- Loading skeleton -->
             <template v-if="loading">
-                <div class="flex justify-center gap-3 mb-2 mb:md-4">
+                <div class="flex justify-center gap-3 mb-2 md:mb-4">
                     <div class="skeleton h-8 w-32 rounded" />
                     <div class="skeleton h-8 w-32 rounded" />
                 </div>

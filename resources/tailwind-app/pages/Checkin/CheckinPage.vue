@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ArrowLeft, ArrowRight } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { HafasTravelType, StopoverResource } from '../../../types/Api.gen';
+import { HafasTravelType, MotisCategory, StopoverResource } from '../../../types/Api.gen';
+import LineIndicator from '../../../vue/components/LineIndicator.vue';
 import CheckinForm from '../../components/Checkin/CheckinForm.vue';
 import TransportIcon from '../../components/TransportIcon.vue';
 import AppLayout from '../../layouts/AppLayout.vue';
@@ -22,6 +23,22 @@ const destinationArrival = computed(() => (route.query.destinationArrival as str
 const destinationDeparture = computed(() => (route.query.destinationDeparture as string | undefined) ?? null);
 const category = computed(() => (route.query.category as HafasTravelType | undefined) ?? undefined);
 const tripUuid = computed(() => (route.query.tripUuid as string | undefined) ?? null);
+const product = computed(() => (route.query.product as string | undefined) ?? null);
+const mode = computed(() => (route.query.mode as MotisCategory | undefined) ?? null);
+const color = computed(() => route.query.color as string | undefined);
+const textColor = computed(() => route.query.textColor as string | undefined);
+
+function isNumericId(value: string | undefined): boolean {
+    return !!value && !Number.isNaN(Number(value));
+}
+
+const hasRequiredQuery = computed(
+    () => !!tripId.value && !!departureTime.value && isNumericId(startId.value) && isNumericId(destinationId.value),
+);
+
+const iconProduct = computed(() => product.value ?? category.value ?? undefined);
+
+const displayLineName = computed(() => (lineName.value ?? '').replaceAll(/\(.*?\)/g, '').trim());
 
 const destination = computed(
     (): StopoverResource =>
@@ -36,29 +53,39 @@ const destination = computed(
 function handleBack(): void {
     router.back();
 }
+
+onMounted(() => {
+    if (!hasRequiredQuery.value) {
+        router.replace({ name: 'dashboard' });
+    }
+});
 </script>
 
 <template>
     <AppLayout>
-        <div class="max-w-lg mx-auto">
+        <div v-if="hasRequiredQuery" class="max-w-2xl mx-auto">
+            <h2 class="font-semibold text-lg mb-2">{{ trans('stationboard.btn-checkin') }}</h2>
+
             <div class="card bg-base-100">
-                <!-- Back + title -->
-                <div class="flex items-center gap-2 p-4 border-b border-base-300">
+                <!-- Header -->
+                <div class="flex items-center gap-3 px-4 py-3 border-b border-base-300">
                     <button class="btn btn-ghost btn-sm btn-square" @click="handleBack">
                         <ArrowLeft class="w-4 h-4" />
                     </button>
-                    <span class="font-semibold text-sm">{{ trans('stationboard.btn-checkin') }}</span>
-                </div>
 
-                <!-- Trip summary -->
-                <div v-if="originName || lineName" class="flex items-center gap-3 px-4 py-3 bg-base-200 text-sm">
-                    <TransportIcon :product="category" class="flex-shrink-0 opacity-70" />
-                    <span v-if="lineName" class="badge badge-neutral badge-sm font-mono flex-shrink-0">
-                        {{ lineName }}
-                    </span>
-                    <span class="truncate text-base-content/70">{{ originName }}</span>
+                    <div class="w-5 h-5 flex items-center justify-center text-base-content/60 flex-shrink-0">
+                        <TransportIcon :product="iconProduct" :mode="mode" />
+                    </div>
+                    <LineIndicator
+                        :mode="mode"
+                        :product-name="iconProduct ?? ''"
+                        :number="displayLineName"
+                        :background-color="color"
+                        :color="textColor"
+                    />
+                    <span class="font-medium text-sm truncate">{{ originName }}</span>
                     <ArrowRight class="w-3 h-3 flex-shrink-0 text-base-content/40" />
-                    <span class="truncate text-base-content/70">{{ destinationName }}</span>
+                    <span class="font-medium text-sm truncate">{{ destinationName }}</span>
                 </div>
 
                 <!-- Checkin form -->

@@ -111,6 +111,9 @@ function rideAlongRoute() {
             destinationDeparture: t.destination.departurePlanned ?? undefined,
             category: t.category,
             tripUuid: t.tripUuid ?? undefined,
+            mode: t.mode ?? undefined,
+            color: t.routeColor ?? undefined,
+            textColor: t.routeTextColor ?? undefined,
         },
     };
 }
