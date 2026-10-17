@@ -2168,25 +2168,6 @@ export interface StopoverResource {
    */
   identifiers: StationIdentifierResource[];
   /**
-   * Deprecated. Always null. Use the station identifiers endpoint instead.
-   * @deprecated
-   * @example null
-   */
-  rilIdentifier: string | null;
-  /**
-   * Deprecated. Always null. Use the station identifiers endpoint instead.
-   * @deprecated
-   * @example null
-   */
-  evaIdentifier: string | null;
-  /**
-   * Deprecated. Use arrivalReal (if not null) or arrivalPlanned instead.
-   * @deprecated
-   * @format date-time
-   * @example "2022-07-17T13:37:00+02:00"
-   */
-  arrival: string | null;
-  /**
    * planned arrival according to timetable records
    * @format date-time
    * @example "2022-07-17T13:37:00+02:00"
@@ -2208,13 +2189,6 @@ export interface StopoverResource {
    * @example "5 A-F"
    */
   arrivalPlatformReal: string | null;
-  /**
-   * Deprecated. Use departureReal (if not null) or departurePlanned instead.
-   * @deprecated
-   * @format date-time
-   * @example "2022-07-17T13:37:00+02:00"
-   */
-  departure: string | null;
   /**
    * planned departure according to timetable records
    * @format date-time

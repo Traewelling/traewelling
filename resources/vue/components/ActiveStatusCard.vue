@@ -28,16 +28,24 @@ export default defineComponent({
         departure() {
             const manual = this.state.status?.checkin?.manualDeparture ?? null;
             if (manual) return DateTime.fromISO(manual);
+            const origin = this.state.status?.checkin?.origin;
             const dep =
-                this.state.status?.checkin?.origin?.departure ?? this.state.status?.checkin?.origin?.arrival ?? null;
+                origin?.departureReal ??
+                origin?.departurePlanned ??
+                origin?.arrivalReal ??
+                origin?.arrivalPlanned ??
+                null;
             return DateTime.fromISO(dep);
         },
         arrival() {
             const manual = this.state.status?.checkin?.manualArrival ?? null;
             if (manual) return DateTime.fromISO(manual);
+            const destination = this.state.status?.checkin?.destination;
             const arr =
-                this.state.status?.checkin?.destination?.arrival ??
-                this.state.status?.checkin?.destination?.departure ??
+                destination?.arrivalReal ??
+                destination?.arrivalPlanned ??
+                destination?.departureReal ??
+                destination?.departurePlanned ??
                 null;
             return DateTime.fromISO(arr);
         },

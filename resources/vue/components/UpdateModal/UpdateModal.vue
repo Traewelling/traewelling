@@ -110,7 +110,7 @@ async function fetchDestinations() {
         const departurePlanned = DateTime.fromISO(props.status.checkin.origin.departurePlanned || '');
         stopovers.value = all.filter((stopover: StopoverResource) => {
             const arrival = DateTime.fromISO(
-                stopover.arrivalPlanned || stopover.arrival || stopover.departurePlanned || stopover.departure,
+                stopover.arrivalPlanned || stopover.arrivalReal || stopover.departurePlanned || stopover.departureReal,
             );
             return arrival.diff(departurePlanned).as('minutes') >= 0;
         });
@@ -181,7 +181,7 @@ defineExpose({ show });
                         :value="`${stopover.id}|${stopover.arrivalPlanned}`"
                     >
                         {{
-                            new Dtm(stopover.arrivalPlanned || stopover.arrival || '').toLocaleString(
+                            new Dtm(stopover.arrivalPlanned || stopover.arrivalReal || '').toLocaleString(
                                 DateTime.TIME_SIMPLE,
                             )
                         }}:

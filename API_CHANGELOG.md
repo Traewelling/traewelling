@@ -15,10 +15,6 @@ Check back here regularly to stay ahead of removals.
 
 | Announced  | What?                                                                                                                                                                                                                      | Safe until | PR                                                            |
 |------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------|---------------------------------------------------------------|
-| 2026-03-07 | `StopoverResource.arrival` is deprecated → use `arrivalReal` (if not null) or `arrivalPlanned` instead                                                                                                                     | 2026-09-30 | [#4551](https://github.com/Traewelling/traewelling/pull/4551) |
-| 2026-03-07 | `StopoverResource.departure` is deprecated → use `departureReal` (if not null) or `departurePlanned` instead                                                                                                               | 2026-09-30 | [#4551](https://github.com/Traewelling/traewelling/pull/4551) |
-| 2026-03-05 | `StopoverResource.rilIdentifier` is always `null` → use the station identifiers endpoint instead                                                                                                                           | 2026-09-30 | [#4502](https://github.com/Traewelling/traewelling/pull/4502) |
-| 2026-03-05 | `StopoverResource.evaIdentifier` is always `null` → use the station identifiers endpoint instead                                                                                                                           | 2026-09-30 | [#4502](https://github.com/Traewelling/traewelling/pull/4502) |
 | 2026-03-20 | `POST /api/v1/report` is deprecated → use `POST /api/v1/reports` instead                                                                                                                                                   | 2026-09-30 | [#4602](https://github.com/Traewelling/traewelling/pull/4602) |
 | 2026-03-30 | `GET /api/v1/static/privacy` is deprecated -> use `GET /api/v1/privacy-policies/current` instead                                                                                                                           | 2026-09-30 | [#4650](https://github.com/Traewelling/traewelling/pull/4650) |
 | 2026-03-30 | `PUT /api/v1/settings/acceptPrivacy` is deprecated -> use `PUT /api/v1/privacy-policies/accept` instead                                                                                                                    | 2026-09-30 | [#4650](https://github.com/Traewelling/traewelling/pull/4650) |
@@ -48,6 +44,9 @@ Removed the following deprecated fields, announced in 2026-03:
 - `WebhookResource.userId` (`/webhooks`): use `user.id` instead
 - `StationResource.ibnr`: was always `null`, use the `identifiers` array with type `de_db_ibnr` instead
 - `StationResource.rilIdentifier`: was always `null`, use the `identifiers` array with type `de_db_ril100` instead
+- `StopoverResource.arrival`: use `arrivalReal` (if not null) or `arrivalPlanned` instead
+- `StopoverResource.departure`: use `departureReal` (if not null) or `departurePlanned` instead
+- `StopoverResource.rilIdentifier` and `evaIdentifier`: were always `null`, use `station.identifiers` instead
 
 ---
 

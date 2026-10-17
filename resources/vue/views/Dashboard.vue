@@ -140,8 +140,14 @@ fetchFutureStatuses();
                 <h2
                     v-if="
                         index === 0 ||
-                        !DateTime.fromISO(status.checkin.origin.departure || '').hasSame(
-                            DateTime.fromISO(statuses[index - 1].checkin.origin.departure || ''),
+                        !DateTime.fromISO(
+                            status.checkin.origin.departureReal || status.checkin.origin.departurePlanned || '',
+                        ).hasSame(
+                            DateTime.fromISO(
+                                statuses[index - 1].checkin.origin.departureReal ||
+                                    statuses[index - 1].checkin.origin.departurePlanned ||
+                                    '',
+                            ),
                             'day',
                         )
                     "

@@ -15,14 +15,10 @@ use OpenApi\Attributes as OA;
         'station',
         'name',
         'identifiers',
-        'rilIdentifier',
-        'evaIdentifier',
-        'arrival',
         'arrivalPlanned',
         'arrivalReal',
         'arrivalPlatformPlanned',
         'arrivalPlatformReal',
-        'departure',
         'departurePlanned',
         'departureReal',
         'departurePlatformPlanned',
@@ -71,31 +67,6 @@ use OpenApi\Attributes as OA;
             deprecated: true,
         ),
         new OA\Property(
-            property: 'rilIdentifier',
-            description: 'Deprecated. Always null. Use the station identifiers endpoint instead.',
-            type: 'string',
-            example: null,
-            nullable: true,
-            deprecated: true,
-        ),
-        new OA\Property(
-            property: 'evaIdentifier',
-            description: 'Deprecated. Always null. Use the station identifiers endpoint instead.',
-            type: 'string',
-            example: null,
-            nullable: true,
-            deprecated: true,
-        ),
-        new OA\Property(
-            property: 'arrival',
-            description: 'Deprecated. Use arrivalReal (if not null) or arrivalPlanned instead.',
-            type: 'string',
-            format: 'date-time',
-            example: '2022-07-17T13:37:00+02:00',
-            nullable: true,
-            deprecated: true,
-        ),
-        new OA\Property(
             property: 'arrivalPlanned',
             description: 'planned arrival according to timetable records',
             type: 'string',
@@ -124,15 +95,6 @@ use OpenApi\Attributes as OA;
             type: 'string',
             example: '5 A-F',
             nullable: true,
-        ),
-        new OA\Property(
-            property: 'departure',
-            description: 'Deprecated. Use departureReal (if not null) or departurePlanned instead.',
-            type: 'string',
-            format: 'date-time',
-            example: '2022-07-17T13:37:00+02:00',
-            nullable: true,
-            deprecated: true,
         ),
         new OA\Property(
             property: 'departurePlanned',
@@ -198,18 +160,14 @@ class StopoverResource extends JsonResource
             'stopoverId' => (int) $this->id, // @deprecated - temporary bridge until id is repurposed to the stopover ID, then removed
             'station' => new StationResource($this->whenLoaded('station')),
             'name' => $this->station->name, // @deprecated - use station.name instead
-            'rilIdentifier' => null, // @deprecated - remove after 2026-09-30
-            'evaIdentifier' => null, // @deprecated - remove after 2026-09-30
             'identifiers' => $this->when( // @deprecated - remove after 2026-11-30 -> use station.identifiers instead
                 $this->relationLoaded('station') && $this->station->relationLoaded('stationIdentifiers'),
                 fn () => StationIdentifierResource::collection($this->station->stationIdentifiers),
             ),
-            'arrival' => $this->arrival?->toIso8601String(), // @deprecated - remove after 2026-09-30
             'arrivalPlanned' => $this->arrival_planned?->toIso8601String(),
             'arrivalReal' => $this->arrival_real?->toIso8601String(),
             'arrivalPlatformPlanned' => $this->arrival_platform_planned ?? null,
             'arrivalPlatformReal' => $this->arrival_platform_real ?? null,
-            'departure' => $this->departure?->toIso8601String(), // @deprecated - remove after 2026-09-30
             'departurePlanned' => $this->departure_planned?->toIso8601String(),
             'departureReal' => $this->departure_real?->toIso8601String(),
             'departurePlatformPlanned' => $this->departure_platform_planned ?? null,

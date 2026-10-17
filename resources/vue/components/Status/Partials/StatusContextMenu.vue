@@ -71,8 +71,10 @@ const showDepartureNowButton = computed(() => {
     const checkin = props.status?.checkin;
     if (!checkin || !checkin.origin || !checkin.destination) return false;
 
-    const plannedDeparture = DateTime.fromISO(checkin.origin.departurePlanned || checkin.origin.departure || '');
-    const plannedArrival = DateTime.fromISO(checkin.destination.arrivalPlanned || checkin.destination.arrival || '');
+    const plannedDeparture = DateTime.fromISO(checkin.origin.departurePlanned || checkin.origin.departureReal || '');
+    const plannedArrival = DateTime.fromISO(
+        checkin.destination.arrivalPlanned || checkin.destination.arrivalReal || '',
+    );
     if (!plannedDeparture.isValid || !plannedArrival.isValid) return false;
 
     const now = DateTime.now();
@@ -83,8 +85,10 @@ const showArrivalNowButton = computed(() => {
     const checkin = props.status?.checkin;
     if (!checkin || !checkin.origin || !checkin.destination) return false;
 
-    const plannedDeparture = DateTime.fromISO(checkin.origin.departurePlanned || checkin.origin.departure || '');
-    const plannedArrival = DateTime.fromISO(checkin.destination.arrivalPlanned || checkin.destination.arrival || '');
+    const plannedDeparture = DateTime.fromISO(checkin.origin.departurePlanned || checkin.origin.departureReal || '');
+    const plannedArrival = DateTime.fromISO(
+        checkin.destination.arrivalPlanned || checkin.destination.arrivalReal || '',
+    );
     if (!plannedDeparture.isValid || !plannedArrival.isValid) return false;
 
     const now = DateTime.now();

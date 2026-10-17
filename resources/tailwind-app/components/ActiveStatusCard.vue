@@ -19,14 +19,22 @@ let nextStationInterval: ReturnType<typeof setInterval> | null = null;
 const departure = computed(() => {
     const manual = state.status?.checkin?.manualDeparture ?? null;
     if (manual) return DateTime.fromISO(manual);
-    const dep = state.status?.checkin?.origin?.departure ?? state.status?.checkin?.origin?.arrival ?? null;
+    const origin = state.status?.checkin?.origin;
+    const dep =
+        origin?.departureReal ?? origin?.departurePlanned ?? origin?.arrivalReal ?? origin?.arrivalPlanned ?? null;
     return dep ? DateTime.fromISO(dep) : null;
 });
 
 const arrival = computed(() => {
     const manual = state.status?.checkin?.manualArrival ?? null;
     if (manual) return DateTime.fromISO(manual);
-    const arr = state.status?.checkin?.destination?.arrival ?? state.status?.checkin?.destination?.departure ?? null;
+    const destination = state.status?.checkin?.destination;
+    const arr =
+        destination?.arrivalReal ??
+        destination?.arrivalPlanned ??
+        destination?.departureReal ??
+        destination?.departurePlanned ??
+        null;
     return arr ? DateTime.fromISO(arr) : null;
 });
 
