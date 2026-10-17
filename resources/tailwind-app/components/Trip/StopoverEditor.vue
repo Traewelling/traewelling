@@ -34,6 +34,8 @@ const arrivalPlatformReal = ref('');
 const departurePlatformReal = ref('');
 const cancelled = ref(false);
 
+const syncedForm = ref('');
+
 function toLocalInput(iso: string | null | undefined): string {
     if (!iso) return '';
     const dt = DateTime.fromISO(iso);
@@ -46,6 +48,23 @@ function toIso(local: string): string | null {
     return dt.isValid ? dt.toISO() : null;
 }
 
+function formSnapshot(): string {
+    return JSON.stringify([
+        station.value?.uuid ?? null,
+        arrivalPlanned.value,
+        departurePlanned.value,
+        arrivalReal.value,
+        departureReal.value,
+        arrivalPlatformPlanned.value,
+        departurePlatformPlanned.value,
+        arrivalPlatformReal.value,
+        departurePlatformReal.value,
+        cancelled.value,
+    ]);
+}
+
+const isDirty = computed((): boolean => formSnapshot() !== syncedForm.value);
+
 function resetForm(): void {
     station.value = props.stopover.station ?? null;
     arrivalPlanned.value = toLocalInput(props.stopover.arrivalPlanned);
@@ -57,9 +76,30 @@ function resetForm(): void {
     arrivalPlatformReal.value = props.stopover.arrivalPlatformReal ?? '';
     departurePlatformReal.value = props.stopover.departurePlatformReal ?? '';
     cancelled.value = props.stopover.cancelled ?? false;
+    syncedForm.value = formSnapshot();
 }
 
-watch(() => props.stopover, resetForm, { immediate: true });
+resetForm();
+
+watch(
+    () => props.stopover,
+    () => {
+        if (!isDirty.value) {
+            resetForm();
+        }
+    },
+);
+
+async function errorMessage(error: unknown, conflictMessage?: string): Promise<string> {
+    if (!(error instanceof Response)) {
+        return trans('generic.error');
+    }
+    if (error.status === 409 && conflictMessage) {
+        return conflictMessage;
+    }
+    const body = await error.json().catch(() => null);
+    return body?.message ?? trans('generic.error');
+}
 
 type TimeParts = { date: string; time: string };
 
@@ -102,9 +142,10 @@ async function save(): Promise<void> {
         });
         notyf?.success(trans('settings.saved'));
         expanded.value = false;
+        syncedForm.value = formSnapshot();
         emit('changed');
-    } catch {
-        notyf?.error(trans('generic.error'));
+    } catch (error) {
+        notyf?.error(await errorMessage(error));
     } finally {
         saving.value = false;
     }
@@ -117,8 +158,8 @@ async function remove(): Promise<void> {
         await api.trips.deleteTripStopover(props.tripUuid, props.stopover.uuid);
         notyf?.success(trans('trip.edit.stopover-deleted'));
         emit('changed');
-    } catch {
-        notyf?.error(trans('generic.error'));
+    } catch (error) {
+        notyf?.error(await errorMessage(error, trans('trip.edit.stopover-in-use')));
     } finally {
         deleting.value = false;
     }
@@ -150,6 +191,9 @@ async function remove(): Promise<void> {
                         {{ departure.time }}
                     </span>
                 </span>
+            </span>
+            <span v-if="isDirty" class="badge badge-warning badge-sm">
+                {{ trans('generic.unsaved') }}
             </span>
             <span v-if="stopover.cancelled" class="badge badge-error badge-sm">
                 {{ trans('stationboard.stop-cancelled') }}

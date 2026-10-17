@@ -36,7 +36,11 @@ class TripEditService
             $attributes = [];
 
             if (array_key_exists('category', $data)) {
-                $attributes['category'] = HafasTravelType::from($data['category']);
+                $category = HafasTravelType::from($data['category']);
+                $attributes['category'] = $category;
+                if ($category !== $trip->category) {
+                    $attributes['mode'] = null;
+                }
             }
             if (array_key_exists('lineName', $data)) {
                 // Manual trips carry the line name in both fields //TODO: cleanup columns
