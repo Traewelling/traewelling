@@ -15,8 +15,6 @@ Check back here regularly to stay ahead of removals.
 
 | Announced  | What?                                                                                                                                                                                                                      | Safe until | PR                                                            |
 |------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------|---------------------------------------------------------------|
-| 2026-03-05 | `StationResource.ibnr` is always `null` → use `identifiers` array with type `de_db_ibnr` instead                                                                                                                           | 2026-09-30 | [#4500](https://github.com/Traewelling/traewelling/pull/4500) |
-| 2026-03-05 | `StationResource.rilIdentifier` is always `null` → use `identifiers` array with type `de_db_ril100` instead                                                                                                                | 2026-09-30 | [#4500](https://github.com/Traewelling/traewelling/pull/4500) |
 | 2026-03-07 | `StopoverResource.arrival` is deprecated → use `arrivalReal` (if not null) or `arrivalPlanned` instead                                                                                                                     | 2026-09-30 | [#4551](https://github.com/Traewelling/traewelling/pull/4551) |
 | 2026-03-07 | `StopoverResource.departure` is deprecated → use `departureReal` (if not null) or `departurePlanned` instead                                                                                                               | 2026-09-30 | [#4551](https://github.com/Traewelling/traewelling/pull/4551) |
 | 2026-03-05 | `StopoverResource.rilIdentifier` is always `null` → use the station identifiers endpoint instead                                                                                                                           | 2026-09-30 | [#4502](https://github.com/Traewelling/traewelling/pull/4502) |
@@ -36,7 +34,7 @@ Check back here regularly to stay ahead of removals.
 
 # 2026-10-17
 
-Removed the following deprecated fields, announced on 2026-03-07:
+Removed the following deprecated fields, announced in 2026-03:
 
 - `EventDetailsResource.trainDistance`: use `totalDistance` instead
 - `EventDetailsResource.trainDuration`: use `totalDuration` instead
@@ -48,6 +46,8 @@ Removed the following deprecated fields, announced on 2026-03-07:
 - `CheckinSuccessResource.points.additional` (`POST /trains/checkin`): was always `null`
 - `WebhookResource.clientId` (`/webhooks`): use `client.id` instead
 - `WebhookResource.userId` (`/webhooks`): use `user.id` instead
+- `StationResource.ibnr`: was always `null`, use the `identifiers` array with type `de_db_ibnr` instead
+- `StationResource.rilIdentifier`: was always `null`, use the `identifiers` array with type `de_db_ril100` instead
 
 ---
 

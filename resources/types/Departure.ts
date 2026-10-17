@@ -10,14 +10,12 @@ export type departureEntry = {
     cancelled: boolean | null | undefined;
     station: {
         id: number;
-        ibnr: number;
         wikidata_id: null | any; // eslint-disable-line @typescript-eslint/no-explicit-any
         ifopt_a: any | null; // eslint-disable-line @typescript-eslint/no-explicit-any
         ifopt_b: any | null; // eslint-disable-line @typescript-eslint/no-explicit-any
         ifopt_c: any | null; // eslint-disable-line @typescript-eslint/no-explicit-any
         ifopt_d: any | null; // eslint-disable-line @typescript-eslint/no-explicit-any
         ifopt_e: any | null; // eslint-disable-line @typescript-eslint/no-explicit-any
-        rilIdentifier: string | null;
         name: string;
         latitude: number | null;
         longitude: number | null;

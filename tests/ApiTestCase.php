@@ -123,8 +123,6 @@ abstract class ApiTestCase extends FeatureTestCase
                     'name',
                     'latitude',
                     'longitude',
-                    'ibnr',
-                    'rilIdentifier',
                 ],
             ],
         ]);
