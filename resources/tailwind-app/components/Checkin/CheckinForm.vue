@@ -60,7 +60,7 @@ const businessOptions = computed(() => [
 ]);
 
 const departureTimestamp = computed(() =>
-    props.plannedWhen ? (DateTime.fromISO(props.plannedWhen).setZone('UTC').toISO() ?? undefined) : undefined,
+    props.plannedWhen ? (DateTime.fromISO(props.plannedWhen).toISO() ?? undefined) : undefined,
 );
 
 onMounted(() => {
