@@ -15,9 +15,6 @@ Check back here regularly to stay ahead of removals.
 
 | Announced  | What?                                                                                                                                                                                                                      | Safe until | PR                                                            |
 |------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------|---------------------------------------------------------------|
-| 2026-03-20 | `POST /api/v1/report` is deprecated → use `POST /api/v1/reports` instead                                                                                                                                                   | 2026-09-30 | [#4602](https://github.com/Traewelling/traewelling/pull/4602) |
-| 2026-03-30 | `GET /api/v1/static/privacy` is deprecated -> use `GET /api/v1/privacy-policies/current` instead                                                                                                                           | 2026-09-30 | [#4650](https://github.com/Traewelling/traewelling/pull/4650) |
-| 2026-03-30 | `PUT /api/v1/settings/acceptPrivacy` is deprecated -> use `PUT /api/v1/privacy-policies/accept` instead                                                                                                                    | 2026-09-30 | [#4650](https://github.com/Traewelling/traewelling/pull/4650) |
 | 2026-04-01 | `DepartureResource.stop.*` is deprecated → use `DepartureResource.station` instead                                                                                                                                         | 2026-09-30 | [#4663](https://github.com/Traewelling/traewelling/pull/4663) |
 | 2026-04-07 | `OperatorResource.identifier` is deprecated: legacy HAFAS operator ID, always `null` for new operators                                                                                                                     | 2026-09-30 | [#4675](https://github.com/Traewelling/traewelling/pull/4675) |
 | 2026-04-07 | `OperatorResource.id` is deprecated as integer: will become a UUID after 2026-09-30. prefer `uuid` instead while migration-period                                                                                          | 2026-09-30 | [#4676](https://github.com/Traewelling/traewelling/pull/4676) |
@@ -47,6 +44,12 @@ Removed the following deprecated fields, announced in 2026-03:
 - `StopoverResource.arrival`: use `arrivalReal` (if not null) or `arrivalPlanned` instead
 - `StopoverResource.departure`: use `departureReal` (if not null) or `departurePlanned` instead
 - `StopoverResource.rilIdentifier` and `evaIdentifier`: were always `null`, use `station.identifiers` instead
+
+Removed the following deprecated endpoints, announced in 2026-03:
+
+- `/api/v1/report`: use `/api/v1/reports` instead
+- `GET /api/v1/static/privacy`: use `GET /api/v1/privacy-policies/current` instead
+- `PUT /api/v1/settings/acceptPrivacy`: use `PUT /api/v1/privacy-policies/{id}/acceptance` instead
 
 ---
 
