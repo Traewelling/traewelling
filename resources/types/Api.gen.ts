@@ -1354,11 +1354,6 @@ export interface DepartureResource {
        */
       longitude?: number;
     };
-    /**
-     * Deprecated. Always true for all modes.
-     * @deprecated
-     */
-    products?: object;
   };
   /**
    * Actual departure time (null if no realtime data)
@@ -1372,12 +1367,6 @@ export interface DepartureResource {
    * @example "2023-01-06T13:49:00+01:00"
    */
   plannedWhen: string;
-  /**
-   * Deprecated. Use the difference between when and plannedWhen instead.
-   * @deprecated
-   * @example 2
-   */
-  delay: number | null;
   /**
    * Actual platform (null if no realtime data)
    * @example "3a"
@@ -1393,12 +1382,6 @@ export interface DepartureResource {
    * @example "Zürich HB"
    */
   direction: string;
-  /**
-   * Deprecated. Always null.
-   * @deprecated
-   * @example null
-   */
-  provenance: string | null;
   line: {
     /** @example "line" */
     type?: string;
@@ -1422,18 +1405,6 @@ export interface DepartureResource {
      */
     textColor?: string | null;
     /**
-     * Deprecated. Always true.
-     * @deprecated
-     * @example true
-     */
-    public?: boolean;
-    /**
-     * Deprecated. Use name.
-     * @deprecated
-     * @example "EC 9"
-     */
-    productName?: string;
-    /**
      * Transit mode
      * @example "TRAIN"
      */
@@ -1443,43 +1414,7 @@ export interface DepartureResource {
      * @example "national"
      */
     product?: string | null;
-    /**
-     * Deprecated. Always "80____".
-     * @deprecated
-     * @example "80____"
-     */
-    adminCode?: string;
-    /**
-     * Deprecated. Always null.
-     * @deprecated
-     */
-    operator?: object | null;
   };
-  /**
-   * Deprecated. Always null.
-   * @deprecated
-   */
-  remarks: any[] | null;
-  /**
-   * Deprecated. Always null.
-   * @deprecated
-   */
-  origin: object | null;
-  /**
-   * Deprecated. Use direction instead.
-   * @deprecated
-   */
-  destination: object;
-  /**
-   * Deprecated. Always null.
-   * @deprecated
-   */
-  currentTripPosition: object | null;
-  /**
-   * Deprecated. Always null.
-   * @deprecated
-   */
-  loadFactor: string | null;
   /**
    * Whether this departure is cancelled
    * @example false

@@ -32,14 +32,23 @@ const cancelled = computed((): boolean => {
     return props.item.cancelled || false;
 });
 
+const delayMinutes = computed((): number | null => {
+    if (!props.item.when || !props.item.plannedWhen) {
+        return null;
+    }
+    return Math.round(
+        DateTime.fromISO(props.item.when).diff(DateTime.fromISO(props.item.plannedWhen), 'minutes').minutes,
+    );
+});
+
 const delayClass = computed((): string => {
-    if (props.item.delay === null) {
+    if (delayMinutes.value === null) {
         return '';
     }
     let color = 'text-success';
-    if (props.item.delay > 5) {
+    if (delayMinutes.value > 5) {
         color = 'text-danger';
-    } else if (props.item.delay >= 1) {
+    } else if (delayMinutes.value >= 1) {
         color = 'text-warning';
     }
     return color;
@@ -91,7 +100,7 @@ function normalizeLineName(name: string | null): string {
             </div>
 
             <div class="col-auto ms-auto align-items-center d-flex">
-                <div v-if="item.delay">
+                <div v-if="delayMinutes">
                     <span class="text-muted text-decoration-line-through">
                         {{ formatTime(item.plannedWhen) }}<br />
                     </span>
