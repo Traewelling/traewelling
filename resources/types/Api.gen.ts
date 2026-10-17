@@ -1723,12 +1723,6 @@ export interface OperatorResource {
    * @example "00000000-0000-0000-0000-000000000000"
    */
   uuid: string;
-  /**
-   * Legacy HAFAS operator ID. Always NULL for new operators. Will be removed soon.
-   * @deprecated
-   * @example "db-regio-ag-nord"
-   */
-  identifier: string | null;
   /** @example "DB Regio AG Nord" */
   name: string;
   identifiers: OperatorIdentifierResource[];
