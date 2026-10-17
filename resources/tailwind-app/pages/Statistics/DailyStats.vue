@@ -181,7 +181,7 @@ onUnmounted(() => {
                 <!-- Map -->
                 <div v-if="polylineFeatures.length" class="card bg-base-100 overflow-hidden">
                     <div class="h-96 min-h-80">
-                        <GenericMap :poly-lines="polylineFeatures" class="h-full w-full" />
+                        <GenericMap :poly-lines="polylineFeatures" height="100%" />
                     </div>
                 </div>
                 <div v-else class="card bg-base-100">
