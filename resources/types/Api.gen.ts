@@ -2837,7 +2837,7 @@ export interface UserResource {
    * URL to the Mastodon profile of the user
    * @example "https://chaos.social/@traewelling"
    */
-  mastodonUrl: any | null;
+  mastodonUrl: any;
   /**
    * is this profile set to private?
    * @example false
