@@ -23,7 +23,7 @@ const options = computed((): ApexCharts.ApexOptions => ({
     colors: chartColors(),
     labels: props.labels,
     theme: { mode: isDark() ? 'dark' : 'light' },
-    legend: { position: 'bottom' },
+    legend: { position: 'bottom', onItemClick: { toggleDataSeries: false } },
     dataLabels: { enabled: false },
     tooltip: { y: { formatter: (val: number) => `${val} min` } },
 }));

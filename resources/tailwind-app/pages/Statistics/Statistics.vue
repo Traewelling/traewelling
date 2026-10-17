@@ -346,7 +346,6 @@ onMounted(() => {
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                     <template v-if="data.purpose.length">
                         <ChartDoughnut
-                            type="pie"
                             :title="trans('stats.purpose')"
                             :series="data.purpose.map((p) => p.duration)"
                             :labels="purposeLabels"
