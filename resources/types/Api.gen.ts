@@ -1303,54 +1303,6 @@ export interface DepartureResource {
    */
   tripId: string;
   /**
-   * The stop at which this departure occurs
-   * @deprecated
-   */
-  stop: {
-    /**
-     * @deprecated
-     * @example "stop"
-     */
-    type?: string;
-    /**
-     * Träwelling internal station ID
-     * @deprecated
-     * @example 5181
-     */
-    id?: number;
-    /**
-     * @deprecated
-     * @example "Karlsruhe Hbf"
-     */
-    name?: string;
-    /** @deprecated */
-    location?: {
-      /**
-       * @deprecated
-       * @example "location"
-       */
-      type?: string;
-      /**
-       * IBNR identifier (if available)
-       * @deprecated
-       * @example "8000191"
-       */
-      id?: string | null;
-      /**
-       * @deprecated
-       * @format float
-       * @example 48.993207
-       */
-      latitude?: number;
-      /**
-       * @deprecated
-       * @format float
-       * @example 8.400977
-       */
-      longitude?: number;
-    };
-  };
-  /**
    * Actual departure time (null if no realtime data)
    * @format date-time
    * @example "2023-01-06T13:49:00+01:00"

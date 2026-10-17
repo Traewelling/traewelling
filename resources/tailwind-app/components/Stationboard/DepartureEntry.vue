@@ -76,10 +76,10 @@ const platform = computed((): string | null => props.item.platform ?? props.item
                     {{ item.direction }}
                 </p>
                 <p
-                    v-if="stationName && item.stop?.name && item.stop.name !== stationName"
+                    v-if="stationName && item.station?.name && item.station.name !== stationName"
                     class="text-xs text-base-content/50 italic truncate"
                 >
-                    {{ trans('stationboard.dep') }} {{ item.stop.name }}
+                    {{ trans('stationboard.dep') }} {{ item.station.name }}
                 </p>
             </div>
 

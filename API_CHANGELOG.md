@@ -15,7 +15,6 @@ Check back here regularly to stay ahead of removals.
 
 | Announced  | What?                                                                                                                                                                                                                      | Safe until | PR                                                            |
 |------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------|---------------------------------------------------------------|
-| 2026-04-01 | `DepartureResource.stop.*` is deprecated → use `DepartureResource.station` instead                                                                                                                                         | 2026-09-30 | [#4663](https://github.com/Traewelling/traewelling/pull/4663) |
 | 2026-04-07 | `OperatorResource.id` is deprecated as integer: will become a UUID after 2026-09-30. prefer `uuid` instead while migration-period                                                                                          | 2026-09-30 | [#4676](https://github.com/Traewelling/traewelling/pull/4676) |
 | 2026-05-14 | `POST /api/v1/trains/checkin` 409 response: `message.status_id` and `message.lineName` are deprecated. Use `data.conflicts` (full `StatusResource` array) instead                                                          | 2026-10-31 | [#4677](https://github.com/Traewelling/traewelling/pull/4677) |
 | 2026-07-19 | `StopoverResource.id` is deprecated as station ID: it currently holds the station ID (not unique within a trip). Use `station` for station details. After the safe-until date `id` is repurposed to the unique stopover ID | 2026-11-30 | [#4959](https://github.com/Traewelling/traewelling/pull/4959) |
@@ -34,7 +33,8 @@ Removed the following deprecated fields, announced in 2026-03 and 2026-04:
 - `DepartureResource.destination`: use `direction` instead
 - `DepartureResource.line.productName`: use `line.name` instead
 - `DepartureResource.provenance`, `remarks`, `origin`, `currentTripPosition`, `loadFactor` and `line.operator`: were always `null`
-- `DepartureResource.stop.products`, `line.public` and `line.adminCode`: were always placeholder values
+- `DepartureResource.line.public` and `line.adminCode`: were always placeholder values
+- `DepartureResource.stop`: use `station` instead
 - `CheckinSuccessResource.points.additional` (`POST /trains/checkin`): was always `null`
 - `WebhookResource.clientId` (`/webhooks`): use `client.id` instead
 - `WebhookResource.userId` (`/webhooks`): use `user.id` instead
