@@ -15383,14 +15383,10 @@
                     "station",
                     "name",
                     "identifiers",
-                    "rilIdentifier",
-                    "evaIdentifier",
-                    "arrival",
                     "arrivalPlanned",
                     "arrivalReal",
                     "arrivalPlatformPlanned",
                     "arrivalPlatformReal",
-                    "departure",
                     "departurePlanned",
                     "departureReal",
                     "departurePlatformPlanned",
@@ -15437,28 +15433,6 @@
                         },
                         "deprecated": true
                     },
-                    "rilIdentifier": {
-                        "description": "Deprecated. Always null. Use the station identifiers endpoint instead.",
-                        "type": "string",
-                        "example": null,
-                        "nullable": true,
-                        "deprecated": true
-                    },
-                    "evaIdentifier": {
-                        "description": "Deprecated. Always null. Use the station identifiers endpoint instead.",
-                        "type": "string",
-                        "example": null,
-                        "nullable": true,
-                        "deprecated": true
-                    },
-                    "arrival": {
-                        "description": "Deprecated. Use arrivalReal (if not null) or arrivalPlanned instead.",
-                        "type": "string",
-                        "format": "date-time",
-                        "example": "2022-07-17T13:37:00+02:00",
-                        "nullable": true,
-                        "deprecated": true
-                    },
                     "arrivalPlanned": {
                         "description": "planned arrival according to timetable records",
                         "type": "string",
@@ -15484,14 +15458,6 @@
                         "type": "string",
                         "example": "5 A-F",
                         "nullable": true
-                    },
-                    "departure": {
-                        "description": "Deprecated. Use departureReal (if not null) or departurePlanned instead.",
-                        "type": "string",
-                        "format": "date-time",
-                        "example": "2022-07-17T13:37:00+02:00",
-                        "nullable": true,
-                        "deprecated": true
                     },
                     "departurePlanned": {
                         "description": "planned departure according to timetable records",

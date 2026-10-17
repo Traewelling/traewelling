@@ -46,7 +46,7 @@ const hasRightColumn = computed(() => hasCoPassengers.value || ticketVisible.val
 
 const formattedDate = computed(() => {
     if (!status.value) return '';
-    const dep = status.value.checkin.origin.departurePlanned ?? status.value.checkin.origin.departure;
+    const dep = status.value.checkin.origin.departurePlanned ?? status.value.checkin.origin.departureReal;
     if (!dep) return '';
     return LuxonDateTime.fromISO(dep).toLocaleString({
         weekday: 'long',

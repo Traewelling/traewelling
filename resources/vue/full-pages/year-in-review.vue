@@ -749,7 +749,7 @@ onUnmounted(() => {
                         {{ t('thirteen.badge') }}
                     </div>
                     <p class="trip-date">
-                        {{ formatDate(longestTrip.origin?.departure) }}
+                        {{ formatDate(longestTrip.origin?.departureReal ?? longestTrip.origin?.departurePlanned) }}
                     </p>
                     <h2 class="trip-line">
                         {{ longestTrip.lineName }}
@@ -773,7 +773,12 @@ onUnmounted(() => {
                         {{ t('thirteen_duration.badge') }}
                     </div>
                     <p class="trip-date">
-                        {{ formatDate(longestDurationTrip.origin?.departure) }}
+                        {{
+                            formatDate(
+                                longestDurationTrip.origin?.departureReal ??
+                                    longestDurationTrip.origin?.departurePlanned,
+                            )
+                        }}
                     </p>
                     <h2 class="trip-line">
                         {{ longestDurationTrip.lineName }}
@@ -794,7 +799,7 @@ onUnmounted(() => {
                         {{ t('fourteen.badge') }}
                     </div>
                     <p class="trip-date">
-                        {{ formatDate(fastestTrip.origin?.departure) }}
+                        {{ formatDate(fastestTrip.origin?.departureReal ?? fastestTrip.origin?.departurePlanned) }}
                     </p>
                     <h2 class="trip-line">
                         {{ fastestTrip.lineName }}
@@ -815,7 +820,7 @@ onUnmounted(() => {
                         {{ t('fifteen.badge') }}
                     </div>
                     <p class="trip-date">
-                        {{ formatDate(slowestTrip.origin?.departure) }}
+                        {{ formatDate(slowestTrip.origin?.departureReal ?? slowestTrip.origin?.departurePlanned) }}
                     </p>
                     <h2 class="trip-line">
                         {{ slowestTrip.lineName }}
@@ -841,7 +846,11 @@ onUnmounted(() => {
                     </div>
 
                     <p class="trip-date">
-                        {{ formatDate(mostDelayedTrip.origin?.departure) }}
+                        {{
+                            formatDate(
+                                mostDelayedTrip.origin?.departureReal ?? mostDelayedTrip.origin?.departurePlanned,
+                            )
+                        }}
                     </p>
                     <h2 class="trip-line">
                         {{ mostDelayedTrip.lineName }}
