@@ -2674,7 +2674,7 @@ export interface UserResource {
   points: number;
   /**
    * URL to the Mastodon profile of the user
-   * @example "https://chaos.social/@traewelling"
+   * @example "https://social.traewelling.org/@traewelling"
    */
   mastodonUrl: any;
   /**
