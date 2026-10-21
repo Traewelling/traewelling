@@ -3,7 +3,7 @@ import GitHub from '../Icons/GitHub.vue';
 import Mastodon from '../Icons/Mastodon.vue';
 
 const links = [
-    { name: 'Mastodon', href: 'https://chaos.social/@Traewelling', icon: Mastodon, rel: 'noopener noreferrer me' },
+    { name: 'Mastodon', href: 'https://social.traewelling.org/@traewelling', icon: Mastodon, rel: 'noopener noreferrer me' },
     { name: 'GitHub', href: 'https://github.com/traewelling/traewelling', icon: GitHub, rel: 'noopener noreferrer' },
 ];
 </script>
