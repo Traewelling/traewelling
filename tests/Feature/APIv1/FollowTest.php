@@ -5,6 +5,7 @@ namespace Tests\Feature\APIv1;
 use App\Http\Controllers\Backend\User\FollowController;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
 use Laravel\Passport\Passport;
 use Tests\ApiTestCase;
 
@@ -148,5 +149,51 @@ class FollowTest extends ApiTestCase
             'user_id' => $user->id,
             'follow_id' => $follower->id,
         ]);
+    }
+
+    public function test_follow_lists_are_sorted_by_created_at_descending(): void
+    {
+        Notification::fake();
+
+        $user = User::factory()->create(['private_profile' => false]);
+        $privateUser = User::factory()->create(['private_profile' => true]);
+        [$other1, $other2, $other3] = User::factory()->count(3)->create();
+
+        $this->travel(-2)->days();
+        FollowController::createOrRequestFollow($other2, $user);
+        FollowController::createOrRequestFollow($user, $other2);
+        FollowController::createOrRequestFollow($other2, $privateUser);
+
+        $this->travel(1)->days();
+        FollowController::createOrRequestFollow($other3, $user);
+        FollowController::createOrRequestFollow($user, $other3);
+        FollowController::createOrRequestFollow($other3, $privateUser);
+
+        $this->travelBack();
+        FollowController::createOrRequestFollow($other1, $user);
+        FollowController::createOrRequestFollow($user, $other1);
+        FollowController::createOrRequestFollow($other1, $privateUser);
+
+        Passport::actingAs($user, ['*']);
+
+        $followersResponse = $this->getJson('/api/v1/user/self/followers')->assertOk();
+        $this->assertSame(
+            [$other1->id, $other3->id, $other2->id],
+            array_column($followersResponse->json('data'), 'id')
+        );
+
+        $followingsResponse = $this->getJson('/api/v1/user/self/followings')->assertOk();
+        $this->assertSame(
+            [$other1->id, $other3->id, $other2->id],
+            array_column($followingsResponse->json('data'), 'id')
+        );
+
+        Passport::actingAs($privateUser, ['*']);
+
+        $requestsResponse = $this->getJson('/api/v1/user/self/follow-requests')->assertOk();
+        $this->assertSame(
+            [$other1->id, $other3->id, $other2->id],
+            array_column($requestsResponse->json('data'), 'id')
+        );
     }
 }
