@@ -22,17 +22,17 @@ abstract class FollowController extends Controller
 {
     public static function getFollowers(User $user): Paginator
     {
-        return $user->userFollowers()->simplePaginate(perPage: 15);
+        return $user->userFollowers()->orderByPivotDesc('created_at')->simplePaginate(perPage: 15);
     }
 
     public static function getFollowRequests(User $user): Paginator
     {
-        return $user->userFollowRequests()->simplePaginate(perPage: 15);
+        return $user->userFollowRequests()->orderByPivotDesc('created_at')->simplePaginate(perPage: 15);
     }
 
     public static function getFollowings(User $user): Paginator
     {
-        return $user->userFollowings()->simplePaginate(perPage: 15);
+        return $user->userFollowings()->orderByPivotDesc('created_at')->simplePaginate(perPage: 15);
     }
 
     /**
