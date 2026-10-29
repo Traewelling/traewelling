@@ -16398,7 +16398,7 @@
                     },
                     "mastodonUrl": {
                         "description": "URL to the Mastodon profile of the user",
-                        "example": "https://chaos.social/@traewelling"
+                        "example": "https://social.traewelling.org/@traewelling"
                     },
                     "privateProfile": {
                         "description": "is this profile set to private?",
