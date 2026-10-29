@@ -9,7 +9,7 @@ config.fetchData();
 
 const elsewhereLinks = [
     { name: 'Blog', url: 'https://blog.traewelling.de' },
-    { name: 'Mastodon', url: 'https://chaos.social/@traewelling' },
+    { name: 'Mastodon', url: 'https://social.traewelling.org/@traewelling' },
     { name: 'Matrix', url: 'https://matrix.to/#/#space:traewelling.org' },
     { name: 'GitHub', url: 'https://github.com/traewelling/traewelling' },
 ];
