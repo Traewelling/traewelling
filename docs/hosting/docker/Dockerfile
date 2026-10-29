@@ -1,4 +1,4 @@
-FROM node:24-alpine AS node-build
+FROM node:26-alpine AS node-build
 COPY . /usr/src/trwl
 WORKDIR /usr/src/trwl
 RUN npm install && npm run build && rm -rf node_modules
