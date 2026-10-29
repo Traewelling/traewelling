@@ -6,9 +6,10 @@ use App\Enum\WebhookEvent;
 use App\Listeners\RemoveAbsentWebhooksListener;
 use App\Models\User;
 use App\Models\Webhook;
-use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Psr7\Response as PsrResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Str;
 
 use function PHPUnit\Framework\assertEquals;
@@ -42,7 +43,7 @@ class RemoveAbsentWebhooksListenerTest extends FeatureTestCase
                 meta: ['not' => 'relevant'],
                 tags: ['not' => 'relevant'],
                 attempt: 1,
-                response: new Response(410 /* GONE */),
+                response: new Response(new PsrResponse(410 /* GONE */)),
                 errorType: "GuzzleHttp\Exception\ClientException",
                 errorMessage: '410 Gone',
                 uuid: Str::uuid(),
@@ -73,7 +74,7 @@ class RemoveAbsentWebhooksListenerTest extends FeatureTestCase
                 meta: ['not' => 'relevant'],
                 tags: ['not' => 'relevant'],
                 attempt: 1,
-                response: new Response(503 /* SERVICE UNAVAILABLE */),
+                response: new Response(new PsrResponse(503 /* SERVICE UNAVAILABLE */)),
                 errorType: "GuzzleHttp\Exception\ClientException",
                 errorMessage: '503 Service Unavailable',
                 uuid: Str::uuid(),
@@ -136,7 +137,7 @@ class RemoveAbsentWebhooksListenerTest extends FeatureTestCase
                 meta: ['not' => 'relevant'],
                 tags: ['not' => 'relevant'],
                 attempt: 1,
-                response: new Response(410 /* GONE */),
+                response: new Response(new PsrResponse(410 /* GONE */)),
                 errorType: "GuzzleHttp\Exception\ClientException",
                 errorMessage: '410 Gone',
                 uuid: Str::uuid(),

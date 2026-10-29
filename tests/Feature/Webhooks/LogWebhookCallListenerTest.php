@@ -9,8 +9,9 @@ use App\Listeners\LogWebhookCallListener;
 use App\Models\User;
 use App\Models\Webhook;
 use App\Models\WebhookCallLog;
-use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Psr7\Response as PsrResponse;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Str;
 use Spatie\WebhookServer\Events\WebhookCallFailedEvent;
 use Spatie\WebhookServer\Events\WebhookCallSucceededEvent;
@@ -42,7 +43,7 @@ class LogWebhookCallListenerTest extends FeatureTestCase
             meta: [],
             tags: [],
             attempt: 1,
-            response: new Response(200),
+            response: new Response(new PsrResponse(200)),
             errorType: null,
             errorMessage: null,
             uuid: (string) Str::uuid(),
@@ -76,7 +77,7 @@ class LogWebhookCallListenerTest extends FeatureTestCase
             meta: [],
             tags: [],
             attempt: 2,
-            response: new Response(404),
+            response: new Response(new PsrResponse(404)),
             errorType: 'GuzzleHttp\Exception\ClientException',
             errorMessage: '404 Not Found',
             uuid: (string) Str::uuid(),
@@ -133,7 +134,7 @@ class LogWebhookCallListenerTest extends FeatureTestCase
             meta: [],
             tags: [],
             attempt: 1,
-            response: new Response(200),
+            response: new Response(new PsrResponse(200)),
             errorType: null,
             errorMessage: null,
             uuid: (string) Str::uuid(),
@@ -161,7 +162,7 @@ class LogWebhookCallListenerTest extends FeatureTestCase
             meta: [],
             tags: [],
             attempt: 1,
-            response: new Response(200),
+            response: new Response(new PsrResponse(200)),
             errorType: null,
             errorMessage: null,
             uuid: (string) Str::uuid(),
