@@ -73,7 +73,7 @@ use OpenApi\Attributes as OA;
         new OA\Property(
             property: 'mastodonUrl',
             description: 'URL to the Mastodon profile of the user',
-            example: 'https://chaos.social/@traewelling',
+            example: 'https://social.traewelling.org/@traewelling',
             nullable: true,
         ),
         new OA\Property(

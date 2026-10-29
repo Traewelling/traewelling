@@ -31,6 +31,7 @@ _ide_helper.php
 # IDE-based project files
 .vscode
 .idea
+.vs
 
 database-data/
 

@@ -63,7 +63,7 @@ const selectLanguageUrl = (langCode: string): string => {
                         </li>
                         <li class="nav-item mb-2">
                             <a
-                                href="https://chaos.social/@traewelling"
+                                href="https://social.traewelling.org/@traewelling"
                                 target="_blank"
                                 class="nav-link p-0 text-body-secondary"
                             >
