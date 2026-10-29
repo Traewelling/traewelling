@@ -10,8 +10,9 @@ use App\Listeners\ResetWebhookFailureCountListener;
 use App\Models\User;
 use App\Models\Webhook;
 use App\Notifications\WebhookDisabled;
-use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Psr7\Response as PsrResponse;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Client\Response;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Str;
 use Spatie\WebhookServer\Events\FinalWebhookCallFailedEvent;
@@ -156,7 +157,7 @@ class DisableFailingWebhookListenerTest extends FeatureTestCase
             meta: [],
             tags: [],
             attempt: 1,
-            response: new Response(200),
+            response: new Response(new PsrResponse(200)),
             errorType: null,
             errorMessage: null,
             uuid: (string) Str::uuid(),
@@ -184,7 +185,7 @@ class DisableFailingWebhookListenerTest extends FeatureTestCase
             meta: [],
             tags: [],
             attempt: 1,
-            response: new Response(200),
+            response: new Response(new PsrResponse(200)),
             errorType: null,
             errorMessage: null,
             uuid: (string) Str::uuid(),

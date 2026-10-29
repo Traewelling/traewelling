@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "66c42debd4a1462fec3903f912e80601",
+    "content-hash": "80175b4532fabeabb9361cee313cd375",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -5994,7 +5994,8 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-09-28T07:16:50+00:00"
+            "time": "2026-09-28T07:16:50+00:00",
+            "published-time": "2026-09-28T07:17:01+00:00"
         },
         {
             "name": "spatie/laravel-permission",
@@ -6386,32 +6387,36 @@
         },
         {
             "name": "spatie/laravel-webhook-server",
-            "version": "3.11.0",
+            "version": "4.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-webhook-server.git",
-                "reference": "3e3b14669de03555d943b9fc008bc58712712565"
+                "reference": "1ff13d9e939795d9acea3be7d33119a3eab618f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-webhook-server/zipball/3e3b14669de03555d943b9fc008bc58712712565",
-                "reference": "3e3b14669de03555d943b9fc008bc58712712565",
+                "url": "https://api.github.com/repos/spatie/laravel-webhook-server/zipball/1ff13d9e939795d9acea3be7d33119a3eab618f7",
+                "reference": "1ff13d9e939795d9acea3be7d33119a3eab618f7",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "guzzlehttp/guzzle": "^6.3|^7.3|^8.0",
-                "illuminate/bus": "^8.50|^9.0|^10.0|^11.0|^12.0|^13.0",
-                "illuminate/queue": "^8.50|^9.0|^10.0|^11.0|^12.0|^13.0",
-                "illuminate/support": "^8.50|^9.0|^10.0|^11.0|^12.0|^13.0",
-                "php": "^8.0",
+                "guzzlehttp/guzzle": "^7.8.2|^8.0",
+                "illuminate/bus": "^13.0",
+                "illuminate/http": "^13.0",
+                "illuminate/queue": "^13.0",
+                "illuminate/support": "^13.0",
+                "php": "^8.4",
                 "spatie/laravel-package-tools": "^1.11"
             },
             "require-dev": {
-                "mockery/mockery": "^1.4.3",
-                "orchestra/testbench": "^6.19|^7.0|^8.0|^10.0|^11.0",
-                "pestphp/pest": "^1.22|^2.0|^3.0|^4.0",
-                "pestphp/pest-plugin-laravel": "^1.3|^2.0|^3.0|^4.0",
+                "friendsofphp/php-cs-fixer": "^3.95",
+                "larastan/larastan": "^3.13",
+                "mockery/mockery": "^1.6.10",
+                "orchestra/testbench": "^11.0",
+                "pestphp/pest": "^5.0",
+                "pestphp/pest-plugin-laravel": "^5.0",
+                "phpstan/phpstan": "^2.3",
                 "spatie/test-time": "^1.2.2"
             },
             "type": "library",
@@ -6448,7 +6453,7 @@
                 "webhook"
             ],
             "support": {
-                "source": "https://github.com/spatie/laravel-webhook-server/tree/3.11.0"
+                "source": "https://github.com/spatie/laravel-webhook-server/tree/4.0.0"
             },
             "funding": [
                 {
@@ -6456,7 +6461,8 @@
                     "type": "custom"
                 }
             ],
-            "time": "2026-08-23T23:33:55+00:00"
+            "time": "2026-10-20T07:11:14+00:00",
+            "published-time": "2026-10-20T07:11:22+00:00"
         },
         {
             "name": "spatie/robots-txt",
@@ -14051,7 +14057,8 @@
                     "type": "other"
                 }
             ],
-            "time": "2026-03-11T13:48:28+00:00"
+            "time": "2026-03-11T13:48:28+00:00",
+            "published-time": "2026-03-11T13:53:28+00:00"
         },
         {
             "name": "spatie/error-solutions",
@@ -14498,5 +14505,5 @@
     "platform-dev": {
         "ext-pdo_sqlite": "*"
     },
-    "plugin-api-version": "2.9.0"
+    "plugin-api-version": "2.11.0"
 }
