@@ -11,7 +11,8 @@ Please do not report vulnerabilities in public issues, discussions or pull reque
 Report them privately instead:
 
 - via [Report a vulnerability](https://github.com/Traewelling/traewelling/security/advisories/new) on GitHub, or
-- by email to security@traewelling.org.
+- by email to security@traewelling.de, optionally encrypted with our [PGP key](https://traewelling.de/security.asc)
+  (`355E 606E EC02 3E36 FE18 BD15 64D8 80FA CBED 8D11`).
 
 Please include:
 
