@@ -109,6 +109,44 @@ class ApplicationCrudTest extends ApiTestCase
         }
     }
 
+    public static function webhookUrlProvider(): array
+    {
+        return [
+            'https to public host allowed' => ['https://example.com/webhook', true],
+            'https to public ip allowed' => ['https://8.8.8.8/webhook', true],
+            'plain http rejected' => ['http://example.com/webhook', false],
+            'http to ipv4 loopback rejected' => ['http://127.0.0.1:18080/internal-admin', false],
+            'http to localhost rejected' => ['http://localhost:6379/', false],
+            'https to ipv4 loopback rejected' => ['https://127.0.0.1:18080/internal-admin', false],
+            'https to private ipv4 rejected' => ['https://10.0.0.5/admin', false],
+            'https to ipv4 link-local rejected' => ['https://169.254.169.254/latest', false],
+            'https to ipv6 loopback rejected' => ['https://[::1]/internal-admin', false],
+            'https to unresolvable host rejected' => ['https://nonexistent-host.invalid/webhook', false],
+        ];
+    }
+
+    #[DataProvider('webhookUrlProvider')]
+    public function test_create_application_validates_webhook_url(string $webhookUrl, bool $allowed): void
+    {
+        $user = User::factory()->create();
+        $this->actAsApiUserWithAllScopes($user);
+
+        $response = $this->postJson('/api/v1/applications', [
+            'name' => 'App',
+            'redirect' => 'https://example.com/callback',
+            'webhooksEnabled' => true,
+            'authorizedWebhookUrl' => $webhookUrl,
+        ]);
+
+        if ($allowed) {
+            $response->assertCreated();
+            $response->assertJsonPath('data.authorizedWebhookUrl', $webhookUrl);
+        } else {
+            $response->assertUnprocessable();
+            $response->assertJsonValidationErrors(['authorizedWebhookUrl']);
+        }
+    }
+
     public function test_create_application_returns_plain_secret_for_confidential(): void
     {
         $user = User::factory()->create();

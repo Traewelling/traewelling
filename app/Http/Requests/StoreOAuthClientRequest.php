@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use App\Rules\SecureUrl;
+use App\Rules\SecureWebhookUrl;
 use Illuminate\Foundation\Http\FormRequest;
 use OpenApi\Attributes as OA;
 
@@ -30,7 +31,7 @@ class StoreOAuthClientRequest extends FormRequest
             'redirect' => ['required', 'string', 'url', new SecureUrl()],
             'confidential' => ['boolean'],
             'webhooksEnabled' => ['boolean'],
-            'authorizedWebhookUrl' => ['nullable', 'url', new SecureUrl()],
+            'authorizedWebhookUrl' => ['nullable', 'url', new SecureWebhookUrl()],
             'privacyPolicyUrl' => ['nullable', 'url', new SecureUrl()],
         ];
     }
