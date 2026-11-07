@@ -36,17 +36,17 @@
         "sass": "^1.85.1",
         "swagger-typescript-api": "^13.1.1",
         "tailwindcss": "^4.1.4",
-        "typescript-eslint": "8.70.1",
+        "typescript-eslint": "8.72.1",
         "vite": "^8.0.0",
         "vue-tsc": "^3.2.2"
     },
     "overrides": {
         "minimatch": ">=10.2.2",
-        "@typescript-eslint/eslint-plugin": "8.70.1",
-        "@typescript-eslint/parser": "8.70.1",
-        "@typescript-eslint/utils": "8.70.1",
+        "@typescript-eslint/eslint-plugin": "8.72.1",
+        "@typescript-eslint/parser": "8.72.1",
+        "@typescript-eslint/utils": "8.72.1",
         "@tailwindcss/typography": {
-            "postcss-selector-parser": "7.1.6"
+            "postcss-selector-parser": "7.1.7"
         }
     },
     "dependencies": {
