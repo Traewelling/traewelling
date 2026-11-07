@@ -12,7 +12,6 @@ class NotificationSentWebhookListener
         if ($event->channel !== 'database') {
             return;
         }
-        $notification = $event->notifiable->notifications->where('id', $event->notification->id)->first();
-        WebhookController::sendNotificationWebhook($event->notifiable, $notification);
+        WebhookController::sendNotificationWebhook($event->notifiable, $event->response);
     }
 }
