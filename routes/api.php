@@ -53,6 +53,7 @@ use App\Http\Controllers\API\v1\TrustedUserController;
 use App\Http\Controllers\API\v1\UserController;
 use App\Http\Controllers\API\v1\WebhookController;
 use App\Http\Controllers\API\v1\YearInReviewController;
+use App\Http\Controllers\API\v2\NotificationsController as NotificationsV2Controller;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static function () {
@@ -112,6 +113,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
                 Route::put('read/all', [NotificationsController::class, 'markAllAsRead']);
                 Route::put('read/{id}', [NotificationsController::class, 'markAsRead']);
                 Route::put('unread/{id}', [NotificationsController::class, 'markAsUnread']);
+                Route::delete('{id}', [NotificationsController::class, 'destroy']);
             });
         });
         Route::group(['prefix' => 'trains', 'middleware' => ['scope:write-statuses']], static function () { // TODO: rename from "trains" -> we have more then trains...
@@ -337,4 +339,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::get('leaderboard/{month}', [StatisticsController::class, 'leaderboardForMonth']);
         });
     });
+});
+
+Route::group(['prefix' => 'v2', 'middleware' => ['return-json', 'auth:api', 'privacy-policy']], static function () {
+    Route::get('notifications', [NotificationsV2Controller::class, 'index'])->middleware('scope:read-notifications');
 });

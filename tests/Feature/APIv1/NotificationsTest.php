@@ -90,6 +90,23 @@ class NotificationsTest extends ApiTestCase
         $this->assertNull($notification->read_at);
     }
 
+    public function test_user_can_only_delete_own_notification(): void
+    {
+        $alice = User::factory()->create();
+        $bob = User::factory()->create();
+        FollowBackend::createOrRequestFollow($bob, $alice);
+        $notification = $alice->notifications()->first();
+
+        Passport::actingAs($bob, ['*']);
+        $this->delete("/api/v1/notifications/{$notification->id}")->assertNotFound();
+        $this->assertDatabaseHas('notifications', ['id' => $notification->id]);
+
+        Passport::actingAs($alice, ['*']);
+        $this->delete('/api/v1/notifications/non-existing-id')->assertNotFound();
+        $this->delete("/api/v1/notifications/{$notification->id}")->assertNoContent();
+        $this->assertDatabaseMissing('notifications', ['id' => $notification->id]);
+    }
+
     public function test_api_endpoint_can_mark_all_notification_as_read(): void
     {
         // create users

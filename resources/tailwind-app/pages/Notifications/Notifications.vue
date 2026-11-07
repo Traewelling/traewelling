@@ -38,8 +38,15 @@ store.fetchNotifications();
                     :key="notification.id"
                     :notification="notification"
                     @toggle-read="store.toggleRead(notification, index)"
+                    @delete="store.deleteNotification(notification)"
                 />
             </ul>
+
+            <div v-if="store.nextCursor" class="text-center w-full mt-4">
+                <button class="btn" :disabled="store.loading" @click="store.fetchMoreNotifications()">
+                    {{ store.loading ? trans('menu.loading') : trans('menu.show-more') }}
+                </button>
+            </div>
         </div>
     </AppLayout>
 </template>
