@@ -170,7 +170,7 @@ watch(customKeyInput, () => {
             v-for="tag in localTags"
             :key="tag.key"
             :data-tip="getTitle(tag.key)"
-            class="badge badge-outline gap-1 text-xs tooltip"
+            class="badge badge-outline gap-1 text-xs tooltip h-auto min-h-(--size) py-0.5 wrap-anywhere"
             :class="editable ? 'cursor-pointer hover:badge-primary transition-colors' : ''"
             @click="editable && openEditModal(tag)"
         >
