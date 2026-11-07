@@ -1284,6 +1284,24 @@ export interface ContributionHistory {
   createdAt: string;
 }
 
+/**
+ * CursorPaginationMeta
+ * Cursor pagination meta data
+ */
+export interface CursorPaginationMeta {
+  /**
+   * @format url
+   * @example "https://traewelling.de/api/v2/ENDPOINT"
+   */
+  path: string;
+  /** @example 15 */
+  per_page: number;
+  /** @example "eyJjcmVhdGVkX2F0IjoiMjAyNi0xMS0wNyAxMjowMDowMCJ9" */
+  next_cursor: string | null;
+  /** @example null */
+  prev_cursor: string | null;
+}
+
 /** DataSourceResource */
 export interface DataSourceResource {
   /** @example "foobar" */
@@ -5448,7 +5466,7 @@ export class Api<
       }),
 
     /**
-     * @description Returns paginated notifications of a authenticated
+     * @description Returns paginated notifications of a authenticated. We recommend to use `GET /v2/notifications` instead.
      *
      * @tags Notifications
      * @name ListNotifications
@@ -5471,6 +5489,23 @@ export class Api<
         method: "GET",
         secure: true,
         format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Notifications
+     * @name DeleteNotification
+     * @summary Delete notification
+     * @request DELETE:/v1/notifications/{id}
+     * @secure
+     */
+    deleteNotification: (id: string, params: RequestParams = {}) =>
+      this.request<void, void>({
+        path: `/v1/notifications/${id}`,
+        method: "DELETE",
+        secure: true,
         ...params,
       }),
 
@@ -5541,6 +5576,39 @@ export class Api<
       >({
         path: `/v1/notifications/read/all`,
         method: "PUT",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Notifications
+     * @name ListNotificationsV2
+     * @summary Get cursor paginated notifications for authenticated user
+     * @request GET:/v2/notifications
+     * @secure
+     */
+    listNotificationsV2: (
+      query?: {
+        cursor?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data: Notification[];
+          /** Pagination links */
+          links: Links;
+          /** Cursor pagination meta data */
+          meta: CursorPaginationMeta;
+        },
+        void
+      >({
+        path: `/v2/notifications`,
+        method: "GET",
+        query: query,
         secure: true,
         format: "json",
         ...params,

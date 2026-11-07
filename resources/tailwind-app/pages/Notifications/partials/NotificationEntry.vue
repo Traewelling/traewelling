@@ -1,5 +1,17 @@
 <script setup lang="ts">
-import { AtSign, Calendar, Download, Heart, Mail, MailOpen, Train, TriangleAlert, UserPlus, Users } from '@lucide/vue';
+import {
+    AtSign,
+    Calendar,
+    Download,
+    Heart,
+    Mail,
+    MailOpen,
+    Train,
+    Trash2,
+    TriangleAlert,
+    UserPlus,
+    Users,
+} from '@lucide/vue';
 import { computed, FunctionalComponent } from 'vue';
 import { useRouter } from 'vue-router';
 import { Notification } from '../../../../types/Api.gen';
@@ -10,6 +22,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     (e: 'toggle-read'): void;
+    (e: 'delete'): void;
 }>();
 
 const iconMap: Record<string, FunctionalComponent> = {
@@ -79,6 +92,9 @@ const routerPath = computed(() => {
         <button class="btn btn-ghost btn-sm" @click.prevent="emit('toggle-read')">
             <MailOpen v-if="notification.readAt" class="size-4 opacity-50" />
             <Mail v-else class="size-4" />
+        </button>
+        <button class="btn btn-ghost btn-sm" @click.prevent="emit('delete')">
+            <Trash2 class="size-4 opacity-50" />
         </button>
     </li>
 </template>

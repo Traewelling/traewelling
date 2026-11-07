@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\v1;
 use App\Http\Resources\UserNotificationResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use OpenApi\Attributes as OA;
 
@@ -42,7 +43,7 @@ class NotificationsController extends Controller
     #[OA\Get(
         path: '/v1/notifications',
         operationId: 'listNotifications',
-        description: 'Returns paginated notifications of a authenticated',
+        description: 'Returns paginated notifications of a authenticated. We recommend to use `GET /v2/notifications` instead.',
         summary: 'Get paginated notifications for authenticated user',
         security: [
             ['passport' => []],
@@ -77,6 +78,41 @@ class NotificationsController extends Controller
     public function listNotifications(): AnonymousResourceCollection
     {
         return UserNotificationResource::collection(Auth::user()->notifications()->simplePaginate(15));
+    }
+
+    #[OA\Delete(
+        path: '/v1/notifications/{id}',
+        operationId: 'deleteNotification',
+        summary: 'Delete notification',
+        security: [['passport' => ['write-notifications']], ['token' => []]],
+        tags: ['Notifications'],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                description: 'ID of notification',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(type: 'string'),
+                example: '00000000-0000-0000-0000-000000000000',
+            ),
+        ],
+        responses: [
+            new OA\Response(response: 204, description: 'No Content'),
+            new OA\Response(response: 401, description: 'Unauthorized'),
+            new OA\Response(response: 404, description: 'Notification not found'),
+        ],
+    )]
+    public function destroy(string $notificationId): Response|JsonResponse
+    {
+        $notification = Auth::user()->notifications()->where('id', $notificationId)->first();
+
+        if ($notification === null) {
+            return $this->sendError();
+        }
+
+        $notification->delete();
+
+        return response()->noContent();
     }
 
     #[OA\Put(

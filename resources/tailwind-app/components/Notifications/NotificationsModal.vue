@@ -60,8 +60,19 @@ defineExpose({ open });
                         :key="notification.id"
                         :notification="notification"
                         @toggle-read="store.toggleRead(notification, index)"
+                        @delete="store.deleteNotification(notification)"
                     />
                 </ul>
+
+                <div v-if="store.notifications.length > 0" class="text-center py-3">
+                    <router-link
+                        :to="{ name: 'notifications' }"
+                        class="btn btn-ghost btn-sm"
+                        @click="dialogRef?.close()"
+                    >
+                        {{ trans('menu.show-all') }}
+                    </router-link>
+                </div>
             </div>
         </div>
 

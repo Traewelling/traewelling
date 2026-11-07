@@ -22,17 +22,29 @@ export const useNotificationsStore = defineStore(
         const loading = ref<boolean>(false);
         const error = ref<unknown | null>(null);
         const refreshed = ref<number | null>(null);
+        const nextCursor = ref<string | null>(null);
 
-        async function fetchNotifications(): Promise<void> {
+        async function loadNotifications(cursor?: string): Promise<void> {
             loading.value = true;
             try {
-                const response = await api.notifications.listNotifications();
-                notifications.value = response.data.data;
+                const response = await api.notifications.listNotificationsV2({ cursor });
+                notifications.value = cursor ? [...notifications.value, ...response.data.data] : response.data.data;
+                nextCursor.value = response.data.meta.next_cursor;
                 refreshed.value = Date.now();
             } catch (err) {
                 error.value = err;
             } finally {
                 loading.value = false;
+            }
+        }
+
+        async function fetchNotifications(): Promise<void> {
+            await loadNotifications();
+        }
+
+        async function fetchMoreNotifications(): Promise<void> {
+            if (nextCursor.value) {
+                await loadNotifications(nextCursor.value);
             }
         }
 
@@ -82,16 +94,34 @@ export const useNotificationsStore = defineStore(
             }
         }
 
+        async function deleteNotification(notification: Notification): Promise<void> {
+            try {
+                await api.notifications.deleteNotification(notification.id);
+                notifications.value = notifications.value.filter((entry) => entry.id !== notification.id);
+                if (!notification.readAt) {
+                    count.value--;
+                }
+                if (notifications.value.length === 0 && nextCursor.value) {
+                    await fetchNotifications();
+                }
+            } catch (err) {
+                error.value = err;
+            }
+        }
+
         return {
             notifications,
             count,
             loading,
             error,
             refreshed,
+            nextCursor,
             fetchNotifications,
+            fetchMoreNotifications,
             fetchCount,
             toggleAllRead,
             toggleRead,
+            deleteNotification,
         };
     },
     { persist: true },

@@ -23,6 +23,15 @@ Check back here regularly to stay ahead of removals.
 
 ---
 
+# 2026-11-07
+
+New endpoint `GET /api/v2/notifications`: the notifications of the authenticated user with cursor pagination
+(`cursor` query parameter, `meta.next_cursor`). `GET /api/v1/notifications` remains available.
+
+New endpoint `DELETE /api/v1/notifications/{id}`: deletes a notification of the authenticated user.
+
+---
+
 # 2026-10-17
 
 New field `operator` in `DepartureResource` (`GET /station/{id}/departures`): the operator of the trip, `null` if unknown.
