@@ -53,6 +53,7 @@ class AppServiceProvider extends ServiceProvider
     {
         AuthenticationException::redirectUsing(fn () => route('login'));
 
+        URL::useOrigin(config('app.url'));
         if (config('app.force-https')) {
             URL::forceScheme('https');
         }
