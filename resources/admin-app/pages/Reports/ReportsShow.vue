@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import { FileText } from '@lucide/vue';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { Api, type ReportResource } from '../../../types/Api.gen';
 import BackendLayout from '../../layouts/BackendLayout.vue';
+import ReportSubjectSummary from './ReportSubjectSummary.vue';
+import ReportTable from './ReportTable.vue';
 
 const api = new Api({ baseUrl: window.location.origin + '/api' });
 
 const route = useRoute();
-const reportId = route.params.id as string;
+const reportId = computed(() => route.params.id as string);
 
 const report = ref<ReportResource | null>(null);
 const loading = ref(true);
@@ -16,6 +18,7 @@ const error = ref<string | null>(null);
 
 const actionStatus = ref('');
 const actionDescription = ref('');
+const actionApplyToSameSubject = ref(true);
 const actionLoading = ref(false);
 const actionError = ref<string | null>(null);
 const actionSuccess = ref(false);
@@ -24,7 +27,7 @@ async function fetchReport(): Promise<void> {
     loading.value = true;
     error.value = null;
     try {
-        const res = await api.reports.getReport(reportId);
+        const res = await api.reports.getReport(reportId.value);
         report.value = res.data.data;
         actionStatus.value = res.data.data.status;
     } catch (e) {
@@ -39,9 +42,10 @@ async function submitAction(): Promise<void> {
     actionError.value = null;
     actionSuccess.value = false;
     try {
-        await api.reports.updateReport(reportId, {
+        await api.reports.updateReport(reportId.value, {
             status: actionStatus.value,
             description: actionDescription.value || undefined,
+            applyToSameSubject: actionApplyToSameSubject.value && !!report.value?.other_unresolved_reports,
         });
         actionSuccess.value = true;
         actionDescription.value = '';
@@ -57,22 +61,17 @@ function statusBadgeClass(status: string): string {
     return status === 'open' ? 'badge-error' : status === 'waiting' ? 'badge-warning' : 'badge-ghost';
 }
 
-function subjectAdminUrl(r: ReportResource): string | null {
-    switch (r.subject_type) {
-        case 'Status':
-            return `/admin/statuses/${r.subject_id}`;
-        case 'User':
-            return `/admin/users/${r.subject_id}`;
-        case 'Event':
-            return `/admin/events/${r.subject_id}/edit`;
-        case 'Trip':
-            return `/admin/trips/${r.subject_id}`;
-        default:
-            return null;
-    }
-}
+const otherReportsQuery = computed(() => ({
+    subjectType: report.value?.subject_type as 'Event' | 'Status' | 'Trip' | 'User',
+    subjectId: report.value?.subject_id,
+}));
 
 onMounted(fetchReport);
+watch(reportId, () => {
+    actionSuccess.value = false;
+    actionError.value = null;
+    fetchReport();
+});
 </script>
 
 <template>
@@ -117,16 +116,7 @@ onMounted(fetchReport);
                                 </dd>
 
                                 <dt class="text-base-content/50 font-medium">Subject</dt>
-                                <dd>
-                                    <a
-                                        v-if="subjectAdminUrl(report)"
-                                        :href="subjectAdminUrl(report)!"
-                                        class="link link-hover"
-                                    >
-                                        {{ report.subject_type }} #{{ report.subject_id }}
-                                    </a>
-                                    <span v-else>{{ report.subject_type }} #{{ report.subject_id }}</span>
-                                </dd>
+                                <dd><ReportSubjectSummary :report="report" /></dd>
 
                                 <dt class="text-base-content/50 font-medium">Reason</dt>
                                 <dd>
@@ -174,6 +164,16 @@ onMounted(fetchReport);
                                         rows="3"
                                     />
                                 </fieldset>
+
+                                <label v-if="report.other_unresolved_reports" class="label text-sm">
+                                    <input
+                                        v-model="actionApplyToSameSubject"
+                                        type="checkbox"
+                                        class="checkbox checkbox-sm"
+                                    />
+                                    Also apply to {{ report.other_unresolved_reports }} other open or waiting reports on
+                                    this subject
+                                </label>
 
                                 <button type="submit" class="btn btn-primary btn-sm w-full" :disabled="actionLoading">
                                     <span v-if="actionLoading" class="loading loading-spinner loading-xs" />
@@ -257,6 +257,13 @@ onMounted(fetchReport);
                                     </tbody>
                                 </table>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="card bg-base-100 shadow mt-6">
+                        <div class="card-body">
+                            <h2 class="card-title text-base">Other Reports on this Subject</h2>
+                            <ReportTable :query="otherReportsQuery" :exclude-id="report.id" />
                         </div>
                     </div>
                 </div>

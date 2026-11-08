@@ -4046,6 +4046,50 @@
                         "schema": {
                             "type": "string"
                         }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "open",
+                                "waiting",
+                                "closed"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "subjectType",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "Event",
+                                "Status",
+                                "Trip",
+                                "User"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "subjectId",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "subjectUserId",
+                        "in": "query",
+                        "description": "Reports on this user or on their statuses and trips",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
                     }
                 ],
                 "responses": {
@@ -4252,6 +4296,11 @@
                                     },
                                     "description": {
                                         "type": "string",
+                                        "nullable": true
+                                    },
+                                    "applyToSameSubject": {
+                                        "description": "Also update the other open and waiting reports on the same subject",
+                                        "type": "boolean",
                                         "nullable": true
                                     }
                                 },
@@ -14781,6 +14830,55 @@
                     "subject_id": {
                         "type": "integer",
                         "example": 1
+                    },
+                    "subject": {
+                        "description": "Null if the subject no longer exists",
+                        "properties": {
+                            "user": {
+                                "oneOf": [
+                                    {
+                                        "$ref": "#/components/schemas/LightUserResource"
+                                    },
+                                    {
+                                        "type": "object",
+                                        "nullable": true,
+                                        "enum": [
+                                            null
+                                        ]
+                                    }
+                                ]
+                            },
+                            "body": {
+                                "type": "string",
+                                "nullable": true
+                            },
+                            "name": {
+                                "type": "string",
+                                "nullable": true
+                            },
+                            "line_name": {
+                                "type": "string",
+                                "nullable": true
+                            },
+                            "origin": {
+                                "type": "string",
+                                "nullable": true
+                            },
+                            "destination": {
+                                "type": "string",
+                                "nullable": true
+                            },
+                            "manual_trip": {
+                                "type": "boolean",
+                                "nullable": true
+                            }
+                        },
+                        "type": "object",
+                        "nullable": true
+                    },
+                    "other_unresolved_reports": {
+                        "description": "Other open or waiting reports on the same subject",
+                        "type": "integer"
                     },
                     "reason": {
                         "type": "string",

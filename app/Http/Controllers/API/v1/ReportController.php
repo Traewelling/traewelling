@@ -8,6 +8,7 @@ use App\Enum\Report\ReportStatus;
 use App\Http\Resources\ReportResource;
 use App\Models\Report;
 use App\Repositories\ReportRepository;
+use App\Services\Report\ReportService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
@@ -24,6 +25,16 @@ class ReportController extends Controller
         tags: ['Report'],
         parameters: [
             new OA\Parameter(name: 'cursor', in: 'query', required: false, schema: new OA\Schema(type: 'string')),
+            new OA\Parameter(name: 'status', in: 'query', required: false, schema: new OA\Schema(type: 'string', enum: ['open', 'waiting', 'closed'])),
+            new OA\Parameter(name: 'subjectType', in: 'query', required: false, schema: new OA\Schema(type: 'string', enum: ['Event', 'Status', 'Trip', 'User'])),
+            new OA\Parameter(name: 'subjectId', in: 'query', required: false, schema: new OA\Schema(type: 'integer')),
+            new OA\Parameter(
+                name: 'subjectUserId',
+                description: 'Reports on this user or on their statuses and trips',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'integer'),
+            ),
         ],
         responses: [
             new OA\Response(
@@ -48,7 +59,19 @@ class ReportController extends Controller
     {
         $this->authorize('viewAny', Report::class);
 
-        return ReportResource::collection(new ReportRepository()->paginateOpenFirst());
+        $validated = $request->validate([
+            'status' => ['nullable', new Enum(ReportStatus::class)],
+            'subjectType' => ['nullable', 'required_with:subjectId', new Enum(ReportableSubject::class)],
+            'subjectId' => ['nullable', 'required_with:subjectType', 'integer', 'min:1'],
+            'subjectUserId' => ['nullable', 'integer', 'min:1'],
+        ]);
+
+        return ReportResource::collection(new ReportRepository()->paginateOpenFirst(
+            status: isset($validated['status']) ? ReportStatus::from($validated['status']) : null,
+            subjectType: isset($validated['subjectType']) ? ReportableSubject::from($validated['subjectType']) : null,
+            subjectId: isset($validated['subjectId']) ? (int) $validated['subjectId'] : null,
+            subjectUserId: isset($validated['subjectUserId']) ? (int) $validated['subjectUserId'] : null,
+        ));
     }
 
     #[OA\Get(
@@ -78,7 +101,7 @@ class ReportController extends Controller
     )]
     public function show(string $reportId): ReportResource
     {
-        $report = Report::with(['reporter', 'activitiesAsSubject.causer'])->findOrFail($reportId);
+        $report = new ReportRepository()->getWithModerationContext($reportId);
         $this->authorize('view', $report);
 
         return new ReportResource($report);
@@ -131,12 +154,12 @@ class ReportController extends Controller
             'description' => ['required', 'string', 'min:10'],
         ]);
 
-        new ReportRepository()->createReport(
+        new ReportService()->report(
             subjectType: ReportableSubject::from($validated['subjectType']),
-            subjectId: $validated['subjectId'],
+            subjectId: (int) $validated['subjectId'],
             reason: ReportReason::from($validated['reason']),
             description: $validated['description'],
-            reporter: auth()->user()
+            reporter: auth()->user(),
         );
 
         return response()->noContent(201, ['Content-Type' => 'application/json']);
@@ -154,6 +177,7 @@ class ReportController extends Controller
                 properties: [
                     new OA\Property(property: 'status', type: 'string', enum: ['open', 'waiting', 'closed']),
                     new OA\Property(property: 'description', type: 'string', nullable: true),
+                    new OA\Property(property: 'applyToSameSubject', description: 'Also update the other open and waiting reports on the same subject', type: 'boolean', nullable: true),
                 ],
             ),
         ),
@@ -175,23 +199,16 @@ class ReportController extends Controller
         $validated = $request->validate([
             'status' => ['required', new Enum(ReportStatus::class)],
             'description' => ['nullable', 'string', 'max:255'],
+            'applyToSameSubject' => ['nullable', 'boolean'],
         ]);
 
-        $logger = activity()->causedBy(auth()->user())
-            ->performedOn($report);
-        if ($validated['status'] !== $report->status->value) {
-            $logger->withProperties([
-                'attributes' => [
-                    'status' => $validated['status'],
-                ],
-                'old' => [
-                    'status' => $report->status,
-                ],
-            ]);
-        }
-        $logger->log($validated['description'] ?? '');
-
-        $report->update(['status' => $validated['status']]);
+        new ReportService()->update(
+            report: $report,
+            admin: auth()->user(),
+            status: ReportStatus::from($validated['status']),
+            note: $validated['description'] ?? null,
+            applyToSameSubject: (bool) ($validated['applyToSameSubject'] ?? false),
+        );
 
         return response()->noContent();
     }

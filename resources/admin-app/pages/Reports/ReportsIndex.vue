@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { Api, type ReportResource } from '../../../types/Api.gen';
 import BackendLayout from '../../layouts/BackendLayout.vue';
+import ReportSubjectSummary from './ReportSubjectSummary.vue';
 
 const api = new Api({ baseUrl: window.location.origin + '/api' });
 
@@ -11,12 +12,17 @@ const error = ref<string | null>(null);
 const nextCursor = ref<string | null>(null);
 const prevCursor = ref<string | null>(null);
 const closingIds = ref<Set<string>>(new Set());
+const statusFilter = ref<ReportResource['status'] | 'all'>('open');
+const statusFilters = ['open', 'waiting', 'closed', 'all'] as const;
 
 async function fetchReports(cursor?: string): Promise<void> {
     loading.value = true;
     error.value = null;
     try {
-        const res = await api.reports.listReports({ cursor });
+        const res = await api.reports.listReports({
+            cursor,
+            status: statusFilter.value === 'all' ? undefined : statusFilter.value,
+        });
         reports.value = res.data.data ?? [];
         nextCursor.value = res.data.meta?.next_cursor ?? null;
         prevCursor.value = res.data.meta?.prev_cursor ?? null;
@@ -64,12 +70,25 @@ function reasonBadgeClass(reason: string | null | undefined, status: string): st
 }
 
 onMounted(() => fetchReports(undefined));
+watch(statusFilter, () => fetchReports(undefined));
 </script>
 
 <template>
     <BackendLayout>
         <div class="flex items-center justify-between mb-6">
             <h1 class="text-2xl font-bold">Reports</h1>
+            <div role="tablist" class="tabs tabs-box tabs-sm">
+                <button
+                    v-for="filter in statusFilters"
+                    :key="filter"
+                    role="tab"
+                    class="tab"
+                    :class="{ 'tab-active': statusFilter === filter }"
+                    @click="statusFilter = filter"
+                >
+                    {{ filter }}
+                </button>
+            </div>
         </div>
 
         <div v-if="loading && !reports.length" class="flex justify-center py-16">
@@ -128,9 +147,8 @@ onMounted(() => fetchReports(undefined));
                                     </template>
                                     <span v-else class="text-base-content/30">—</span>
                                 </td>
-                                <td class="text-sm">
-                                    {{ report.subject_type }}
-                                    <span class="font-mono text-base-content/60">#{{ report.subject_id }}</span>
+                                <td>
+                                    <ReportSubjectSummary :report="report" compact />
                                 </td>
                                 <td>
                                     <span

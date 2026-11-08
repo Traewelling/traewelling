@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
+use App\Enum\TripSource;
+use App\Models\Event;
 use App\Models\Report;
+use App\Models\Status;
+use App\Models\Trip;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Attributes as OA;
@@ -17,6 +22,22 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'status', type: 'string', example: 'open', enum: ['open', 'waiting', 'closed']),
         new OA\Property(property: 'subject_type', type: 'string', example: 'Status'),
         new OA\Property(property: 'subject_id', type: 'integer', example: 1),
+        new OA\Property(
+            property: 'subject',
+            description: 'Null if the subject no longer exists',
+            properties: [
+                new OA\Property(property: 'user', ref: LightUserResource::class, nullable: true),
+                new OA\Property(property: 'body', type: 'string', nullable: true),
+                new OA\Property(property: 'name', type: 'string', nullable: true),
+                new OA\Property(property: 'line_name', type: 'string', nullable: true),
+                new OA\Property(property: 'origin', type: 'string', nullable: true),
+                new OA\Property(property: 'destination', type: 'string', nullable: true),
+                new OA\Property(property: 'manual_trip', type: 'boolean', nullable: true),
+            ],
+            type: 'object',
+            nullable: true,
+        ),
+        new OA\Property(property: 'other_unresolved_reports', description: 'Other open or waiting reports on the same subject', type: 'integer'),
         new OA\Property(property: 'reason', type: 'string', nullable: true, enum: ['inappropriate', 'implausible', 'spam', 'illegal', 'other']),
         new OA\Property(property: 'description', type: 'string', nullable: true),
         new OA\Property(property: 'reporter', ref: '#/components/schemas/LightUserResource', nullable: true),
@@ -47,6 +68,8 @@ class ReportResource extends JsonResource
             'status' => $this->status->value,
             'subject_type' => class_basename($this->subject_type),
             'subject_id' => $this->subject_id,
+            'subject' => $this->whenLoaded('subject', fn () => $this->subjectSummary()),
+            'other_unresolved_reports' => $this->whenHas('other_unresolved_reports', fn () => (int) $this->other_unresolved_reports),
             'reason' => $this->reason?->value,
             'description' => $this->description,
             'reporter' => new LightUserResource($this->whenLoaded('reporter')),
@@ -58,6 +81,35 @@ class ReportResource extends JsonResource
                 'properties' => $activity->properties,
                 'created_at' => $activity->created_at,
             ])),
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    private function subjectSummary(): ?array
+    {
+        $subject = $this->subject;
+        if ($subject === null) {
+            return null;
+        }
+
+        $checkin = $subject instanceof Status ? $subject->checkin : null;
+        $trip = $subject instanceof Trip ? $subject : $checkin?->trip;
+        $user = match (true) {
+            $subject instanceof User => $subject,
+            $subject instanceof Status, $subject instanceof Trip => $subject->user,
+            default => null,
+        };
+
+        return [
+            'user' => $user !== null ? new LightUserResource($user) : null,
+            'body' => $subject instanceof Status ? $subject->body : null,
+            'name' => $subject instanceof Event ? $subject->name : null,
+            'line_name' => $trip?->linename,
+            'origin' => $checkin?->originStopover?->station?->name ?? ($subject instanceof Trip ? $subject->originStation?->name : null),
+            'destination' => $checkin?->destinationStopover?->station?->name ?? ($subject instanceof Trip ? $subject->destinationStation?->name : null),
+            'manual_trip' => $trip !== null ? $trip->source === TripSource::USER : null,
         ];
     }
 }
