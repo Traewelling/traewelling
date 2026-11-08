@@ -70,7 +70,7 @@ class AdminStatusController extends Controller
             );
         }
 
-        return AdminStatusResource::collection($query->cursorPaginate(15));
+        return AdminStatusResource::collection($query->cursorPaginate(15)->withQueryString());
     }
 
     #[OA\Get(

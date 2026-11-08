@@ -4,10 +4,12 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { type AdminUserResource, Api } from '../../../types/Api.gen';
 import BackendLayout from '../../layouts/BackendLayout.vue';
+import ReportTable from '../Reports/ReportTable.vue';
 
 const api = new Api({ baseUrl: window.location.origin + '/api' });
 const route = useRoute();
 const userId = computed(() => Number(route.params.id));
+const reportQuery = computed(() => ({ subjectUserId: userId.value }));
 
 const user = ref<AdminUserResource | null>(null);
 const loading = ref(true);
@@ -354,6 +356,13 @@ watch(userId, fetchUser);
                                     <div class="stat-value text-lg">{{ user.points }}</div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="card bg-base-100 shadow">
+                        <div class="card-body">
+                            <h2 class="card-title text-base">Reports</h2>
+                            <ReportTable :query="reportQuery" />
                         </div>
                     </div>
 

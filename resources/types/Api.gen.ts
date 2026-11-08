@@ -1810,6 +1810,18 @@ export interface ReportResource {
   subject_type: string;
   /** @example 1 */
   subject_id: number;
+  /** Null if the subject no longer exists */
+  subject: {
+    user: LightUserResource | null;
+    body: string | null;
+    name: string | null;
+    line_name: string | null;
+    origin: string | null;
+    destination: string | null;
+    manual_trip: boolean | null;
+  } | null;
+  /** Other open or waiting reports on the same subject */
+  other_unresolved_reports: number;
   reason: "inappropriate" | "implausible" | "spam" | "illegal" | "other" | null;
   description: string | null;
   reporter: LightUserResource | null;
@@ -5714,6 +5726,11 @@ export class Api<
     listReports: (
       query?: {
         cursor?: string;
+        status?: "open" | "waiting" | "closed";
+        subjectType?: "Event" | "Status" | "Trip" | "User";
+        subjectId?: number;
+        /** Reports on this user or on their statuses and trips */
+        subjectUserId?: number;
       },
       params: RequestParams = {},
     ) =>
@@ -5799,6 +5816,8 @@ export class Api<
       data: {
         status: "open" | "waiting" | "closed";
         description?: string | null;
+        /** Also update the other open and waiting reports on the same subject */
+        applyToSameSubject?: boolean | null;
       },
       params: RequestParams = {},
     ) =>
