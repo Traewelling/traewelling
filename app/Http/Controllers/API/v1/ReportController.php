@@ -48,11 +48,7 @@ class ReportController extends Controller
     {
         $this->authorize('viewAny', Report::class);
 
-        $reports = Report::with('reporter')
-            ->orderByDesc('created_at')
-            ->cursorPaginate(15);
-
-        return ReportResource::collection($reports);
+        return ReportResource::collection(new ReportRepository()->paginateOpenFirst());
     }
 
     #[OA\Get(

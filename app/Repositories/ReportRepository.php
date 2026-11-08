@@ -12,6 +12,7 @@ use App\Models\User;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 
 class ReportRepository
 {
@@ -29,6 +30,19 @@ class ReportRepository
             'description' => $description ?? null,
             'reporter_id' => $reporter?->id,
         ]);
+    }
+
+    /**
+     * @return CursorPaginator<int, Report>
+     */
+    public function paginateOpenFirst(int $perPage = 15): CursorPaginator
+    {
+        return Report::with('reporter')
+            ->select('reports.*')
+            ->selectRaw("(CASE status WHEN 'open' THEN 0 WHEN 'waiting' THEN 1 ELSE 2 END) AS status_rank")
+            ->orderBy('status_rank')
+            ->orderByDesc('created_at')
+            ->cursorPaginate($perPage);
     }
 
     /**
