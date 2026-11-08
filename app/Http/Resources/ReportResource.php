@@ -16,7 +16,7 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(
     schema: 'ReportResource',
-    required: ['id', 'status', 'subject_type', 'subject_id', 'reason', 'description', 'reporter', 'created_at', 'activities'],
+    required: ['id', 'status', 'subject_type', 'subject_id', 'subject', 'other_unresolved_reports', 'reason', 'description', 'reporter', 'created_at', 'activities'],
     properties: [
         new OA\Property(property: 'id', type: 'string', format: 'uuid', example: '123e4567-e89b-12d3-a456-426614174000'),
         new OA\Property(property: 'status', type: 'string', example: 'open', enum: ['open', 'waiting', 'closed']),
@@ -25,6 +25,7 @@ use OpenApi\Attributes as OA;
         new OA\Property(
             property: 'subject',
             description: 'Null if the subject no longer exists',
+            required: ['user', 'body', 'name', 'line_name', 'origin', 'destination', 'manual_trip'],
             properties: [
                 new OA\Property(property: 'user', ref: LightUserResource::class, nullable: true),
                 new OA\Property(property: 'body', type: 'string', nullable: true),

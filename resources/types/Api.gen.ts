@@ -1811,17 +1811,17 @@ export interface ReportResource {
   /** @example 1 */
   subject_id: number;
   /** Null if the subject no longer exists */
-  subject?: {
-    user?: LightUserResource | null;
-    body?: string | null;
-    name?: string | null;
-    line_name?: string | null;
-    origin?: string | null;
-    destination?: string | null;
-    manual_trip?: boolean | null;
+  subject: {
+    user: LightUserResource | null;
+    body: string | null;
+    name: string | null;
+    line_name: string | null;
+    origin: string | null;
+    destination: string | null;
+    manual_trip: boolean | null;
   } | null;
   /** Other open or waiting reports on the same subject */
-  other_unresolved_reports?: number;
+  other_unresolved_reports: number;
   reason: "inappropriate" | "implausible" | "spam" | "illegal" | "other" | null;
   description: string | null;
   reporter: LightUserResource | null;

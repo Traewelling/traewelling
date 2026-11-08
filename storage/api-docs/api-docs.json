@@ -14802,6 +14802,8 @@
                     "status",
                     "subject_type",
                     "subject_id",
+                    "subject",
+                    "other_unresolved_reports",
                     "reason",
                     "description",
                     "reporter",
@@ -14833,6 +14835,15 @@
                     },
                     "subject": {
                         "description": "Null if the subject no longer exists",
+                        "required": [
+                            "user",
+                            "body",
+                            "name",
+                            "line_name",
+                            "origin",
+                            "destination",
+                            "manual_trip"
+                        ],
                         "properties": {
                             "user": {
                                 "oneOf": [
