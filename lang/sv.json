@@ -1467,5 +1467,9 @@
     "settings.tokens.description": "Appar som har tillåtelse att komma åt ditt konto.",
     "settings.tokens.access-until": "Åtkomst till",
     "stationboard.no-departures-for-filter": "Inga avgångar för ”:type” från denna hållplats.",
-    "stationboard.available-travel-types": "Serveras här:"
+    "stationboard.available-travel-types": "Serveras här:",
+    "checkin.select-exit": "Välj utgångshållplats",
+    "generic.unsaved": "Osparad",
+    "menu.change-exit": "Ändra utgång",
+    "trip.edit.stopover-in-use": "Detta stopp används av en incheckning och kan inte tas bort. Ändra incheckningen först."
 }

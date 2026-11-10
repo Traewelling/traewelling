@@ -1463,5 +1463,9 @@
     "route-map.description": "Každý úsek jste urazili alespoň jednou.",
     "route-map.approximated.hint": "Úseky bez uložené trasy se vykreslují jako přímka mezi oběma stanicemi.",
     "route-map.include-approximated": "Zobrazit odhadované úseky",
-    "route-map.empty": "Těmto filtrům neodpovídají žádné jízdy."
+    "route-map.empty": "Těmto filtrům neodpovídají žádné jízdy.",
+    "checkin.select-exit": "Vyberte výstupní zastávku",
+    "generic.unsaved": "Neuloženo",
+    "menu.change-exit": "Změnit východ",
+    "trip.edit.stopover-in-use": "Tato zastávka je využívána v rámci zapsané cesty a nelze ji odstranit. Nejprve upravte dané zápisy jízd."
 }
