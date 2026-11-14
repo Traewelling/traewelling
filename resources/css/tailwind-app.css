@@ -18,6 +18,16 @@
     1px 1px 0 var(--color-primary);
 }
 
+/* iOS zooms into fields below 16px; daisyUI only bumps the size on :focus, which reflows text. Apply it permanently instead. */
+@media (pointer: coarse) {
+  @supports (-webkit-touch-callout: none) {
+    .input,
+    .textarea {
+      --font-size: 1rem;
+    }
+  }
+}
+
 .lucide {
   color: rgb(from currentColor r g b / 1) !important;
   opacity: 100% !important;
