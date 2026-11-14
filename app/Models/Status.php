@@ -205,7 +205,7 @@ class Status extends Model
             'username' => $this->user->name,
             'origin' => $originStation->name . ($originCode ? ' (' . $originCode . ')' : ''),
             'destination' => $destinationStation->name . ($destinationCode ? ' (' . $destinationCode . ')' : ''),
-            'date' => $this->checkin->departure->isoFormat(__('datetime-format')),
+            'date' => userTime($this->checkin->departure, __('datetime-format')),
             'lineName' => $this->checkin->trip->linename,
         ]);
     }

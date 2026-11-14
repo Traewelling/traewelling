@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\StatusVisibility;
 use App\Models\Event;
 use App\Models\Status;
+use App\Services\ProfilePictureService;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
@@ -29,11 +31,18 @@ class FrontendStatusController extends Controller
 
     public function getStatus(int $statusId): View
     {
-        $status = Status::find($statusId);
-        $username = Gate::allows('view', $status) ? $status?->user->username : null;
+        $status = Status::findOrFail($statusId);
+        $isVisible = Gate::allows('view', $status);
+        $isIndexable = $status->visibility === StatusVisibility::PUBLIC
+            && !$status->user->private_profile
+            && !$status->user->prevent_index;
 
         return view('vue.spa', [
-            'title' => $username ? __('status.ogp-title', ['name' => $username]) : null,
+            'title' => $isVisible ? __('status.ogp-title', ['name' => $status->user->username]) : null,
+            'canonical' => route('status', ['id' => $status->id]),
+            'robots' => $isIndexable ? null : 'noindex',
+            'description' => $isVisible ? $status->description : null,
+            'image' => $isVisible ? resolve(ProfilePictureService::class)->getUrl($status->user) : null,
         ]);
     }
 }
