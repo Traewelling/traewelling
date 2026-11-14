@@ -16,6 +16,7 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
+use Laravel\Passport\Passport;
 
 use function PHPUnit\Framework\assertEquals;
 
@@ -50,13 +51,12 @@ class WebhookStatusTest extends ApiTestCase
         $client = $this->createWebhookClient($user);
         $this->createWebhook($user, $client, [WebhookEvent::CHECKIN_UPDATE]);
         $status = $this->createStatus($user);
-        $this->actingAs($user)
-            ->post(route('status.update'), [
-                'statusId' => $status['id'],
-                'body' => 'New Example Body',
-                'business_check' => $status['business']->value,
-                'checkinVisibility' => $status['visibility']->value,
-            ]);
+        Passport::actingAs($user, ['*']);
+        $this->putJson('/api/v1/status/' . $status->id, [
+            'body' => 'New Example Body',
+            'business' => $status->business->value,
+            'visibility' => $status->visibility->value,
+        ])->assertOk();
 
         Bus::assertDispatched(function (MonitoredCallWebhookJob $job) use ($status) {
             assertEquals(
@@ -130,13 +130,12 @@ class WebhookStatusTest extends ApiTestCase
         $client = $this->createWebhookClient($user);
         $this->createWebhook($user, $client, [WebhookEvent::CHECKIN_UPDATE]);
         $status = $this->createStatus($user);
-        $this->actingAs($user)
-            ->post(route('status.update'), [
-                'statusId' => $status['id'],
-                'body' => $status['body'],
-                'business_check' => Business::BUSINESS->value,
-                'checkinVisibility' => $status['visibility']->value,
-            ]);
+        Passport::actingAs($user, ['*']);
+        $this->putJson('/api/v1/status/' . $status->id, [
+            'body' => $status->body,
+            'business' => Business::BUSINESS->value,
+            'visibility' => $status->visibility->value,
+        ])->assertOk();
 
         Bus::assertDispatched(function (MonitoredCallWebhookJob $job) use ($status) {
             assertEquals(
@@ -158,13 +157,12 @@ class WebhookStatusTest extends ApiTestCase
         $client = $this->createWebhookClient($user);
         $this->createWebhook($user, $client, [WebhookEvent::CHECKIN_UPDATE]);
         $status = $this->createStatus($user);
-        $this->actingAs($user)
-            ->post(route('status.update'), [
-                'statusId' => $status['id'],
-                'body' => $status['body'],
-                'business_check' => $status['business']->value,
-                'checkinVisibility' => StatusVisibility::UNLISTED->value,
-            ]);
+        Passport::actingAs($user, ['*']);
+        $this->putJson('/api/v1/status/' . $status->id, [
+            'body' => $status->body,
+            'business' => $status->business->value,
+            'visibility' => StatusVisibility::UNLISTED->value,
+        ])->assertOk();
 
         Bus::assertDispatched(function (MonitoredCallWebhookJob $job) use ($status) {
             assertEquals(

@@ -11595,7 +11595,8 @@
                     "features",
                     "languages",
                     "version",
-                    "gdprExportCooldown"
+                    "gdprExportCooldown",
+                    "legalNotice"
                 ],
                 "properties": {
                     "appName": {
@@ -11635,6 +11636,9 @@
                     "gdprExportCooldown": {
                         "description": "Cooldown time in days between gdpr exports",
                         "type": "integer"
+                    },
+                    "legalNotice": {
+                        "$ref": "#/components/schemas/LegalNotice"
                     }
                 },
                 "type": "object"
@@ -11655,6 +11659,44 @@
                         "description": "The name of the language (e.g., \"English\", \"French\").",
                         "type": "string",
                         "example": "English"
+                    }
+                },
+                "type": "object"
+            },
+            "LegalNotice": {
+                "description": "Contact details of the operator for the legal notice.",
+                "required": [
+                    "name",
+                    "address1",
+                    "address2",
+                    "email",
+                    "phone"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "John Doe",
+                        "nullable": true
+                    },
+                    "address1": {
+                        "type": "string",
+                        "example": "1 Example Street",
+                        "nullable": true
+                    },
+                    "address2": {
+                        "type": "string",
+                        "example": "12345 Example City",
+                        "nullable": true
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "hello@example.com",
+                        "nullable": true
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "+49 123 456789",
+                        "nullable": true
                     }
                 },
                 "type": "object"
@@ -12894,6 +12936,10 @@
                     "timezone": {
                         "type": "string",
                         "example": "Europe/Berlin"
+                    },
+                    "language": {
+                        "type": "string",
+                        "example": "de"
                     }
                 },
                 "type": "object"

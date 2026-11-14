@@ -43,6 +43,7 @@ class DarkModeService {
         } else {
             document.documentElement.classList.remove('dark');
         }
+        document.documentElement.dataset.theme = setting;
         document.documentElement.dataset.bsTheme = setting;
     }
 }

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ExternalLink, TriangleAlert } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
 import { DateTime } from 'luxon';
 import { Notyf } from 'notyf';
@@ -127,7 +128,7 @@ async function checkIn(): Promise<void> {
         <!-- Collision warning -->
         <div v-if="collision" class="alert alert-warning flex flex-col gap-2 text-sm" role="alert">
             <div class="flex items-start gap-2">
-                <i class="fa-solid fa-triangle-exclamation mt-0.5 shrink-0" />
+                <TriangleAlert class="size-4 mt-0.5 shrink-0" />
                 <div class="flex flex-col gap-1">
                     <p class="font-semibold">{{ trans('checkin.conflict') }}</p>
                     <ul v-if="collisionCheckins.length" class="flex flex-col gap-1">
@@ -151,7 +152,7 @@ async function checkIn(): Promise<void> {
                                         DateTime.fromISO(conflict.checkin.destination.arrivalPlanned).toFormat('HH:mm')
                                     }}
                                 </span>
-                                <i class="fa-solid fa-arrow-up-right-from-square text-xs opacity-50" />
+                                <ExternalLink class="size-3 opacity-50" />
                             </router-link>
                         </li>
                     </ul>

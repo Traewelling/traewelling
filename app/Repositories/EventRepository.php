@@ -102,14 +102,6 @@ class EventRepository
         return $query;
     }
 
-    /**
-     * @deprecated remove, once frontend is removed. Combine paginateForTimestamp with forTimestampQuery
-     */
-    public function paginateForFrontend(Carbon $timestamp): LengthAwarePaginator
-    {
-        return $this->forTimestampQuery($timestamp, true)->paginate(15);
-    }
-
     public function paginateForTimestamp(Carbon $timestamp, bool $showUpcoming = false): AnonymousResourceCollection
     {
         return EventResource::collection($this->forTimestampQuery($timestamp, $showUpcoming)->with(['station'])->paginate(100));

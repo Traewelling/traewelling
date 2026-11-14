@@ -5,7 +5,12 @@
         <div class="navbar bg-primary shadow-lg drawer-content">
             <div class="navbar-start">
                 <router-link v-slot="{ href, navigate }" :to="{ name: 'dashboard' }" custom>
-                    <a :href="href" class="btn btn-ghost text-xl text-white" :class="prideClass" @click="navigate">
+                    <a
+                        :href="user.authenticated ? href : '/'"
+                        class="btn btn-ghost text-xl text-white"
+                        :class="prideClass"
+                        @click="user.authenticated && navigate($event)"
+                    >
                         <img src="/images/icons/logo.svg" alt="Träwelling Logo" class="w-8 h-8 mr-2" />
                         {{ config.appName }}
                     </a>
@@ -28,10 +33,27 @@
             </div>
 
             <div class="navbar-end">
+                <template v-if="user.authenticated === false">
+                    <router-link
+                        :to="{ name: 'login' }"
+                        class="btn btn-ghost btn-sm text-white hidden lg:flex mr-1 aria-[current=page]:bg-neutral"
+                    >
+                        <LogIn class="size-5" />
+                        {{ trans('menu.login') }}
+                    </router-link>
+                    <router-link
+                        v-if="config.isFeatureEnabled(ConfigurationFeatureEnum.UserRegistration)"
+                        :to="{ name: 'register' }"
+                        class="btn btn-ghost btn-sm text-white hidden lg:flex mr-1 aria-[current=page]:bg-neutral"
+                    >
+                        <UserPlus class="size-5" />
+                        {{ trans('menu.register') }}
+                    </router-link>
+                </template>
                 <router-link
                     v-if="user.authenticated"
                     :to="{ name: 'search' }"
-                    class="btn btn-ghost btn-sm text-white flex mr-1"
+                    class="btn btn-ghost btn-sm text-white flex mr-1 aria-[current=page]:bg-neutral"
                 >
                     <Search class="size-5" />
                 </router-link>
@@ -87,23 +109,6 @@
             </div>
         </div>
 
-        <!-- Beta banner -->
-        <div
-            v-if="showBetaBanner"
-            role="alert"
-            class="alert alert-warning rounded-none py-2 px-4 flex items-center justify-between gap-2"
-        >
-            <span class="text-sm">
-                {{ trans('beta.banner.text') }}
-                <router-link :to="{ name: 'settings' }" class="link link-hover font-semibold">{{
-                    trans('beta.banner.settings')
-                }}</router-link>
-            </span>
-            <button class="btn btn-ghost btn-xs" @click="dismissBanner">
-                <X class="w-4 h-4" />
-            </button>
-        </div>
-
         <!-- Main content -->
         <main class="flex-1 w-full" :class="{ 'px-4 sm:px-6 lg:px-8': !legacy, 'max-w-7xl mx-auto py-4': !fullscreen }">
             <slot></slot>
@@ -140,13 +145,27 @@
                             {{ trans('menu.backend') }}
                         </a>
                     </li>
+                    <li class="border-t border-base-300 mt-1 pt-1">
+                        <button @click="logout">
+                            <LogOut class="inline-block w-6 h-6 mr-2" />
+                            {{ trans('menu.logout') }}
+                        </button>
+                    </li>
                 </template>
-                <li class="border-t border-base-300 mt-1 pt-1">
-                    <button @click="logout">
-                        <LogOut class="inline-block w-6 h-6 mr-2" />
-                        {{ trans('menu.logout') }}
-                    </button>
-                </li>
+                <template v-else-if="user.authenticated === false">
+                    <li class="border-t border-base-300 mt-1 pt-1">
+                        <router-link :to="{ name: 'login' }">
+                            <LogIn class="inline-block w-6 h-6 mr-2" />
+                            {{ trans('menu.login') }}
+                        </router-link>
+                    </li>
+                    <li v-if="config.isFeatureEnabled(ConfigurationFeatureEnum.UserRegistration)">
+                        <router-link :to="{ name: 'register' }">
+                            <UserPlus class="inline-block w-6 h-6 mr-2" />
+                            {{ trans('menu.register') }}
+                        </router-link>
+                    </li>
+                </template>
                 <li class="p-0 mt-auto">
                     <DarkModeSelector />
                 </li>
@@ -166,6 +185,7 @@ import {
     ChartNoAxesCombined,
     House,
     LifeBuoy,
+    LogIn,
     LogOut,
     Map,
     Medal,
@@ -177,12 +197,13 @@ import {
     ShieldCogCorner,
     Ticket,
     User,
+    UserPlus,
     Waypoints,
-    X,
 } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
-import { computed, FunctionalComponent, onMounted, onUnmounted, ref } from 'vue';
+import { computed, FunctionalComponent, onMounted, onUnmounted, ref, watch } from 'vue';
 import { RouteLocationRaw } from 'vue-router';
+import { ConfigurationFeatureEnum } from '../../types/Api.gen';
 import { PrideService } from '../../vue/services/PrideService';
 import { useConfigurationStore } from '../../vue/stores/configuration';
 import { useNotificationsStore } from '../../vue/stores/notifications';
@@ -210,24 +231,30 @@ user.fetchSettings();
 const config = useConfigurationStore();
 config.fetchData();
 
-const showBetaBanner = ref(localStorage.getItem('trwl:beta-banner-dismissed') !== '1');
-
 const prideClass = computed(() => {
     return PrideService.getCssClassesForPrideFlag();
 });
-
-function dismissBanner() {
-    localStorage.setItem('trwl:beta-banner-dismissed', '1');
-    showBetaBanner.value = false;
-}
 
 const notificationsStore = useNotificationsStore();
 const notificationsModal = ref<typeof NotificationsModal | null>(null);
 let pollInterval: ReturnType<typeof setInterval> | null = null;
 
+watch(
+    () => user.authenticated,
+    (authenticated) => {
+        if (authenticated) {
+            notificationsStore.fetchCount();
+        }
+    },
+    { immediate: true },
+);
+
 onMounted(() => {
-    notificationsStore.fetchCount();
-    pollInterval = setInterval(() => notificationsStore.fetchCount(), 30000);
+    pollInterval = setInterval(() => {
+        if (user.authenticated) {
+            notificationsStore.fetchCount();
+        }
+    }, 30000);
 });
 
 onUnmounted(() => {
@@ -236,22 +263,24 @@ onUnmounted(() => {
     }
 });
 
-const links: {
-    name: string;
-    icon: FunctionalComponent;
-    route: RouteLocationRaw;
-    condition?: boolean;
-}[] = [
-    { name: 'menu.dashboard', icon: House, route: { name: 'dashboard' } },
+const links = computed<
+    {
+        name: string;
+        icon: FunctionalComponent;
+        route: RouteLocationRaw;
+        condition?: boolean;
+    }[]
+>(() => [
+    { name: 'menu.dashboard', icon: House, route: { name: 'dashboard' }, condition: user.isAuthenticated },
     {
         name: 'menu.leaderboard',
         icon: Medal,
         route: { name: 'leaderboard' },
-        condition: user.user?.pointsEnabled || false,
+        condition: user.isAuthenticated && (user.user?.pointsEnabled ?? false),
     },
-    { name: 'menu.active', icon: Map, route: { name: 'active-journeys' } },
-    { name: 'stats', icon: ChartNoAxesCombined, route: { name: 'statistics' } },
-];
+    { name: 'menu.active', icon: Map, route: { name: 'active-journeys' }, condition: user.isAuthenticated },
+    { name: 'stats', icon: ChartNoAxesCombined, route: { name: 'statistics' }, condition: user.isAuthenticated },
+]);
 
 function logout() {
     const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');

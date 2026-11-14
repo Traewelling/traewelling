@@ -40,7 +40,7 @@ function isActiveTab(route: { route: string; activeRoutes?: string[] }): boolean
 <template>
     <AppLayout>
         <div>
-            <h1 class="text-2xl lg:text-4xl font-bold mb-4">Settings</h1>
+            <h1 class="text-2xl lg:text-4xl font-bold mb-4">{{ trans('menu.settings') }}</h1>
             <div role="tablist" class="tabs tabs-border">
                 <router-link
                     v-for="tab in tabs"

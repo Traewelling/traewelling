@@ -42,23 +42,6 @@ enum StatusTagKey: string implements IconEnumInterface
     case PRICE = 'trwl:price';
     case SOCIAL_STATUS = 'trwl:social_status';
 
-    public function faIcon(): ?string
-    {
-        return match ($this) {
-            self::SEAT => 'fa-couch',
-            self::ROLE => 'fa-briefcase',
-            self::TICKET => 'fa-qrcode',
-            self::PASSENGER_RIGHTS => 'fa-user-shield',
-            self::JOURNEY_NUMBER => 'fa-hashtag',
-            self::PRICE => 'fa-money-bill-wave',
-            self::SOCIAL_STATUS => 'fa-comments',
-            self::WAGON => 'fa-arrow-up-1-9',
-            self::WAGON_CLASS => 'fa-list-check',
-            self::VEHICLE_NUMBER => 'fa-tag',
-            default => null,
-        };
-    }
-
     public function title(): ?string
     {
         $title = __('tag.title.' . $this->value);

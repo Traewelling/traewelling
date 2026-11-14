@@ -2,14 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Backend\UserController as UserControllerAlias;
 use App\Models\User;
-use Illuminate\Contracts\Support\Renderable;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
-use InvalidArgumentException;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * @deprecated Content will be moved to the backend/frontend/API packages soon, please don't add new functions here!
@@ -20,28 +14,15 @@ class FrontendUserController extends Controller
     {
         $user = User::where('username', $username)->firstOrFail();
 
-        return view('profile.profile', [
-            'user' => $user,
+        return view('vue.spa', [
+            'title' => $user->name,
+            'canonical' => route('profile', ['username' => $user->username]),
+            'robots' => $user->prevent_index ? 'noindex' : null,
+            'description' => $user->prevent_index ? null : __('description.profile', [
+                'username' => $user->name,
+                'kmAmount' => number($user->train_distance / 1000, 0),
+                'hourAmount' => number($user->train_duration / 60, 0),
+            ]),
         ]);
-    }
-
-    public function searchUser(Request $request): Renderable|RedirectResponse
-    {
-        if (empty($request->searchQuery)) {
-            return view('search', ['users' => collect()]);
-        }
-        try {
-            $users = UserControllerAlias::searchUser($request['searchQuery']);
-            if ($users->count() === 1) {
-                return redirect()->route('profile', ['username' => $users->first()->username]);
-            }
-
-            return view('search', [
-                'users' => $users,
-            ]);
-        } catch (HttpException|InvalidArgumentException) {
-            // abort(400) is triggered.
-            return redirect()->back()->with('error', __('error.bad-request'));
-        }
     }
 }

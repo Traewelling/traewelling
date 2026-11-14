@@ -21,19 +21,38 @@ class LoginTest extends FeatureTestCase
                 'password' => 'password',
             ]));
         $response->assertOk();
-        $response->assertViewIs('vue.dashboard');
+        $response->assertViewIs('vue.spa');
         $this->assertAuthenticated();
+    }
+
+    public function test_successful_login_via_json(): void
+    {
+        $user = User::factory(['password' => Hash::make('password')])->create();
+        $response = $this->postJson(route('login'), [
+            'login' => $user->username,
+            'password' => 'password',
+        ]);
+        $response->assertOk();
+        $response->assertJson(['redirect' => url('/dashboard')]);
+        $this->assertAuthenticatedAs($user);
     }
 
     public function test_login_with_wrong_credentials(): void
     {
         $user = User::factory(['password' => Hash::make('password')])->create();
-        $this->assertGuest();
-        $response = $this->post(route('login', [
+        $credentials = [
             'login' => $user->username,
             'password' => 'wrong password',
-        ]));
-        $response->assertRedirectToRoute('login');
+        ];
+
+        $this->from('/')->post(route('login'), $credentials)
+            ->assertRedirect('/')
+            ->assertSessionHasErrors('login_error');
+
+        $this->postJson(route('login'), $credentials)
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('login_error');
+
         $this->assertGuest();
     }
 
@@ -46,7 +65,7 @@ class LoginTest extends FeatureTestCase
                 'login' => $user->username,
                 'password' => 'wrong password',
             ]));
-            $response->assertRedirectToRoute('login');
+            $response->assertSessionHasErrors('login_error');
             $this->assertGuest();
         }
         $response = $this->post(route('login', [

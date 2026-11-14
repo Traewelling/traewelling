@@ -23,18 +23,6 @@ enum StatusVisibility: int implements IconEnumInterface
     case AUTHENTICATED = 4;
     case TRUSTED = 5;
 
-    public function faIcon(): string
-    {
-        return match ($this) {
-            self::PUBLIC => 'fa-globe-americas',
-            self::UNLISTED => 'fa-lock-open',
-            self::FOLLOWERS => 'fa-user-friends',
-            self::PRIVATE => 'fa-lock',
-            self::AUTHENTICATED => 'fa-user-check',
-            self::TRUSTED => 'fa-user-shield'
-        };
-    }
-
     public function title(): string
     {
         return match ($this) {

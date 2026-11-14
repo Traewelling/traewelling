@@ -1,5 +1,17 @@
 <script setup lang="ts">
-import { Activity, Bell, BriefcaseBusiness, CalendarDays, Flag, House, MapPin, Radio, Train, Users } from '@lucide/vue';
+import {
+    Activity,
+    Bell,
+    BriefcaseBusiness,
+    CalendarDays,
+    Flag,
+    House,
+    MapPin,
+    Menu,
+    Radio,
+    Train,
+    Users,
+} from '@lucide/vue';
 import { type FunctionalComponent } from 'vue';
 import { useUserStore } from '../../vue/stores/user';
 
@@ -46,15 +58,17 @@ function isActive(href: string): boolean {
 
         <div class="drawer-content flex flex-col min-h-screen">
             <!-- Navbar -->
-            <div class="navbar bg-primary text-primary-content shadow-lg shrink-0">
+            <div class="navbar bg-primary shadow-lg shrink-0">
                 <div class="navbar-start">
-                    <RouterLink to="/admin" class="btn btn-ghost text-lg font-bold">
-                        <img src="/images/icons/logo.svg" alt="Träwelling" class="w-7 h-7" />
-                        TRWL Backend
+                    <RouterLink v-slot="{ href, navigate }" to="/admin" custom>
+                        <a :href="href" class="btn btn-ghost text-xl text-white" @click="navigate">
+                            <img src="/images/icons/logo.svg" alt="Träwelling Logo" class="w-8 h-8 mr-2" />
+                            TRWL Backend
+                        </a>
                     </RouterLink>
                 </div>
 
-                <div class="navbar-center hidden xl:flex">
+                <div class="navbar-center hidden text-white xl:flex">
                     <ul class="menu menu-horizontal gap-0.5 px-1 text-sm">
                         <li
                             v-for="link in navLinks"
@@ -67,7 +81,7 @@ function isActive(href: string): boolean {
                             <RouterLink
                                 :to="link.href"
                                 class="gap-1.5 px-2 py-1.5"
-                                :class="isActive(link.href) ? 'active' : ''"
+                                :class="{ 'menu-active': isActive(link.href) }"
                             >
                                 <component :is="link.icon" class="w-4 h-4" />
                                 {{ link.label }}
@@ -77,25 +91,12 @@ function isActive(href: string): boolean {
                 </div>
 
                 <div class="navbar-end gap-2">
-                    <a href="/dashboard" class="btn btn-ghost btn-sm hidden xl:flex gap-1">
+                    <a href="/dashboard" class="btn btn-ghost btn-sm text-white hidden xl:flex gap-1">
                         <House class="w-4 h-4" />
                         Back to Träwelling
                     </a>
-                    <label for="backend-drawer" class="btn btn-ghost btn-sm xl:hidden">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="h-5 w-5"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M4 6h16M4 12h16M4 18h16"
-                            />
-                        </svg>
+                    <label for="backend-drawer" class="btn btn-ghost xl:hidden">
+                        <Menu class="inline-block w-6 h-6 text-white" />
                     </label>
                 </div>
             </div>
@@ -119,7 +120,7 @@ function isActive(href: string): boolean {
                     "
                     :key="link.href"
                 >
-                    <RouterLink :to="link.href" :class="isActive(link.href) ? 'active' : ''">
+                    <RouterLink :to="link.href" :class="{ 'menu-active': isActive(link.href) }">
                         <component :is="link.icon" class="w-4 h-4" />
                         {{ link.label }}
                     </RouterLink>

@@ -80,7 +80,7 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Passport::useClientModel(OAuthClient::class);
-        Passport::authorizationView('auth.authorize');
+        Passport::authorizationView('vue.spa');
 
         // Override passport routes
         Route::group(['prefix' => 'oauth', 'as' => 'oauth.'], function () {

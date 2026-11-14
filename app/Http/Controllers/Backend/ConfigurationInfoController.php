@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Dto\ConfigurationInformation\ConfigurationFeature;
 use App\Dto\ConfigurationInformation\ConfigurationInformation;
 use App\Dto\ConfigurationInformation\Language;
+use App\Dto\ConfigurationInformation\LegalNotice;
 use App\Enum\ConfigurationFeatureEnum;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Cache;
@@ -19,6 +20,13 @@ class ConfigurationInfoController extends Controller
             appUrl: config('app.url'),
             version: VersionController::getVersion() ?: 'unknown',
             gdprExportCooldown: config('trwl.gdpr_export.days'),
+            legalNotice: new LegalNotice(
+                name: config('app.legal.name'),
+                address1: config('app.legal.address1'),
+                address2: config('app.legal.address2'),
+                email: config('app.legal.email'),
+                phone: config('app.legal.tel'),
+            ),
             features: $this->getFeatures(),
             languages: $this->getLanguages(),
         ));

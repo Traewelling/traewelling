@@ -1,16 +1,32 @@
 <script setup lang="ts">
 import { Globe } from '@lucide/vue';
-import { trans } from 'laravel-vue-i18n';
+import { loadLanguageAsync, trans } from 'laravel-vue-i18n';
+import { Notyf } from 'notyf';
+import { inject } from 'vue';
+import { Api } from '../../../types/Api.gen';
 import { useConfigurationStore } from '../../../vue/stores/configuration';
+import { useUserStore } from '../../../vue/stores/user';
 
+const api = new Api({ baseUrl: window.location.origin + '/api' });
 const config = useConfigurationStore();
+const user = useUserStore();
+const notyf = inject('notyf') as Notyf;
 config.fetchData();
 
-const selectLanguageUrl = (langCode: string): string => {
-    const url = new URL(window.location.href);
-    url.searchParams.set('language', langCode);
-    return url.toString();
-};
+async function selectLanguage(code: string): Promise<void> {
+    (document.activeElement as HTMLElement | null)?.blur();
+
+    if (user.isAuthenticated) {
+        try {
+            await api.settings.updateProfileSettings({ language: code });
+        } catch {
+            notyf.error(trans('messages.exception.general'));
+            return;
+        }
+    }
+    await loadLanguageAsync(code);
+    document.documentElement.lang = code.replace('_', '-');
+}
 </script>
 
 <template>
@@ -23,15 +39,10 @@ const selectLanguageUrl = (langCode: string): string => {
             tabindex="-1"
             class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm text-base-content"
         >
-            <li>
-                <a
-                    v-for="lang in config.languages"
-                    :key="lang.code"
-                    class="dropdown-item"
-                    :href="selectLanguageUrl(lang.code)"
-                >
+            <li v-for="lang in config.languages" :key="lang.code">
+                <button type="button" @click="selectLanguage(lang.code)">
                     {{ lang.name }}
-                </a>
+                </button>
             </li>
         </ul>
     </div>

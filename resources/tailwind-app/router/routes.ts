@@ -1,6 +1,12 @@
 import { RouteRecordRaw } from 'vue-router';
 import ErrorPage from '../components/ErrorPage.vue';
 import ActiveJourneys from '../pages/ActiveJourneys/ActiveJourneys.vue';
+import ForgotPassword from '../pages/Auth/ForgotPassword.vue';
+import Login from '../pages/Auth/Login.vue';
+import OAuthAuthorize from '../pages/Auth/OAuthAuthorize.vue';
+import Register from '../pages/Auth/Register.vue';
+import ResetPassword from '../pages/Auth/ResetPassword.vue';
+import VerifyEmail from '../pages/Auth/VerifyEmail.vue';
 import Changelog from '../pages/Changelog/Changelog.vue';
 import ChangeExitPage from '../pages/Checkin/ChangeExitPage.vue';
 import CheckinPage from '../pages/Checkin/CheckinPage.vue';
@@ -17,6 +23,7 @@ import EventView from '../pages/Events/EventView.vue';
 import Export from '../pages/Export/Export.vue';
 import Leaderboard from '../pages/Leaderboard/Leaderboard.vue';
 import MonthlyLeaderboard from '../pages/Leaderboard/MonthlyLeaderboard.vue';
+import LegalNotice from '../pages/Legal/LegalNotice.vue';
 import Notifications from '../pages/Notifications/Notifications.vue';
 import PrivacyPolicy from '../pages/PrivacyPolicy/PrivacyPolicy.vue';
 import UserProfile from '../pages/Profile/UserProfile.vue';
@@ -45,6 +52,42 @@ import TripEdit from '../pages/Trip/TripEdit.vue';
 import TripList from '../pages/Trip/TripList.vue';
 
 const routes: Array<RouteRecordRaw> = [
+    {
+        path: '/login',
+        name: 'login',
+        component: Login,
+        meta: { title: 'menu.login' },
+    },
+    {
+        path: '/register',
+        name: 'register',
+        component: Register,
+        meta: { title: 'menu.register' },
+    },
+    {
+        path: '/password/reset',
+        name: 'password-request',
+        component: ForgotPassword,
+        meta: { title: 'user.header-reset-pw' },
+    },
+    {
+        path: '/password/reset/:token',
+        name: 'password-reset',
+        component: ResetPassword,
+        meta: { title: 'user.header-reset-pw' },
+    },
+    {
+        path: '/email/verify',
+        name: 'verify-email',
+        component: VerifyEmail,
+        meta: { title: 'user.email-verify' },
+    },
+    {
+        path: '/oauth/authorize',
+        name: 'oauth-authorize',
+        component: OAuthAuthorize,
+        meta: { title: 'menu.oauth_authorize.title' },
+    },
     {
         path: '/dashboard',
         name: 'dashboard',
@@ -302,6 +345,12 @@ const routes: Array<RouteRecordRaw> = [
         component: ErrorPage,
         props: { code: 404, standalone: true },
         meta: { title: 'error.404' },
+    },
+    {
+        path: '/legal',
+        name: 'legal-notice',
+        component: LegalNotice,
+        meta: { title: 'menu.legal-notice' },
     },
     {
         path: '/legal/privacy-policy',

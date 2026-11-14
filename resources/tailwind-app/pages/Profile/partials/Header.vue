@@ -81,7 +81,7 @@ async function toggleBlock() {
                 {{ userData.displayName }}
                 <Lock v-if="userData.privateProfile" class="w-5 h-5 opacity-60 shrink-0" />
             </h1>
-            <p class="text-sm opacity-70 mt-0.5">
+            <p class="text-sm mt-0.5">
                 @{{ userData.username }}
                 <span v-if="userData.followedBy" class="badge badge-success badge-sm ml-1 align-middle">
                     {{ trans('profile.follows-you') }}

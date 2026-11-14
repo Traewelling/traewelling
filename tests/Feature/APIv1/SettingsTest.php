@@ -53,6 +53,7 @@ class SettingsTest extends ApiTestCase
         $this->assertTrue($user->likes_enabled);
         $this->assertTrue($user->points_enabled);
         $this->assertEquals(FriendCheckinSetting::FORBIDDEN, $user->friend_checkin);
+        $this->assertNull($user->language);
 
         $response = $this->putJson(
             uri: '/api/v1/settings/profile',
@@ -69,6 +70,7 @@ class SettingsTest extends ApiTestCase
                 'likesEnabled' => false,
                 'pointsEnabled' => false,
                 'friendCheckin' => FriendCheckinSetting::FRIENDS->value,
+                'language' => 'de',
             ],
         );
         $response->assertOk();
@@ -86,6 +88,7 @@ class SettingsTest extends ApiTestCase
         $this->assertFalse($user->likes_enabled);
         $this->assertFalse($user->points_enabled);
         $this->assertEquals(FriendCheckinSetting::FRIENDS, $user->friend_checkin);
+        $this->assertEquals('de', $user->language);
     }
 
     public function test_update_map_provider(): void

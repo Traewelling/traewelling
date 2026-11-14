@@ -4,6 +4,7 @@
   color-scheme: dark; /* color of browser-provided UI */
 
   --color-primary: #811a0e;
+  --color-primary-link: var(--color-red-400);
   --color-base-100: oklch(0.25 0.009 264.318);
   --color-base-200: oklch(0.21 0.009 264.318);
   --color-base-300: oklch(0.177 0.009 264.318);
@@ -16,5 +17,22 @@
   color-scheme: light; /* color of browser-provided UI */
 
   --color-primary: #c72730;
+  --color-primary-link: var(--color-primary);
   --color-secondary: #3b71ca;
+  --color-info: oklch(50% 0.134 242.749);
+  --color-info-content: oklch(100% 0 0);
+  --color-success: oklch(52.7% 0.154 150.069);
+  --color-success-content: oklch(100% 0 0);
+  --color-warning: oklch(55.5% 0.163 48.998);
+  --color-warning-content: oklch(100% 0 0);
+  --color-error: oklch(50.5% 0.213 27.518);
+  --color-error-content: oklch(100% 0 0);
+}
+
+.link-primary {
+  color: var(--color-primary-link);
+}
+
+[data-theme='light'] .tab:not(.tab-active, [aria-current='page'], [aria-selected='true'], :hover) {
+  color: color-mix(in oklab, var(--color-base-content) 75%, transparent);
 }

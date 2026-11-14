@@ -10,6 +10,7 @@ import { Api, EventResource, LivePointDto, MapProvider, StatusResource } from '.
 import EventMarker from '../../../vue/components/Map/EventMarker.vue';
 import GenericMap from '../../../vue/components/Map/GenericMap.vue';
 import { useUserStore } from '../../../vue/stores/user';
+import ErrorPage from '../../components/ErrorPage.vue';
 import Loading from '../../components/Loading.vue';
 import StatusCard from '../../components/Status/StatusCard.vue';
 import AppLayout from '../../layouts/AppLayout.vue';
@@ -24,6 +25,7 @@ const user = useUserStore();
 const event = ref<EventResource | null>(null);
 const statuses = ref<StatusResource[]>([]);
 const loading = ref(true);
+const notFound = ref(false);
 const loadingMore = ref(false);
 const errorMsg = ref<string | null>(null);
 const currentPage = ref(1);
@@ -43,8 +45,8 @@ async function fetchEvent(): Promise<void> {
             );
             bounds.value = newBounds;
         }
-    } catch {
-        // event info is best-effort
+    } catch (e: unknown) {
+        notFound.value = (e as { status?: number })?.status === 404;
     }
 }
 
@@ -117,7 +119,8 @@ watch(event, (newEvent) => {
 </script>
 
 <template>
-    <AppLayout>
+    <ErrorPage v-if="notFound" :code="404" standalone />
+    <AppLayout v-else>
         <div class="mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
             <div v-if="event" class="col md:sticky md:top-4 md:self-start">
                 <div class="card bg-base-100 shadow-sm mb-4">

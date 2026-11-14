@@ -20,36 +20,6 @@ export const enumKeys = {
     'trwl:social_status': ['open', 'open_find_me', 'open_lets_hang', 'do_not_disturb'],
 };
 
-export function getIcon(key) {
-    switch (key) {
-        case 'trwl:seat':
-            return 'fa-couch';
-        case 'trwl:role':
-            return 'fa-briefcase';
-        case 'trwl:ticket':
-            return 'fa-qrcode';
-        case 'trwl:passenger_rights':
-            return 'fa-user-shield';
-        case 'trwl:locomotive_class':
-            return 'fa-train';
-        case 'trwl:travel_class':
-            return 'fa-1';
-        case 'trwl:journey_number':
-            return 'fa-route';
-        case 'trwl:price':
-            return 'fa-money-bill-wave';
-        case 'trwl:social_status':
-            return 'fa-comments';
-        case 'trwl:wagon':
-            return 'fa-arrow-up-1-9';
-        case 'trwl:wagon_class':
-            return 'fa-list-check';
-        case 'trwl:vehicle_number':
-            return 'fa-tag';
-    }
-    return 'fa-fw';
-}
-
 export function getTitle(key) {
     let translate = trans('tag.title.' + key);
 

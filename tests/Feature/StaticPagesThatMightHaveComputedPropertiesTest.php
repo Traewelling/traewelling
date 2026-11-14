@@ -46,6 +46,7 @@ class StaticPagesThatMightHaveComputedPropertiesTest extends FeatureTestCase
     {
         $response = $this->get('/legal/');
         $response->assertOk();
+        $response->assertViewIs('vue.spa');
     }
 
     public function test_privacy_get()
@@ -66,5 +67,20 @@ class StaticPagesThatMightHaveComputedPropertiesTest extends FeatureTestCase
         $response->assertOk();
         $response->assertSee($user->name, false);
         $response->assertSee($user->username, false);
+    }
+
+    public function test_profile_page_respects_prevent_index(): void
+    {
+        $indexedUser = User::factory()->create(['prevent_index' => false]);
+        $this->get(route('profile', ['username' => $indexedUser->username]))
+            ->assertOk()
+            ->assertDontSee('<meta name="robots" content="noindex"/>', false)
+            ->assertSee('<meta name="description"', false);
+
+        $hiddenUser = User::factory()->create(['prevent_index' => true]);
+        $this->get(route('profile', ['username' => $hiddenUser->username]))
+            ->assertOk()
+            ->assertSee('<meta name="robots" content="noindex"/>', false)
+            ->assertDontSee('<meta name="description"', false);
     }
 }

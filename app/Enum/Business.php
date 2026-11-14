@@ -24,15 +24,6 @@ enum Business: int implements IconEnumInterface
     case BUSINESS = 1;
     case COMMUTE = 2;
 
-    public function faIcon(): string
-    {
-        return match ($this) {
-            self::PRIVATE => 'fa-user',
-            self::BUSINESS => 'fa-briefcase',
-            self::COMMUTE => 'fa-building'
-        };
-    }
-
     public function title(): string
     {
         return match ($this) {

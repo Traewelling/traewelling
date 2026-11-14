@@ -2,42 +2,39 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Http\Controllers\Backend\LeaderboardController as LeaderboardBackend;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class LeaderboardController extends Controller
 {
-    public function __construct(
-        private readonly LeaderboardBackend $leaderboardBackend,
-    ) {}
-
-    public function renderBetaMonthlyLeaderboard(string $month): Renderable|RedirectResponse
+    public function renderMonthlyLeaderboard(string $month): View
     {
-        if (auth()->user()?->hasRole('open-beta')) {
-            return view('vue.spa');
-        }
+        $date = $this->parseMonth($month);
 
-        return redirect()->route('leaderboard.month', ['date' => $month]);
+        return view('vue.spa', [
+            'title' => __('menu.leaderboard'),
+            'canonical' => route('leaderboard.monthly', ['month' => $date->format('Y-m')]),
+            'robots' => 'index',
+            'description' => __('description.leaderboard.monthly', [
+                'month' => $date->isoFormat('MMMM'),
+                'year' => $date->isoFormat('YYYY'),
+            ]),
+        ]);
     }
 
-    public function renderMonthlyLeaderboard(string $date): Renderable|RedirectResponse
+    public function redirectToMonthlyLeaderboard(string $date): RedirectResponse
     {
-        if (auth()->user()?->points_enabled === false) {
-            return redirect()->route('dashboard');
-        }
+        return redirect()->route('leaderboard.monthly', ['month' => $this->parseMonth($date)->format('Y-m')], 301);
+    }
 
+    private function parseMonth(string $month): Carbon
+    {
         try {
-            $date = Carbon::parse($date);
+            return Carbon::parse($month);
         } catch (\Exception) {
             abort(400);
         }
-
-        return view('leaderboard.month', [
-            'leaderboard' => $this->leaderboardBackend->getCachedMonthlyLeaderboard($date),
-            'date' => Carbon::parse($date),
-        ]);
     }
 }

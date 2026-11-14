@@ -19,6 +19,10 @@ class EmailVerificationTest extends FeatureTestCase
         Notification::fake();
 
         $user = User::factory(['email_verified_at' => null])->create();
+        $this->actingAs($user)
+            ->get(route('verification.notice'))
+            ->assertViewIs('vue.spa');
+
         $response = $this->actingAs($user)
             ->followingRedirects()
             ->post(route('verification.resend'));
@@ -47,6 +51,10 @@ class EmailVerificationTest extends FeatureTestCase
         Notification::fake();
 
         $user = User::factory(['email_verified_at' => today()])->create();
+        $this->actingAs($user)
+            ->get(route('verification.notice'))
+            ->assertRedirect('/settings/account');
+
         $response = $this->actingAs($user)
             ->followingRedirects()
             ->post(route('verification.resend'));

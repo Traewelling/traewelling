@@ -22,19 +22,19 @@ const split = ref<TimeDuration>(minutesToDuration(props.duration));
     <span v-if="split" :class>
         <span v-if="split.years && split.years > 0" class="tooltip" :data-tip="trans('time.years')">
             {{ split.years }}
-            <small class="opacity-65 me-1">{{ trans('time.years.short') }}</small>
+            <small class="opacity-80 me-1">{{ trans('time.years.short') }}</small>
         </span>
         <span v-if="split.days && split.days > 0" class="tooltip" :data-tip="trans('time.days')">
             {{ split.days }}
-            <small class="opacity-65 me-1">{{ trans('time.days.short') }}</small>
+            <small class="opacity-80 me-1">{{ trans('time.days.short') }}</small>
         </span>
         <span v-if="split.hours && split.hours > 0" class="tooltip" :data-tip="trans('time.hours')">
             {{ split.hours }}
-            <small class="opacity-65 me-1">{{ trans('time.hours.short') }}</small>
+            <small class="opacity-80 me-1">{{ trans('time.hours.short') }}</small>
         </span>
         <span class="tooltip" :data-tip="trans('time.minutes')">
             {{ split.minutes }}
-            <small class="opacity-65 tooltip">{{ trans('time.minutes.short') }}</small>
+            <small class="opacity-80 tooltip">{{ trans('time.minutes.short') }}</small>
         </span>
     </span>
 </template>

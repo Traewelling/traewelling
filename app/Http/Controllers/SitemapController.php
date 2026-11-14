@@ -58,7 +58,7 @@ class SitemapController extends Controller
             ->get();
 
         foreach ($dates as $date) {
-            $sitemap->add(Url::create(route('leaderboard.month', ['date' => $date->year . '-' . $date->month]))
+            $sitemap->add(Url::create(route('leaderboard.monthly', ['month' => sprintf('%04d-%02d', $date->year, $date->month)]))
                 ->setPriority(0.6));
         }
     }

@@ -14,7 +14,6 @@ use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Contracts\Container\BindingResolutionException;
-use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Http;
@@ -67,8 +66,6 @@ class AppServiceProvider extends ServiceProvider
                 return $socialite->buildProvider(MastodonProvider::class, $config);
             }
         );
-
-        Paginator::useBootstrap();
 
         Blade::if('admin', static function (): bool {
             return auth()->user()?->hasRole('admin');

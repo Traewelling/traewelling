@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 
 class ForgotPasswordController extends Controller
 {
@@ -33,6 +34,14 @@ class ForgotPasswordController extends Controller
     public function __construct()
     {
         $this->middleware('guest');
+    }
+
+    public function showLinkRequestForm(): View
+    {
+        return view('vue.spa', [
+            'title' => __('user.header-reset-pw'),
+            'robots' => 'noindex',
+        ]);
     }
 
     public function sendResetLinkEmail(Request $request): JsonResponse|RedirectResponse

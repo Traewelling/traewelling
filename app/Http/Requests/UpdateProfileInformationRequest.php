@@ -34,6 +34,7 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'experimental', description: 'Experimental features enabled', type: 'boolean', example: false),
         new OA\Property(property: 'profileLinks', type: 'array', items: new OA\Items(ref: ProfileLinkResource::class), nullable: true),
         new OA\Property(property: 'timezone', type: 'string', example: 'Europe/Berlin'),
+        new OA\Property(property: 'language', type: 'string', example: 'de'),
     ],
 )]
 class UpdateProfileInformationRequest extends FormRequest
@@ -76,6 +77,7 @@ class UpdateProfileInformationRequest extends FormRequest
             'profileLinks.*.name' => ['required_with:profileLinks', 'string', new Enum(ProfileLinkName::class)],
             'profileLinks.*.url' => ['required_with:profileLinks', 'string', 'url', 'max:255'],
             'timezone' => ['sometimes', 'string', Rule::in(DateTimeZone::listIdentifiers())],
+            'language' => ['sometimes', 'string', Rule::in(array_keys(config('app.locales')))],
         ];
     }
 }
