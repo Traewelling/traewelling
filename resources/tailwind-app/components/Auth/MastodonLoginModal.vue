@@ -2,7 +2,7 @@
 import { X } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
 import { ref } from 'vue';
-import Mastodon from '../../../components/Icons/Mastodon.vue';
+import Mastodon from '../Icons/Mastodon.vue';
 
 const dialogRef = ref<HTMLDialogElement | null>(null);
 
