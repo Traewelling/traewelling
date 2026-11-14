@@ -3,10 +3,10 @@ import { trans } from 'laravel-vue-i18n';
 import { ref } from 'vue';
 import { ConfigurationFeatureEnum } from '../../../types/Api.gen';
 import { useConfigurationStore } from '../../../vue/stores/configuration';
+import MastodonLoginModal from '../../components/Auth/MastodonLoginModal.vue';
 import Mastodon from '../../components/Icons/Mastodon.vue';
 import { FormErrors, postWebForm } from '../../helpers/webForm';
 import AppLayout from '../../layouts/AppLayout.vue';
-import MastodonLoginModal from './partials/MastodonLoginModal.vue';
 
 const config = useConfigurationStore();
 

@@ -6,7 +6,6 @@ use App\Dto\Internal\GlobalCheckinStats;
 use App\Enum\StatusTagKey;
 use App\Enum\StatusVisibility;
 use App\Http\Controllers\Backend\StatisticController;
-use App\Http\Controllers\Backend\VersionController;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -81,7 +80,6 @@ class LandingPageController
 
         return view('welcome/welcome', [
             'stats' => $this->getStats(),
-            'version' => VersionController::getVersion(),
             'visibilityLevels' => $this->getVisibilityLevels(),
             'showcaseTags' => $this->getShowcaseTags(),
         ]);

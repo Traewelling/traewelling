@@ -11,10 +11,18 @@ const api = new Api({ baseUrl: window.location.origin + '/api' });
 const config = useConfigurationStore();
 const user = useUserStore();
 const notyf = inject('notyf') as Notyf;
+const reloadOnLanguageChange = inject('reloadOnLanguageChange', false);
 config.fetchData();
 
 async function selectLanguage(code: string): Promise<void> {
     (document.activeElement as HTMLElement | null)?.blur();
+
+    if (reloadOnLanguageChange) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('language', code);
+        window.location.href = url.toString();
+        return;
+    }
 
     if (user.isAuthenticated) {
         try {
