@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\ProfilePictureService;
 use Illuminate\View\View;
 
 /**
@@ -23,6 +24,7 @@ class FrontendUserController extends Controller
                 'kmAmount' => number($user->train_distance / 1000, 0),
                 'hourAmount' => number($user->train_duration / 60, 0),
             ]),
+            'image' => resolve(ProfilePictureService::class)->getUrl($user),
         ]);
     }
 }

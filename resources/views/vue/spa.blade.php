@@ -12,3 +12,6 @@
 @isset($description)
     @section('meta-description', $description)
 @endisset
+@isset($image)
+    @section('meta-image', $image)
+@endisset

@@ -21,12 +21,19 @@
 
 @hasSection('canonical')
     <link rel="canonical" href="@yield('canonical')"/>
+    <meta property="og:url" content="@yield('canonical')"/>
 @endif
-
 @hasSection('meta-robots')
     <meta name="robots" content="@yield('meta-robots')"/>
 @endif
 @hasSection('meta-description')
     <meta name="description" content="@yield('meta-description')"/>
     <meta name="DC.Description" content="@yield('meta-description')"/>
+    <meta property="og:description" content="@yield('meta-description')"/>
 @endif
+
+<meta property="og:site_name" content="{{ config('app.name') }}"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="@hasSection('title')@yield('title')@else{{ config('app.name') }}@endif"/>
+<meta property="og:image" content="@hasSection('meta-image')@yield('meta-image')@else{{ asset('images/icons/logo512.png') }}@endif"/>
+<meta name="twitter:card" content="summary"/>
