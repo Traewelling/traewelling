@@ -57,6 +57,10 @@ class Handler extends ExceptionHandler
     {
         $response = parent::render($request, $exception);
 
+        if ($response->getStatusCode() === 404 && !$request->expectsJson() && !$request->is('api/*')) {
+            return response()->view('vue.spa', ['robots' => 'noindex'], 404);
+        }
+
         if ($response instanceof JsonResponse && !config('app.debug') && $exception instanceof Referencable) {
             $response->setData($response->getData(true) + ['reference' => $exception->reference]);
         }

@@ -34,6 +34,7 @@ class PasswordResetTest extends FeatureTestCase
     {
         $this->assertGuest();
         Notification::fake();
+        $this->get(route('password.request'))->assertViewIs('vue.spa');
 
         $user = User::factory(['created_at' => now()->subDay()])->create();
         $response = $this->followingRedirects()
@@ -70,31 +71,30 @@ class PasswordResetTest extends FeatureTestCase
                 'email' => $user->email,
             ]);
         $response->assertOk();
-        Notification::assertSentTo($user, ResetPassword::class);
+        $token = null;
+        Notification::assertSentTo($user, ResetPassword::class, function (ResetPassword $notification) use (&$token): bool {
+            $token = $notification->token;
 
-        $newToken = 'some random token, because we cannot access the real token';
-        $token = hash('sha256', $newToken);
-        DB::table('password_resets')->where('email', $user->email)->update(['token' => $token]);
+            return true;
+        });
 
-        $response = $this->get(route('password.reset', ['token' => $token]));
-        $response->assertOk();
+        $this->get(route('password.reset', ['token' => $token]))
+            ->assertOk()
+            ->assertViewIs('vue.spa');
 
-        $response = $this->followingRedirects()
-            ->post(route('password.update'), [
-                'token' => 'wrong token',
-                'email' => $user->email,
-                'password' => 'GoodPassword123!',
-                'password_confirmation' => 'GoodPassword123!',
-            ]);
-        $response->assertSeeText('This password reset token is invalid.');
+        $this->postJson(route('password.update'), [
+            'token' => 'wrong token',
+            'email' => $user->email,
+            'password' => 'GoodPassword123!',
+            'password_confirmation' => 'GoodPassword123!',
+        ])->assertJsonValidationErrors(['email' => 'This password reset token is invalid.']);
 
-        $response = $this->followingRedirects()
-            ->post(route('password.update'), [
-                'token' => $newToken,
-                'email' => $user->email,
-                'password' => 'GoodPassword123!',
-                'password_confirmation' => 'GoodPassword123!',
-            ]);
-        $response->assertOk();
+        $this->postJson(route('password.update'), [
+            'token' => $token,
+            'email' => $user->email,
+            'password' => 'GoodPassword123!',
+            'password_confirmation' => 'GoodPassword123!',
+        ])->assertOk();
+        $this->assertAuthenticatedAs($user);
     }
 }

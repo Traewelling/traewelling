@@ -143,7 +143,7 @@ const cssVars = computed((): string => {
     <span :class="[product.shape, className]" :style="cssVars">{{ lineName }}</span>
 </template>
 
-<style scoped lang="scss">
+<style scoped>
 .line-indicator.pill {
     border-radius: 0.6em;
     min-width: 1.75rem !important;

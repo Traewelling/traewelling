@@ -8,6 +8,7 @@ use Illuminate\Contracts\Validation\Validator as ContractsValidator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\View\View;
 
 class RegisterController extends Controller
 {
@@ -37,6 +38,14 @@ class RegisterController extends Controller
     public function __construct()
     {
         $this->middleware('guest');
+    }
+
+    public function showRegistrationForm(): View
+    {
+        return view('vue.spa', [
+            'title' => __('menu.register'),
+            'robots' => 'noindex',
+        ]);
     }
 
     /**

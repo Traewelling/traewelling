@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use App\Models\Status;
-use App\Services\LicenseService;
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
@@ -14,14 +12,7 @@ use Illuminate\View\View;
  */
 class FrontendStatusController extends Controller
 {
-    private LicenseService $licenseService;
-
-    public function __construct(LicenseService $licenseService)
-    {
-        $this->licenseService = $licenseService;
-    }
-
-    public function statusesByEvent(string $slug): Renderable
+    public function statusesByEvent(string $slug): View
     {
         $event = Event::where('slug', $slug)->firstOrFail();
         $response = StatusController::getStatusesByEvent($event);
@@ -30,19 +21,19 @@ class FrontendStatusController extends Controller
             abort(404);
         }
 
-        return view('eventsMap', [
-            'event' => $response['event'],
+        return view('vue.spa', [
+            'title' => $event->name,
+            'canonical' => route('event', ['slug' => $event->slug]),
         ]);
     }
 
     public function getStatus(int $statusId): View
     {
         $status = Status::find($statusId);
-        $allowedToView = Gate::allows('view', $status);
+        $username = Gate::allows('view', $status) ? $status?->user->username : null;
 
-        return view('vue.single-status', [
-            'statusId' => $statusId,
-            'username' => $allowedToView ? $status?->user->username : null,
+        return view('vue.spa', [
+            'title' => $username ? __('status.ogp-title', ['name' => $username]) : null,
         ]);
     }
 }

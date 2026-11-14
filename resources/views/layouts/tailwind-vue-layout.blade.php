@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark" data-theme="dark">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
     <title>@hasSection('title')@yield('title') – @endif{{ config('app.name', 'Träwelling') }}</title>
+
+    @include('layouts.includes.meta')
 
     <!-- Dark Mode Script -->
     <script>
@@ -28,6 +26,7 @@
     <link rel="icon" href="{{ asset('images/icons/logo128.png') }}" sizes="128x128">
     <link rel="icon" href="{{ asset('images/icons/logo512.png') }}" sizes="512x512">
     <link rel="shortcut icon" href="{{ asset('images/icons/favicon.ico') }}">
+    <link rel="manifest" href="/manifest.json">
 
     <!-- Styles -->
     @vite(['resources/tailwind-app/app.ts'])
@@ -36,5 +35,8 @@
 <div id="tailwind-app">
     @yield('layout-content')
 </div>
+@isset($pageData)
+    <script id="page-data" type="application/json">@json($pageData)</script>
+@endisset
 </body>
 </html>

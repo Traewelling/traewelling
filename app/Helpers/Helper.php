@@ -106,29 +106,6 @@ function errorMessage(Exception|Error $exception, ?string $text = null): array|n
     return $text . ' ' . __('messages.exception.reference', ['reference' => $exception->reference]);
 }
 
-function appLayout(): string
-{
-    if (request()->routeIs('embed.*')) {
-        return 'layouts.app-embed';
-    }
-
-    return isNewLayout()
-        ? 'layouts.tailwind-vue-layout'
-        : 'layouts.app';
-}
-
-function isNewLayout(): bool
-{
-    return (bool) auth()->user()?->hasRole('open-beta');
-}
-
-function minimalLayout(): string
-{
-    return isNewLayout()
-        ? 'layouts.minimal-tailwind'
-        : 'layouts.app';
-}
-
 function markdown(string $string): string
 {
 

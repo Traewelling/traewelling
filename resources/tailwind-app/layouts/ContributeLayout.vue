@@ -47,12 +47,12 @@
                 <a href="https://help.traewelling.de/features/" target="_blank" class="link link-hover">
                     {{ trans('menu.about') }}
                 </a>
-                <a href="/legal/privacy-policy" class="link link-hover">
+                <router-link :to="{ name: 'privacy-policy' }" class="link link-hover">
                     {{ trans('menu.privacy') }}
-                </a>
-                <a href="/legal" class="link link-hover">
+                </router-link>
+                <router-link :to="{ name: 'legal-notice' }" class="link link-hover">
                     {{ trans('menu.legal-notice') }}
-                </a>
+                </router-link>
             </nav>
         </footer>
         <div class="drawer-side">

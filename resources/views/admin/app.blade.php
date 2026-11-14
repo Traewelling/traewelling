@@ -9,9 +9,11 @@
 
     <script>
         (function () {
-            const saved = localStorage.getItem('theme');
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            document.documentElement.setAttribute('data-theme', saved ?? (prefersDark ? 'dark' : 'light'));
+            let mode = localStorage.getItem('darkMode') ?? 'auto';
+            if (mode === 'auto') {
+                mode = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            document.documentElement.setAttribute('data-theme', mode);
         })();
     </script>
 

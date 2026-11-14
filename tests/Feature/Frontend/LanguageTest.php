@@ -18,8 +18,8 @@ class LanguageTest extends FeatureTestCase
             headers: ['Accept-Language' => 'de'],
         );
         $response->assertOk();
-        $response->assertViewIs('auth.login');
-        $response->assertSee(__('user.forgot-password', [], 'de'));
+        $response->assertViewIs('vue.spa');
+        $response->assertSee('<html lang="de"', false);
         $this->assertGuest();
     }
 
@@ -31,8 +31,8 @@ class LanguageTest extends FeatureTestCase
             headers: ['Accept-Language' => 'zz'],
         );
         $response->assertOk();
-        $response->assertViewIs('auth.login');
-        $response->assertSee(__('user.forgot-password', [], 'en'));
+        $response->assertViewIs('vue.spa');
+        $response->assertSee('<html lang="en"', false);
         $this->assertGuest();
     }
 
@@ -43,8 +43,8 @@ class LanguageTest extends FeatureTestCase
             uri: route('login', ['language' => 'de']),
         );
         $response->assertOk();
-        $response->assertViewIs('auth.login');
-        $response->assertSee(__('user.forgot-password', [], 'de'));
+        $response->assertViewIs('vue.spa');
+        $response->assertSee('<html lang="de"', false);
         $this->assertGuest();
     }
 
@@ -55,7 +55,7 @@ class LanguageTest extends FeatureTestCase
             uri: route('login', ['language' => 'zz']),
         );
         $response->assertOk();
-        $response->assertViewIs('auth.login');
+        $response->assertViewIs('vue.spa');
         $this->assertGuest();
     }
 
@@ -66,7 +66,7 @@ class LanguageTest extends FeatureTestCase
         $response = $this->actingAs($user)
             ->get(route('dashboard', ['language' => 'de']));
         $response->assertOk();
-        $response->assertViewIs('vue.dashboard');
+        $response->assertViewIs('vue.spa');
         $this->assertDatabaseHas('users', ['username' => $user->username, 'language' => 'de']);
     }
 

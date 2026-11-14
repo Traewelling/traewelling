@@ -10,6 +10,7 @@ use Illuminate\Foundation\Auth\VerifiesEmails;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class VerificationController extends Controller
 {
@@ -27,6 +28,18 @@ class VerificationController extends Controller
     use VerifiesEmails;
 
     protected string $redirectTo = '/settings/account';
+
+    public function show(Request $request): View|RedirectResponse
+    {
+        if ($request->user()->hasVerifiedEmail()) {
+            return redirect($this->redirectPath());
+        }
+
+        return view('vue.spa', [
+            'title' => __('user.email-verify'),
+            'robots' => 'noindex',
+        ]);
+    }
 
     public function verify(Request $request): JsonResponse|RedirectResponse
     {

@@ -10,11 +10,6 @@ export default defineConfig({
         tailwindcss(),
         laravel({
             input: [
-                'resources/js/app.js',
-                'resources/sass/app.scss',
-                'resources/sass/app-dark.scss',
-                'resources/js/admin.js',
-                'resources/sass/admin.scss',
                 'resources/css/welcome.css',
                 'resources/js/year-in-review.js',
                 'resources/tailwind-app/app.ts',

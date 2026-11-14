@@ -95,6 +95,8 @@ class OAuthFlowTest extends ApiTestCase
                 'state' => 'test-state',
             ]))
             ->assertOk()
+            ->assertViewIs('vue.spa')
+            ->assertViewHas('pageData.client.name', $client->name)
             ->assertSessionHas('authToken')
             ->assertSessionHas('authRequest');
     }

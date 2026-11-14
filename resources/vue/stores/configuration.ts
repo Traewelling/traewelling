@@ -6,6 +6,7 @@ import {
     type ConfigurationInformation,
     type Feature,
     type Language,
+    type LegalNotice,
 } from '../../types/Api.gen';
 
 const api = new Api({ baseUrl: window.location.origin + '/api' });
@@ -20,6 +21,8 @@ export const useConfigurationStore = defineStore(
             version: 'unknown',
             features: [],
             languages: [],
+            gdprExportCooldown: 0,
+            legalNotice: { name: null, address1: null, address2: null, email: null, phone: null },
         });
         const loading = ref<boolean>(false);
         const error = ref<unknown | null>(null);
@@ -28,6 +31,7 @@ export const useConfigurationStore = defineStore(
         const appName = computed<string>(() => configuration.value.appName);
         const appVersion = computed<string>(() => configuration.value.version);
         const languages = computed<Language[]>(() => configuration.value.languages);
+        const legalNotice = computed<LegalNotice | null>(() => configuration.value.legalNotice ?? null);
 
         function isFeatureEnabled(feature: ConfigurationFeatureEnum): boolean {
             return (
@@ -69,6 +73,7 @@ export const useConfigurationStore = defineStore(
             appName,
             appVersion,
             languages,
+            legalNotice,
             isFeatureEnabled,
             fetchData,
         };

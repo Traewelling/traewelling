@@ -106,7 +106,7 @@ class IcsTest extends ApiTestCase
         ]);
 
         $response = $this->deleteJson(
-            uri: '/api/v1/ics-token/' . $token->id,
+            uri: '/api/v1/ics-tokens/' . $token->id,
         );
         $response->assertStatus(404);
     }

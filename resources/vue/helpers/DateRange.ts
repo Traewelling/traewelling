@@ -1,5 +1,4 @@
-import { DateTime, DateTimeFormatOptions } from 'luxon';
-import { DateTimeOptions, LocaleOptions } from 'luxon/src/datetime';
+import { DateTime, DateTimeFormatOptions, DateTimeOptions, LocaleOptions } from 'luxon';
 import { Dtm } from './DateTime';
 
 export class DtmRange {

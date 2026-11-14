@@ -103,15 +103,24 @@ class AuthorizationController extends PassportAuthorizationController
                     ->where('oauth_client_id', $client->id)
             )->value('count');
 
-        return response()->view('auth.authorize', [
-            'client' => $client,
-            'user' => $user,
-            'scopes' => $scopes,
-            'request' => $request,
-            'authToken' => $authToken,
-            'webhook' => $webhook,
-            'userCount' => $userCount,
-            'author' => $client->user->username,
+        return response()->view('vue.spa', [
+            'title' => __('menu.oauth_authorize.title'),
+            'robots' => 'noindex',
+            'pageData' => [
+                'client' => [
+                    'id' => $client->id,
+                    'name' => $client->name,
+                    'thirdParty' => $client->user_id !== 0,
+                    'privacyPolicyUrl' => $client->privacy_policy_url,
+                    'createdAt' => $client->created_at->toIso8601String(),
+                    'author' => $client->user->username,
+                    'userCount' => (int) $userCount,
+                ],
+                'scopes' => collect($scopes)->pluck('id'),
+                'webhookEvents' => $webhook['events'] ?? null,
+                'state' => $request->state,
+                'authToken' => $authToken,
+            ],
         ]);
     }
 

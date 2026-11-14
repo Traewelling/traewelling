@@ -13,5 +13,5 @@ const html = computed(() => DOMPurify.sanitize(marked.parse(props.markdown) as s
 
 <template>
     <!-- eslint-disable-next-line vue/no-v-html -->
-    <div class="prose max-w-full" v-html="html" />
+    <div class="prose prose-sm max-w-full prose-h1:text-xl prose-h2:text-lg prose-h3:text-base" v-html="html" />
 </template>

@@ -309,6 +309,8 @@ export interface ConfigurationInformation {
   languages: Language[];
   /** Cooldown time in days between gdpr exports */
   gdprExportCooldown: number;
+  /** Contact details of the operator for the legal notice. */
+  legalNotice: LegalNotice;
 }
 
 /** Represents a language with its code and name. */
@@ -323,6 +325,20 @@ export interface Language {
    * @example "English"
    */
   name: string;
+}
+
+/** Contact details of the operator for the legal notice. */
+export interface LegalNotice {
+  /** @example "John Doe" */
+  name: string | null;
+  /** @example "1 Example Street" */
+  address1: string | null;
+  /** @example "12345 Example City" */
+  address2: string | null;
+  /** @example "hello@example.com" */
+  email: string | null;
+  /** @example "+49 123 456789" */
+  phone: string | null;
 }
 
 /**
@@ -933,6 +949,8 @@ export interface UpdateProfileInformationRequest {
   profileLinks?: ProfileLinkResource[] | null;
   /** @example "Europe/Berlin" */
   timezone?: string;
+  /** @example "de" */
+  language?: string;
 }
 
 /** ActivityLog */

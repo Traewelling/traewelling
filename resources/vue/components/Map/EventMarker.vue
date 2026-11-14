@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { MglMarker, MglPopup } from '@indoorequal/vue-maplibre-gl';
+import { CalendarDays, User } from '@lucide/vue';
 import { trans } from 'laravel-vue-i18n';
 import { PropType } from 'vue';
 import { EventResource } from '../../../types/Api.gen';
@@ -45,8 +46,8 @@ defineProps({
                 <strong
                     ><a target="_blank" :href="event.url">{{ event.name }}</a></strong
                 ><br />
-                <i class="fa fa-user-clock" /> {{ event.host }}<br />
-                <i class="fa fa-calendar-day" />
+                <User class="inline size-4" /> {{ event.host }}<br />
+                <CalendarDays class="inline size-4" />
                 {{ DtmRange.fromISO(event.begin, event.end).toLocaleDateString() }}<br />
                 <a :href="`/event/${event.slug}`">{{ trans('events.show-all-for-event') }}</a>
             </div>

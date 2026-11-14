@@ -16,6 +16,7 @@ import { trans } from 'laravel-vue-i18n';
 import { DateTime } from 'luxon';
 import { Notyf } from 'notyf';
 import { computed, inject, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 import { Api, Business, MentionDto, StatusResource, StopoverResource, UserResource } from '../../../types/Api.gen';
 import LineIndicator from '../../../vue/components/LineIndicator.vue';
 import TrwMap from '../../../vue/components/Map/Map.vue';
@@ -54,6 +55,7 @@ const emit = defineEmits<{
 }>();
 
 const api = new Api({ baseUrl: window.location.origin + '/api' });
+const router = useRouter();
 const userStore = useUserStore();
 const notyf = inject('notyf') as Notyf;
 
@@ -229,11 +231,61 @@ function onStatusDeleted(id: number) {
 
 const visibilityIcon = computed(() => VISIBILITY_ICONS[statusObject.value.visibility] ?? Eye);
 const inProgress = computed(() => progress.value > 0 && progress.value < 100);
+
+const statusLocation = computed(() => ({ name: 'single-status', params: { id: statusObject.value.id } }));
+const isCurrentStatus = computed(
+    () =>
+        router.currentRoute.value.name === 'single-status' &&
+        String(router.currentRoute.value.params.id) === String(statusObject.value.id),
+);
+
+function isOnText(event: MouseEvent): boolean {
+    for (const node of (event.target as Element).childNodes) {
+        if (node.nodeType !== Node.TEXT_NODE || !node.textContent?.trim()) {
+            continue;
+        }
+        const range = document.createRange();
+        range.selectNodeContents(node);
+        for (const rect of range.getClientRects()) {
+            if (
+                event.clientX >= rect.left &&
+                event.clientX <= rect.right &&
+                event.clientY >= rect.top &&
+                event.clientY <= rect.bottom
+            ) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+function openStatus(event: MouseEvent): void {
+    const target = event.target as Element;
+    if (
+        isCurrentStatus.value ||
+        target.closest('a, button, input, select, textarea, label, summary, canvas, .dropdown, [role="button"]') ||
+        isOnText(event) ||
+        window.getSelection()?.toString()
+    ) {
+        return;
+    }
+    if (event.ctrlKey || event.metaKey) {
+        window.open(router.resolve(statusLocation.value).href, '_blank');
+        return;
+    }
+    router.push(statusLocation.value);
+}
 </script>
 
 <template>
     <Transition name="fade">
-        <div v-if="!deleted" class="card bg-base-100 shadow-sm relative">
+        <div
+            v-if="!deleted"
+            class="card bg-base-100 shadow-sm relative"
+            :class="{ 'cursor-pointer': !isCurrentStatus }"
+            @click="openStatus"
+        >
             <!-- Map (shown on status detail page) -->
             <div
                 v-if="showMap"
@@ -292,7 +344,7 @@ const inProgress = computed(() => progress.value > 0 && progress.value < 100);
                             </div>
 
                             <!-- Line info row -->
-                            <div class="flex flex-wrap items-center gap-1.5 mt-1 text-sm text-base-content/60">
+                            <div class="flex flex-wrap items-center gap-1.5 mt-1 text-sm text-base-content/80">
                                 <TransportIcon
                                     :mode="statusObject.checkin.mode"
                                     :product="statusObject.checkin.category"
@@ -306,7 +358,7 @@ const inProgress = computed(() => progress.value > 0 && progress.value < 100);
                                     :color="statusObject.checkin.routeTextColor || undefined"
                                     :background-color="statusObject.checkin.routeColor || undefined"
                                 />
-                                <span v-if="statusObject.checkin.manualJourneyNumber" class="opacity-60">
+                                <span v-if="statusObject.checkin.manualJourneyNumber" class="opacity-80">
                                     ({{ statusObject.checkin.manualJourneyNumber }})
                                 </span>
                                 <span
@@ -316,7 +368,7 @@ const inProgress = computed(() => progress.value > 0 && progress.value < 100);
                                             statusObject.checkin.journeyNumber.toString(),
                                         )
                                     "
-                                    class="opacity-60"
+                                    class="opacity-80"
                                 >
                                     ({{ statusObject.checkin.journeyNumber }})
                                 </span>
@@ -366,7 +418,7 @@ const inProgress = computed(() => progress.value > 0 && progress.value < 100);
                                 <router-link
                                     v-if="segment.username"
                                     :to="{ name: 'user-profile', params: { username: segment.username } }"
-                                    class="link text-primary [[data-theme=dark]_&]:text-red-400"
+                                    class="link link-primary"
                                     >{{ segment.text }}</router-link
                                 ><template v-else>{{ segment.text }}</template>
                             </template>
@@ -487,10 +539,7 @@ const inProgress = computed(() => progress.value > 0 && progress.value < 100);
                             userStore.user?.id === statusObject.user.id ? trans('user.you') : statusObject.user.username
                         }}
                     </router-link>
-                    <router-link
-                        :to="{ name: 'single-status', params: { id: statusObject.id } }"
-                        class="text-xs text-base-content/40 link link-hover"
-                    >
+                    <router-link :to="statusLocation" class="text-xs text-base-content/70 link link-hover">
                         {{ new Dtm(statusObject.createdAt).toRelative() }}
                     </router-link>
                 </div>

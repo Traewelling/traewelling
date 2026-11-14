@@ -1,8 +1,9 @@
+import { Info, TriangleAlert } from '@lucide/vue';
 import { i18nVue } from 'laravel-vue-i18n';
 import { INotyfOptions, Notyf } from 'notyf';
 import { createPinia } from 'pinia';
 import piniaPluginPersistedState from 'pinia-plugin-persistedstate';
-import { createApp } from 'vue';
+import { Component, createApp, h, render } from 'vue';
 import '../css/tailwind-app.css';
 import '../js/maplibre';
 import App from './App.vue';
@@ -13,6 +14,12 @@ import router from './router';
 // const notyf = inject('notyf') as Notyf
 // notyf.success('hi there!')
 //
+function iconHtml(icon: Component): string {
+    const container = document.createElement('div');
+    render(h(icon, { size: 20, color: 'white' }), container);
+    return container.innerHTML;
+}
+
 const notyf = new Notyf({
     duration: 5000,
     position: { x: 'right', y: window.innerWidth > 480 ? 'top' : 'bottom' },
@@ -22,20 +29,12 @@ const notyf = new Notyf({
         {
             type: 'info',
             background: '#0dcaf0',
-            icon: {
-                className: 'fa-solid fa-circle-info',
-                color: 'white',
-                tagName: 'i',
-            },
+            icon: iconHtml(Info),
         },
         {
             type: 'warning',
             background: '#ffc107',
-            icon: {
-                className: 'fa-solid fa-triangle-exclamation',
-                tagName: 'i',
-                color: 'white',
-            },
+            icon: iconHtml(TriangleAlert),
         },
     ],
 } as INotyfOptions);

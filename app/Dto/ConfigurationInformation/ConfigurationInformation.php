@@ -8,7 +8,7 @@ use OpenApi\Attributes as OA;
 #[OA\Schema(
     schema: 'ConfigurationInformation',
     description: 'Holds configuration information about the application.',
-    required: ['appName', 'appDebug', 'appUrl', 'features', 'languages', 'version', 'gdprExportCooldown'],
+    required: ['appName', 'appDebug', 'appUrl', 'features', 'languages', 'version', 'gdprExportCooldown', 'legalNotice'],
     properties: [
         new OA\Property(
             property: 'appName',
@@ -51,6 +51,7 @@ use OpenApi\Attributes as OA;
             description: 'Cooldown time in days between gdpr exports',
             type: 'integer',
         ),
+        new OA\Property(property: 'legalNotice', ref: LegalNotice::class),
     ],
     type: 'object'
 )]
@@ -64,6 +65,7 @@ readonly class ConfigurationInformation implements \JsonSerializable
         public string $appUrl,
         public string $version,
         public int $gdprExportCooldown,
+        public LegalNotice $legalNotice,
         public array $features = [],
         public array $languages = [],
     ) {}

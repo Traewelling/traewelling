@@ -326,11 +326,11 @@ return [
     ],
 
     'legal' => [
-        'name' => env('MIX_LEGAL_NAME'),
-        'address1' => env('MIX_LEGAL_ADDRESS1'),
-        'address2' => env('MIX_LEGAL_ADDRESS2'),
-        'tel' => env('MIX_LEGAL_TEL'),
-        'email' => env('MIX_LEGAL_EMAIL'),
+        'name' => env('MIX_LEGAL_NAME', 'Max Mustermann'),
+        'address1' => env('MIX_LEGAL_ADDRESS1', 'Musterstraße 1'),
+        'address2' => env('MIX_LEGAL_ADDRESS2', '12345 Musterstadt'),
+        'tel' => env('MIX_LEGAL_TEL', '01234 / 56789'),
+        'email' => env('MIX_LEGAL_EMAIL', 'max@mustermann.de'),
     ],
 
     'privacy' => [

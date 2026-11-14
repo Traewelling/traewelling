@@ -40,6 +40,9 @@ function withAppContext(app: App) {
             routes: [
                 { path: '/:pathMatch(.*)*', component: blank },
                 { path: '/stationboard', name: 'stationboard', component: blank },
+                { path: '/@:username', name: 'user-profile', component: blank },
+                { path: '/status/:id', name: 'single-status', component: blank },
+                { path: '/event/:slug', name: 'event-view', component: blank },
             ],
         }),
     );

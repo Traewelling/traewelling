@@ -31,6 +31,7 @@ class UserRedirectionTest extends FeatureTestCase
         // Then: Redirect to login.
         $response->assertStatus(302);
         $response->assertRedirect('/login');
+        $this->get('/settings/profile')->assertRedirect('/login');
     }
 
     /**

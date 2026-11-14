@@ -54,36 +54,36 @@ const elsewhereLinks = [
                 >
                     {{ link.name }}
                 </a>
-                <a href="/legal/privacy-policy" class="link link-hover">
+                <router-link :to="{ name: 'privacy-policy' }" class="link link-hover">
                     {{ trans('menu.privacy') }}
-                </a>
-                <a href="/legal" class="link link-hover">
+                </router-link>
+                <router-link :to="{ name: 'legal-notice' }" class="link link-hover">
                     {{ trans('menu.legal-notice') }}
-                </a>
+                </router-link>
             </div>
         </nav>
         <!-- /mobile footer -->
         <nav class="max-sm:hidden">
-            <h6 class="footer-title sm:hidden">{{ trans('footer.services') }}</h6>
+            <h6 class="footer-title opacity-100 sm:hidden">{{ trans('footer.services') }}</h6>
             <router-link :to="{ name: 'event-list' }" class="link link-hover">{{ trans('events') }}</router-link>
             <a href="https://help.traewelling.de/features/" target="_blank" class="link link-hover">
                 {{ trans('menu.about') }}
             </a>
         </nav>
         <nav class="max-sm:hidden">
-            <h6 class="footer-title">{{ trans('footer.elsewhere') }}</h6>
+            <h6 class="footer-title opacity-100">{{ trans('footer.elsewhere') }}</h6>
             <a v-for="link in elsewhereLinks" :key="link.name" target="_blank" class="link link-hover" :href="link.url">
                 {{ link.name }}
             </a>
         </nav>
         <nav class="max-sm:hidden">
-            <h6 class="footer-title">{{ trans('footer.legal') }}</h6>
-            <a href="/legal/privacy-policy" class="link link-hover">
+            <h6 class="footer-title opacity-100">{{ trans('footer.legal') }}</h6>
+            <router-link :to="{ name: 'privacy-policy' }" class="link link-hover">
                 {{ trans('menu.privacy') }}
-            </a>
-            <a href="/legal" class="link link-hover">
+            </router-link>
+            <router-link :to="{ name: 'legal-notice' }" class="link link-hover">
                 {{ trans('menu.legal-notice') }}
-            </a>
+            </router-link>
         </nav>
         <nav>
             <DarkModeSelector />

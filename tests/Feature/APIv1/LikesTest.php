@@ -77,7 +77,7 @@ class LikesTest extends ApiTestCase
     {
         $this->actAsApiUserWithAllScopes();
         $response = $this->deleteJson(
-            uri: '/api/v1/like/999999999', // some high id which should not exist in our test-data
+            uri: '/api/v1/status/999999999/like', // some high id which should not exist in our test-data
         );
         $response->assertNotFound();
     }

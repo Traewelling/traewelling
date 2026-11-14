@@ -36,7 +36,7 @@ defineProps({
                 <Star class="w-5 h-5 text-primary shrink-0" />
                 <span class="font-semibold text-sm">
                     {{ userData?.points ?? 0 }}
-                    <span class="text-base-content/50 ml-0.5">{{ trans('profile.points-abbr') }}</span>
+                    <span class="text-base-content/70 ml-0.5">{{ trans('profile.points-abbr') }}</span>
                 </span>
             </div>
         </div>
