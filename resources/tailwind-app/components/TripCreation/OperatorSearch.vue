@@ -31,8 +31,8 @@ async function search(): Promise<void> {
     }
     loading.value = true;
     try {
-        const result = await api.operators.getOperators({ query: q });
-        results.value = (result.data?.data ?? []) as Operator[];
+        const result = await api.operators.listOperatorsV2({ query: q });
+        results.value = result.data.data.map((operator) => ({ uuid: operator.id, name: operator.name }));
         dropdownVisible.value = true;
     } catch {
         // ignore

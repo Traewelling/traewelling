@@ -11542,6 +11542,76 @@
                     }
                 ]
             }
+        },
+        "/v2/operators": {
+            "get": {
+                "tags": [
+                    "Checkin"
+                ],
+                "summary": "Get a list of operators, optionally filtered by name.",
+                "operationId": "listOperatorsV2",
+                "parameters": [
+                    {
+                        "name": "query",
+                        "in": "query",
+                        "description": "Filter operators by name (minimum 2 characters)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "cursor",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ],
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/OperatorResourceV2"
+                                            }
+                                        },
+                                        "links": {
+                                            "$ref": "#/components/schemas/Links"
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/CursorPaginationMeta"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -14661,7 +14731,7 @@
                         "example": "operator"
                     },
                     "id": {
-                        "description": "Numeric legacy ID. Deprecated: will become a UUID after 2026-09-30.",
+                        "description": "Numeric legacy ID. Use `uuid` instead.",
                         "type": "integer",
                         "example": 1,
                         "deprecated": true
@@ -16866,6 +16936,36 @@
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/WebhookResponseCodeStatsDto"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "OperatorResourceV2": {
+                "required": [
+                    "type",
+                    "id",
+                    "name",
+                    "identifiers"
+                ],
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "example": "operator"
+                    },
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "00000000-0000-0000-0000-000000000000"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "DB Regio AG Nord"
+                    },
+                    "identifiers": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/OperatorIdentifierResource"
                         }
                     }
                 },

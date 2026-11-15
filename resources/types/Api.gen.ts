@@ -1706,7 +1706,7 @@ export interface OperatorResource {
   /** @example "operator" */
   type: string;
   /**
-   * Numeric legacy ID. Deprecated: will become a UUID after 2026-09-30.
+   * Numeric legacy ID. Use `uuid` instead.
    * @deprecated
    * @example 1
    */
@@ -2862,6 +2862,19 @@ export interface WebhookStatsResource {
   byDay: WebhookDayStatsDto[];
   byEvent: WebhookEventStatsDto[];
   byResponseCode: WebhookResponseCodeStatsDto[];
+}
+
+export interface OperatorResourceV2 {
+  /** @example "operator" */
+  type: string;
+  /**
+   * @format uuid
+   * @example "00000000-0000-0000-0000-000000000000"
+   */
+  id: string;
+  /** @example "DB Regio AG Nord" */
+  name: string;
+  identifiers: OperatorIdentifierResource[];
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -5701,6 +5714,41 @@ export class Api<
       this.request<void, void>({
         path: `/v1/operators/${oldOperatorId}/merge/${newOperatorId}`,
         method: "PUT",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Checkin
+     * @name ListOperatorsV2
+     * @summary Get a list of operators, optionally filtered by name.
+     * @request GET:/v2/operators
+     * @secure
+     */
+    listOperatorsV2: (
+      query?: {
+        /** Filter operators by name (minimum 2 characters) */
+        query?: string;
+        cursor?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data: OperatorResourceV2[];
+          /** Pagination links */
+          links: Links;
+          /** Cursor pagination meta data */
+          meta: CursorPaginationMeta;
+        },
+        void
+      >({
+        path: `/v2/operators`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
         ...params,
       }),
   };

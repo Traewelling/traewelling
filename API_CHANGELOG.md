@@ -15,10 +15,10 @@ Check back here regularly to stay ahead of removals.
 
 | Announced  | What?                                                                                                                                                                                                                      | Safe until | PR                                                            |
 |------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------|---------------------------------------------------------------|
-| 2026-04-07 | `OperatorResource.id` is deprecated as integer: will become a UUID after 2026-09-30. prefer `uuid` instead while migration-period                                                                                          | 2026-09-30 | [#4676](https://github.com/Traewelling/traewelling/pull/4676) |
 | 2026-07-19 | `StopoverResource.id` is deprecated as station ID: it currently holds the station ID (not unique within a trip). Use `station` for station details. After the safe-until date `id` is repurposed to the unique stopover ID | 2026-11-30 | [#4959](https://github.com/Traewelling/traewelling/pull/4959) |
 | 2026-07-19 | `StopoverResource.name` is deprecated → use `station.name` instead                                                                                                                                                         | 2026-11-30 | [#4959](https://github.com/Traewelling/traewelling/pull/4959) |
 | 2026-07-19 | `StopoverResource.identifiers` (only present with `withIdentifiers=true`) is deprecated → use `station.identifiers` instead                                                                                                | 2026-11-30 | [#4959](https://github.com/Traewelling/traewelling/pull/4959) |
+| 2026-11-15 | `GET /api/v1/operators` is switched off, use `GET /api/v2/operators` instead                                                                                                                                               | 2027-05-31 |                                                               |
 
 ---
 
@@ -29,6 +29,16 @@ working and redirect to the new URL, so this is not a breaking change.
 
 `StatusResource` now contains `uuid`, and `GET /api/v1/status/{id}` accepts the UUID as well as the numeric ID.
 Please prefer the UUID wherever possible: it gradually replaces the numeric IDs. Not all endpoints support UUIDs yet.
+
+New endpoint `GET /api/v2/operators`: same as `GET /api/v1/operators`, but `id` is the UUID of the operator and there
+is no separate `uuid` field. `GET /api/v1/operators` is switched off after 2027-05-31.
+
+This is the first endpoint switched off according to
+[ADR-0002](https://github.com/Traewelling/traewelling/blob/develop/docs/architecture/decisions/0002-per-endpoint-api-versioning.md):
+breaking changes get a new version of the affected endpoint, and the old version is switched off after an announced date.
+Endpoint versions with a shutdown date now send a `Sunset` header (RFC 8594) with that date and a `Link` header with
+`rel="sunset"` pointing to this changelog. After that date they answer with `410 Gone`. We recommend checking API
+responses for the `Sunset` header automatically and logging or showing a warning when it is present.
 
 Removed the following deprecated fields, announced in 2026-05:
 
