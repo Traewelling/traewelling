@@ -422,19 +422,8 @@ class TransportController extends Controller
                 response: 409,
                 description: 'Checkin collision',
                 content: new OA\JsonContent(
-                    required: ['message', 'data'],
+                    required: ['data'],
                     properties: [
-                        new OA\Property(
-                            property: 'message',
-                            description: 'Deprecated: use data.conflicts instead',
-                            required: ['status_id', 'lineName'],
-                            properties: [
-                                new OA\Property(property: 'status_id', type: 'integer', nullable: true, deprecated: true),
-                                new OA\Property(property: 'lineName', type: 'string', nullable: true, deprecated: true),
-                            ],
-                            type: 'object',
-                            deprecated: true,
-                        ),
                         new OA\Property(
                             property: 'data',
                             required: ['conflicts'],
@@ -477,13 +466,7 @@ class TransportController extends Controller
                 'checkin.statusTags', 'tags', 'mentions.mentioned', 'ticket', 'client',
             ])->whereIn('id', $exception->checkins->pluck('status_id'))->get();
 
-            $firstCheckin = $exception->checkins->first();
-
             return response()->json([
-                'message' => [
-                    'status_id' => $firstCheckin?->status_id,  // TODO: remove after 2026-10
-                    'lineName' => $firstCheckin?->trip?->linename, // TODO: remove after 2026-10
-                ],
                 'data' => [
                     'conflicts' => StatusResource::collection($statuses),
                 ],

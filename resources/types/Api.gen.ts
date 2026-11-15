@@ -7914,16 +7914,6 @@ export class Api<
             };
           }
         | {
-            /**
-             * Deprecated: use data.conflicts instead
-             * @deprecated
-             */
-            message: {
-              /** @deprecated */
-              status_id: number | null;
-              /** @deprecated */
-              lineName: string | null;
-            };
             data: {
               conflicts: StatusResource[];
             };
