@@ -7,7 +7,7 @@ const props = defineProps<{ report: ReportResource; compact?: boolean }>();
 const subjectUrl = computed((): string | null => {
     switch (props.report.subject_type) {
         case 'Status':
-            return `/admin/statuses/${props.report.subject_id}`;
+            return `/admin/statuses/${props.report.subject?.uuid ?? props.report.subject_id}`;
         case 'User':
             return `/admin/users/${props.report.subject_id}`;
         case 'Event':

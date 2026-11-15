@@ -35,7 +35,7 @@ function withAppContext(app: App, fullPageNavigation = false) {
             { path: '/:pathMatch(.*)*', component: blank },
             { path: '/stationboard', name: 'stationboard', component: blank },
             { path: '/@:username', name: 'user-profile', component: blank },
-            { path: '/status/:id', name: 'single-status', component: blank },
+            { path: '/status/:uuid', name: 'single-status', component: blank },
             { path: '/event/:slug', name: 'event-view', component: blank },
             { path: '/events', name: 'event-list', component: blank },
             { path: '/changelog', name: 'changelog', component: blank },

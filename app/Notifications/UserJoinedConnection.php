@@ -34,7 +34,7 @@ class UserJoinedConnection extends Notification implements BaseNotification
     public function toArray(): array
     {
         return [
-            'status' => $this->status->only(['id']),
+            'status' => $this->status->only(['id', 'uuid']),
             'checkin' => [
                 'linename' => $this->status->checkin->trip->linename,
                 'origin' => $this->status->checkin->originStopover->station->name,
@@ -67,6 +67,8 @@ class UserJoinedConnection extends Notification implements BaseNotification
 
     public static function getLink(array $data): ?string
     {
-        return route('status', ['id' => $data['status']['id']]);
+        return isset($data['status']['uuid'])
+            ? route('status', ['uuid' => $data['status']['uuid']])
+            : url('/status/' . $data['status']['id']);
     }
 }

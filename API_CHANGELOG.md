@@ -23,6 +23,16 @@ Check back here regularly to stay ahead of removals.
 
 ---
 
+# 2026-11-15
+
+The primary URL of a status is now `/status/{uuid}` instead of `/status/{id}`. Existing links to `/status/{id}` keep
+working and redirect to the new URL, so this is not a breaking change.
+
+`StatusResource` now contains `uuid`, and `GET /api/v1/status/{id}` accepts the UUID as well as the numeric ID.
+Please prefer the UUID wherever possible: it gradually replaces the numeric IDs. Not all endpoints support UUIDs yet.
+
+---
+
 # 2026-11-07
 
 New endpoint `GET /api/v2/notifications`: the notifications of the authenticated user with cursor pagination

@@ -977,6 +977,11 @@ export interface ActivityLogResource {
 export interface AdminStatusResource {
   /** @example 12345 */
   id: number;
+  /**
+   * @format uuid
+   * @example "00000000-0000-0000-0000-000000000000"
+   */
+  uuid: string;
   body: string | null;
   /** @example 0 */
   visibility: number;
@@ -1830,6 +1835,8 @@ export interface ReportResource {
   subject_id: number;
   /** Null if the subject no longer exists */
   subject: {
+    /** @format uuid */
+    uuid: string | null;
     user: LightUserResource | null;
     body: string | null;
     name: string | null;
@@ -2060,6 +2067,11 @@ export interface StatisticsGlobalData {
 export interface StatusResource {
   /** @example 12345 */
   id: number;
+  /**
+   * @format uuid
+   * @example "00000000-0000-0000-0000-000000000000"
+   */
+  uuid: string;
   /**
    * User defined status text
    * @example "Hello world!"
@@ -2608,7 +2620,7 @@ export interface Notification {
   noticeFormatted: string;
   /** @example "@bob is on S 81 from Karlsruhe Hbf to Freudenstadt Hbf." */
   notice: string;
-  /** @example "https://traewelling.de/status/123456" */
+  /** @example "https://traewelling.de/status/00000000-0000-0000-0000-000000000000" */
   link: string;
   data: any[];
   /** @example "2023-01-01T00:00:00+00:00" */
@@ -3485,7 +3497,7 @@ export class Api<
      * @request GET:/v1/admin/statuses/{id}
      * @secure
      */
-    getAdminStatus: (id: number, params: RequestParams = {}) =>
+    getAdminStatus: (id: string, params: RequestParams = {}) =>
       this.request<
         {
           data: AdminStatusResource;
@@ -3509,7 +3521,7 @@ export class Api<
      * @secure
      */
     updateAdminStatus: (
-      id: number,
+      id: string,
       data: {
         /** Origin stopover ID (train_stopovers.id) of this trip */
         origin: number;
@@ -5268,7 +5280,7 @@ export class Api<
      * @secure
      */
     getSingleStatus: (
-      id?: number,
+      id?: string,
       query?: {
         /**
          * Include station identifiers in origin and destination stopovers

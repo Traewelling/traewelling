@@ -72,15 +72,19 @@ class AdminStatusTest extends ApiTestCase
         $status = Status::factory()->has(Checkin::factory())->create();
 
         $this->actAsApiUserWithAllScopes($this->admin);
-        $res = $this->getJson("/api/v1/admin/statuses/{$status->id}");
 
-        $res->assertOk();
-        $res->assertJsonPath('data.id', $status->id);
-        $res->assertJsonStructure(['data' => [
-            'id', 'body', 'visibility', 'business',
-            'moderationNotes', 'lockVisibility', 'hideBody',
-            'user', 'checkin', 'stopovers',
-        ]]);
+        foreach ([$status->uuid, $status->id] as $identifier) {
+            $res = $this->getJson("/api/v1/admin/statuses/{$identifier}");
+
+            $res->assertOk();
+            $res->assertJsonPath('data.id', $status->id);
+            $res->assertJsonPath('data.uuid', $status->uuid);
+            $res->assertJsonStructure(['data' => [
+                'id', 'body', 'visibility', 'business',
+                'moderationNotes', 'lockVisibility', 'hideBody',
+                'user', 'checkin', 'stopovers',
+            ]]);
+        }
     }
 
     public function test_non_admin_cannot_get_single_status(): void
@@ -129,7 +133,7 @@ class AdminStatusTest extends ApiTestCase
         $checkin = $status->checkin;
 
         $this->actAsApiUserWithAllScopes($this->admin);
-        $res = $this->putJson("/api/v1/admin/statuses/{$status->id}", [
+        $res = $this->putJson("/api/v1/admin/statuses/{$status->uuid}", [
             'origin' => $checkin->origin_stopover_id,
             'destination' => $checkin->destination_stopover_id,
             'body' => 'Updated body',

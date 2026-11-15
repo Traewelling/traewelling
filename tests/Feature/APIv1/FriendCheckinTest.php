@@ -85,7 +85,7 @@ class FriendCheckinTest extends ApiTestCase
         $notification = $userToCheckin->refresh()->notifications->where('type', YouHaveBeenCheckedIn::class)->last();
         $this->assertStringContainsString($user->username, YouHaveBeenCheckedIn::getLead($notification->data));
         $this->assertStringContainsString($trip->originStation->name, YouHaveBeenCheckedIn::getNotice($notification->data));
-        $this->assertStringContainsString($userToCheckin->statuses->last()->id, YouHaveBeenCheckedIn::getLink($notification->data));
+        $this->assertStringContainsString($userToCheckin->statuses->last()->uuid, YouHaveBeenCheckedIn::getLink($notification->data));
     }
 
     public function test_user_can_allow_checkins_for_trusted_users(): void

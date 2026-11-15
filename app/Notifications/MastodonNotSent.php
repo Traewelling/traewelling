@@ -30,7 +30,7 @@ class MastodonNotSent extends Notification implements BaseNotification
     {
         return [
             'httpResponseCode' => $this->httpResponseCode,
-            'status' => $this->status->only(['id']),
+            'status' => $this->status->only(['id', 'uuid']),
         ];
     }
 
@@ -48,8 +48,8 @@ class MastodonNotSent extends Notification implements BaseNotification
 
     public static function getLink(array $data): ?string
     {
-        return route('status', [
-            'id' => $data['status']['id'],
-        ]);
+        return isset($data['status']['uuid'])
+            ? route('status', ['uuid' => $data['status']['uuid']])
+            : url('/status/' . $data['status']['id']);
     }
 }

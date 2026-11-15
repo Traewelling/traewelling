@@ -94,6 +94,7 @@ readonly class LivePointDto implements JsonSerializable
             'status' => [
                 // undocumented
                 'id' => $this->status->id,
+                'uuid' => $this->status->uuid,
                 'user' => [
                     'id' => $this->status->user->id,
                     'username' => $this->status->user->username,

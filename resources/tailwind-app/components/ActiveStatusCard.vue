@@ -65,8 +65,8 @@ function format(dateTime: DateTime | null): string {
 }
 
 function goToStatus() {
-    if (state.status?.id) {
-        router.push({ name: 'single-status', params: { id: state.status.id } });
+    if (state.status?.uuid) {
+        router.push({ name: 'single-status', params: { uuid: state.status.uuid } });
     }
 }
 

@@ -74,7 +74,7 @@ const routes: Array<RouteRecordRaw> = [
         component: StatusesIndex,
     },
     {
-        path: '/admin/statuses/:id',
+        path: '/admin/statuses/:uuid',
         component: StatusesShow,
     },
     {

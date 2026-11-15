@@ -13,6 +13,7 @@ use OpenApi\Attributes as OA;
     title: 'Status',
     required: [
         'id',
+        'uuid',
         'body',
         'business',
         'bodyMentions',
@@ -35,6 +36,7 @@ use OpenApi\Attributes as OA;
     ],
     properties: [
         new OA\Property(property: 'id', type: 'integer', example: 12345),
+        new OA\Property(property: 'uuid', type: 'string', format: 'uuid', example: '00000000-0000-0000-0000-000000000000'),
         new OA\Property(
             property: 'body',
             description: 'User defined status text',
@@ -125,6 +127,7 @@ class StatusResource extends JsonResource
         /** @var Status $this */
         return [
             'id' => (int) $this->id,
+            'uuid' => $this->uuid,
             'body' => (string) $this->body,
             'bodyMentions' => $this->mentions->map(
                 fn ($mention) => new MentionDto($mention->mentioned, $mention->position, $mention->length)

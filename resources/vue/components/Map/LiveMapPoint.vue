@@ -106,7 +106,7 @@ onUnmounted(stopAnimation);
                 <a :href="`/@${point.status.user.username}`" class="live-popup-link"
                     >@{{ point.status.user.username }}</a
                 >
-                <a :href="`/status/${point.status.id}`" class="live-popup-link">Status →</a>
+                <a :href="`/status/${point.status.uuid}`" class="live-popup-link">Status →</a>
             </div>
         </mgl-popup>
     </mgl-marker>

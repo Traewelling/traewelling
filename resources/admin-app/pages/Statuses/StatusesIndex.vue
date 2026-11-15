@@ -121,7 +121,7 @@ onMounted(() => fetchStatuses());
                             v-for="status in statuses"
                             :key="status.id"
                             class="hover cursor-pointer"
-                            @click="$router.push(`/admin/statuses/${status.id}`)"
+                            @click="$router.push(`/admin/statuses/${status.uuid}`)"
                         >
                             <td class="font-mono text-xs">{{ status.id }}</td>
                             <td class="text-sm">
