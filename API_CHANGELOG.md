@@ -15,7 +15,6 @@ Check back here regularly to stay ahead of removals.
 
 | Announced  | What?                                                                                                                                                                                                                      | Safe until | PR                                                            |
 |------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------|---------------------------------------------------------------|
-| 2026-05-14 | `POST /api/v1/trains/checkin` 409 response: `message.status_id` and `message.lineName` are deprecated. Use `data.conflicts` (full `StatusResource` array) instead                                                          | 2026-10-31 | [#4677](https://github.com/Traewelling/traewelling/pull/4677) |
 | 2026-07-19 | `StopoverResource.id` is deprecated as station ID: it currently holds the station ID (not unique within a trip). Use `station` for station details. After the safe-until date `id` is repurposed to the unique stopover ID | 2026-11-30 | [#4959](https://github.com/Traewelling/traewelling/pull/4959) |
 | 2026-07-19 | `StopoverResource.name` is deprecated → use `station.name` instead                                                                                                                                                         | 2026-11-30 | [#4959](https://github.com/Traewelling/traewelling/pull/4959) |
 | 2026-07-19 | `StopoverResource.identifiers` (only present with `withIdentifiers=true`) is deprecated → use `station.identifiers` instead                                                                                                | 2026-11-30 | [#4959](https://github.com/Traewelling/traewelling/pull/4959) |
@@ -40,6 +39,11 @@ breaking changes get a new version of the affected endpoint, and the old version
 Endpoint versions with a shutdown date now send a `Sunset` header (RFC 8594) with that date and a `Link` header with
 `rel="sunset"` pointing to this changelog. After that date they answer with `410 Gone`. We recommend checking API
 responses for the `Sunset` header automatically and logging or showing a warning when it is present.
+
+Removed the following deprecated fields, announced in 2026-05:
+
+- `message.status_id` and `message.lineName` in the 409 response of `POST /trains/checkin`: use `data.conflicts`
+  instead. The `message` object is no longer part of this response
 
 ---
 
