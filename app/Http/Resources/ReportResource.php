@@ -25,8 +25,9 @@ use OpenApi\Attributes as OA;
         new OA\Property(
             property: 'subject',
             description: 'Null if the subject no longer exists',
-            required: ['user', 'body', 'name', 'line_name', 'origin', 'destination', 'manual_trip'],
+            required: ['uuid', 'user', 'body', 'name', 'line_name', 'origin', 'destination', 'manual_trip'],
             properties: [
+                new OA\Property(property: 'uuid', type: 'string', format: 'uuid', nullable: true),
                 new OA\Property(property: 'user', ref: LightUserResource::class, nullable: true),
                 new OA\Property(property: 'body', type: 'string', nullable: true),
                 new OA\Property(property: 'name', type: 'string', nullable: true),
@@ -104,6 +105,7 @@ class ReportResource extends JsonResource
         };
 
         return [
+            'uuid' => $subject instanceof Status ? $subject->uuid : null,
             'user' => $user !== null ? new LightUserResource($user) : null,
             'body' => $subject instanceof Status ? $subject->body : null,
             'name' => $subject instanceof Event ? $subject->name : null,

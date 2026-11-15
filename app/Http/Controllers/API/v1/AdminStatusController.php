@@ -15,6 +15,7 @@ use App\Models\User;
 use App\Services\Checkin\CheckinService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
 use OpenApi\Attributes as OA;
@@ -80,7 +81,7 @@ class AdminStatusController extends Controller
         security: [['passport' => []], ['token' => []]],
         tags: ['Admin'],
         parameters: [
-            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
+            new OA\Parameter(name: 'id', description: 'UUID of the status. The numeric ID is still accepted.', in: 'path', required: true, schema: new OA\Schema(type: 'string')),
         ],
         responses: [
             new OA\Response(
@@ -95,7 +96,7 @@ class AdminStatusController extends Controller
             new OA\Response(response: 404, description: 'Not found.'),
         ],
     )]
-    public function show(int $id): AdminStatusResource
+    public function show(int|string $id): AdminStatusResource
     {
         $this->authorize('adminViewAny', Status::class);
 
@@ -108,7 +109,7 @@ class AdminStatusController extends Controller
             'tags',
             'client',
             'event',
-        ])->findOrFail($id);
+        ])->where(Str::isUuid((string) $id) ? 'uuid' : 'id', $id)->firstOrFail();
 
         return new AdminStatusResource($status);
     }
@@ -138,7 +139,7 @@ class AdminStatusController extends Controller
         ),
         tags: ['Admin'],
         parameters: [
-            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
+            new OA\Parameter(name: 'id', description: 'UUID of the status. The numeric ID is still accepted.', in: 'path', required: true, schema: new OA\Schema(type: 'string')),
         ],
         responses: [
             new OA\Response(
@@ -154,9 +155,9 @@ class AdminStatusController extends Controller
             new OA\Response(response: 422, description: 'Validation error.'),
         ],
     )]
-    public function update(int $id, Request $request): AdminStatusResource
+    public function update(int|string $id, Request $request): AdminStatusResource
     {
-        $status = Status::with('checkin.trip.stopovers')->findOrFail($id);
+        $status = Status::with('checkin.trip.stopovers')->where(Str::isUuid((string) $id) ? 'uuid' : 'id', $id)->firstOrFail();
         $this->authorize('adminUpdate', $status);
 
         $validated = $request->validate([

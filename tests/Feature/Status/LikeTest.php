@@ -113,7 +113,7 @@ class LikeTest extends FeatureTestCase
         $checkin->status->user->update(['likes_enabled' => false]);
 
         $notifications = $this->actingAs($likingUser)
-            ->get('/status/' . $checkin->status->id);
+            ->get('/status/' . $checkin->status->uuid);
         $notifications->assertOk();
         $notifications->assertDontSee('class="like ');
     }
@@ -126,7 +126,7 @@ class LikeTest extends FeatureTestCase
         $checkin->status->user->update(['likes_enabled' => false]);
 
         $notifications = $this->actingAs($likingUser)
-            ->get('/status/' . $checkin->status->id);
+            ->get('/status/' . $checkin->status->uuid);
         $notifications->assertOk();
         $notifications->assertDontSee('class="like ');
     }
@@ -139,7 +139,7 @@ class LikeTest extends FeatureTestCase
         $likingUser->update(['likes_enabled' => false]);
 
         $notifications = $this->actingAs($likingUser)
-            ->get('/status/' . $checkin->status->id);
+            ->get('/status/' . $checkin->status->uuid);
         $notifications->assertOk();
         $notifications->assertDontSee('class="like ');
     }

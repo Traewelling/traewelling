@@ -10,9 +10,10 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(
     title: 'AdminStatusResource',
-    required: ['id', 'body', 'visibility', 'business', 'moderationNotes', 'lockVisibility', 'hideBody', 'eventId', 'user', 'checkin', 'stopovers', 'createdAt', 'updatedAt', 'client', 'createdBy'],
+    required: ['id', 'uuid', 'body', 'visibility', 'business', 'moderationNotes', 'lockVisibility', 'hideBody', 'eventId', 'user', 'checkin', 'stopovers', 'createdAt', 'updatedAt', 'client', 'createdBy'],
     properties: [
         new OA\Property(property: 'id', type: 'integer', example: 12345),
+        new OA\Property(property: 'uuid', type: 'string', format: 'uuid', example: '00000000-0000-0000-0000-000000000000'),
         new OA\Property(property: 'body', type: 'string', nullable: true),
         new OA\Property(property: 'visibility', type: 'integer', example: 0),
         new OA\Property(property: 'business', type: 'integer', example: 0),
@@ -44,6 +45,7 @@ class AdminStatusResource extends JsonResource
         /** @var Status $this */
         return [
             'id' => (int) $this->id,
+            'uuid' => $this->uuid,
             'body' => $this->body,
             'visibility' => (int) $this->visibility->value,
             'business' => (int) $this->business->value,

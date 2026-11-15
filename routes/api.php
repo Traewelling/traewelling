@@ -280,8 +280,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::post('trips/{id}/reroute', [AdminTripController::class, 'reroute'])->whereNumber('id');
 
             Route::get('statuses', [AdminStatusController::class, 'index']);
-            Route::get('statuses/{id}', [AdminStatusController::class, 'show'])->whereNumber('id');
-            Route::put('statuses/{id}', [AdminStatusController::class, 'update'])->whereNumber('id');
+            Route::get('statuses/{id}', [AdminStatusController::class, 'show']);
+            Route::put('statuses/{id}', [AdminStatusController::class, 'update']);
 
             Route::apiResource('events', AdminEventController::class)->whereNumber('events');
 

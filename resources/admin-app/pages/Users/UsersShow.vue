@@ -387,7 +387,7 @@ watch(userId, fetchUser);
                                         <tr v-for="status in user.recentStatuses" :key="status.id" class="hover">
                                             <td>
                                                 <a
-                                                    :href="`/admin/statuses/${status.id}`"
+                                                    :href="`/admin/statuses/${status.uuid}`"
                                                     class="link link-hover font-mono text-xs"
                                                 >
                                                     #{{ status.id }}

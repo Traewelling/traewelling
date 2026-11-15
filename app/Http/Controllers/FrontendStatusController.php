@@ -6,6 +6,7 @@ use App\Enum\StatusVisibility;
 use App\Models\Event;
 use App\Models\Status;
 use App\Services\ProfilePictureService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
@@ -29,9 +30,16 @@ class FrontendStatusController extends Controller
         ]);
     }
 
-    public function getStatus(int $statusId): View
+    public function redirectToStatus(int $statusId): RedirectResponse
     {
         $status = Status::findOrFail($statusId);
+
+        return redirect()->route('status', ['uuid' => $status->uuid], 301);
+    }
+
+    public function getStatus(string $uuid): View
+    {
+        $status = Status::where('uuid', $uuid)->firstOrFail();
         $isVisible = Gate::allows('view', $status);
         $isIndexable = $status->visibility === StatusVisibility::PUBLIC
             && !$status->user->private_profile
@@ -39,7 +47,7 @@ class FrontendStatusController extends Controller
 
         return view('vue.spa', [
             'title' => $isVisible ? __('status.ogp-title', ['name' => $status->user->username]) : null,
-            'canonical' => route('status', ['id' => $status->id]),
+            'canonical' => route('status', ['uuid' => $status->uuid]),
             'robots' => $isIndexable ? null : 'noindex',
             'description' => $isVisible ? $status->description : null,
             'image' => $isVisible ? resolve(ProfilePictureService::class)->getUrl($status->user) : null,

@@ -214,7 +214,7 @@ class ViewTest extends ApiTestCase
         $response->assertOk();
 
         // check if status is not displayed
-        $response->assertDontSee('/status/' . $checkin->status->id);
+        $response->assertDontSee('/status/' . $checkin->status->uuid);
     }
 
     public function test_unauthenticated_view_trusted_status(): void
