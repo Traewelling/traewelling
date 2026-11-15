@@ -29,6 +29,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -48,9 +49,9 @@ class StatusController extends Controller
      *
      * @frontend
      */
-    public static function getStatus(int $statusId): Status
+    public static function getStatus(int|string $statusId): Status
     {
-        return Status::where('id', $statusId)
+        return Status::where(Str::isUuid((string) $statusId) ? 'uuid' : 'id', $statusId)
             ->with([
                 'event.station',
                 'likes',

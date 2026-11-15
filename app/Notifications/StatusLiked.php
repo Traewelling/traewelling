@@ -28,7 +28,7 @@ class StatusLiked extends Notification implements BaseNotification
     {
         return [
             'like' => $this->like->only(['id']),
-            'status' => $this->like->status->only(['id']),
+            'status' => $this->like->status->only(['id', 'uuid']),
             'trip' => [
                 'origin' => $this->like->status->checkin->originStopover->station->only(['id', 'name']),
                 'destination' => $this->like->status->checkin->destinationStopover->station->only(['id', 'name']),
@@ -61,8 +61,8 @@ class StatusLiked extends Notification implements BaseNotification
 
     public static function getLink(array $data): ?string
     {
-        return route('status', [
-            'id' => $data['status']['id'],
-        ]);
+        return isset($data['status']['uuid'])
+            ? route('status', ['uuid' => $data['status']['uuid']])
+            : url('/status/' . $data['status']['id']);
     }
 }

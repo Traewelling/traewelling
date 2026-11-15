@@ -746,9 +746,10 @@
                     {
                         "name": "id",
                         "in": "path",
+                        "description": "UUID of the status. The numeric ID is still accepted.",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -797,9 +798,10 @@
                     {
                         "name": "id",
                         "in": "path",
+                        "description": "UUID of the status. The numeric ID is still accepted.",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -7527,11 +7529,11 @@
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "Status-ID",
+                        "description": "UUID of the status. The numeric ID is still accepted.",
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         },
-                        "example": 1337
+                        "example": "00000000-0000-0000-0000-000000000000"
                     },
                     {
                         "name": "withIdentifiers",
@@ -13001,6 +13003,7 @@
                 "title": "AdminStatusResource",
                 "required": [
                     "id",
+                    "uuid",
                     "body",
                     "visibility",
                     "business",
@@ -13020,6 +13023,11 @@
                     "id": {
                         "type": "integer",
                         "example": 12345
+                    },
+                    "uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "00000000-0000-0000-0000-000000000000"
                     },
                     "body": {
                         "type": "string",
@@ -14860,6 +14868,7 @@
                     "subject": {
                         "description": "Null if the subject no longer exists",
                         "required": [
+                            "uuid",
                             "user",
                             "body",
                             "name",
@@ -14869,6 +14878,11 @@
                             "manual_trip"
                         ],
                         "properties": {
+                            "uuid": {
+                                "type": "string",
+                                "format": "uuid",
+                                "nullable": true
+                            },
                             "user": {
                                 "oneOf": [
                                     {
@@ -15379,6 +15393,7 @@
                 "title": "Status",
                 "required": [
                     "id",
+                    "uuid",
                     "body",
                     "business",
                     "bodyMentions",
@@ -15403,6 +15418,11 @@
                     "id": {
                         "type": "integer",
                         "example": 12345
+                    },
+                    "uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "00000000-0000-0000-0000-000000000000"
                     },
                     "body": {
                         "description": "User defined status text",
@@ -16458,7 +16478,7 @@
                     },
                     "link": {
                         "type": "string",
-                        "example": "https://traewelling.de/status/123456"
+                        "example": "https://traewelling.de/status/00000000-0000-0000-0000-000000000000"
                     },
                     "data": {
                         "type": "array",

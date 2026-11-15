@@ -289,12 +289,12 @@ const routes: Array<RouteRecordRaw> = [
         component: UserProfile,
     },
     {
-        path: '/status/:id',
+        path: '/status/:uuid',
         name: 'single-status',
         component: SingleStatus,
     },
     {
-        path: '/status/:id/change-exit',
+        path: '/status/:uuid/change-exit',
         name: 'change-exit',
         component: ChangeExitPage,
         meta: { title: 'checkin.select-exit' },

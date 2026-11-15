@@ -79,7 +79,7 @@ function getNowIso(): string {
 }
 
 function share() {
-    const url = `${window.location.origin}/status/${props.status.id}`;
+    const url = `${window.location.origin}/status/${props.status.uuid}`;
     const origin = props.status.checkin.origin.name;
     const dest = props.status.checkin.destination.name;
     const text = props.status.body
@@ -202,7 +202,7 @@ async function handleBlock() {
                         </button>
                     </li>
                     <li>
-                        <router-link :to="{ name: 'change-exit', params: { id: status.id } }">
+                        <router-link :to="{ name: 'change-exit', params: { uuid: status.uuid } }">
                             <Route class="inline-block size-4" />
                             {{ trans('menu.change-exit') }}
                         </router-link>
@@ -255,7 +255,7 @@ async function handleBlock() {
                 <template v-if="userStore.isAdmin">
                     <li class="menu-title text-xs">Admin</li>
                     <li>
-                        <a :href="`/admin/statuses/${status.id}`">
+                        <a :href="`/admin/statuses/${status.uuid}`">
                             <ShieldCogCorner class="inline-block size-4" />
                             {{ trans('menu.backend') }}
                         </a>

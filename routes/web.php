@@ -79,9 +79,12 @@ Auth::routes(['verify' => true, 'register' => config('app.registration.enabled')
 Route::get('/auth/redirect/mastodon', [MastodonController::class, 'redirect']);
 Route::get('/callback/mastodon', [MastodonController::class, 'callback']);
 
-Route::get('/status/{id}', [FrontendStatusController::class, 'getStatus'])
-    ->whereNumber('id')
+Route::get('/status/{uuid}', [FrontendStatusController::class, 'getStatus'])
+    ->whereUuid('uuid')
     ->name('status');
+
+Route::get('/status/{id}', [FrontendStatusController::class, 'redirectToStatus'])
+    ->whereNumber('id');
 
 /**
  * These routes can be used by logged in users although they have not signed the privacy policy yet.
@@ -113,7 +116,7 @@ Route::middleware(['auth', 'privacy'])->group(function () {
     Route::view('/dashboard', 'vue.spa')
         ->name('dashboard');
 
-    Route::view('/status/{id}/change-exit', 'vue.spa');
+    Route::view('/status/{uuid}/change-exit', 'vue.spa')->whereUuid('uuid');
 
     Route::view('/{page}', 'vue.spa')
         ->where('page', '(checkin|contribute|debug|export|line-run|notifications|route-map|search|settings|stationboard|statistics|tickets|trip|trips)(/.*)?');

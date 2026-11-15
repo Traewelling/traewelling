@@ -271,7 +271,7 @@ watch(tripId, fetchTrip);
                                             </a>
                                             <div>
                                                 <a
-                                                    :href="`/admin/statuses/${status.id}`"
+                                                    :href="`/admin/statuses/${status.uuid}`"
                                                     class="link link-hover text-xs"
                                                 >
                                                     #{{ status.id }}

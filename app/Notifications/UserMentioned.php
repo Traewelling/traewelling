@@ -34,7 +34,7 @@ class UserMentioned extends Notification implements BaseNotification
     public function toArray(): array
     {
         return [
-            'status' => $this->status->only(['id']),
+            'status' => $this->status->only(['id', 'uuid']),
             'creator' => $this->creator->only(['id', 'username', 'name']),
             'mention' => $this->mention->only(['id', 'position', 'length']),
         ];
@@ -52,6 +52,8 @@ class UserMentioned extends Notification implements BaseNotification
 
     public static function getLink(array $data): ?string
     {
-        return route('status', ['id' => $data['status']['id']]);
+        return isset($data['status']['uuid'])
+            ? route('status', ['uuid' => $data['status']['uuid']])
+            : url('/status/' . $data['status']['id']);
     }
 }

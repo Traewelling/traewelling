@@ -232,11 +232,11 @@ function onStatusDeleted(id: number) {
 const visibilityIcon = computed(() => VISIBILITY_ICONS[statusObject.value.visibility] ?? Eye);
 const inProgress = computed(() => progress.value > 0 && progress.value < 100);
 
-const statusLocation = computed(() => ({ name: 'single-status', params: { id: statusObject.value.id } }));
+const statusLocation = computed(() => ({ name: 'single-status', params: { uuid: statusObject.value.uuid } }));
 const isCurrentStatus = computed(
     () =>
         router.currentRoute.value.name === 'single-status' &&
-        String(router.currentRoute.value.params.id) === String(statusObject.value.id),
+        router.currentRoute.value.params.uuid === statusObject.value.uuid,
 );
 
 function isOnText(event: MouseEvent): boolean {

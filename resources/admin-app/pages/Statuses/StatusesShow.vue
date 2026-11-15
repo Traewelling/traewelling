@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { ArrowLeft, Save } from '@lucide/vue';
+import { ArrowLeft, ExternalLink, Save } from '@lucide/vue';
 import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { type AdminStatusResource, Api } from '../../../types/Api.gen';
 import BackendLayout from '../../layouts/BackendLayout.vue';
 
 const api = new Api({ baseUrl: window.location.origin + '/api' });
 const route = useRoute();
+const router = useRouter();
 
-const statusId = Number(route.params.id);
+const statusIdentifier = String(route.params.uuid);
 
 const status = ref<AdminStatusResource | null>(null);
 const loading = ref(true);
@@ -33,8 +34,11 @@ async function fetchStatus(): Promise<void> {
     loading.value = true;
     error.value = null;
     try {
-        const res = await api.admin.getAdminStatus(statusId);
+        const res = await api.admin.getAdminStatus(statusIdentifier);
         status.value = res.data.data ?? null;
+        if (status.value && statusIdentifier !== status.value.uuid) {
+            router.replace(`/admin/statuses/${status.value.uuid}`);
+        }
         if (status.value) {
             form.value = {
                 origin: status.value.checkin?.origin.stopoverId ?? 0,
@@ -61,7 +65,7 @@ async function save(): Promise<void> {
     successMessage.value = null;
     error.value = null;
     try {
-        const res = await api.admin.updateAdminStatus(statusId, {
+        const res = await api.admin.updateAdminStatus(statusIdentifier, {
             origin: form.value.origin,
             destination: form.value.destination,
             body: form.value.body || null,
@@ -116,9 +120,15 @@ onMounted(() => fetchStatus());
                 <ArrowLeft class="w-4 h-4" />
                 Statuses
             </router-link>
-            <h1 class="text-2xl font-bold">Status #{{ statusId }}</h1>
-            <a v-if="status" :href="`/status/${statusId}`" target="_blank" class="btn btn-ghost btn-sm ml-auto text-xs">
-                View in frontend ↗
+            <h1 class="text-2xl font-bold">Status #{{ status?.id }}</h1>
+            <a
+                v-if="status"
+                :href="`/status/${status.uuid}`"
+                target="_blank"
+                class="btn btn-ghost btn-sm ml-auto text-xs"
+            >
+                View in frontend
+                <ExternalLink class="w-3 h-3" />
             </a>
         </div>
 
@@ -155,6 +165,14 @@ onMounted(() => fetchStatus());
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        <tr class="hover:bg-base-300">
+                                            <td class="text-base-content/60">ID</td>
+                                            <td class="font-mono">{{ status.id }}</td>
+                                        </tr>
+                                        <tr class="hover:bg-base-300">
+                                            <td class="text-base-content/60">UUID</td>
+                                            <td class="font-mono">{{ status.uuid }}</td>
+                                        </tr>
                                         <tr class="hover:bg-base-300">
                                             <td class="text-base-content/60">User</td>
                                             <td>

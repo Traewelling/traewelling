@@ -29,7 +29,7 @@ const userStore = useUserStore();
 const checkinSuccess = checkinSuccessStore();
 const api = new Api({ baseUrl: window.location.origin + '/api' });
 
-const statusId = computed(() => Number(route.params.id));
+const statusIdentifier = computed(() => String(route.params.uuid));
 
 const loading = ref(true);
 const status = ref<StatusResource | null>(null);
@@ -60,9 +60,13 @@ async function fetchStatus() {
     loading.value = true;
     pageError.value = null;
     try {
-        const res = await api.status.getSingleStatus(statusId.value);
+        const res = await api.status.getSingleStatus(statusIdentifier.value);
         const json = await res.json();
         status.value = json.data as StatusResource;
+        if (statusIdentifier.value !== status.value.uuid) {
+            router.replace({ name: 'single-status', params: { uuid: status.value.uuid } });
+        }
+        fetchLikes();
         const stored = checkinSuccess.checkinResponse;
         if (stored?.status?.id === status.value.id) {
             checkinResult.value = stored;
@@ -91,8 +95,9 @@ async function fetchStopovers() {
 }
 
 async function fetchLikes() {
+    if (!status.value) return;
     try {
-        const res = await api.status.getLikesForStatus(statusId.value);
+        const res = await api.status.getLikesForStatus(status.value.id);
         likedBy.value = res.data.data ?? [];
     } catch {
         // likes best-effort
@@ -122,8 +127,9 @@ function onStatusDeleted() {
 }
 
 watch(
-    statusId,
-    () => {
+    statusIdentifier,
+    (identifier) => {
+        if (identifier === status.value?.uuid) return;
         status.value = null;
         stopovers.value = [];
         likedBy.value = [];
@@ -131,7 +137,6 @@ watch(
         hasCoPassengers.value = false;
         pageError.value = null;
         fetchStatus();
-        fetchLikes();
     },
     { immediate: true },
 );

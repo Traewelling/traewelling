@@ -17,7 +17,7 @@ const api = new Api({ baseUrl: window.location.origin + '/api' });
 const notyf = inject('notyf') as Notyf;
 const activeCheckin = useActiveCheckin();
 
-const statusId = computed(() => Number(route.params.id));
+const statusIdentifier = computed(() => String(route.params.uuid));
 
 const status = ref<StatusResource | null>(null);
 const loading = ref(true);
@@ -29,7 +29,7 @@ const displayLineName = computed(() => (status.value?.checkin.lineName ?? '').re
 async function loadStatus(): Promise<void> {
     loading.value = true;
     try {
-        const res = await api.status.getSingleStatus(statusId.value);
+        const res = await api.status.getSingleStatus(statusIdentifier.value);
         status.value = res.data.data as StatusResource;
     } catch {
         notyf?.error(trans('generic.error'));
@@ -49,7 +49,7 @@ function onTrip(trip: TripResource): void {
 }
 
 async function selectExit(stopover: StopoverResource): Promise<void> {
-    if (saving.value) return;
+    if (saving.value || !status.value) return;
     saving.value = true;
     try {
         const res = await api.status.updateSingleStatus(
@@ -57,10 +57,11 @@ async function selectExit(stopover: StopoverResource): Promise<void> {
                 destinationId: stopover.id.toString(),
                 destinationArrivalPlanned: stopover.arrivalPlanned ?? undefined,
             } as never,
-            statusId.value,
+            status.value.id,
         );
-        activeCheckin.updateStatus(res.data.data as StatusResource);
-        await router.push({ name: 'single-status', params: { id: statusId.value } });
+        const updatedStatus = res.data.data as StatusResource;
+        activeCheckin.updateStatus(updatedStatus);
+        await router.push({ name: 'single-status', params: { uuid: updatedStatus.uuid } });
     } catch {
         notyf?.error(trans('generic.error'));
         saving.value = false;

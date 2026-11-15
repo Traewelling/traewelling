@@ -449,10 +449,10 @@ class StatusController extends Controller
         parameters: [
             new OA\Parameter(
                 name: 'id',
-                description: 'Status-ID',
+                description: 'UUID of the status. The numeric ID is still accepted.',
                 in: 'path',
-                schema: new OA\Schema(type: 'integer'),
-                example: 1337,
+                schema: new OA\Schema(type: 'string'),
+                example: '00000000-0000-0000-0000-000000000000',
             ),
             new OA\Parameter(
                 name: 'withIdentifiers',
@@ -477,7 +477,7 @@ class StatusController extends Controller
             new OA\Response(response: 403, description: 'User not authorized to access this status'),
         ],
     )]
-    public function show(Request $request, int $id): StatusResource|JsonResponse
+    public function show(Request $request, int|string $id): StatusResource|JsonResponse
     {
         $status = StatusBackend::getStatus($id);
         try {
