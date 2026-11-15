@@ -4,6 +4,7 @@
   color-scheme: dark; /* color of browser-provided UI */
 
   --color-primary: #811a0e;
+  --color-primary-content: oklch(100% 0 0);
   --color-primary-link: var(--color-red-400);
   --color-base-100: oklch(0.25 0.009 264.318);
   --color-base-200: oklch(0.21 0.009 264.318);
@@ -17,6 +18,7 @@
   color-scheme: light; /* color of browser-provided UI */
 
   --color-primary: #c72730;
+  --color-primary-content: oklch(100% 0 0);
   --color-primary-link: var(--color-primary);
   --color-secondary: #3b71ca;
   --color-info: oklch(50% 0.134 242.749);
