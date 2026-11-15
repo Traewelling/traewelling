@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Http\Resources\OperatorResource;
 use App\Models\Operator;
+use App\Repositories\OperatorRepository;
 use App\Services\OperatorService;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -46,17 +47,9 @@ class OperatorController extends Controller
             new OA\Response(response: 403, description: self::OA_DESC_FORBIDDEN),
         ],
     )]
-    public function index(Request $request): AnonymousResourceCollection
+    public function index(Request $request, OperatorRepository $operatorRepository): AnonymousResourceCollection
     {
-        $query = $request->string('query')->trim();
-
-        $builder = Operator::with('identifiers')->orderBy('name');
-
-        if ($query->isNotEmpty() && $query->length() >= 2) {
-            $builder->where('name', 'like', '%' . $query . '%');
-        }
-
-        return OperatorResource::collection($builder->cursorPaginate(25));
+        return OperatorResource::collection($operatorRepository->search($request->string('query')->trim()->toString()));
     }
 
     #[OA\Put(

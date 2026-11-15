@@ -54,6 +54,7 @@ use App\Http\Controllers\API\v1\UserController;
 use App\Http\Controllers\API\v1\WebhookController;
 use App\Http\Controllers\API\v1\YearInReviewController;
 use App\Http\Controllers\API\v2\NotificationsController as NotificationsV2Controller;
+use App\Http\Controllers\API\v2\OperatorController as OperatorV2Controller;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static function () {
@@ -250,7 +251,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
 
         Route::apiResource('user.trusted', TrustedUserController::class)->only(['index', 'store', 'destroy']);
         Route::apiResource('reports', ReportController::class);
-        Route::apiResource('operators', OperatorController::class)->only(['index']);
+        Route::apiResource('operators', OperatorController::class)->only(['index'])->middleware('sunset:2027-05-31');
         Route::apiResource('alerts', AlertController::class);
         Route::put('/operators/{oldOperatorId}/merge/{newOperatorId}', [OperatorController::class, 'merge']); // currently admin/backend only
 
@@ -343,4 +344,5 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
 
 Route::group(['prefix' => 'v2', 'middleware' => ['return-json', 'auth:api', 'privacy-policy']], static function () {
     Route::get('notifications', [NotificationsV2Controller::class, 'index'])->middleware('scope:read-notifications');
+    Route::get('operators', [OperatorV2Controller::class, 'index']);
 });

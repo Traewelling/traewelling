@@ -1,20 +1,20 @@
 <script setup lang="ts">
 import { ArrowRightLeft, ShieldX, Trash2 } from '@lucide/vue';
 import { ref, watch } from 'vue';
-import { Api, type OperatorResource } from '../../../types/Api.gen';
+import { Api, type OperatorResourceV2 } from '../../../types/Api.gen';
 import BackendLayout from '../../layouts/BackendLayout.vue';
 
 const api = new Api({ baseUrl: window.location.origin + '/api' });
 
-const operators = ref<OperatorResource[]>([]);
+const operators = ref<OperatorResourceV2[]>([]);
 const loading = ref(false);
 const error = ref<string | null>(null);
 const query = ref('');
 const nextCursor = ref<string | null>(null);
 
 // Merge state
-const mergeSource = ref<OperatorResource | null>(null); // will be deleted
-const mergeTarget = ref<OperatorResource | null>(null); // will survive
+const mergeSource = ref<OperatorResourceV2 | null>(null); // will be deleted
+const mergeTarget = ref<OperatorResourceV2 | null>(null); // will survive
 const merging = ref(false);
 const mergeError = ref<string | null>(null);
 const mergeSuccess = ref(false);
@@ -25,9 +25,8 @@ async function fetchOperators(cursor?: string): Promise<void> {
     loading.value = true;
     error.value = null;
     try {
-        const res = await api.operators.getOperators({ query: query.value || undefined, cursor });
-        const meta = (res.data as unknown as { meta?: { next_cursor?: string } }).meta;
-        nextCursor.value = meta?.next_cursor ?? null;
+        const res = await api.operators.listOperatorsV2({ query: query.value || undefined, cursor });
+        nextCursor.value = res.data.meta.next_cursor ?? null;
 
         if (cursor) {
             operators.value = [...operators.value, ...(res.data.data ?? [])];
@@ -53,8 +52,8 @@ function copyMotisToClipboard(identifier: string, name: string | null | undefine
     navigator.clipboard.writeText(text);
 }
 
-function setMergeSource(operator: OperatorResource): void {
-    if (mergeTarget.value?.uuid === operator.uuid) {
+function setMergeSource(operator: OperatorResourceV2): void {
+    if (mergeTarget.value?.id === operator.id) {
         mergeTarget.value = null;
     }
     mergeSource.value = operator;
@@ -62,8 +61,8 @@ function setMergeSource(operator: OperatorResource): void {
     mergeError.value = null;
 }
 
-function setMergeTarget(operator: OperatorResource): void {
-    if (mergeSource.value?.uuid === operator.uuid) {
+function setMergeTarget(operator: OperatorResourceV2): void {
+    if (mergeSource.value?.id === operator.id) {
         mergeSource.value = null;
     }
     mergeTarget.value = operator;
@@ -86,9 +85,9 @@ async function submitMerge(): Promise<void> {
     mergeSuccess.value = false;
 
     try {
-        await api.operators.mergeOperators(mergeSource.value.uuid, mergeTarget.value.uuid);
+        await api.operators.mergeOperators(mergeSource.value.id, mergeTarget.value.id);
         mergeSuccess.value = true;
-        operators.value = operators.value.filter((o) => o.uuid !== mergeSource.value!.uuid);
+        operators.value = operators.value.filter((o) => o.id !== mergeSource.value!.id);
         mergeSource.value = null;
         mergeTarget.value = null;
     } catch (e) {
@@ -98,9 +97,9 @@ async function submitMerge(): Promise<void> {
     }
 }
 
-function rowClass(operator: OperatorResource): string {
-    if (operator.uuid === mergeSource.value?.uuid) return 'bg-error/10';
-    if (operator.uuid === mergeTarget.value?.uuid) return 'bg-success/10';
+function rowClass(operator: OperatorResourceV2): string {
+    if (operator.id === mergeSource.value?.id) return 'bg-error/10';
+    if (operator.id === mergeTarget.value?.id) return 'bg-success/10';
     return 'hover';
 }
 </script>
@@ -134,7 +133,7 @@ function rowClass(operator: OperatorResource): string {
                         </div>
                         <template v-if="mergeSource">
                             <div class="font-medium text-sm">{{ mergeSource.name }}</div>
-                            <div class="font-mono text-xs text-base-content/50">{{ mergeSource.uuid }}</div>
+                            <div class="font-mono text-xs text-base-content/50">{{ mergeSource.id }}</div>
                         </template>
                         <div v-else class="text-xs text-base-content/40 mt-1">
                             Click <ShieldX class="w-3 h-3 inline" /> on a row to select
@@ -156,7 +155,7 @@ function rowClass(operator: OperatorResource): string {
                         </div>
                         <template v-if="mergeTarget">
                             <div class="font-medium text-sm">{{ mergeTarget.name }}</div>
-                            <div class="font-mono text-xs text-base-content/50">{{ mergeTarget.uuid }}</div>
+                            <div class="font-mono text-xs text-base-content/50">{{ mergeTarget.id }}</div>
                         </template>
                         <div v-else class="text-xs text-base-content/40 mt-1">
                             Click <ArrowRightLeft class="w-3 h-3 inline" /> on a row to select
@@ -218,9 +217,9 @@ function rowClass(operator: OperatorResource): string {
                         <tr v-if="!operators.length && !loading">
                             <td colspan="5" class="text-center text-base-content/50 py-8">No operators found.</td>
                         </tr>
-                        <tr v-for="operator in operators" :key="operator.uuid" :class="rowClass(operator)">
+                        <tr v-for="operator in operators" :key="operator.id" :class="rowClass(operator)">
                             <td class="font-medium text-sm">{{ operator.name }}</td>
-                            <td class="font-mono text-xs text-base-content/50">{{ operator.uuid }}</td>
+                            <td class="font-mono text-xs text-base-content/50">{{ operator.id }}</td>
                             <td class="max-w-xs">
                                 <div class="flex flex-wrap gap-1">
                                     <template v-for="id in operator.identifiers ?? []" :key="id.identifier">
@@ -256,7 +255,7 @@ function rowClass(operator: OperatorResource): string {
                                 <div class="flex items-center justify-end gap-1">
                                     <button
                                         class="btn btn-xs gap-1"
-                                        :class="mergeSource?.uuid === operator.uuid ? 'btn-error' : 'btn-ghost'"
+                                        :class="mergeSource?.id === operator.id ? 'btn-error' : 'btn-ghost'"
                                         title="Set as source (will be deleted)"
                                         @click="setMergeSource(operator)"
                                     >
@@ -264,7 +263,7 @@ function rowClass(operator: OperatorResource): string {
                                     </button>
                                     <button
                                         class="btn btn-xs gap-1"
-                                        :class="mergeTarget?.uuid === operator.uuid ? 'btn-success' : 'btn-ghost'"
+                                        :class="mergeTarget?.id === operator.id ? 'btn-success' : 'btn-ghost'"
                                         title="Set as merge target (will survive)"
                                         @click="setMergeTarget(operator)"
                                     >

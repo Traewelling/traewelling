@@ -15,7 +15,7 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'type', type: 'string', example: 'operator'),
         new OA\Property(
             property: 'id',
-            description: 'Numeric legacy ID. Deprecated: will become a UUID after 2026-09-30.',
+            description: 'Numeric legacy ID. Use `uuid` instead.',
             type: 'integer',
             example: 1,
             deprecated: true
@@ -36,8 +36,8 @@ class OperatorResource extends JsonResource
         /** @var Operator $this */
         return [
             'type' => 'operator', // @see https://github.com/public-transport/friendly-public-transport-format/tree/master/spec
-            'id' => $this->legacy_id, // @deprecated: will become uuid after 2026-09-30
-            'uuid' => $this->id, // currently NOT deprecated. But deprecate it, when ID is available -> migration uuid to id
+            'id' => $this->legacy_id,
+            'uuid' => $this->id,
             'name' => $this->name,
             'identifiers' => $this->whenLoaded('identifiers', fn () => OperatorIdentifierResource::collection($this->identifiers)),
         ];
