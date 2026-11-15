@@ -551,7 +551,7 @@ function openStatus(event: MouseEvent): void {
                     :class="{ 'text-error': statusObject.liked || likePending }"
                     :aria-busy="likePending"
                     :disabled="likePending"
-                    @click="toggleLike"
+                    @click.stop="toggleLike"
                 >
                     <span v-if="likePending" class="loading loading-spinner size-4" />
                     <Heart
