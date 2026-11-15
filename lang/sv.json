@@ -1466,5 +1466,7 @@
     "checkin.select-exit": "Välj utgångshållplats",
     "generic.unsaved": "Osparad",
     "menu.change-exit": "Ändra utgång",
-    "trip.edit.stopover-in-use": "Detta stopp används av en incheckning och kan inte tas bort. Ändra incheckningen först."
+    "trip.edit.stopover-in-use": "Detta stopp används av en incheckning och kan inte tas bort. Ändra incheckningen först.",
+    "menu.oauth_authorize.third_party.trust": "Fortsätt endast om du litar på applikationen.",
+    "welcome.header.title": "Din loggbok för kollektivtrafiken."
 }
