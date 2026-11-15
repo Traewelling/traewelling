@@ -28,7 +28,7 @@
                     </div>
                     @if($stats->hasData())
                         <div class="grid place-items-center bg-base-200 w-full">
-                            <div class="max-w-6xl w-full py-24 px-4 content-center justify-center">
+                            <div class="max-w-6xl w-full py-10 px-4 content-center justify-center">
                                 <div id="welcome-stats"
                                      data-distance="{{ trans_choice('welcome.stats.million', $stats->distanceInMillionKilometers()) }}"
                                      data-distance-label="{{ __('welcome.stats.distance') }}"
@@ -40,7 +40,7 @@
                         </div>
                     @endif
 
-                    <div class="my-10 bg-base-200">
+                    <div class="bg-base-200">
                         <div class="mx-auto w-full max-w-6xl">
                         <div class="hero min-h-full rounded-lg">
                             <div class="hero-content flex-col lg:flex-row xl:gap-10">
@@ -164,12 +164,12 @@
                     </div>
 
                     <div class="grid place-items-center bg-base-200 w-full border-b-2 border-base-300">
-                        <div class="max-w-6xl py-24 px-4 content-center text-center justify-center">
+                        <div class="max-w-6xl py-12 px-4 content-center text-center justify-center">
                             <h2 class="text-3xl text-center font-bold text-base-content">
                                 {{ __('welcome.get-on-board-now') }}
                             </h2>
                             <a href="{{ route('register') }}">
-                                <button class="btn text-lg mt-16 px-12 btn-primary normal-case">
+                                <button class="btn text-lg mt-8 px-12 btn-primary normal-case">
                                     {{ __('welcome.get-on-board') }}
                                 </button>
                             </a>
