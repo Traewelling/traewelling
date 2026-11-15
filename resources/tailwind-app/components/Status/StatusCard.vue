@@ -563,7 +563,7 @@ function openStatus(event: MouseEvent): void {
                 </button>
 
                 <!-- Visibility icon -->
-                <span class="tooltip" :data-tip="trans('status.visibility.' + statusObject.visibility)">
+                <span class="tooltip tooltip-left" :data-tip="trans('status.visibility.' + statusObject.visibility)">
                     <component :is="visibilityIcon" class="w-4 h-4 text-base-content/30 shrink-0" />
                 </span>
 
