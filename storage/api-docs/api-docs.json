@@ -9296,31 +9296,9 @@
                             "application/json": {
                                 "schema": {
                                     "required": [
-                                        "message",
                                         "data"
                                     ],
                                     "properties": {
-                                        "message": {
-                                            "description": "Deprecated: use data.conflicts instead",
-                                            "required": [
-                                                "status_id",
-                                                "lineName"
-                                            ],
-                                            "properties": {
-                                                "status_id": {
-                                                    "type": "integer",
-                                                    "nullable": true,
-                                                    "deprecated": true
-                                                },
-                                                "lineName": {
-                                                    "type": "string",
-                                                    "nullable": true,
-                                                    "deprecated": true
-                                                }
-                                            },
-                                            "type": "object",
-                                            "deprecated": true
-                                        },
                                         "data": {
                                             "required": [
                                                 "conflicts"
