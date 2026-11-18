@@ -44,7 +44,7 @@ class RefreshPolyline implements ShouldBeUnique, ShouldQueue
     {
         Cache::set(CacheKey::getReroutePolylineJobKey($trip->id), true, now()->addMinutes(5));
 
-        return static::newPendingDispatch(new static($trip));
+        return static::newPendingDispatch(new self($trip));
     }
 
     public function handle(ReRoutingService $reRoutingService): void

@@ -12,17 +12,14 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use JetBrains\PhpStorm\ArrayShape;
 
 abstract class JsonExportController extends Controller
 {
     /**
+     * @return array{meta: array{user: UserResource, from: string, to: string, exportedAt: string}, data: AnonymousResourceCollection}
+     *
      * @throws DataOverflowException
      */
-    #[ArrayShape([
-        'meta' => 'array',
-        'data' => AnonymousResourceCollection::class,
-    ])]
     public static function generateExport(User $user, Carbon $timestampFrom, Carbon $timestampTo): array
     {
         $preparedData = ExportController::getExportableStatuses($user, $timestampFrom, $timestampTo);

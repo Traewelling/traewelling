@@ -51,60 +51,24 @@ class Station
     )]
     public readonly ?array $identifiers;
 
-    public function setId(int $id): self
-    {
+    private function __construct(
+        int $id,
+        ?string $uuid,
+        string $name,
+        float $latitude,
+        float $longitude,
+        ?array $identifiers,
+        ?int $ibnr,
+        ?string $rilIdentifier,
+    ) {
         $this->id = $id;
-
-        return $this;
-    }
-
-    public function setUuid(?string $uuid): self
-    {
         $this->uuid = $uuid;
-
-        return $this;
-    }
-
-    public function setName(string $name): self
-    {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function setLatitude(float $latitude): self
-    {
         $this->latitude = $latitude;
-
-        return $this;
-    }
-
-    public function setLongitude(float $longitude): self
-    {
         $this->longitude = $longitude;
-
-        return $this;
-    }
-
-    public function setIbnr(?int $ibnr): self
-    {
-        $this->ibnr = $ibnr;
-
-        return $this;
-    }
-
-    public function setRilIdentifier(?string $rilIdentifier): self
-    {
-        $this->rilIdentifier = $rilIdentifier;
-
-        return $this;
-    }
-
-    public function setIdentifiers(?array $identifiers): self
-    {
         $this->identifiers = $identifiers;
-
-        return $this;
+        $this->ibnr = $ibnr;
+        $this->rilIdentifier = $rilIdentifier;
     }
 
     public static function fromModel(\App\Models\Station $station): self
@@ -113,16 +77,15 @@ class Station
             ? StationIdentifierResource::collection($station->stationIdentifiers)->resolve()
             : null;
 
-        $dto = new self();
-        $dto->setId($station->id)
-            ->setUuid($station->uuid)
-            ->setName($station->name)
-            ->setIbnr(null) // TODO: Kann das hier mittelfristig raus? Wo wird das noch über dieses DTO genutzt?
-            ->setLatitude($station->latitude)
-            ->setLongitude($station->longitude)
-            ->setRilIdentifier(null) // TODO: Kann das hier mittelfristig raus? Wo wird das noch über dieses DTO genutzt?
-            ->setIdentifiers($identifiers);
-
-        return $dto;
+        return new self(
+            id: $station->id,
+            uuid: $station->uuid,
+            name: $station->name,
+            latitude: $station->latitude,
+            longitude: $station->longitude,
+            identifiers: $identifiers,
+            ibnr: null, // TODO: Kann das hier mittelfristig raus? Wo wird das noch über dieses DTO genutzt?
+            rilIdentifier: null, // TODO: Kann das hier mittelfristig raus? Wo wird das noch über dieses DTO genutzt?
+        );
     }
 }

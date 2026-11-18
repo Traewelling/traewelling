@@ -1,0 +1,10 @@
+includes:
+    - ./vendor/larastan/larastan/extension.neon
+parameters:
+    paths:
+        - app
+    level: 0
+    parseModelCastsMethod: true
+    bootstrapFiles:
+        - bootstrap/app.php
+
