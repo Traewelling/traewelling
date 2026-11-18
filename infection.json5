@@ -1,0 +1,18 @@
+{
+    "$schema": "vendor/infection/infection/resources/schema.json",
+    "source": {
+        "directories": ["app"]
+    },
+    "timeout": 30,
+    "logs": {
+        "text": "infection.log",
+        "github": true
+    },
+    "mutators": {
+        "@default": true
+    },
+    "testFramework": "phpunit",
+    "phpUnit": {
+        "configDir": "."
+    }
+}
