@@ -1,3 +1,9 @@
+@theme {
+  --font-sans:
+    'Nunito', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
 @plugin "daisyui/theme" {
   name: 'dark';
   prefersdark: true; /* set as default dark mode (prefers-color-scheme:dark) */
