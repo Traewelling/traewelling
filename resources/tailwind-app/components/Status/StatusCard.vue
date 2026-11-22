@@ -330,7 +330,7 @@ function openStatus(event: MouseEvent): void {
                                     </span>
                                 </router-link>
                                 <div class="text-sm tabular-nums shrink-0 text-right">
-                                    <span v-if="departure.originalTime" class="line-through text-base-content/40 mr-1">
+                                    <span v-if="departure.originalTime" class="line-through text-base-content/70 mr-1">
                                         {{ fmtTime(departure.originalTime) }}
                                     </span>
                                     <span
@@ -447,7 +447,7 @@ function openStatus(event: MouseEvent): void {
                         </div>
 
                         <!-- Next stop -->
-                        <p v-if="nextStop && inProgress" class="text-sm text-base-content/50 flex items-center gap-1">
+                        <p v-if="nextStop && inProgress" class="text-sm text-base-content/70 flex items-center gap-1">
                             <ArrowRight class="w-3 h-3 shrink-0" />
                             {{ isAtStop ? trans('stationboard.current-stop') : trans('stationboard.next-stop') }}
                             <router-link
@@ -486,7 +486,7 @@ function openStatus(event: MouseEvent): void {
                                     </span>
                                 </router-link>
                                 <div class="text-sm tabular-nums shrink-0 text-right">
-                                    <span v-if="arrival.originalTime" class="line-through text-base-content/40 mr-1">
+                                    <span v-if="arrival.originalTime" class="line-through text-base-content/70 mr-1">
                                         {{ fmtTime(arrival.originalTime) }}
                                     </span>
                                     <span
@@ -547,7 +547,7 @@ function openStatus(event: MouseEvent): void {
                 <!-- Like -->
                 <button
                     v-if="statusObject.isLikable"
-                    class="flex items-center gap-1 text-xs text-base-content/40 hover:text-error transition-colors"
+                    class="flex items-center gap-1 text-xs text-base-content/70 hover:text-error transition-colors"
                     :class="{ 'text-error': statusObject.liked || likePending }"
                     :aria-busy="likePending"
                     :disabled="likePending"
@@ -564,7 +564,7 @@ function openStatus(event: MouseEvent): void {
 
                 <!-- Visibility icon -->
                 <span class="tooltip tooltip-left" :data-tip="trans('status.visibility.' + statusObject.visibility)">
-                    <component :is="visibilityIcon" class="w-4 h-4 text-base-content/30 shrink-0" />
+                    <component :is="visibilityIcon" class="w-4 h-4 text-base-content/60 shrink-0" />
                 </span>
 
                 <!-- Context menu -->

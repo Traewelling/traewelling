@@ -46,7 +46,7 @@ fetchMutedUsers();
                 <span class="loading loading-spinner loading-lg"></span>
             </div>
 
-            <div v-else-if="!loading && mutedUsers.length === 0" class="text-center py-12 text-base-content/50">
+            <div v-else-if="!loading && mutedUsers.length === 0" class="text-center py-12 text-base-content/70">
                 <EyeOff class="size-8 mx-auto mb-2" />
                 <p>{{ trans('user.muted.noMutedUsers') }}</p>
             </div>

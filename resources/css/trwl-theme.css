@@ -11,13 +11,15 @@
   color-scheme: dark;
   /* color of browser-provided UI */
 
-  --color-primary: #811a0e;
+  --color-primary: oklch(57% 0.19 26);
   --color-primary-content: oklch(100% 0 0);
   --color-primary-link: var(--color-red-400);
+  --color-primary-surface: #811a0e;
   --color-base-100: oklch(0.25 0.009 264.318);
   --color-base-200: oklch(0.21 0.009 264.318);
   --color-base-300: oklch(0.177 0.009 264.318);
   --color-secondary: #3b71ca;
+  --color-secondary-content: oklch(100% 0 0);
 }
 
 @plugin "daisyui/theme" {
@@ -30,7 +32,9 @@
   --color-primary: #c72730;
   --color-primary-content: oklch(100% 0 0);
   --color-primary-link: var(--color-primary);
+  --color-primary-surface: var(--color-primary);
   --color-secondary: #3b71ca;
+  --color-secondary-content: oklch(100% 0 0);
   --color-info: oklch(50% 0.134 242.749);
   --color-info-content: oklch(100% 0 0);
   --color-success: oklch(52.7% 0.154 150.069);
@@ -39,6 +43,11 @@
   --color-warning-content: oklch(100% 0 0);
   --color-error: oklch(50.5% 0.213 27.518);
   --color-error-content: oklch(100% 0 0);
+}
+
+@theme {
+  --color-primary-link: var(--color-primary);
+  --color-primary-surface: var(--color-primary);
 }
 
 .link-primary {

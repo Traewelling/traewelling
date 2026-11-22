@@ -28,7 +28,7 @@
                     <div>
                         {{ trans('contribute.profile.total_xp') }}
                     </div>
-                    <div class="font-bold text-primary text-lg">
+                    <div class="font-bold text-primary-link text-lg">
                         {{ store.xp }}
                     </div>
                 </li>
@@ -37,7 +37,7 @@
                     <div>
                         {{ trans('contribute.profile.current_level') }}
                     </div>
-                    <div class="font-bold text-primary text-lg">
+                    <div class="font-bold text-primary-link text-lg">
                         {{ store.level }}
                     </div>
                 </li>

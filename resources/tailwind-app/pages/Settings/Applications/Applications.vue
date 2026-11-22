@@ -124,7 +124,7 @@ fetchApps();
         </div>
 
         <!-- Empty state -->
-        <div v-else-if="apps.length === 0" class="text-center py-12 text-base-content/50">
+        <div v-else-if="apps.length === 0" class="text-center py-12 text-base-content/70">
             <p>{{ trans('no-own-apps') }}</p>
             <button class="btn btn-primary btn-sm mt-4" @click="openCreate">
                 {{ trans('create-app') }}
@@ -147,8 +147,8 @@ fetchApps();
                         </span>
                         <span v-if="app.webhooksEnabled" class="badge badge-sm badge-info"> Webhooks </span>
                     </div>
-                    <p class="text-xs text-base-content/50 mt-1 truncate">{{ app.redirect }}</p>
-                    <p class="text-xs text-base-content/40 mt-0.5">
+                    <p class="text-xs text-base-content/70 mt-1 truncate">{{ app.redirect }}</p>
+                    <p class="text-xs text-base-content/70 mt-0.5">
                         {{
                             transChoice('active-tokens-count', app.activeTokensCount, { count: app.activeTokensCount })
                         }}

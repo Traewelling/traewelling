@@ -252,7 +252,7 @@ watch(customKeyInput, () => {
                                     <component :is="VISIBILITY_ICONS[v]" class="w-4 h-4 shrink-0" />
                                     <span>
                                         {{ trans('status.visibility.' + v) }}
-                                        <span class="block text-xs text-base-content/50">{{
+                                        <span class="block text-xs text-base-content/70">{{
                                             trans('status.visibility.' + v + '.detail')
                                         }}</span>
                                     </span>
@@ -326,7 +326,7 @@ watch(customKeyInput, () => {
                                     <component :is="VISIBILITY_ICONS[v]" class="w-4 h-4 shrink-0" />
                                     <span>
                                         {{ trans('status.visibility.' + v) }}
-                                        <span class="block text-xs text-base-content/50">{{
+                                        <span class="block text-xs text-base-content/70">{{
                                             trans('status.visibility.' + v + '.detail')
                                         }}</span>
                                     </span>

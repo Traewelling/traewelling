@@ -185,7 +185,7 @@ watch(event, (newEvent) => {
                     </div>
 
                     <!-- End of feed -->
-                    <div v-if="!showMore && statuses.length" class="text-center py-8 text-base-content/30 text-sm">
+                    <div v-if="!showMore && statuses.length" class="text-center py-8 text-base-content/70 text-sm">
                         Final stop. All change, please!
                     </div>
                 </template>
@@ -203,11 +203,11 @@ watch(event, (newEvent) => {
         </div>
         <!-- Disclaimer -->
         <div class="text-center mt-8 mb-4">
-            <p class="text-xs text-base-content/40">
+            <p class="text-xs text-base-content/70">
                 {{ trans('events.disclaimer.organizer') }}
             </p>
-            <p class="text-xs text-base-content/40">{{ trans('events.disclaimer.source') }}</p>
-            <p class="text-xs text-base-content/40">
+            <p class="text-xs text-base-content/70">{{ trans('events.disclaimer.source') }}</p>
+            <p class="text-xs text-base-content/70">
                 {{ trans('events.disclaimer.warranty') }}
             </p>
         </div>

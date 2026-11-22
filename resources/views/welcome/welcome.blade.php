@@ -5,7 +5,7 @@
             <div id="welcome-navbar"></div>
             <div>
                 <main>
-                    <div class="hero pt-4 md:pt-12 pb-12 bg-primary bg-center bg-cover"
+                    <div class="hero pt-4 md:pt-12 pb-12 bg-primary-surface bg-center bg-cover"
                          style="background-image: url('{{ \Illuminate\Support\Facades\Vite::asset('resources/images/covers/profile-background.png') }}')">
                         <div class="hero-content flex-col lg:flex-row-reverse w-full max-w-6xl gap-12">
                             <div class="lg:flex-1">

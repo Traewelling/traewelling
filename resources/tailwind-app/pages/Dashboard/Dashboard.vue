@@ -148,7 +148,7 @@ onUnmounted(removeReselectHook);
 
                 <!-- Status feed -->
                 <template v-for="(status, index) in statuses" :key="status.id">
-                    <p v-if="isNewDay(index)" class="text-sm font-medium text-base-content/50 mt-4 mb-2 first:mt-0">
+                    <p v-if="isNewDay(index)" class="text-sm font-medium text-base-content/70 mt-4 mb-2 first:mt-0">
                         {{ dayLabel(status) }}
                     </p>
                     <div class="mb-3">

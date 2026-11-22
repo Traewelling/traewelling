@@ -99,7 +99,7 @@ function formatCost(value: number): string {
         <div class="card-body py-3 px-4">
             <!-- Assigned ticket -->
             <template v-if="ticket">
-                <div class="flex items-center justify-between text-xs text-base-content/50 mb-2">
+                <div class="flex items-center justify-between text-xs text-base-content/70 mb-2">
                     <span class="flex items-center gap-1">
                         <Ticket class="w-3.5 h-3.5" />
                         {{ trans('tickets.used-ticket') }}
@@ -115,13 +115,13 @@ function formatCost(value: number): string {
                             {{ ticket.name }}
                             <span
                                 v-if="ticket.validFrom || ticket.validUntil"
-                                class="text-base-content/50 font-normal ml-1 text-xs"
+                                class="text-base-content/70 font-normal ml-1 text-xs"
                             >
                                 {{ formatDate(ticket.validFrom) }} – {{ formatDate(ticket.validUntil) }}
                             </span>
                             <span
                                 v-if="ticket.price !== null && ticket.price !== undefined"
-                                class="text-base-content/50 font-normal ml-1 text-xs"
+                                class="text-base-content/70 font-normal ml-1 text-xs"
                             >
                                 · {{ ticket.price }} {{ ticket.currency }}
                             </span>
@@ -154,7 +154,7 @@ function formatCost(value: number): string {
                     </div>
 
                     <button
-                        class="btn btn-ghost btn-xs btn-circle shrink-0 text-base-content/40"
+                        class="btn btn-ghost btn-xs btn-circle shrink-0 text-base-content/60"
                         :disabled="saving"
                         @click="remove()"
                     >
@@ -165,7 +165,7 @@ function formatCost(value: number): string {
 
             <!-- Assign ticket -->
             <template v-else-if="userStore.isClosedBeta">
-                <p class="text-xs text-base-content/50 flex items-center gap-1 mb-2">
+                <p class="text-xs text-base-content/70 flex items-center gap-1 mb-2">
                     <Ticket class="w-3.5 h-3.5" />
                     {{ trans('tickets.assign-ticket') }}
                 </p>

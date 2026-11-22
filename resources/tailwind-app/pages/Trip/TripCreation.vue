@@ -440,7 +440,7 @@ onMounted(() => {
                             <div class="flex-1 border-t border-dashed border-base-300" />
                             <button
                                 type="button"
-                                class="btn btn-ghost btn-xs gap-1 text-base-content/40 hover:text-primary"
+                                class="btn btn-ghost btn-xs gap-1 text-base-content/70 hover:text-primary-link"
                                 @click="addStopover(0)"
                             >
                                 <Plus class="w-3 h-3" />
@@ -465,7 +465,7 @@ onMounted(() => {
                                 @dragend="onDragEnd"
                             >
                                 <GripVertical
-                                    class="w-4 h-4 shrink-0 mt-3 text-base-content/25 cursor-grab active:cursor-grabbing"
+                                    class="w-4 h-4 shrink-0 mt-3 text-base-content/60 cursor-grab active:cursor-grabbing"
                                 />
                                 <span class="w-2.5 h-2.5 rounded-full bg-base-content/25 shrink-0 mt-3" />
                                 <div class="flex-1">
@@ -497,7 +497,7 @@ onMounted(() => {
                                 <div class="flex-1 border-t border-dashed border-base-300" />
                                 <button
                                     type="button"
-                                    class="btn btn-ghost btn-xs gap-1 text-base-content/40 hover:text-primary"
+                                    class="btn btn-ghost btn-xs gap-1 text-base-content/70 hover:text-primary-link"
                                     @click="addStopover(i + 1)"
                                 >
                                     <Plus class="w-3 h-3" />
@@ -531,7 +531,7 @@ onMounted(() => {
                         <div v-if="canDistribute" class="flex justify-end pt-1">
                             <button
                                 type="button"
-                                class="btn btn-ghost btn-xs gap-1.5 text-base-content/50 hover:text-primary"
+                                class="btn btn-ghost btn-xs gap-1.5 text-base-content/70 hover:text-primary-link"
                                 @click="distributeTimes"
                             >
                                 <Timer class="w-3.5 h-3.5" />

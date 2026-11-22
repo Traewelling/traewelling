@@ -201,7 +201,7 @@ watch(status, (data) => {
                     <!-- Data attribution -->
                     <p
                         v-if="status.checkin?.dataSource?.attribution"
-                        class="text-xs text-base-content/40 mt-2 text-center"
+                        class="text-xs text-base-content/70 mt-2 text-center"
                     >
                         {{ status.checkin.dataSource.attribution }}
                     </p>
@@ -232,7 +232,7 @@ watch(status, (data) => {
                                     >
                                         {{ user.username }}
                                     </router-link>
-                                    <span class="text-base-content/50 ml-1">
+                                    <span class="text-base-content/70 ml-1">
                                         {{
                                             user.id === status.user.id
                                                 ? trans('user.liked-own-status')

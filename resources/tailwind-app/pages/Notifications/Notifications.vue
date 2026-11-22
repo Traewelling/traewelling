@@ -26,7 +26,7 @@ store.fetchNotifications();
 
             <div
                 v-else-if="!store.loading && store.notifications.length === 0"
-                class="text-center py-12 text-base-content/50"
+                class="text-center py-12 text-base-content/70"
             >
                 <BellOff class="size-8 mx-auto mb-2" />
                 <p>{{ trans('notifications.empty') }}</p>
