@@ -1467,5 +1467,6 @@
     "menu.change-exit": "Ändra utgång",
     "trip.edit.stopover-in-use": "Detta stopp används av en incheckning och kan inte tas bort. Ändra incheckningen först.",
     "menu.oauth_authorize.third_party.trust": "Fortsätt endast om du litar på applikationen.",
-    "welcome.header.title": "Din loggbok för kollektivtrafiken."
+    "welcome.header.title": "Din loggbok för kollektivtrafiken.",
+    "stationboard.hidden-departures": "En avgång har dolts på grund av licensieringsproblem.|:count avgångar har dolts på grund av licensieringsproblem."
 }
