@@ -140,7 +140,7 @@ onMounted(() => {
     <ErrorPage v-if="notFound" :code="404" standalone />
     <AppLayout v-else :legacy="true" :fullscreen="true">
         <div
-            class="w-full bg-primary text-primary-content bg-center bg-cover px-4 sm:px-6 lg:px-8 py-6"
+            class="w-full bg-primary-surface text-primary-content bg-center bg-cover px-4 sm:px-6 lg:px-8 py-6"
             :style="{ backgroundImage: `url(${profileBg})` }"
         >
             <div class="max-w-7xl mx-auto">
@@ -194,7 +194,7 @@ onMounted(() => {
 
                         <!-- Empty state -->
                         <div v-else-if="!loadingStatuses && !statuses.length" class="card bg-base-100 shadow-sm">
-                            <div class="card-body text-center py-10 text-base-content/50">
+                            <div class="card-body text-center py-10 text-base-content/70">
                                 <template v-if="(userData.totalDistance ?? 0) > 0">
                                     {{ trans('profile.no-visible-statuses', { username: userData.displayName }) }}
                                 </template>
@@ -248,7 +248,7 @@ onMounted(() => {
                             <!-- End of feed -->
                             <div
                                 v-if="!loadingStatuses && !showMore && statuses.length"
-                                class="text-center py-8 text-base-content/30 text-sm"
+                                class="text-center py-8 text-base-content/70 text-sm"
                             >
                                 <p>Final stop. All change, please!</p>
                             </div>

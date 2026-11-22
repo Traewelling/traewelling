@@ -178,7 +178,7 @@ async function remove(): Promise<void> {
                 <span class="block font-medium" :class="{ 'line-through opacity-60': stopover.cancelled }">
                     {{ stopover.station?.name ?? stopover.name }}
                 </span>
-                <span class="flex flex-wrap items-baseline gap-x-3 text-xs text-base-content/50">
+                <span class="flex flex-wrap items-baseline gap-x-3 text-xs text-base-content/70">
                     <span v-if="sharedDate">{{ sharedDate }}</span>
                     <span v-if="arrival" class="tabular-nums">
                         <span class="mr-1 opacity-70">{{ trans('time.arrival.short') }}</span>

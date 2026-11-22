@@ -172,7 +172,7 @@ watch(() => props.tripId, fetchLineRun);
                     </span>
                 </span>
                 <span v-if="getPlatform(item)" class="flex-shrink-0 ml-3 flex items-center gap-1 text-xs">
-                    <span v-if="getReplacedPlatform(item)" class="text-base-content/40 line-through">
+                    <span v-if="getReplacedPlatform(item)" class="text-base-content/70 line-through">
                         {{ getReplacedPlatform(item) }}
                     </span>
                     <span
@@ -188,7 +188,7 @@ watch(() => props.tripId, fetchLineRun);
                         <span class="text-error line-through">{{ formatTime(getDisplayTime(item)) }}</span>
                     </template>
                     <template v-else>
-                        <span v-if="getPlannedTime(item)" class="text-base-content/40 line-through text-xs block">
+                        <span v-if="getPlannedTime(item)" class="text-base-content/70 line-through text-xs block">
                             {{ formatTime(getPlannedTime(item)) }}
                         </span>
                         <span :class="deviationClass(item)">
@@ -202,6 +202,6 @@ watch(() => props.tripId, fetchLineRun);
 
     <div v-if="attribution" class="px-4 pb-4 pt-2">
         <!-- eslint-disable-next-line vue/no-v-html -->
-        <span class="text-xs text-base-content/40" v-html="attribution" />
+        <span class="text-xs text-base-content/70" v-html="attribution" />
     </div>
 </template>

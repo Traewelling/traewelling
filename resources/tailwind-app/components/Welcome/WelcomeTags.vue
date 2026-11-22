@@ -24,7 +24,7 @@ const tags = computed<Tag[]>(() => {
             <div v-for="tag in tags" :key="tag.label" class="flex items-center gap-3 py-2">
                 <dt class="text-sm text-base-content/60 min-w-0 flex-1">{{ tag.label }}</dt>
                 <dd class="font-medium tabular-nums">{{ tag.value }}</dd>
-                <component :is="VISIBILITY_ICONS[tag.visibility]" class="size-4 shrink-0 text-base-content/30" />
+                <component :is="VISIBILITY_ICONS[tag.visibility]" class="size-4 shrink-0 text-base-content/60" />
             </div>
         </dl>
     </div>

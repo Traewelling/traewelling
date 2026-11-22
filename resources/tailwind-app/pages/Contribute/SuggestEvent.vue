@@ -143,7 +143,7 @@
                                     >
                                         <ul class="menu menu-sm p-1">
                                             <li v-if="stationResults.length === 0 && !stationLoading">
-                                                <span class="text-base-content/50 pointer-events-none">
+                                                <span class="text-base-content/70 pointer-events-none">
                                                     {{ trans('contribute.suggest_event.nearest_station_no_results') }}
                                                 </span>
                                             </li>

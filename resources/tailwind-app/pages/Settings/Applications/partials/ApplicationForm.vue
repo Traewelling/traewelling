@@ -122,7 +122,7 @@ async function submit() {
                 <fieldset class="fieldset">
                     <legend class="fieldset-legend">
                         {{ trans('oauth.privacy-policy') }}
-                        <span class="text-base-content/40 font-normal">— {{ trans('optional') }}</span>
+                        <span class="text-base-content/70 font-normal">— {{ trans('optional') }}</span>
                     </legend>
                     <input
                         v-model="form.privacyPolicyUrl"
@@ -162,7 +162,7 @@ async function submit() {
                     <div v-if="form.webhooksEnabled || app?.hasWebhooks" class="mt-3 ms-7">
                         <p class="fieldset-legend mb-1">
                             {{ trans('oauth.authorized-webhook-url') }}
-                            <span class="text-base-content/40 font-normal">— {{ trans('optional') }}</span>
+                            <span class="text-base-content/70 font-normal">— {{ trans('optional') }}</span>
                         </p>
                         <input
                             v-model="form.authorizedWebhookUrl"

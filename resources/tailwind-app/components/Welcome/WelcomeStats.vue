@@ -9,17 +9,15 @@ defineProps<{
     duration: string;
     durationLabel: string;
 }>();
-
-const accent = 'text-primary dark:text-red-400';
 </script>
 
 <template>
     <div class="stats flex flex-col lg:flex-row bg-base-100 shadow-lg">
         <div class="stat">
-            <div class="stat-figure" :class="accent">
+            <div class="stat-figure text-primary">
                 <Route class="inline-block size-8" />
             </div>
-            <div class="stat-value" :class="accent">{{ distance }}</div>
+            <div class="stat-value text-primary">{{ distance }}</div>
             <div class="stat-desc">{{ distanceLabel }}</div>
         </div>
 
@@ -32,10 +30,10 @@ const accent = 'text-primary dark:text-red-400';
         </div>
 
         <div class="stat">
-            <div class="stat-figure" :class="accent">
+            <div class="stat-figure text-primary">
                 <Clock class="inline-block size-8" />
             </div>
-            <div class="stat-value" :class="accent">{{ duration }}</div>
+            <div class="stat-value text-primary">{{ duration }}</div>
             <div class="stat-desc">{{ durationLabel }}</div>
         </div>
     </div>

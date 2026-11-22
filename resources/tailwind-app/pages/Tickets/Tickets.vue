@@ -94,7 +94,7 @@ onMounted(fetchTickets);
                             <span class="loading loading-spinner loading-lg"></span>
                         </div>
 
-                        <p v-else-if="tickets.length === 0" class="text-base-content/50 px-6 py-4">
+                        <p v-else-if="tickets.length === 0" class="text-base-content/70 px-6 py-4">
                             {{ trans('tickets.none') }}
                         </p>
 

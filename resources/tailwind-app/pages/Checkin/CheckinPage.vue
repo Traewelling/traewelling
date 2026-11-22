@@ -84,7 +84,7 @@ onMounted(() => {
                         :color="textColor"
                     />
                     <span class="font-medium text-sm truncate">{{ originName }}</span>
-                    <ArrowRight class="w-3 h-3 flex-shrink-0 text-base-content/40" />
+                    <ArrowRight class="w-3 h-3 flex-shrink-0 text-base-content/60" />
                     <span class="font-medium text-sm truncate">{{ destinationName }}</span>
                 </div>
 

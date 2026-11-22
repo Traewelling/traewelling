@@ -1,7 +1,7 @@
 <template>
     <div class="drawer drawer-end">
         <input id="my-drawer-5" type="checkbox" class="drawer-toggle" />
-        <div class="navbar bg-primary shadow-lg drawer-content">
+        <div class="navbar bg-primary-surface shadow-lg drawer-content">
             <div class="navbar-start">
                 <router-link v-slot="{ href, navigate }" :to="{ name: 'dashboard' }" custom>
                     <a

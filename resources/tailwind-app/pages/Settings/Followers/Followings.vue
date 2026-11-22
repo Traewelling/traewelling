@@ -59,7 +59,7 @@ getFollowings();
             <div v-if="loading && followers.length === 0" class="flex justify-center py-12">
                 <span class="loading loading-spinner loading-lg"></span>
             </div>
-            <div v-else-if="!loading && followers.length === 0" class="text-center py-12 text-base-content/50">
+            <div v-else-if="!loading && followers.length === 0" class="text-center py-12 text-base-content/70">
                 <UserRoundX class="size-8 mx-auto mb-2" />
                 <p>{{ trans('settings.follower.no-followings') }}</p>
             </div>

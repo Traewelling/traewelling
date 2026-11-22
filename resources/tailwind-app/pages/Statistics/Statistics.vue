@@ -336,7 +336,7 @@ onMounted(() => {
             <!-- No data at all -->
             <div
                 v-if="!data.purpose.length && !data.categories.length && !data.operators.length && !data.time.length"
-                class="text-center py-16 text-base-content/50"
+                class="text-center py-16 text-base-content/70"
             >
                 {{ trans('stats.no-data') }}
             </div>
@@ -352,7 +352,7 @@ onMounted(() => {
                         />
                     </template>
                     <div v-else class="card bg-base-100">
-                        <div class="card-body items-center justify-center text-base-content/40 text-sm">
+                        <div class="card-body items-center justify-center text-base-content/70 text-sm">
                             {{ trans('stats.purpose') }}: {{ trans('stats.no-data') }}
                         </div>
                     </div>
@@ -365,7 +365,7 @@ onMounted(() => {
                         />
                     </template>
                     <div v-else class="card bg-base-100">
-                        <div class="card-body items-center justify-center text-base-content/40 text-sm">
+                        <div class="card-body items-center justify-center text-base-content/70 text-sm">
                             {{ trans('stats.categories') }}: {{ trans('stats.no-data') }}
                         </div>
                     </div>
@@ -378,7 +378,7 @@ onMounted(() => {
                         />
                     </template>
                     <div v-else class="card bg-base-100">
-                        <div class="card-body items-center justify-center text-base-content/40 text-sm">
+                        <div class="card-body items-center justify-center text-base-content/70 text-sm">
                             {{ trans('stats.companies') }}: {{ trans('stats.no-data') }}
                         </div>
                     </div>
@@ -392,7 +392,7 @@ onMounted(() => {
 
             <!-- History breakdown (all-time, static) -->
             <template v-if="advancedData.by_period.yearly?.length || advancedData.by_period.monthly?.length">
-                <div class="divider text-base-content/40 text-xs uppercase tracking-wide mt-6">
+                <div class="divider text-base-content/70 text-xs uppercase tracking-wide mt-6">
                     {{ trans('stats.breakdown') }}
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -430,7 +430,7 @@ onMounted(() => {
                                 <button class="btn btn-xs btn-ghost" :disabled="yearlyPage === 0" @click="yearlyPage--">
                                     ‹
                                 </button>
-                                <span class="text-xs text-base-content/50">
+                                <span class="text-xs text-base-content/70">
                                     {{ yearlyPage + 1 }} / {{ yearlyTotalPages }}
                                 </span>
                                 <button
@@ -481,7 +481,7 @@ onMounted(() => {
                                 >
                                     ‹
                                 </button>
-                                <span class="text-xs text-base-content/50">
+                                <span class="text-xs text-base-content/70">
                                     {{ monthlyPage + 1 }} / {{ monthlyTotalPages }}
                                 </span>
                                 <button
@@ -499,17 +499,17 @@ onMounted(() => {
 
             <!-- Period comparison (Rückblick, static) -->
             <div v-if="periods" class="mt-4">
-                <div class="divider text-base-content/40 text-xs uppercase tracking-wide">
+                <div class="divider text-base-content/70 text-xs uppercase tracking-wide">
                     {{ trans('stats.time-comparison') }}
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div v-for="period in periods" :key="period.label" class="card bg-base-200">
                         <div class="card-body py-4 gap-3">
                             <div>
-                                <p class="text-xs text-base-content/50 uppercase tracking-wide font-medium">
+                                <p class="text-xs text-base-content/70 uppercase tracking-wide font-medium">
                                     {{ trans(period.labelKey) }}
                                 </p>
-                                <p class="text-xs text-base-content/40 mt-0.5">
+                                <p class="text-xs text-base-content/70 mt-0.5">
                                     {{ new Date(period.from).toLocaleDateString() }}
                                     {{ trans('stats.to').toLowerCase() }}
                                     {{ trans('stats.today') }}
@@ -518,11 +518,11 @@ onMounted(() => {
                             <div class="grid grid-cols-2 gap-2">
                                 <div class="text-center">
                                     <p class="text-2xl font-bold leading-none">{{ period.total_checkins }}</p>
-                                    <p class="text-xs text-base-content/50 mt-1">{{ trans('stats.checkins') }}</p>
+                                    <p class="text-xs text-base-content/70 mt-1">{{ trans('stats.checkins') }}</p>
                                 </div>
                                 <div class="text-center">
                                     <p class="text-2xl font-bold leading-none">{{ period.total_distance_km }}</p>
-                                    <p class="text-xs text-base-content/50 mt-1">km</p>
+                                    <p class="text-xs text-base-content/70 mt-1">km</p>
                                 </div>
                             </div>
                         </div>
@@ -532,7 +532,7 @@ onMounted(() => {
 
             <!-- Global stats (always last) -->
             <div v-if="globalStats" class="mt-4">
-                <div class="divider text-base-content/40 text-xs uppercase tracking-wide">
+                <div class="divider text-base-content/70 text-xs uppercase tracking-wide">
                     {{ trans('stats.global') }}
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -561,7 +561,7 @@ onMounted(() => {
                         </div>
                     </div>
                 </div>
-                <p v-if="globalFrom && globalUntil" class="text-center text-xs text-base-content/40 mt-2">
+                <p v-if="globalFrom && globalUntil" class="text-center text-xs text-base-content/70 mt-2">
                     *{{
                         trans('stats.global.explain', {
                             fromDate: globalFrom.toLocaleDateString(),

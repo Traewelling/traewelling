@@ -58,6 +58,7 @@ function stopover(id: number, name: string, times: Partial<StopoverResource>): S
 
 const demoStatus = computed<StatusResource>(() => ({
     id: 0,
+    uuid: '00000000-0000-0000-0000-000000000000',
     body: props.body,
     bodyMentions: [],
     business: Business.Value0,

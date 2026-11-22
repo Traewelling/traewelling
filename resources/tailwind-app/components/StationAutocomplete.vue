@@ -142,7 +142,7 @@ function pickFirst(): void {
 <template>
     <div class="relative">
         <div v-if="withIcon" class="input input-bordered flex items-center gap-2 w-full" :class="{ 'input-sm': small }">
-            <Search class="size-4 text-base-content/40 shrink-0" />
+            <Search class="size-4 text-base-content/60 shrink-0" />
             <input
                 v-model="query"
                 type="text"

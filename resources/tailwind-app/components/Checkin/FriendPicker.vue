@@ -94,13 +94,13 @@ onMounted(fetchFriends);
                         />
                         <div class="min-w-0">
                             <p class="truncate font-medium">{{ friend.user?.displayName }}</p>
-                            <p class="text-xs text-base-content/50 truncate">@{{ friend.user?.username }}</p>
+                            <p class="text-xs text-base-content/70 truncate">@{{ friend.user?.username }}</p>
                         </div>
                     </button>
                 </li>
             </ul>
 
-            <div v-else class="p-4 text-center text-sm text-base-content/50">
+            <div v-else class="p-4 text-center text-sm text-base-content/70">
                 <p>{{ trans('stationboard.friends-none') }}</p>
                 <p class="mt-1">
                     {{ trans('stationboard.friends-set') }}

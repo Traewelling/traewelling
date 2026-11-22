@@ -98,7 +98,7 @@ async function submit() {
                     required
                 />
                 <label class="label" for="report-description">
-                    <span class="label-text-alt text-base-content/50">{{ trans('report.min-length') }}</span>
+                    <span class="label-text-alt text-base-content/70">{{ trans('report.min-length') }}</span>
                 </label>
             </div>
             <div class="modal-action">

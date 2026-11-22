@@ -75,7 +75,7 @@ fetchTrips();
             <span class="loading loading-spinner loading-lg" />
         </div>
 
-        <div v-else-if="trips.length === 0" class="text-center py-12 text-base-content/50">
+        <div v-else-if="trips.length === 0" class="text-center py-12 text-base-content/70">
             <Route class="size-8 mx-auto mb-2" />
             <p>{{ trans('trip.list.empty') }}</p>
         </div>
@@ -96,7 +96,7 @@ fetchTrips();
                         <ArrowRight class="size-3.5 shrink-0" />
                         <span class="truncate">{{ trip.destination?.name }}</span>
                     </div>
-                    <div class="flex flex-wrap gap-x-3 text-xs text-base-content/50">
+                    <div class="flex flex-wrap gap-x-3 text-xs text-base-content/70">
                         <span>{{ formatDate(departureOf(trip)) }}</span>
                         <span v-if="trip.operator">{{ trip.operator.name }}</span>
                         <span v-if="trip.stopovers?.length">

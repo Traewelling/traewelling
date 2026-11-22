@@ -211,13 +211,13 @@ onMounted(fetchData);
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div v-if="purposeData.length > 0" class="card bg-base-100">
                     <div class="card-body">
-                        <h2 class="card-title text-sm uppercase tracking-wide text-base-content/50 font-semibold">
+                        <h2 class="card-title text-sm uppercase tracking-wide text-base-content/70 font-semibold">
                             {{ trans('tickets.travel-purposes') }}
                         </h2>
                         <div v-for="p in purposeData" :key="p.label" class="mt-2">
                             <div class="flex justify-between text-sm mb-1">
                                 <span>{{ p.label }}</span>
-                                <span class="text-base-content/50">{{ p.count }}</span>
+                                <span class="text-base-content/70">{{ p.count }}</span>
                             </div>
                             <progress
                                 class="progress progress-primary w-full"
@@ -230,13 +230,13 @@ onMounted(fetchData);
 
                 <div v-if="stats?.categories?.length" class="card bg-base-100">
                     <div class="card-body">
-                        <h2 class="card-title text-sm uppercase tracking-wide text-base-content/50 font-semibold">
+                        <h2 class="card-title text-sm uppercase tracking-wide text-base-content/70 font-semibold">
                             {{ trans('tickets.transport-type') }}
                         </h2>
                         <div v-for="c in stats.categories" :key="c.name" class="mt-2">
                             <div class="flex justify-between text-sm mb-1">
                                 <span>{{ trans(`transport_types.${c.name}`, {}, c.name ?? '') }}</span>
-                                <span class="text-base-content/50">{{ c.count }}</span>
+                                <span class="text-base-content/70">{{ c.count }}</span>
                             </div>
                             <progress
                                 class="progress w-full"
@@ -250,13 +250,13 @@ onMounted(fetchData);
 
                 <div v-if="stats?.operators?.length" class="card bg-base-100">
                     <div class="card-body">
-                        <h2 class="card-title text-sm uppercase tracking-wide text-base-content/50 font-semibold">
+                        <h2 class="card-title text-sm uppercase tracking-wide text-base-content/70 font-semibold">
                             {{ trans('tickets.operators') }}
                         </h2>
                         <div v-for="o in stats.operators" :key="o.name" class="mt-2">
                             <div class="flex justify-between text-sm mb-1">
                                 <span>{{ o.name ?? trans('generic.unknown') }}</span>
-                                <span class="text-base-content/50">{{ formatKm(o.distance ?? 0) }} km</span>
+                                <span class="text-base-content/70">{{ formatKm(o.distance ?? 0) }} km</span>
                             </div>
                             <progress
                                 class="progress progress-secondary w-full"
@@ -269,7 +269,7 @@ onMounted(fetchData);
             </div>
         </template>
 
-        <div v-else class="py-16 text-center text-base-content/50">
+        <div v-else class="py-16 text-center text-base-content/70">
             {{ trans('tickets.none') }}
         </div>
 

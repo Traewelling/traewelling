@@ -160,7 +160,7 @@ defineExpose({ open });
                 placeholder="12345,1970-01-01 08:05,1970-01-01 08:10"
             />
 
-            <div class="text-xs text-base-content/50 mt-2 mb-4 space-y-1">
+            <div class="text-xs text-base-content/70 mt-2 mb-4 space-y-1">
                 <div>
                     <strong>{{ trans('trip_creation.csv_import.help.example_title') }}</strong>
                 </div>

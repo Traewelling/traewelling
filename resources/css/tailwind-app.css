@@ -6,16 +6,18 @@
 @plugin "daisyui";
 @import './trwl-theme.css';
 
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 .text-pride {
   padding-left: 5px;
   padding-right: 5px;
 
   /*outline the text for better readability*/
   text-shadow:
-    -1px -1px 0 var(--color-primary),
-    1px -1px 0 var(--color-primary),
-    -1px 1px 0 var(--color-primary),
-    1px 1px 0 var(--color-primary);
+    -1px -1px 0 var(--color-primary-surface),
+    1px -1px 0 var(--color-primary-surface),
+    -1px 1px 0 var(--color-primary-surface),
+    1px 1px 0 var(--color-primary-surface);
 }
 
 /* iOS zooms into fields below 16px; daisyUI only bumps the size on :focus, which reflows text. Apply it permanently instead. */
