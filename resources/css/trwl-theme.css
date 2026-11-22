@@ -1,7 +1,15 @@
+@theme {
+  --font-sans:
+    'Nunito', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+}
+
 @plugin "daisyui/theme" {
   name: 'dark';
-  prefersdark: true; /* set as default dark mode (prefers-color-scheme:dark) */
-  color-scheme: dark; /* color of browser-provided UI */
+  prefersdark: true;
+  /* set as default dark mode (prefers-color-scheme:dark) */
+  color-scheme: dark;
+  /* color of browser-provided UI */
 
   --color-primary: oklch(57% 0.19 26);
   --color-primary-content: oklch(100% 0 0);
@@ -16,8 +24,10 @@
 
 @plugin "daisyui/theme" {
   name: 'light';
-  prefersdark: false; /* set as default light mode (prefers-color-scheme:light) */
-  color-scheme: light; /* color of browser-provided UI */
+  prefersdark: false;
+  /* set as default light mode (prefers-color-scheme:light) */
+  color-scheme: light;
+  /* color of browser-provided UI */
 
   --color-primary: #c72730;
   --color-primary-content: oklch(100% 0 0);
