@@ -1035,7 +1035,6 @@
     "maintenance.help-center": "Hjälp och dokumentation",
     "maintenance.auto-refresh": "Den här sidan uppdateras automatiskt när underhållet är klart.",
     "maintenance.refresh-now": "Uppdatera nu",
-    "stationboard.hidden-departures": ":count avgångar har dolts på grund av licensproblem.",
     "stationboard.hidden-departures.detail": "Dessa avgångar dolde eftersom licensen antingen inte har aktiverats av oss ännu eller inte tillåter att vi behandlar data här.",
     "stationboard.hidden-departures.detail2": "De dolda avgångarna är kopplade till följande licenser eller datakällor:",
     "stationboard.hidden-departures.detail3": "Klicka här om du vill veta mer om licenserna:",

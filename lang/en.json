@@ -774,7 +774,7 @@
   "stationboard.friend-filter": "Filter for friends",
   "stationboard.friends-none": "You don't have any friends.",
   "stationboard.friends-set": "You can manage your friends here:",
-  "stationboard.hidden-departures": ":count departures have been hidden due to licensing issues.",
+  "stationboard.hidden-departures": "One departure has been hidden due to licensing issues.|:count departures have been hidden due to licensing issues.",
   "stationboard.hidden-departures.detail": "These departures were hidden because either the license has not yet been activated by us or it does not allow us to process the data here.",
   "stationboard.hidden-departures.detail2": "The hidden departures are associated with the following licenses/data sources:",
   "stationboard.hidden-departures.detail3": "If you would like to learn more about the licenses, please click here:",

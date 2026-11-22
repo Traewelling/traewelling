@@ -28,13 +28,15 @@ class MotisHydratorTest extends UnitTestCase
 
         return [
             'no license' => [
-                // RT:0:0 entry always passes through, 3 GTFS entries are filtered
+                // RT:0:0 entry always passes through, 4 GTFS entries of 3 trips are filtered
                 'expected' => 1,
+                'expectedRemovedCount' => 3,
                 'license' => null,
             ],
             'with license' => [
-                // RT:0:0 entry always passes through + 3 GTFS entries with active license
-                'expected' => 4,
+                // RT:0:0 entry always passes through + 4 GTFS entries with active license
+                'expected' => 5,
+                'expectedRemovedCount' => 0,
                 'license' => $license,
             ],
         ];
@@ -87,7 +89,7 @@ class MotisHydratorTest extends UnitTestCase
     }
 
     #[DataProvider('filterLicenseProvider')]
-    public function test_map_departures_filter_license(int $expected, ?MotisSourceLicense $license): void
+    public function test_map_departures_filter_license(int $expected, int $expectedRemovedCount, ?MotisSourceLicense $license): void
     {
         Config::set('trwl.motis.filter_licenses', true);
 
@@ -123,9 +125,7 @@ class MotisHydratorTest extends UnitTestCase
         $departures = $hydrator->mapDepartures($this->getDepartures(), Station::factory()->makeOne(), DataProviderEnum::TRANSITOUS);
 
         $this->assertCount($expected, $departures->departures);
-
-        $removedCount = count($this->getDepartures()) - $expected;
-        $this->assertEquals($removedCount, $departures->removedCount);
+        $this->assertSame($expectedRemovedCount, $departures->removedCount);
     }
 
     public function test_map_departures_strips_redundant_line_name_from_headsign(): void

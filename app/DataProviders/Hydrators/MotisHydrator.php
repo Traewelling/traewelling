@@ -204,7 +204,7 @@ class MotisHydrator
         );
     }
 
-    private function checkLicenseData($rawDeparture, DataProvider $source, array &$removedEntries, int &$removedCount): bool
+    private function checkLicenseData($rawDeparture, DataProvider $source, array &$removedEntries, array &$removedTripIds): bool
     {
         if (config('trwl.motis.filter_licenses')) {
             if (str_starts_with($rawDeparture['source'], 'RT:')) {
@@ -220,7 +220,7 @@ class MotisHydrator
 
                 $license = $license ? $this->licenseService->getLicenseDataForSource($license) : null;
                 $removedEntries[$licenseIdentifier] = $license ?? $licenseName;
-                $removedCount++;
+                $removedTripIds[$rawDeparture['tripId']] = true;
 
                 return true;
             }
@@ -233,10 +233,10 @@ class MotisHydrator
     {
         $departures = collect();
         $removedEntries = [];
-        $removedCount = 0;
+        $removedTripIds = [];
 
         foreach ($entries as $rawDeparture) {
-            if ($this->checkLicenseData($rawDeparture, $source, $removedEntries, $removedCount)) {
+            if ($this->checkLicenseData($rawDeparture, $source, $removedEntries, $removedTripIds)) {
                 continue; // skip this entry if it does not have a valid license
             }
 
@@ -300,7 +300,7 @@ class MotisHydrator
             $departures->push($departure);
         }
 
-        return new FilteredDepartures($departures, collect(array_values($removedEntries)), $removedCount);
+        return new FilteredDepartures($departures, collect(array_values($removedEntries)), count($removedTripIds));
     }
 
     /**

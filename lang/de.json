@@ -774,7 +774,7 @@
     "stationboard.friend-filter": "Tippen, um nach Freunden zu filtern",
     "stationboard.friends-none": "Du hast keine Freunde.",
     "stationboard.friends-set": "Hier kannst du Freunde verwalten:",
-    "stationboard.hidden-departures": ":count Lizenzen wurden aufgrund von (unbekannter) Lizenzbestimmungen ausgeblendet.",
+    "stationboard.hidden-departures": "Eine Abfahrt wurde aus Lizenzgründen ausgeblendet.|:count Abfahrten wurden aus Lizenzgründen ausgeblendet.",
     "stationboard.hidden-departures.detail": "Diese Abfahrten wurden ausgeblendet, weil die Lizenz entweder noch nicht von uns aktiviert wurde oder die Verarbeitung hier nicht erlaubt.",
     "stationboard.hidden-departures.detail2": "Die ausgeblendeten Abfahrten stammen aus folgenden Lizenzen/Datenquellen:",
     "stationboard.hidden-departures.detail3": "Wenn du mehr über die Lizenzen erfahren möchtest, klicke hier:",

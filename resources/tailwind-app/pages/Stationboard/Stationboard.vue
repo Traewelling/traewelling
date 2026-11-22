@@ -23,6 +23,7 @@ type DepartureMeta = {
     station?: Station;
     times?: { prev: string; now: string; next: string };
     removedLicenses?: { licenseName?: string }[];
+    removedCount?: number;
     availableTravelTypes?: TravelType[];
 };
 
@@ -35,7 +36,7 @@ const travelType = ref('');
 const stationId = computed(() => route.query.stationId as string | undefined);
 const stationName = computed(() => (meta.value.station?.name ?? route.query.stationName) as string | undefined);
 
-const removedLicensesCount = computed(() => meta.value.removedLicenses?.length ?? 0);
+const hiddenDeparturesCount = computed(() => meta.value.removedCount ?? 0);
 
 const isPastLimit = computed(() => fetchTime.value < DateTime.now().setZone('UTC').minus({ hours: 24 }));
 
@@ -297,13 +298,13 @@ watch(router.currentRoute, (to) => {
 
             <!-- Hidden licenses info -->
             <div
-                v-if="removedLicensesCount > 0"
+                v-if="hiddenDeparturesCount > 0"
                 class="collapse collapse-arrow bg-base-100 mb-2 md:mb-4 border border-info"
             >
                 <input type="checkbox" />
                 <div class="collapse-title text-sm flex items-center gap-2 text-info font-medium">
                     <TriangleAlert class="w-4 h-4 flex-shrink-0" />
-                    {{ transChoice('stationboard.hidden-departures', removedLicensesCount) }}
+                    {{ transChoice('stationboard.hidden-departures', hiddenDeparturesCount) }}
                 </div>
                 <div class="collapse-content text-sm">
                     <p class="mb-2">{{ trans('stationboard.hidden-departures.detail') }}</p>
