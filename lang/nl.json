@@ -622,7 +622,6 @@
     "stationboard.friend-filter": "Vrienden filteren",
     "stationboard.friends-none": "Je hebt nog geen vrienden.",
     "stationboard.friends-set": "Hier kun je je vrienden beheren:",
-    "stationboard.hidden-departures": ":count vertrekken zijn verwijderd door problemen met licentie.",
     "stationboard.hidden-departures.detail": "Deze vertrekken zijn verwijderd omdat de licentie nog niet door ons is geactiveerd of omdat het ons niet toestemt om deze data te gebruiken.",
     "stationboard.hidden-departures.detail2": "De verwijderde vertrekken zijn geassocieerd met de volgende licentie-/databronnen:",
     "stationboard.hidden-departures.detail3": "Als je meer wilt weten over de licenties, klik hier:",

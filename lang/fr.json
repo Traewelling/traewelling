@@ -772,7 +772,7 @@
     "stationboard.friend-filter": "Filtrer les ami·e·s",
     "stationboard.friends-none": "Tu n'as pas d'ami·e·s.",
     "stationboard.friends-set": "Tu peux gérer tes ami·e·s ici :",
-    "stationboard.hidden-departures": ":count départs ont été masqués pour des raisons relatives aux licences.",
+    "stationboard.hidden-departures": "Un départ a été masqué pour des raisons de licence.|:count départs ont été masqués pour des raisons de licence.",
     "stationboard.hidden-departures.detail": "Ces départs ont été masqués soit parce que la licence n'a pas encore été activée par nos soins, soit parce qu'elle ne nous autorise pas à traiter les données ici.",
     "stationboard.hidden-departures.detail2": "Les départs cachés sont associés aux licences/sources de données suivantes :",
     "stationboard.hidden-departures.detail3": "Si tu souhaites en savoir plus sur les licences, clique ici :",

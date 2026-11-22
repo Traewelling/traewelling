@@ -82,5 +82,26 @@
     "tripId": "20250501_21:33_de-DELFI_##VDV##COMPOSED;RT_EXAMPLE",
     "displayName": "?",
     "source": "RT:0:0"
+  },
+  {
+    "place": {
+      "name": "Knuffingen ZOB",
+      "stopId": "de-trwl_12:34:5679:91012",
+      "lat": 48.784584,
+      "lon": 9.182635,
+      "level": 0,
+      "departure": "2025-05-01T21:27:00Z",
+      "scheduledDeparture": "2025-05-01T21:27:00Z",
+      "vertexType": "TRANSIT"
+    },
+    "mode": "REGIONAL_FAST_RAIL",
+    "realTime": false,
+    "headsign": "Rottweil",
+    "agencyId": "1322",
+    "agencyName": "Firma ABC",
+    "agencyUrl": "http://www.exmple.de",
+    "tripId": "20250501_23:25_de-VBN_416428221",
+    "displayName": "RE 345",
+    "source": "de_DISALLOWED.gtfs.zip/stop_times.txt:1243907:1243917"
   }
 ]
