@@ -40,7 +40,7 @@ async function deleteAccount() {
 <template>
     <div class="mt-4 text-center">
         <button
-            class="btn btn-ghost btn-sm text-base-content/40 hover:text-error hover:bg-transparent"
+            class="btn btn-ghost btn-sm text-base-content/70 hover:text-error hover:bg-transparent"
             @click="openModal"
         >
             {{ trans('settings.delete-account') }}

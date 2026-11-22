@@ -107,7 +107,7 @@ onMounted(async () => {
                     </thead>
                     <tbody>
                         <tr v-if="stats.byDay.length === 0">
-                            <td colspan="4" class="text-center text-base-content/50">
+                            <td colspan="4" class="text-center text-base-content/70">
                                 {{ trans('webhook-stats.no-data') }}
                             </td>
                         </tr>
@@ -135,7 +135,7 @@ onMounted(async () => {
                             </thead>
                             <tbody>
                                 <tr v-if="stats.byEvent.length === 0">
-                                    <td colspan="2" class="text-center text-base-content/50">
+                                    <td colspan="2" class="text-center text-base-content/70">
                                         {{ trans('webhook-stats.no-data') }}
                                     </td>
                                 </tr>
@@ -163,7 +163,7 @@ onMounted(async () => {
                             </thead>
                             <tbody>
                                 <tr v-if="stats.byResponseCode.length === 0">
-                                    <td colspan="2" class="text-center text-base-content/50">
+                                    <td colspan="2" class="text-center text-base-content/70">
                                         {{ trans('webhook-stats.no-data') }}
                                     </td>
                                 </tr>

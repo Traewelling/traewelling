@@ -122,7 +122,7 @@ const hasData = computed(() => props.data !== null && props.data !== undefined &
                         <table class="table table-sm">
                             <tbody>
                                 <tr v-for="(station, i) in data!.favorites.stations" :key="station.station_id">
-                                    <td class="w-12 text-base-content/50">#{{ i + 1 }}</td>
+                                    <td class="w-12 text-base-content/70">#{{ i + 1 }}</td>
                                     <td>{{ station.name }}</td>
                                     <td class="text-right">
                                         <span class="badge badge-primary badge-sm">{{ station.count }}x</span>
@@ -146,7 +146,7 @@ const hasData = computed(() => props.data !== null && props.data !== undefined &
                                     v-for="(line, i) in data!.favorites.lines"
                                     :key="`${line.linename}-${line.number ?? i}`"
                                 >
-                                    <td class="w-12 text-base-content/50">#{{ i + 1 }}</td>
+                                    <td class="w-12 text-base-content/70">#{{ i + 1 }}</td>
                                     <td>
                                         <p class="font-medium">{{ line.linename }}</p>
                                         <p class="text-xs text-base-content/60">{{ line.distance_km }} km total</p>
@@ -173,7 +173,7 @@ const hasData = computed(() => props.data !== null && props.data !== undefined &
                                     v-for="(route, i) in data!.favorites.routes"
                                     :key="`${route.origin_id}-${route.destination_id}`"
                                 >
-                                    <td class="w-12 text-base-content/50">#{{ i + 1 }}</td>
+                                    <td class="w-12 text-base-content/70">#{{ i + 1 }}</td>
                                     <td>
                                         <p class="font-medium">{{ route.origin }} → {{ route.destination }}</p>
                                         <p class="text-xs text-base-content/60">{{ route.distance_km }} km total</p>

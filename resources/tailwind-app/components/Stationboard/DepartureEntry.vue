@@ -50,8 +50,12 @@ const platform = computed((): string | null => props.item.platform ?? props.item
 
 <template>
     <div
-        class="card bg-base-100 mb-1 cursor-pointer transition-colors hover:bg-base-200 active:scale-[0.99] select-none h-[3.5rem] overflow-hidden"
-        :class="{ 'opacity-40': isPast && !cancelled, 'opacity-60': cancelled }"
+        class="card mb-1 cursor-pointer transition-colors active:scale-[0.99] select-none h-[3.5rem] overflow-hidden"
+        :class="
+            isPast && !cancelled
+                ? 'bg-base-200 hover:bg-base-300 text-base-content/70'
+                : 'bg-base-100 hover:bg-base-200'
+        "
     >
         <div class="card-body py-0 px-3 h-full flex flex-row items-center gap-3">
             <!-- Transport mode icon -->
@@ -77,7 +81,7 @@ const platform = computed((): string | null => props.item.platform ?? props.item
                 </p>
                 <p
                     v-if="stationName && item.station?.name && item.station.name !== stationName"
-                    class="text-xs text-base-content/50 italic truncate"
+                    class="text-xs text-base-content/70 italic truncate"
                 >
                     {{ trans('stationboard.dep') }} {{ item.station.name }}
                 </p>
@@ -94,7 +98,7 @@ const platform = computed((): string | null => props.item.platform ?? props.item
                     <span class="text-error line-through block">{{ formatTime(item.plannedWhen) }}</span>
                 </template>
                 <template v-else-if="delayMinutes !== null">
-                    <span v-if="delayMinutes !== 0" class="text-base-content/40 line-through text-xs block">{{
+                    <span v-if="delayMinutes !== 0" class="text-base-content/70 line-through text-xs block">{{
                         formatTime(item.plannedWhen)
                     }}</span>
                     <span :class="delayClass">{{ formatTime(item.when) }}</span>

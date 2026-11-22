@@ -88,7 +88,7 @@ onMounted(fetchEvents);
                         />
                         <div class="min-w-0">
                             <p class="truncate">{{ event.name }}</p>
-                            <p v-if="event.station?.name" class="text-xs text-base-content/50 truncate">
+                            <p v-if="event.station?.name" class="text-xs text-base-content/70 truncate">
                                 {{ event.station.name }}
                             </p>
                         </div>
@@ -96,7 +96,7 @@ onMounted(fetchEvents);
                 </li>
             </ul>
 
-            <div v-else class="p-4 text-center text-sm text-base-content/50">
+            <div v-else class="p-4 text-center text-sm text-base-content/70">
                 <p>{{ trans('stationboard.events-none') }}</p>
                 <p class="mt-1">
                     {{ trans('stationboard.events-propose') }}

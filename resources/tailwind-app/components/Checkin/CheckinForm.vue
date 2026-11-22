@@ -173,7 +173,7 @@ async function checkIn(): Promise<void> {
             <div class="label justify-end">
                 <span
                     class="label-text-alt"
-                    :class="remaining < 20 ? (remaining < 10 ? 'text-error' : 'text-warning') : 'text-base-content/40'"
+                    :class="remaining < 20 ? (remaining < 10 ? 'text-error' : 'text-warning') : 'text-base-content/70'"
                 >
                     {{ remaining }}
                 </span>

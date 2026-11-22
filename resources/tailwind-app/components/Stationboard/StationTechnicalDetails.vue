@@ -22,7 +22,7 @@ const modalRef = ref<HTMLDialogElement | null>(null);
 <template>
     <button
         v-if="station.id"
-        class="btn btn-ghost btn-xs text-base-content/50"
+        class="btn btn-ghost btn-xs text-base-content/60"
         :title="trans('station.technical-details')"
         type="button"
         @click="modalRef?.showModal()"
@@ -34,7 +34,7 @@ const modalRef = ref<HTMLDialogElement | null>(null);
     <a
         v-if="user.isAdmin && station.id"
         :href="`/admin/stations/${station.id}`"
-        class="btn btn-ghost btn-xs text-base-content/50"
+        class="btn btn-ghost btn-xs text-base-content/60"
         role="button"
     >
         <ShieldCogCorner class="inline-block size-3.5">
@@ -52,11 +52,11 @@ const modalRef = ref<HTMLDialogElement | null>(null);
                 <table class="table table-xs w-full">
                     <tbody>
                         <tr>
-                            <td class="text-base-content/50 pr-4 pl-0 py-0.5 whitespace-nowrap">ID</td>
+                            <td class="text-base-content/70 pr-4 pl-0 py-0.5 whitespace-nowrap">ID</td>
                             <td class="py-0.5 select-all break-all">{{ station.id }}</td>
                         </tr>
                         <tr v-for="id in identifiers" :key="id.type + id.identifier">
-                            <td class="text-base-content/50 pr-4 pl-0 py-0.5 whitespace-nowrap">{{ id.type }}</td>
+                            <td class="text-base-content/70 pr-4 pl-0 py-0.5 whitespace-nowrap">{{ id.type }}</td>
                             <td class="py-0.5 select-all break-all">{{ id.identifier }}</td>
                         </tr>
                     </tbody>

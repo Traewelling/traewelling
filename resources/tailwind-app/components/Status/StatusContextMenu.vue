@@ -173,7 +173,7 @@ async function handleBlock() {
 
 <template>
     <div class="dropdown dropdown-end">
-        <button tabindex="0" class="btn btn-ghost btn-xs btn-circle text-base-content/40">
+        <button tabindex="0" class="btn btn-ghost btn-xs btn-circle text-base-content/60">
             <MoreVertical class="inline-block size-4" />
         </button>
         <ul

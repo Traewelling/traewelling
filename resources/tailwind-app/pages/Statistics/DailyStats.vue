@@ -138,7 +138,7 @@ onUnmounted(() => {
         <!-- No statuses -->
         <div v-else-if="!dayData?.statuses?.length" class="text-center py-16">
             <Train class="w-12 h-12 mx-auto text-base-content/20 mb-4" />
-            <p class="text-base-content/50">{{ trans('no-journeys-day') }}</p>
+            <p class="text-base-content/70">{{ trans('no-journeys-day') }}</p>
         </div>
 
         <template v-else>
@@ -185,7 +185,7 @@ onUnmounted(() => {
                     </div>
                 </div>
                 <div v-else class="card bg-base-100">
-                    <div class="card-body items-center justify-center text-base-content/30 gap-2">
+                    <div class="card-body items-center justify-center text-base-content/70 gap-2">
                         <Map class="w-10 h-10" />
                         <span class="text-sm">{{ trans('no-map-data') }}</span>
                     </div>

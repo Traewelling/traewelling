@@ -121,7 +121,7 @@ async function save() {
                     rows="4"
                 />
                 <div v-if="(body || '').length > 100" class="label">
-                    <span class="label-text-alt text-base-content/50">{{ (body || '').length }}/280</span>
+                    <span class="label-text-alt text-base-content/70">{{ (body || '').length }}/280</span>
                 </div>
             </div>
 
@@ -168,7 +168,7 @@ async function save() {
                                 <Briefcase class="w-4 h-4 shrink-0" />
                                 <span>
                                     {{ trans('stationboard.business.business') }}
-                                    <span class="block text-xs text-base-content/50">{{
+                                    <span class="block text-xs text-base-content/70">{{
                                         trans('stationboard.business.business.detail')
                                     }}</span>
                                 </span>
@@ -184,7 +184,7 @@ async function save() {
                                 <Building2 class="w-4 h-4 shrink-0" />
                                 <span>
                                     {{ trans('stationboard.business.commute') }}
-                                    <span class="block text-xs text-base-content/50">{{
+                                    <span class="block text-xs text-base-content/70">{{
                                         trans('stationboard.business.commute.detail')
                                     }}</span>
                                 </span>
@@ -215,7 +215,7 @@ async function save() {
                                 <component :is="VISIBILITY_ICONS[v]" class="w-4 h-4 shrink-0" />
                                 <span>
                                     {{ trans('status.visibility.' + v) }}
-                                    <span class="block text-xs text-base-content/50">{{
+                                    <span class="block text-xs text-base-content/70">{{
                                         trans('status.visibility.' + v + '.detail')
                                     }}</span>
                                 </span>

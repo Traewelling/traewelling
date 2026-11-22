@@ -47,7 +47,7 @@ defineExpose({ open });
                 <!-- Empty state -->
                 <div
                     v-else-if="!store.loading && store.notifications.length === 0"
-                    class="flex flex-col items-center justify-center py-12 text-base-content/50"
+                    class="flex flex-col items-center justify-center py-12 text-base-content/70"
                 >
                     <BellOff class="size-8 mb-2" />
                     <p class="text-sm">{{ trans('notifications.empty') }}</p>

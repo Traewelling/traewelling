@@ -34,7 +34,7 @@ const mergedLinks = computed(() => {
                     target="_blank"
                     rel="me noopener"
                     :aria-label="link.name ?? ''"
-                    class="flex items-center gap-1 text-sm text-base-content/50 hover:text-primary transition-colors tooltip"
+                    class="flex items-center gap-1 text-sm text-base-content/70 hover:text-primary-link transition-colors tooltip"
                     :data-tip="link.name"
                 >
                     <component

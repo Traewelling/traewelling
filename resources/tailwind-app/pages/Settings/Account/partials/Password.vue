@@ -91,7 +91,7 @@ async function updatePassword() {
                             required
                         />
                         <ul class="mt-1 text-xs flex flex-col gap-0.5">
-                            <li :class="meetsMinLength ? 'text-success' : 'text-base-content/50'">
+                            <li :class="meetsMinLength ? 'text-success' : 'text-base-content/70'">
                                 {{ meetsMinLength ? '✓' : '·' }} {{ trans('settings.password-min-length', { min: 8 }) }}
                             </li>
                         </ul>
