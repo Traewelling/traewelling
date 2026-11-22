@@ -26,6 +26,7 @@ const providerOptions: ProviderOption[] = [
     { label: 'Instagram', value: 'instagram' },
     { label: 'BlueSky', value: 'bluesky' },
     { label: 'Facebook', value: 'facebook' },
+    { label: 'Mastodon', value: 'mastodon' },
     { label: 'TikTok', value: 'tiktok' },
     { label: 'GitHub', value: 'github' },
 ];
