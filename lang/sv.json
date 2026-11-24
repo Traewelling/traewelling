@@ -1338,7 +1338,7 @@
     "api-usage.rate-limit": "Rimlig användning och frekvensgräns: högst 500 förfrågningar per 5 minuter. Sprid förfrågningarna jämnt och undvik onödig belastning på servern.",
     "api-usage.title": "Riktlinjer för API-användning",
     "api-usage.user-agent": "Varje förfrågan måste innehålla en User-Agent-rubrik som tydligt identifierar din app, helst med namn, länk till projektet och kontaktuppgifter.",
-    "api-usage.user-agent-example": "Exempel: MyApp/1.0 (https://github.com/myorg/myapp; example.com)",
+    "api-usage.user-agent-example": "Exempel: MyApp/1.0 (https://github.com/myorg/myapp; exempel.se)",
     "stationboard.station-info": "Stationsinformation",
     "stats.avg": "Genomsnitt",
     "stats.avg-per-ride": "Genomsnitt/resa",
