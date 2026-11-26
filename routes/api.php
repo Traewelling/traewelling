@@ -250,7 +250,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         });
 
         Route::apiResource('user.trusted', TrustedUserController::class)->only(['index', 'store', 'destroy']);
-        Route::apiResource('reports', ReportController::class);
+        Route::apiResource('reports', ReportController::class)->except(['destroy']);
         Route::apiResource('operators', OperatorController::class)->only(['index'])->middleware('sunset:2027-05-31');
         Route::apiResource('alerts', AlertController::class);
         Route::put('/operators/{oldOperatorId}/merge/{newOperatorId}', [OperatorController::class, 'merge']); // currently admin/backend only

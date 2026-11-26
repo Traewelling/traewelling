@@ -5001,6 +5001,33 @@ export class Api<
       }),
 
     /**
+     * @description Admin only. Move everything that references the old station to the new one, then delete the old station.
+     *
+     * @tags Stations
+     * @name MergeStations
+     * @summary Merge two stations
+     * @request PUT:/v1/station/{oldStationId}/merge/{newStationId}
+     * @secure
+     */
+    mergeStations: (
+      oldStationId: number,
+      newStationId: number,
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data: StationResource;
+        },
+        void
+      >({
+        path: `/v1/station/${oldStationId}/merge/${newStationId}`,
+        method: "PUT",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * @description Get departures from a station.
      *
      * @tags Checkin
@@ -6492,30 +6519,6 @@ export class Api<
       }),
 
     /**
-     * @description Delete a profile picture. The userUuid may be omitted to delete the own picture, which answers with a message. Deleting the picture of another user requires the admin role, is meant for moderation and answers with 204.
-     *
-     * @tags Settings
-     * @name DeleteProfilePicture
-     * @summary Delete a profile picture
-     * @request DELETE:/v1/settings/profile-picture/{userUuid}
-     * @secure
-     */
-    deleteProfilePicture: (userUuid: string, params: RequestParams = {}) =>
-      this.request<
-        {
-          /** @example "Profile picture deleted successfully." */
-          message: string;
-        },
-        void
-      >({
-        path: `/v1/settings/profile-picture/${userUuid}`,
-        method: "DELETE",
-        secure: true,
-        format: "json",
-        ...params,
-      }),
-
-    /**
      * @description Upload a new profile picture for the current user
      *
      * @tags Settings
@@ -6546,6 +6549,54 @@ export class Api<
         body: data,
         secure: true,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Delete the profile picture of the current user.
+     *
+     * @tags Settings
+     * @name DeleteOwnProfilePicture
+     * @summary Delete the own profile picture
+     * @request DELETE:/v1/settings/profile-picture
+     * @secure
+     */
+    deleteOwnProfilePicture: (params: RequestParams = {}) =>
+      this.request<
+        {
+          /** @example "Profile picture deleted successfully." */
+          message: string;
+        },
+        void
+      >({
+        path: `/v1/settings/profile-picture`,
+        method: "DELETE",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Delete a profile picture. The userUuid may be omitted to delete the own picture, which answers with a message. Deleting the picture of another user requires the admin role, is meant for moderation and answers with 204.
+     *
+     * @tags Settings
+     * @name DeleteProfilePicture
+     * @summary Delete a profile picture
+     * @request DELETE:/v1/settings/profile-picture/{userUuid}
+     * @secure
+     */
+    deleteProfilePicture: (userUuid: string, params: RequestParams = {}) =>
+      this.request<
+        {
+          /** @example "Profile picture deleted successfully." */
+          message: string;
+        },
+        void
+      >({
+        path: `/v1/settings/profile-picture/${userUuid}`,
+        method: "DELETE",
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -6597,6 +6648,127 @@ export class Api<
       }),
   };
   stations = {
+    /**
+     * @description UNSTABLE: Returns stations by fuzzy text, exact identifier, or within a bounding box (BBOX). **CAUTION:** Slashes in {query} must be replaced (e.g. with %20).
+     *
+     * @tags Checkin
+     * @name IndexStation
+     * @summary Search for stations
+     * @request GET:/v1/stations
+     * @secure
+     */
+    indexStation: (
+      query?: {
+        /**
+         * Fuzzy station search
+         * @maxLength 255
+         * @example "Karlsruhe Hbf"
+         */
+        query?: string;
+        /**
+         * Identifier provider for exact lookup
+         * @example "ibnr"
+         */
+        identifier_provider?: "ibnr" | "transitous";
+        /**
+         * Station identifier for exact lookup
+         * @maxLength 255
+         * @example "8000191"
+         */
+        identifier?: string;
+        /**
+         * Minimum latitude of BBOX (WGS84, -90..90)
+         * @format float
+         * @example 48.9
+         */
+        min_lat?: number;
+        /**
+         * Maximum latitude of BBOX (WGS84, -90..90)
+         * @format float
+         * @example 49.1
+         */
+        max_lat?: number;
+        /**
+         * Minimum longitude of BBOX (WGS84, -180..180)
+         * @format float
+         * @example 8.2
+         */
+        min_lon?: number;
+        /**
+         * Maximum longitude of BBOX (WGS84, -180..180)
+         * @format float
+         * @example 8.6
+         */
+        max_lon?: number;
+        /**
+         * Maximum number of results for the bounding-box query (capped at 1000).
+         * @min 1
+         * @max 1000
+         * @example 50
+         */
+        limit?: number;
+        /** Include station identifiers in the response. */
+        withIdentifiers?: boolean;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data: StationResource[];
+        },
+        void
+      >({
+        path: `/v1/stations`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Admin only. Create a station from a name and coordinates.
+     *
+     * @tags Stations
+     * @name CreateStation
+     * @summary Create a station
+     * @request POST:/v1/stations
+     * @secure
+     */
+    createStation: (
+      data: {
+        /** @maxLength 255 */
+        name: string;
+        /**
+         * @format float
+         * @min -90
+         * @max 90
+         */
+        latitude: number;
+        /**
+         * @format float
+         * @min -180
+         * @max 180
+         */
+        longitude: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data: StationResource;
+        },
+        void
+      >({
+        path: `/v1/stations`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
     /**
      * @description Admin only. Returns the number of records referencing this station. The station can only be deleted when all counts are zero.
      *
@@ -6757,84 +6929,6 @@ export class Api<
         body: data,
         secure: true,
         type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description UNSTABLE: Returns stations by fuzzy text, exact identifier, or within a bounding box (BBOX). **CAUTION:** Slashes in {query} must be replaced (e.g. with %20).
-     *
-     * @tags Checkin
-     * @name IndexStation
-     * @summary Search for stations
-     * @request GET:/v1/stations
-     * @secure
-     */
-    indexStation: (
-      query?: {
-        /**
-         * Fuzzy station search
-         * @maxLength 255
-         * @example "Karlsruhe Hbf"
-         */
-        query?: string;
-        /**
-         * Identifier provider for exact lookup
-         * @example "ibnr"
-         */
-        identifier_provider?: "ibnr" | "transitous";
-        /**
-         * Station identifier for exact lookup
-         * @maxLength 255
-         * @example "8000191"
-         */
-        identifier?: string;
-        /**
-         * Minimum latitude of BBOX (WGS84, -90..90)
-         * @format float
-         * @example 48.9
-         */
-        min_lat?: number;
-        /**
-         * Maximum latitude of BBOX (WGS84, -90..90)
-         * @format float
-         * @example 49.1
-         */
-        max_lat?: number;
-        /**
-         * Minimum longitude of BBOX (WGS84, -180..180)
-         * @format float
-         * @example 8.2
-         */
-        min_lon?: number;
-        /**
-         * Maximum longitude of BBOX (WGS84, -180..180)
-         * @format float
-         * @example 8.6
-         */
-        max_lon?: number;
-        /**
-         * Maximum number of results for the bounding-box query (capped at 1000).
-         * @min 1
-         * @max 1000
-         * @example 50
-         */
-        limit?: number;
-        /** Include station identifiers in the response. */
-        withIdentifiers?: boolean;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<
-        {
-          data: StationResource[];
-        },
-        void
-      >({
-        path: `/v1/stations`,
-        method: "GET",
-        query: query,
-        secure: true,
         format: "json",
         ...params,
       }),

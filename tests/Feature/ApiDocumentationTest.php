@@ -56,8 +56,13 @@ class ApiDocumentationTest extends TestCase
             if (!str_starts_with($route->uri(), 'api/')) {
                 continue;
             }
+            $path = '/' . substr($route->uri(), strlen('api/'));
+            // A route with an optional parameter answers with and without it.
+            $paths = array_unique([$path, preg_replace('#/\{[^}]+\?\}#', '', $path)]);
             foreach ($route->methods() as $method) {
-                $routes[] = $method . ' ' . $this->normalize('/' . substr($route->uri(), strlen('api/')));
+                foreach ($paths as $routePath) {
+                    $routes[] = $method . ' ' . $this->normalize($routePath);
+                }
             }
         }
 
