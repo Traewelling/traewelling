@@ -60,7 +60,7 @@ class PrivacyPolicyController extends Controller
                 name: 'id',
                 description: 'ID of the privacy policy',
                 in: 'path',
-                required: false,
+                required: true,
                 example: 'cec8587a-c73d-45dd-b35e-04f8edf637fc',
             ),
         ],

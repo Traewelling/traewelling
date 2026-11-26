@@ -201,14 +201,14 @@ class EventController extends Controller
                 description: 'From date – returns all events in date range (required with "until")',
                 in: 'query',
                 required: false,
-                schema: new OA\Schema(type: 'date'),
+                schema: new OA\Schema(type: 'string', format: 'date'),
             ),
             new OA\Parameter(
                 name: 'until',
                 description: 'Until date – returns all events in date range (required with "from")',
                 in: 'query',
                 required: false,
-                schema: new OA\Schema(type: 'date'),
+                schema: new OA\Schema(type: 'string', format: 'date'),
             ),
             new OA\Parameter(
                 name: 'page',

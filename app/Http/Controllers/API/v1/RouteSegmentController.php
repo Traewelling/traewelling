@@ -277,21 +277,6 @@ class RouteSegmentController extends Controller
             ->setStatusCode(201);
     }
 
-    #[OA\Post(
-        path: '/v1/route-segments/{id}/assign-stopovers',
-        operationId: 'assignRouteSegmentToStopovers',
-        summary: 'Dispatch a background job that assigns this segment to all matching unassigned stopovers (admin only).',
-        tags: ['Polyline'],
-        parameters: [
-            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid')),
-        ],
-        responses: [
-            new OA\Response(response: 202, description: 'Job dispatched successfully.'),
-            new OA\Response(response: 401, description: self::OA_DESC_UNAUTHENTICATED),
-            new OA\Response(response: 403, description: self::OA_DESC_FORBIDDEN),
-            new OA\Response(response: 404, description: self::OA_DESC_NOT_FOUND),
-        ],
-    )]
     #[OA\Delete(
         path: '/v1/route-segments/{id}',
         operationId: 'deleteRouteSegment',
@@ -317,6 +302,21 @@ class RouteSegmentController extends Controller
         return response()->json([], 202);
     }
 
+    #[OA\Post(
+        path: '/v1/route-segments/{id}/assign-stopovers',
+        operationId: 'assignRouteSegmentToStopovers',
+        summary: 'Dispatch a background job that assigns this segment to all matching unassigned stopovers (admin only).',
+        tags: ['Polyline'],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid')),
+        ],
+        responses: [
+            new OA\Response(response: 202, description: 'Job dispatched successfully.'),
+            new OA\Response(response: 401, description: self::OA_DESC_UNAUTHENTICATED),
+            new OA\Response(response: 403, description: self::OA_DESC_FORBIDDEN),
+            new OA\Response(response: 404, description: self::OA_DESC_NOT_FOUND),
+        ],
+    )]
     public function assignStopovers(string $id): JsonResponse
     {
         $segment = RouteSegment::findOrFail($id);
