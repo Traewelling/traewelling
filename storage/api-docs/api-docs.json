@@ -13268,6 +13268,8 @@
                     "id",
                     "uuid",
                     "tripId",
+                    "feed",
+                    "routeId",
                     "checkinsCount",
                     "category",
                     "mode",
@@ -13295,6 +13297,14 @@
                     },
                     "tripId": {
                         "type": "string"
+                    },
+                    "feed": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "routeId": {
+                        "type": "string",
+                        "nullable": true
                     },
                     "checkinsCount": {
                         "type": "integer",
@@ -16102,6 +16112,8 @@
                     "trip",
                     "tripUuid",
                     "hafasId",
+                    "feed",
+                    "routeId",
                     "category",
                     "number",
                     "lineName",
@@ -16136,6 +16148,18 @@
                     "hafasId": {
                         "type": "string",
                         "example": "1|1234|567"
+                    },
+                    "feed": {
+                        "description": "Transitous feed of the trip, if available",
+                        "type": "string",
+                        "example": "de-DELFI",
+                        "nullable": true
+                    },
+                    "routeId": {
+                        "description": "GTFS route_id of the trip within its feed, if available",
+                        "type": "string",
+                        "example": "de:nvbw:90T44_:_100",
+                        "nullable": true
                     },
                     "category": {
                         "$ref": "#/components/schemas/HafasTravelType"

@@ -170,6 +170,11 @@ class MotisHydrator
         $operator = $this->parseOperator($leg, $source);
         $shortTripName = !empty($leg['tripShortName']) ? $leg['tripShortName'] : null;
         $shortTripName = $shortTripName !== null ? preg_replace('/\D/', '', $shortTripName) : null;
+        $feed = null;
+        $routeId = null;
+        if (isset($leg['routeId']) && str_contains($leg['routeId'], '_')) {
+            [$feed, $routeId] = explode('_', $leg['routeId'], 2);
+        }
 
         $payload = [
             'category' => $category,
@@ -186,6 +191,8 @@ class MotisHydrator
             'source' => $source->value,
             'motis_source' => $source->value . '/' . $leg['source'],
             'motis_source_license_id' => $license?->id ?? null,
+            'feed' => $feed,
+            'route_id' => $routeId,
         ];
 
         if (is_numeric($shortTripName)) {

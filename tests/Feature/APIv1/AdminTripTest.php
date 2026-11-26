@@ -52,13 +52,15 @@ class AdminTripTest extends ApiTestCase
 
     public function test_admin_can_get_trip_details(): void
     {
-        $trip = Trip::factory()->create();
+        $trip = $this->createProviderTrip();
 
         $this->actAsApiUserWithAllScopes($this->admin);
         $res = $this->getJson("/api/v1/admin/trips/{$trip->id}");
 
         $res->assertOk();
         $res->assertJsonPath('data.id', $trip->id);
+        $res->assertJsonPath('data.feed', 'de-DELFI');
+        $res->assertJsonPath('data.routeId', 'de:nvbw:90T44_:_100');
         $res->assertJsonStructure(['data' => [
             'id', 'tripId', 'category', 'lineName', 'stopovers', 'statuses',
         ]]);

@@ -118,6 +118,8 @@ class CopyTripTest extends ApiTestCase
         $this->assertSame($trip->origin_id, $copy->origin_id);
         $this->assertSame($trip->destination_id, $copy->destination_id);
         $this->assertSame($trip->polyline_id, $copy->polyline_id);
+        $this->assertSame($trip->feed, $copy->feed);
+        $this->assertSame($trip->route_id, $copy->route_id);
         $this->assertTrue($trip->departure->equalTo($copy->departure));
         $this->assertTrue($trip->arrival->equalTo($copy->arrival));
     }

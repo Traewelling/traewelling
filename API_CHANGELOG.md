@@ -22,6 +22,13 @@ Check back here regularly to stay ahead of removals.
 
 ---
 
+# 2026-11-26
+
+`TransportResource` now contains `feed` and `routeId`: the Transitous feed and the GTFS `route_id` of the trip, e.g.
+`de-DELFI` and `de:kvv:00003_:`. Both are `null` if not available.
+
+---
+
 # 2026-11-15
 
 The primary URL of a status is now `/status/{uuid}` instead of `/status/{id}`. Existing links to `/status/{id}` keep

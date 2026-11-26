@@ -46,7 +46,11 @@ abstract class ApiTestCase extends FeatureTestCase
      */
     protected function createProviderTrip(): Trip
     {
-        return Trip::factory()->create(['source' => TripSource::TRANSITOUS]);
+        return Trip::factory()->create([
+            'source' => TripSource::TRANSITOUS,
+            'feed' => 'de-DELFI',
+            'route_id' => 'de:nvbw:90T44_:_100',
+        ]);
     }
 
     /**

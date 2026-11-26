@@ -17,6 +17,11 @@ const route = useRoute();
 const tripId = computed(() => Number(route.params.id));
 
 const trip = ref<AdminTripResource | null>(null);
+const wikidataLineSearchUrl = computed(() =>
+    trip.value?.routeId
+        ? `https://www.wikidata.org/w/index.php?search=${encodeURIComponent(`haswbstatement:"P15057=${trip.value.routeId}"`)}`
+        : null,
+);
 const loading = ref(true);
 const error = ref<string | null>(null);
 const rerouting = ref(false);
@@ -193,6 +198,21 @@ watch(tripId, fetchTrip);
                                         >{{ trip.tripId }}</a
                                     >
                                     <template v-else>{{ trip.tripId }}</template>
+                                </dd>
+
+                                <dt class="text-base-content/50 font-medium">Feed</dt>
+                                <dd class="font-mono text-xs break-all">{{ trip.feed }}</dd>
+
+                                <dt class="text-base-content/50 font-medium">Route ID</dt>
+                                <dd class="font-mono text-xs break-all">
+                                    <a
+                                        v-if="wikidataLineSearchUrl"
+                                        :href="wikidataLineSearchUrl"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="link link-hover"
+                                        >{{ trip.routeId }}</a
+                                    >
                                 </dd>
 
                                 <dt class="text-base-content/50 font-medium">Category</dt>

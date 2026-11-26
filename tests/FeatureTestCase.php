@@ -222,7 +222,7 @@ abstract class FeatureTestCase extends BaseTestCase
                     'dropoffType' => 'NORMAL',
                     'cancelled' => false,
                 ],
-                'routeId' => '162308_101',
+                'routeId' => 'de-DELFI_de:nvbw:90T44_:_100',
                 'directionId' => '0',
                 'routeType' => 101,
                 'agencyName' => 'DB Fernverkehr AG',

@@ -33,6 +33,8 @@ class TripCopyService
                 'linename' => $trip->linename,
                 'route_color' => $trip->route_color,
                 'route_text_color' => $trip->route_text_color,
+                'feed' => $trip->feed,
+                'route_id' => $trip->route_id,
                 'journey_number' => $trip->journey_number,
                 'operator_id' => $trip->operator_id,
                 'origin_id' => $trip->origin_id,
