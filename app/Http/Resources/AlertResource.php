@@ -18,7 +18,7 @@ use OpenApi\Attributes as OA;
         ),
         new OA\Property(
             property: 'type',
-            type: 'enum',
+            type: 'string',
             example: 'info',
             enum: ['info', 'warning', 'danger', 'success'],
         ),

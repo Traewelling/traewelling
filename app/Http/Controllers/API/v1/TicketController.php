@@ -21,6 +21,30 @@ use OpenApi\Attributes as OA;
 
 class TicketController extends Controller
 {
+    private static function loadStats(Collection $tickets): void
+    {
+        if ($tickets->isEmpty()) {
+            return;
+        }
+
+        $ids = $tickets->pluck('id');
+
+        $stats = DB::table('statuses')
+            ->leftJoin('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
+            ->whereIn('statuses.ticket_id', $ids)
+            ->groupBy('statuses.ticket_id')
+            ->selectRaw('statuses.ticket_id, COUNT(train_checkins.id) AS trip_count, COALESCE(SUM(train_checkins.distance), 0) AS total_distance, COALESCE(SUM(train_checkins.duration), 0) AS total_duration')
+            ->get()
+            ->keyBy('ticket_id');
+
+        $tickets->each(function (Ticket $ticket) use ($stats): void {
+            $s = $stats->get($ticket->id);
+            $ticket->trip_count = (int) ($s?->trip_count ?? 0);
+            $ticket->total_distance = (int) ($s?->total_distance ?? 0);
+            $ticket->total_duration = (int) ($s?->total_duration ?? 0);
+        });
+    }
+
     #[OA\Get(
         path: '/v1/tickets',
         operationId: 'getTickets',
@@ -56,30 +80,6 @@ class TicketController extends Controller
             new OA\Response(response: 403, description: self::OA_DESC_FORBIDDEN),
         ],
     )]
-    private static function loadStats(Collection $tickets): void
-    {
-        if ($tickets->isEmpty()) {
-            return;
-        }
-
-        $ids = $tickets->pluck('id');
-
-        $stats = DB::table('statuses')
-            ->leftJoin('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
-            ->whereIn('statuses.ticket_id', $ids)
-            ->groupBy('statuses.ticket_id')
-            ->selectRaw('statuses.ticket_id, COUNT(train_checkins.id) AS trip_count, COALESCE(SUM(train_checkins.distance), 0) AS total_distance, COALESCE(SUM(train_checkins.duration), 0) AS total_duration')
-            ->get()
-            ->keyBy('ticket_id');
-
-        $tickets->each(function (Ticket $ticket) use ($stats): void {
-            $s = $stats->get($ticket->id);
-            $ticket->trip_count = (int) ($s?->trip_count ?? 0);
-            $ticket->total_distance = (int) ($s?->total_distance ?? 0);
-            $ticket->total_duration = (int) ($s?->total_duration ?? 0);
-        });
-    }
-
     public function index(Request $request): AnonymousResourceCollection|JsonResponse
     {
         try {
