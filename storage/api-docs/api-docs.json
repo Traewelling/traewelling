@@ -5282,6 +5282,118 @@
                 ]
             }
         },
+        "/v1/settings/profile-picture": {
+            "post": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Upload a new profile picture for the current user",
+                "description": "Upload a new profile picture for the current user",
+                "operationId": "uploadProfilePicture",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "image": {
+                                        "type": "string",
+                                        "format": "base64",
+                                        "example": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA..."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "message"
+                                    ],
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Profile picture updated successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request (e.g. unsupported image format)"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-settings-profile-picture"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Delete the own profile picture",
+                "description": "Delete the profile picture of the current user.",
+                "operationId": "deleteOwnProfilePicture",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "message"
+                                    ],
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Profile picture deleted successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-settings-profile-picture"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/v1/settings/profile-picture/{userUuid}": {
             "delete": {
                 "tags": [
@@ -5336,73 +5448,6 @@
                     },
                     "404": {
                         "description": "Not Found"
-                    }
-                },
-                "security": [
-                    {
-                        "passport": [
-                            "write-settings-profile-picture"
-                        ]
-                    },
-                    {
-                        "token": []
-                    }
-                ]
-            }
-        },
-        "/v1/settings/profile-picture": {
-            "post": {
-                "tags": [
-                    "Settings"
-                ],
-                "summary": "Upload a new profile picture for the current user",
-                "description": "Upload a new profile picture for the current user",
-                "operationId": "uploadProfilePicture",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "image": {
-                                        "type": "string",
-                                        "format": "base64",
-                                        "example": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA..."
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "required": [
-                                        "message"
-                                    ],
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Profile picture updated successfully."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request (e.g. unsupported image format)"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity"
                     }
                 },
                 "security": [
@@ -5501,6 +5546,229 @@
                             "write:projects",
                             "read:projects"
                         ]
+                    }
+                ]
+            }
+        },
+        "/v1/stations": {
+            "get": {
+                "tags": [
+                    "Checkin"
+                ],
+                "summary": "Search for stations",
+                "description": "UNSTABLE: Returns stations by fuzzy text, exact identifier, or within a bounding box (BBOX). **CAUTION:** Slashes in {query} must be replaced (e.g. with %20).",
+                "operationId": "indexStation",
+                "parameters": [
+                    {
+                        "name": "query",
+                        "in": "query",
+                        "description": "Fuzzy station search",
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 255
+                        },
+                        "example": "Karlsruhe Hbf"
+                    },
+                    {
+                        "name": "identifier_provider",
+                        "in": "query",
+                        "description": "Identifier provider for exact lookup",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "ibnr",
+                                "transitous"
+                            ]
+                        },
+                        "example": "ibnr"
+                    },
+                    {
+                        "name": "identifier",
+                        "in": "query",
+                        "description": "Station identifier for exact lookup",
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 255
+                        },
+                        "example": "8000191"
+                    },
+                    {
+                        "name": "min_lat",
+                        "in": "query",
+                        "description": "Minimum latitude of BBOX (WGS84, -90..90)",
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        },
+                        "example": 48.9
+                    },
+                    {
+                        "name": "max_lat",
+                        "in": "query",
+                        "description": "Maximum latitude of BBOX (WGS84, -90..90)",
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        },
+                        "example": 49.1
+                    },
+                    {
+                        "name": "min_lon",
+                        "in": "query",
+                        "description": "Minimum longitude of BBOX (WGS84, -180..180)",
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        },
+                        "example": 8.2
+                    },
+                    {
+                        "name": "max_lon",
+                        "in": "query",
+                        "description": "Maximum longitude of BBOX (WGS84, -180..180)",
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        },
+                        "example": 8.6
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Maximum number of results for the bounding-box query (capped at 1000).",
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 1000,
+                            "minimum": 1
+                        },
+                        "example": 50
+                    },
+                    {
+                        "name": "withIdentifiers",
+                        "in": "query",
+                        "description": "Include station identifiers in the response.",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/StationResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Station not found"
+                    },
+                    "503": {
+                        "description": "There has been an error with our data provider"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "create-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Stations"
+                ],
+                "summary": "Create a station",
+                "description": "Admin only. Create a station from a name and coordinates.",
+                "operationId": "createStation",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "latitude",
+                                    "longitude"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "maxLength": 255
+                                    },
+                                    "latitude": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "maximum": 90,
+                                        "minimum": -90
+                                    },
+                                    "longitude": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "maximum": 180,
+                                        "minimum": -180
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created station",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/StationResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "*"
+                        ]
+                    },
+                    {
+                        "token": []
                     }
                 ]
             }
@@ -5873,111 +6141,37 @@
                 ]
             }
         },
-        "/v1/stations": {
-            "get": {
+        "/v1/station/{oldStationId}/merge/{newStationId}": {
+            "put": {
                 "tags": [
-                    "Checkin"
+                    "Stations"
                 ],
-                "summary": "Search for stations",
-                "description": "UNSTABLE: Returns stations by fuzzy text, exact identifier, or within a bounding box (BBOX). **CAUTION:** Slashes in {query} must be replaced (e.g. with %20).",
-                "operationId": "indexStation",
+                "summary": "Merge two stations",
+                "description": "Admin only. Move everything that references the old station to the new one, then delete the old station.",
+                "operationId": "mergeStations",
                 "parameters": [
                     {
-                        "name": "query",
-                        "in": "query",
-                        "description": "Fuzzy station search",
+                        "name": "oldStationId",
+                        "in": "path",
+                        "description": "ID of the station to merge and delete",
+                        "required": true,
                         "schema": {
-                            "type": "string",
-                            "maxLength": 255
-                        },
-                        "example": "Karlsruhe Hbf"
+                            "type": "integer"
+                        }
                     },
                     {
-                        "name": "identifier_provider",
-                        "in": "query",
-                        "description": "Identifier provider for exact lookup",
+                        "name": "newStationId",
+                        "in": "path",
+                        "description": "ID of the station to keep",
+                        "required": true,
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "ibnr",
-                                "transitous"
-                            ]
-                        },
-                        "example": "ibnr"
-                    },
-                    {
-                        "name": "identifier",
-                        "in": "query",
-                        "description": "Station identifier for exact lookup",
-                        "schema": {
-                            "type": "string",
-                            "maxLength": 255
-                        },
-                        "example": "8000191"
-                    },
-                    {
-                        "name": "min_lat",
-                        "in": "query",
-                        "description": "Minimum latitude of BBOX (WGS84, -90..90)",
-                        "schema": {
-                            "type": "number",
-                            "format": "float"
-                        },
-                        "example": 48.9
-                    },
-                    {
-                        "name": "max_lat",
-                        "in": "query",
-                        "description": "Maximum latitude of BBOX (WGS84, -90..90)",
-                        "schema": {
-                            "type": "number",
-                            "format": "float"
-                        },
-                        "example": 49.1
-                    },
-                    {
-                        "name": "min_lon",
-                        "in": "query",
-                        "description": "Minimum longitude of BBOX (WGS84, -180..180)",
-                        "schema": {
-                            "type": "number",
-                            "format": "float"
-                        },
-                        "example": 8.2
-                    },
-                    {
-                        "name": "max_lon",
-                        "in": "query",
-                        "description": "Maximum longitude of BBOX (WGS84, -180..180)",
-                        "schema": {
-                            "type": "number",
-                            "format": "float"
-                        },
-                        "example": 8.6
-                    },
-                    {
-                        "name": "limit",
-                        "in": "query",
-                        "description": "Maximum number of results for the bounding-box query (capped at 1000).",
-                        "schema": {
-                            "type": "integer",
-                            "maximum": 1000,
-                            "minimum": 1
-                        },
-                        "example": 50
-                    },
-                    {
-                        "name": "withIdentifiers",
-                        "in": "query",
-                        "description": "Include station identifiers in the response.",
-                        "schema": {
-                            "type": "boolean"
+                            "type": "integer"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "successful operation",
+                        "description": "The station that was kept",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -5986,10 +6180,7 @@
                                     ],
                                     "properties": {
                                         "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/StationResource"
-                                            }
+                                            "$ref": "#/components/schemas/StationResource"
                                         }
                                     },
                                     "type": "object"
@@ -5997,20 +6188,17 @@
                             }
                         }
                     },
-                    "401": {
-                        "description": "Unauthorized"
+                    "403": {
+                        "description": "Forbidden"
                     },
                     "404": {
                         "description": "Station not found"
-                    },
-                    "503": {
-                        "description": "There has been an error with our data provider"
                     }
                 },
                 "security": [
                     {
                         "passport": [
-                            "create-statuses"
+                            "*"
                         ]
                     },
                     {
