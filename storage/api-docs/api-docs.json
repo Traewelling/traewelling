@@ -4005,7 +4005,7 @@
                         "name": "id",
                         "in": "path",
                         "description": "ID of the privacy policy",
-                        "required": false,
+                        "required": true,
                         "example": "cec8587a-c73d-45dd-b35e-04f8edf637fc"
                     }
                 ],
@@ -9179,10 +9179,7 @@
                                     ],
                                     "properties": {
                                         "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "App\\Models\\Station"
-                                            }
+                                            "$ref": "#/components/schemas/StationResource"
                                         }
                                     },
                                     "type": "object"
@@ -13608,7 +13605,7 @@
                         "example": "123e4567-e89b-12d3-a456-426614174000"
                     },
                     "type": {
-                        "type": "enum",
+                        "type": "string",
                         "example": "info",
                         "enum": [
                             "info",
@@ -14879,7 +14876,7 @@
                 ],
                 "properties": {
                     "name": {
-                        "type": "enum",
+                        "type": "string",
                         "example": "website",
                         "enum": [
                             "website",

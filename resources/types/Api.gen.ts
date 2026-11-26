@@ -5783,7 +5783,7 @@ export class Api<
      * @request PUT:/v1/privacy-policies/{id}/acceptance
      * @secure
      */
-    acceptPrivacyPolicy: (id?: any, params: RequestParams = {}) =>
+    acceptPrivacyPolicy: (id: any, params: RequestParams = {}) =>
       this.request<void, void>({
         path: `/v1/privacy-policies/${id}/acceptance`,
         method: "PUT",
@@ -7927,7 +7927,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data: any[];
+          data: StationResource;
         },
         void
       >({
