@@ -266,6 +266,32 @@ class SettingsController extends Controller
      *       old path around for the transition period.
      */
     #[OA\Delete(
+        path: '/v1/settings/profile-picture',
+        operationId: 'deleteOwnProfilePicture',
+        description: 'Delete the profile picture of the current user.',
+        summary: 'Delete the own profile picture',
+        security: [['passport' => ['write-settings-profile-picture']], ['token' => []]],
+        tags: ['Settings'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Success',
+                content: new OA\JsonContent(
+                    required: ['message'],
+                    properties: [
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string',
+                            example: 'Profile picture deleted successfully.',
+                        ),
+                    ]
+                )
+            ),
+            new OA\Response(response: 400, description: 'Bad Request'),
+            new OA\Response(response: 401, description: 'Unauthorized'),
+        ]
+    )]
+    #[OA\Delete(
         path: '/v1/settings/profile-picture/{userUuid}',
         operationId: 'deleteProfilePicture',
         description: 'Delete a profile picture. The userUuid may be omitted to delete the own picture, which answers with a message. Deleting the picture of another user requires the admin role, is meant for moderation and answers with 204.',

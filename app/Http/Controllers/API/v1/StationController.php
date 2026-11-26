@@ -31,6 +31,37 @@ class StationController extends Controller
         private StationService $stationService
     ) {}
 
+    #[OA\Post(
+        path: '/v1/stations',
+        operationId: 'createStation',
+        description: 'Admin only. Create a station from a name and coordinates.',
+        summary: 'Create a station',
+        security: [['passport' => ['*']], ['token' => []]],
+        tags: ['Stations'],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['name', 'latitude', 'longitude'],
+                properties: [
+                    new OA\Property(property: 'name', type: 'string', maxLength: 255),
+                    new OA\Property(property: 'latitude', type: 'number', format: 'float', minimum: -90, maximum: 90),
+                    new OA\Property(property: 'longitude', type: 'number', format: 'float', minimum: -180, maximum: 180),
+                ],
+            ),
+        ),
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: 'Created station',
+                content: new OA\JsonContent(
+                    required: ['data'],
+                    properties: [new OA\Property(property: 'data', ref: '#/components/schemas/StationResource')],
+                ),
+            ),
+            new OA\Response(response: 403, description: 'Forbidden'),
+            new OA\Response(response: 422, description: 'Validation error'),
+        ],
+    )]
     public function store(Request $request): StationResource
     {
         $this->authorize('create', Station::class);
@@ -201,6 +232,30 @@ class StationController extends Controller
      *
      * @throws AuthorizationException
      */
+    #[OA\Put(
+        path: '/v1/station/{oldStationId}/merge/{newStationId}',
+        operationId: 'mergeStations',
+        description: 'Admin only. Move everything that references the old station to the new one, then delete the old station.',
+        summary: 'Merge two stations',
+        security: [['passport' => ['*']], ['token' => []]],
+        tags: ['Stations'],
+        parameters: [
+            new OA\Parameter(name: 'oldStationId', description: 'ID of the station to merge and delete', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
+            new OA\Parameter(name: 'newStationId', description: 'ID of the station to keep', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'The station that was kept',
+                content: new OA\JsonContent(
+                    required: ['data'],
+                    properties: [new OA\Property(property: 'data', ref: '#/components/schemas/StationResource')],
+                ),
+            ),
+            new OA\Response(response: 403, description: 'Forbidden'),
+            new OA\Response(response: 404, description: 'Station not found'),
+        ],
+    )]
     public function merge(int $oldStationId, int $newStationId): StationResource
     {
         $oldStation = Station::findOrFail($oldStationId);
