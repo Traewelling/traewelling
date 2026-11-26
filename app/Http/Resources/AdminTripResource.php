@@ -10,12 +10,14 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(
     title: 'AdminTrip',
-    required: ['id', 'uuid', 'tripId', 'checkinsCount', 'category', 'mode', 'number', 'lineName', 'routeColor', 'journeyNumber',
+    required: ['id', 'uuid', 'tripId', 'feed', 'routeId', 'checkinsCount', 'category', 'mode', 'number', 'lineName', 'routeColor', 'journeyNumber',
         'operator', 'source', 'user', 'lastRefreshed', 'origin', 'destination', 'stopovers', 'statuses'],
     properties: [
         new OA\Property(property: 'id', type: 'integer'),
         new OA\Property(property: 'uuid', type: 'string', format: 'uuid', nullable: true),
         new OA\Property(property: 'tripId', type: 'string'),
+        new OA\Property(property: 'feed', type: 'string', nullable: true),
+        new OA\Property(property: 'routeId', type: 'string', nullable: true),
         new OA\Property(property: 'checkinsCount', type: 'integer', nullable: true),
         new OA\Property(property: 'category', type: 'string'),
         new OA\Property(property: 'mode', type: 'string', nullable: true),
@@ -66,6 +68,8 @@ class AdminTripResource extends JsonResource
             'id' => $this->id,
             'uuid' => $this->uuid,
             'tripId' => $this->trip_id,
+            'feed' => $this->feed,
+            'routeId' => $this->route_id,
             'checkinsCount' => $this->checkins_count,
             'category' => $this->category->value,
             'mode' => $this->mode?->value,

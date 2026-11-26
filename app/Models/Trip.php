@@ -43,6 +43,8 @@ use Illuminate\Support\Str;
  * @property string|null $route_color
  * @property MotisCategory|null $mode
  * @property string|null $route_text_color
+ * @property string|null $feed
+ * @property string|null $route_id
  * @property-read Collection<int, Checkin> $checkins
  * @property-read int|null $checkins_count
  * @property-read Station|null $destinationStation
@@ -63,6 +65,7 @@ use Illuminate\Support\Str;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereDeparture($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereDestinationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereFeed($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereJourneyNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereLastRefreshed($value)
@@ -75,6 +78,7 @@ use Illuminate\Support\Str;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereOriginId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip wherePolylineId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereRouteColor($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereRouteId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereRouteTextColor($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereSource($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereTripId($value)
@@ -108,7 +112,7 @@ class Trip extends Model
     protected $fillable = [
         'trip_id', 'category', 'number', 'linename', 'route_color', 'route_text_color', 'journey_number', 'operator_id', 'origin_id',
         'destination_id', 'polyline_id', 'departure', 'arrival', 'source', 'motis_source', 'user_id', 'last_refreshed',
-        'motis_source_license_id', 'mode',
+        'motis_source_license_id', 'mode', 'feed', 'route_id',
     ];
 
     protected $hidden = ['created_at', 'updated_at'];

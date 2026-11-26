@@ -152,7 +152,7 @@ class MotisHydratorStaleCacheTest extends UnitTestCase
         $hydrator = new MotisHydrator();
 
         $tripData = $hydrator->getTripData(
-            array_merge($this->buildLeg($benndorf, $hettstedt), ['mode' => 'RAIL', 'source' => 'de-DELFI.gtfs.zip']),
+            array_merge($this->buildLeg($benndorf, $hettstedt), ['mode' => 'RAIL', 'source' => 'de-DELFI.gtfs.zip', 'routeId' => 'de-DELFI_7137750_100']),
             'MBB',
             DataProvider::TRANSITOUS
         );
@@ -179,6 +179,8 @@ class MotisHydratorStaleCacheTest extends UnitTestCase
         $this->assertNotEquals($staleStation->id, $benndorfStation->id);
         $this->assertSame('Benndorf (Mansfelder Land), Bahnhof', $benndorfStation->name);
         $this->assertSame($benndorfStation->id, $tripData['origin_id']);
+        $this->assertSame('de-DELFI', $tripData['feed']);
+        $this->assertSame('7137750_100', $tripData['route_id']);
         $this->assertSame($benndorfStation->id, $stopovers->firstOrFail()->train_station_id);
         $this->assertSame($benndorfStation->id, $departures->departures->firstOrFail()->station->id);
         $this->assertSame('Magdeburgerforth, Kleinbahnhof', $staleStation->fresh()->name);

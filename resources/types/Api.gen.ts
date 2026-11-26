@@ -1033,6 +1033,8 @@ export interface AdminTripResource {
   /** @format uuid */
   uuid: string | null;
   tripId: string;
+  feed: string | null;
+  routeId: string | null;
   checkinsCount: number | null;
   category: string;
   mode: string | null;
@@ -2451,6 +2453,16 @@ export interface TransportResource {
   tripUuid: string | null;
   /** @example "1|1234|567" */
   hafasId: string;
+  /**
+   * Transitous feed of the trip, if available
+   * @example "de-DELFI"
+   */
+  feed: string | null;
+  /**
+   * GTFS route_id of the trip within its feed, if available
+   * @example "de:nvbw:90T44_:_100"
+   */
+  routeId: string | null;
   /** Category of transport. */
   category: HafasTravelType;
   mode: MotisCategory | null;

@@ -88,6 +88,8 @@ const demoStatus = computed<StatusResource>(() => ({
         trip: 0,
         tripUuid: null,
         hafasId: '',
+        feed: null,
+        routeId: null,
         category: HafasTravelType.NationalExpress,
         mode: MotisCategory.HIGHSPEED_RAIL,
         number: 'ICE 74',
