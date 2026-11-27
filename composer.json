@@ -22,7 +22,7 @@
     "ext-simplexml": "*",
     "ext-sodium": "*",
     "barryvdh/laravel-dompdf": "^3.0",
-    "darkaonline/l5-swagger": "^11.0",
+    "darkaonline/l5-swagger": "^12.0",
     "easyrdf/easyrdf": "^1.1",
     "elgigi/commonmark-emoji": "^2.0",
     "guzzlehttp/guzzle": "^8.0",
