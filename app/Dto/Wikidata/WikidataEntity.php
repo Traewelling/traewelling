@@ -11,9 +11,10 @@ use JsonException;
 
 readonly class WikidataEntity
 {
-    public string $qId;
-
-    public array $rawData;
+    private function __construct(
+        public string $qId,
+        public array $rawData,
+    ) {}
 
     /**
      * @throws JsonException|ModelNotFoundException|ConnectionException
@@ -23,8 +24,6 @@ readonly class WikidataEntity
         if (!str_starts_with($qId, 'Q')) {
             throw new \InvalidArgumentException('Invalid QID');
         }
-        $instance = new self();
-        $instance->qId = $qId;
 
         $json = Http::withUserAgent(config('services.user_agent'))
             ->get('https://www.wikidata.org/wiki/Special:EntityData/' . $qId . '.json')
@@ -33,9 +32,10 @@ readonly class WikidataEntity
             throw new ModelNotFoundException('Entity not found');
         }
 
-        $instance->rawData = $json['entities'][$qId];
-
-        return $instance;
+        return new self(
+            qId: $qId,
+            rawData: $json['entities'][$qId],
+        );
     }
 
     public function getLabel(string $language = 'en'): ?string

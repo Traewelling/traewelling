@@ -6,7 +6,6 @@ use App\Enum\DataProvider;
 use App\Models\MotisSourceLicense;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
-use JetBrains\PhpStorm\ArrayShape;
 
 class MotisLicenseRepository
 {
@@ -40,7 +39,9 @@ class MotisLicenseRepository
         return $query?->first();
     }
 
-    #[ArrayShape(['country' => 'string', 'name' => 'string'])]
+    /**
+     * @return array{country: string, name: string}
+     */
     public function getCountryAndLicense(string $source): array
     {
         $matches = [];

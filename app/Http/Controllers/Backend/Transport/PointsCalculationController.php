@@ -8,7 +8,6 @@ use App\Enum\PointReason;
 use App\Enum\TripSource;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
-use JetBrains\PhpStorm\Pure;
 
 abstract class PointsCalculationController extends Controller
 {
@@ -45,7 +44,6 @@ abstract class PointsCalculationController extends Controller
         );
     }
 
-    #[Pure]
     private static function calculatePointsWithReason(
         float $base,
         float $distance,
@@ -82,7 +80,6 @@ abstract class PointsCalculationController extends Controller
         return ceil($points * $factor);
     }
 
-    #[Pure]
     public static function getFactorByReason(PointReason $pointReason): float|int
     {
         if (in_array($pointReason, self::REDUCED_POINTS)) {

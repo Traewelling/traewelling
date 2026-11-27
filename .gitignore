@@ -51,3 +51,6 @@ lang/php_*.json
 *.sqlite
 /storage/operator-mapping.csv
 /storage/operator-operators.csv
+
+# Infection
+infection.log
